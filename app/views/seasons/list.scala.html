@@ -1,0 +1,82 @@
+@(message: String, currentPage: Page[Season], currentOrderBy: Int)(implicit flash: play.api.mvc.Flash)
+
+@****************************************
+* Helper generating navigation links    *
+****************************************@
+@link(newPage: Int, newOrderBy: Option[Int] = None) = @{
+routes.Seasons.list(newPage
+, newOrderBy.map { orderBy =>
+if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
+}.getOrElse(currentOrderBy))
+}
+@**, currentFilter)
+**@
+
+@**********************************
+* Helper generating table headers *
+***********************************@
+@header(orderBy: Int, title: String) = {
+<th class="col@orderBy header @if(scala.math.abs(currentOrderBy) == orderBy) @{if(currentOrderBy < 0) "headerSortDown" else "headerSortUp"}">
+    <a href="@link(0, Some(orderBy))">@title</a>
+</th>
+}
+
+@main(message) {
+
+@Option(currentPage.items).filterNot(_.isEmpty).map { seasons =>
+
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+    <tr>
+      @*  @header(0,"Id")    *@
+        @header(1,"Current")
+        @header(2,"Nom")
+    </tr>
+    </thead>
+    <tbody>
+
+    @seasons.map { season =>
+    <tr>
+      @*  <td>@season.id</td>   *@
+        <td>@season.current</td>
+        <td><a href="@routes.Seasons.view(season.id.getOrElse(0))">@season.name</a></td>
+    </tr>
+    }
+
+    </tbody>
+</table>
+
+<div id="pagination" class="pagination">
+    <ul>
+        @currentPage.prev.map { page =>
+        <li class="prev">
+            <a href="@link(page)">&larr; Previous</a>
+        </li>
+        }.getOrElse {
+        <li class="prev disabled">
+            <a>&larr; Previous</a>
+        </li>
+        }
+        <li class="current">
+            <a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + seasons.size) of @currentPage.total</a>
+        </li>
+        @currentPage.next.map { page =>
+        <li class="next">
+            <a href="@link(page)">Next &rarr;</a>
+        </li>
+        }.getOrElse {
+        <li class="next disabled">
+            <a>Next &rarr;</a>
+        </li>
+        }
+    </ul>
+</div>
+
+}.getOrElse {
+
+<div class="well">
+    <em>Nothing to display</em>
+</div>
+
+}
+}

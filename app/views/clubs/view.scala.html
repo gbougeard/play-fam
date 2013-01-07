@@ -1,0 +1,24 @@
+@(message: String, club: Club)(implicit flash: play.api.mvc.Flash)
+
+
+@main(message) {
+<div class="header">
+
+    <dl class="dl-horizontal">
+        <dt>Id</dt>
+        <dd>@club.id</dd>
+        <dt>Name</dt>
+        <dd>@club.name</dd>
+        <dt>Code FFF</dt>
+        <dd>@club.code</dd>
+    </dl>
+</div>
+
+<div class="form-actions">
+    @**<input type="submit" value="Edit this club" class="btn btn-primary"> or**@
+    <a href="@routes.Clubs.edit(club.id.getOrElse(0))" class="btn btn-primary">Edit</a>or
+    <a href="@routes.Clubs.list()" class="btn">Cancel</a>
+    <a href="@routes.Clubs.create()" class="btn">New</a>
+</div>
+
+}

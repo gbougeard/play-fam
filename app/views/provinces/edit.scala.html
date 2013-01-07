@@ -1,0 +1,29 @@
+@(message: String, id: Long, provinceForm: Form[Province], states : Seq[(String, String)])(implicit flash: play.api.mvc.Flash)
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+    @form(routes.Provinces.update(id), 'class -> "form-horizontal") {
+
+        @inputText(provinceForm("id"), '_label -> "Id")
+        @inputText(provinceForm("code"), '_label -> "Code")
+        @inputText(provinceForm("name"), '_label -> "Nom")
+
+        @select(
+        provinceForm("stateId"),
+        states,
+        '_label -> "State", '_default -> "-- Choose a state --",
+        '_showConstraints -> false
+        )
+
+        <div class="form-actions">
+            <input type="submit" value="Save this province" class="btn btn-primary"> or
+            <a href="@routes.Provinces.view(id)" class="btn">View</a> or
+            <a href="@routes.Provinces.list()" class="btn">Cancel</a>
+            <a href="@routes.Provinces.create()" class="btn">New</a>
+        </div>
+
+    }
+}

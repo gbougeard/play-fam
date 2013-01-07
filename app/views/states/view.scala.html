@@ -1,0 +1,26 @@
+@(message: String, state: State)(implicit flash: play.api.mvc.Flash)
+
+
+@main(message) {
+<div class="header">
+
+    <dl class="dl-horizontal">
+        <dt>Id</dt>
+        <dd>@state.id</dd>
+        <dt>Name</dt>
+        <dd>@state.name</dd>
+        <dt>Code</dt>
+        <dd>@state.code</dd>
+        <dt>Country</dt>
+        <dd>@state.countryId</dd>
+    </dl>
+</div>
+
+<div class="form-actions">
+    @**<input type="submit" value="Edit this state" class="btn btn-primary"> or**@
+    <a href="@routes.States.edit(state.id)" class="btn btn-primary">Edit</a>or
+    <a href="@routes.States.list()" class="btn">Cancel</a>
+    <a href="@routes.States.create()" class="btn">New</a>
+</div>
+
+}

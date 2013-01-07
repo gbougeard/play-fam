@@ -1,0 +1,23 @@
+@(message: String, id: Long, userForm: Form[User])(implicit flash: play.api.mvc.Flash)
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @form(routes.Users.update(id), 'class -> "form-horizontal") {
+
+        @inputText(userForm("id"), '_label -> "Id")
+        @inputText(userForm("firstName"), '_label -> "FirstName")
+        @inputText(userForm("lastName"), '_label -> "LastName")
+
+        <div class="form-actions">
+            <input type="submit" value="Save this user" class="btn btn-primary"> or
+            <a href="@routes.Users.view(id)" class="btn">View</a> or
+            <a href="@routes.Users.list()" class="btn">Cancel</a> or
+            <a href="@routes.Users.create()" class="btn">New</a>
+        </div>
+
+    }
+}

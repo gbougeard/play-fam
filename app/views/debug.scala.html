@@ -1,0 +1,10 @@
+@() @**(implicit lang: Lang)**@
+@import play.api.Play.current
+
+<div id="footer">
+    <div class="container">
+        @**lang = @lang.code,**@
+        @**user = @current.configuration.getString("env.user"),**@
+        date = @(new java.util.Date().format("yyyy-MM-dd HH:mm:ss"))
+    </div>
+</div>

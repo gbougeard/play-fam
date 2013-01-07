@@ -1,0 +1,24 @@
+@(message: String, id: Long, eventForm: Form[Event])(implicit flash: play.api.mvc.Flash)
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @form(routes.Events.update(id), 'class -> "form-horizontal") {
+
+        @inputText(eventForm("id"), '_label -> "Id")
+        @inputDate(eventForm("dtEvent"), '_label -> "Date")
+        @inputText(eventForm("duration"), '_label -> "Duration")
+        @inputText(eventForm("name"), '_label -> "Nom")
+
+        <div class="form-actions">
+            <input type="submit" value="Save this event" class="btn btn-primary"> or
+            <a href="@routes.Events.view(id)" class="btn">View</a> or
+            <a href="@routes.Events.list()" class="btn">Cancel</a> or
+            <a href="@routes.Events.create()" class="btn">New</a>
+        </div>
+
+    }
+}

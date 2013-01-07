@@ -1,0 +1,114 @@
+/* Wrapper for page content to push down footer */
+#wrap {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    /* Negative indent footer by it's height */
+    margin: 0 auto -60px;
+}
+
+/* Set the fixed height of the footer here */
+#push,
+#footer {
+    height: 60px;
+}
+#footer {
+    background-color: #f5f5f5;
+}
+
+.map {
+    height: 400px;
+    width: 600px;
+}
+
+/* Lastly, apply responsive CSS fixes as necessary */
+@media (max-width: 767px) {
+    #footer {
+        margin-left: -20px;
+        margin-right: -20px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+
+
+
+table .header {
+    cursor: pointer;
+}
+table .header:after {
+    border-color: #000000 transparent;
+    border-style: solid;
+    border-width: 0 4px 4px;
+    content: "";
+    float: right;
+    margin-top: 7px;
+    visibility: hidden;
+}
+table .headerSortUp, table .headerSortDown {
+    background-color: rgba(141, 192, 219, 0.25);
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+}
+
+table .header:hover:after {
+    visibility: visible;
+}
+table .headerSortDown:after, table .headerSortDown:hover:after {
+    opacity: 0.6;
+    visibility: visible;
+}
+table .headerSortUp:after {
+    border-color: #000000 transparent -moz-use-text-color;
+    border-style: solid solid none;
+    border-width: 4px 4px medium;
+    box-shadow: none;
+    opacity: 0.6;
+    visibility: visible;
+}
+table .blue {
+    border-bottom-color: #049CDB;
+    color: #049CDB;
+}
+table .headerSortUp.blue, table .headerSortDown.blue {
+    background-color: #ADE6FE;
+}
+table .green {
+    border-bottom-color: #46A546;
+    color: #46A546;
+}
+table .headerSortUp.green, table .headerSortDown.green {
+    background-color: #CDEACD;
+}
+table .red {
+    border-bottom-color: #9D261D;
+    color: #9D261D;
+}
+table .headerSortUp.red, table .headerSortDown.red {
+    background-color: #F4C8C5;
+}
+table .yellow {
+    border-bottom-color: #FFC40D;
+    color: #FFC40D;
+}
+table .headerSortUp.yellow, table .headerSortDown.yellow {
+    background-color: #FFF6D9;
+}
+table .orange {
+    border-bottom-color: #F89406;
+    color: #F89406;
+}
+table .headerSortUp.orange, table .headerSortDown.orange {
+    background-color: #FEE9CC;
+}
+table .purple {
+    border-bottom-color: #7A43B6;
+    color: #7A43B6;
+}
+table .headerSortUp.purple, table .headerSortDown.purple {
+    background-color: #E2D5F0;
+}
+
+.minimalList {
+    min-height: 100px;
+}

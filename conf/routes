@@ -1,0 +1,103 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.home
+
+GET     /webjars/*file              controllers.WebJarAssets.at(file)
+GET     /fragments/*file            controllers.FragmentAssets.at(file)
+
+# Javascript routing
+GET /assets/javascripts/routes controllers.Application.javascriptRoutes
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+# Clubs
+GET     /clubs                      controllers.Clubs.list(p:Int ?= 0,s:Int ?= 2)
+GET     /clubs/edit/:id             controllers.Clubs.edit(id : Long)
+POST    /clubs/edit/:id             controllers.Clubs.update(id : Long)
+GET     /clubs/new                  controllers.Clubs.create
+POST    /clubs/new                  controllers.Clubs.save
+GET     /clubs/:id                  controllers.Clubs.view(id : Long)
+# Teams
+GET     /teams                      controllers.Teams.list(p:Int ?= 0,s:Int ?= 2)
+GET     /teams/edit/:id             controllers.Teams.edit(id : Long)
+POST    /teams/edit/:id             controllers.Teams.update(id : Long)
+GET     /teams/new                  controllers.Teams.create
+POST    /teams/new                  controllers.Teams.save
+GET     /teams/:id                  controllers.Teams.view(id : Long)
+# Cities
+GET     /cities/edit/:id             controllers.Cities.edit(id : Long)
+POST    /cities/edit/:id             controllers.Cities.update(id : Long)
+GET     /cities/new                  controllers.Cities.create
+POST    /cities/new                  controllers.Cities.save
+GET     /cities/:id                  controllers.Cities.view(id : Long)
+POST    /cities.json                 controllers.Cities.json
+GET     /cities/                    controllers.Cities.list
+# Provinces
+GET     /provinces/edit/:id             controllers.Provinces.edit(id : Long)
+POST    /provinces/edit/:id             controllers.Provinces.update(id : Long)
+GET     /provinces/new                  controllers.Provinces.create
+POST    /provinces/new                  controllers.Provinces.save
+GET     /provinces/:id                  controllers.Provinces.view(id : Long)
+POST    /provinces.json                 controllers.Provinces.json
+GET     /provinces/                      controllers.Provinces.list
+# States
+GET     /states/edit/:id             controllers.States.edit(id : Long)
+POST    /states/edit/:id             controllers.States.update(id : Long)
+GET     /states/new                  controllers.States.create
+POST    /states/new                  controllers.States.save
+GET     /states/:id                  controllers.States.view(id : Long)
+GET     /states/                      controllers.States.list
+POST    /states.json                  controllers.States.json
+# Countries
+GET     /countries/edit/:id             controllers.Countries.edit(id : Long)
+POST    /countries/edit/:id             controllers.Countries.update(id : Long)
+GET     /countries/new                  controllers.Countries.create
+POST    /countries/new                  controllers.Countries.save
+GET     /countries/:id                  controllers.Countries.view(id : Long)
+GET     /countries/                  controllers.Countries.list
+POST    /countries.json                  controllers.Countries.json
+# Players
+GET     /players                      controllers.Players.list(p:Int ?= 0,s:Int ?= 2)
+GET     /players/edit/:id             controllers.Players.edit(id : Long)
+POST    /players/edit/:id             controllers.Players.update(id : Long)
+GET     /players/new                  controllers.Players.create
+POST    /players/new                  controllers.Players.save
+GET     /players/:id                  controllers.Players.view(id : Long)
+GET     /players/:id/json             controllers.Players.json(id : Long)
+
+# Users
+GET     /users                      controllers.Users.list(p:Int ?= 0,s:Int ?= 2)
+GET     /users/edit/:id             controllers.Users.edit(id : Long)
+POST    /users/edit/:id             controllers.Users.update(id : Long)
+GET     /users/new                  controllers.Users.create
+POST    /users/new                  controllers.Users.save
+GET     /users/:id                  controllers.Users.view(id : Long)
+# Seasons
+GET     /seasons                      controllers.Seasons.list(p:Int ?= 0,s:Int ?= 2)
+GET     /seasons/edit/:id             controllers.Seasons.edit(id : Long)
+POST    /seasons/edit/:id             controllers.Seasons.update(id : Long)
+GET     /seasons/new                  controllers.Seasons.create
+POST    /seasons/new                  controllers.Seasons.save
+GET     /seasons/:id                  controllers.Seasons.view(id : Long)
+# Events
+GET     /events                      controllers.Events.list(p:Int ?= 0,s:Int ?= 2)
+GET     /events/edit/:id             controllers.Events.edit(id : Long)
+POST    /events/edit/:id             controllers.Events.update(id : Long)
+GET     /events/new                  controllers.Events.create
+POST    /events/new                  controllers.Events.save
+GET     /events/:id                  controllers.Events.view(id : Long)
+
+# Places
+GET     /places                      controllers.Places.list(p:Int ?= 0,s:Int ?= 2)
+GET     /places/edit/:id             controllers.Places.edit(id : Long)
+POST    /places/edit/:id             controllers.Places.update(id : Long)
+GET     /places/new                  controllers.Places.create
+POST    /places/new                  controllers.Places.save
+GET     /places/:id                  controllers.Places.view(id : Long)
+GET     /places/gmap/                controllers.Places.gmap
+GET     /places/gmap/json            controllers.Places.gmapData
+

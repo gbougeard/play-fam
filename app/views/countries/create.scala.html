@@ -1,0 +1,21 @@
+@(message: String, countryForm: Form[Country])
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @form(routes.Countries.save(), 'class -> "form-horizontal") {
+
+        @inputText(countryForm("id"), '_label -> "Id")
+        @inputText(countryForm("code"), '_label -> "Code")
+        @inputText(countryForm("name"), '_label -> "Nom")
+
+        <div class="form-actions">
+            <input type="submit" value="Save this country" class="btn btn-primary"> or
+            <a href="@routes.Countries.list()" class="btn">Cancel</a>
+        </div>
+
+    }
+}

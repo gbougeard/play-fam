@@ -1,0 +1,28 @@
+@(message: String, cityForm: Form[City], provinces : Seq[(String, String)])
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @form(routes.Cities.save(), 'class -> "form-horizontal") {
+
+        @inputText(cityForm("id"), '_label -> "Id")
+        @inputText(cityForm("code"), '_label -> "Code")
+        @inputText(cityForm("name"), '_label -> "Nom")
+
+        @select(
+        cityForm("provinceId"),
+        provinces,
+        '_label -> "Province", '_default -> "-- Choose a province --",
+        '_showConstraints -> false
+        )
+
+        <div class="form-actions">
+            <input type="submit" value="Save this city" class="btn btn-primary"> or
+            <a href="@routes.Cities.list()" class="btn">Cancel</a>
+        </div>
+
+    }
+}

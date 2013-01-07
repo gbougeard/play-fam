@@ -1,0 +1,23 @@
+@(message: String, id: Long, placeForm: Form[Place])(implicit flash: play.api.mvc.Flash)
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @form(routes.Places.update(id), 'class -> "form-horizontal") {
+
+        @inputText(placeForm("id"), '_label -> "Id")
+        @inputText(placeForm("zipcode"), '_label -> "Code FFF")
+        @inputText(placeForm("name"), '_label -> "Nom")
+
+        <div class="form-actions">
+            <input type="submit" value="Save this place" class="btn btn-primary"> or
+            <a href="@routes.Places.view(id)" class="btn">View</a> or
+            <a href="@routes.Places.list()" class="btn">Cancel</a> or
+            <a href="@routes.Places.create()" class="btn">New</a>
+        </div>
+
+    }
+}

@@ -1,0 +1,30 @@
+@(message: String, id: Long, teamForm: Form[Team], clubs : Seq[(String, String)])(implicit flash: play.api.mvc.Flash)
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @form(routes.Teams.update(id), 'class -> "form-horizontal") {
+
+        @inputText(teamForm("id"), '_label -> "Id")
+        @inputText(teamForm("code"), '_label -> "Code")
+        @inputText(teamForm("name"), '_label -> "Nom")
+
+        @select(
+        teamForm("clubId"),
+        clubs,
+        '_label -> "Club", '_default -> "-- Choose a club --",
+        '_showConstraints -> false
+        )
+
+        <div class="form-actions">
+            <input type="submit" value="Save this team" class="btn btn-primary"> or
+            <a href="@routes.Teams.view(id)" class="btn">View</a> or
+            <a href="@routes.Teams.list()" class="btn">Cancel</a>
+            <a href="@routes.Teams.create()" class="btn">New</a>
+        </div>
+
+    }
+}

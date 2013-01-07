@@ -1,0 +1,28 @@
+@(message: String, stateForm: Form[State], countries : Seq[(String, String)])
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @form(routes.States.save(), 'class -> "form-horizontal") {
+
+        @inputText(stateForm("id"), '_label -> "Id")
+        @inputText(stateForm("code"), '_label -> "Code FFF")
+        @inputText(stateForm("name"), '_label -> "Nom")
+
+        @select(
+        stateForm("countryId"),
+        countries,
+        '_label -> "Country", '_default -> "-- Choose a country --",
+        '_showConstraints -> false
+        )
+
+        <div class="form-actions">
+            <input type="submit" value="Save this state" class="btn btn-primary"> or
+            <a href="@routes.States.list()" class="btn">Cancel</a>
+        </div>
+
+    }
+}
