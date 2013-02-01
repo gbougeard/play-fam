@@ -18,10 +18,13 @@ with TeamComponent
 with PlaceComponent
 with SeasonComponent
 with EventComponent
+with CityComponent
+with ProvinceComponent
+with StateComponent
+with CountryComponent
 with Profile {
 
   import profile.simple._
-
 
   def create(implicit session: Session): Unit = {
     Users.ddl.create //helper method to create all tables

@@ -18,7 +18,7 @@
 
 <div class="form-actions">
     @**<input type="submit" value="Edit this province" class="btn btn-primary"> or**@
-    <a href="@routes.Provinces.edit(province.id)" class="btn btn-primary">Edit</a>or
+    <a href="@routes.Provinces.edit(province.id.getOrElse(0))" class="btn btn-primary">Edit</a>or
     <a href="@routes.Provinces.list()" class="btn">Cancel</a>
     <a href="@routes.Provinces.create()" class="btn">New</a>
 </div>

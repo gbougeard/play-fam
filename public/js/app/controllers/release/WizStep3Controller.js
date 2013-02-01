@@ -1,7 +1,7 @@
 'use strict';
 
 testus.controller('WizStep3Controller',
-    function($scope, $location, releaseWizardSvc) {
+    function ($scope, $location, releaseWizardSvc) {
         $scope.selection = releaseWizardSvc.getSelection();
 
         $scope.selBrowsers = releaseWizardSvc.getBrowsers();

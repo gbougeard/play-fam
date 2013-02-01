@@ -8,9 +8,14 @@ import models.common.{AppDB, DBeable}
 
 import play.api.Play.current
 import slick.session.Session
+import com.yammer.metrics.Metrics
+import com.yammer.metrics.scala.Timer
 
 
 object Clubs extends Controller {
+
+  val metric = Metrics.defaultRegistry().newTimer(classOf[Club], "page")
+  val timer = new Timer(metric)
 
   /**
    * This result directly redirect to the application home.
@@ -52,7 +57,7 @@ object Clubs extends Controller {
     implicit request =>
       database.withSession {
         implicit session: Session =>
-          val clubs = dal.Clubs.findPage(page, orderBy)
+          val clubs = timer.time(dal.Clubs.findPage(page, orderBy))
           val html = views.html.clubs.list("Liste des clubs", clubs, orderBy)
           Ok(html)
       }
@@ -92,7 +97,9 @@ object Clubs extends Controller {
             club => {
               dal.Clubs.update(club)
               //        Home.flashing("success" -> "Club %s has been updated".format(club.name))
-              Redirect(routes.Clubs.list(0, 2))
+              //Redirect(routes.Clubs.list(0, 2))
+              Redirect(routes.Clubs.view(id)).flashing("success" -> "Club %s has been updated".format(club.name))
+
             }
           )
       }

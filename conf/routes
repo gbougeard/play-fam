@@ -29,37 +29,34 @@ GET     /teams/new                  controllers.Teams.create
 POST    /teams/new                  controllers.Teams.save
 GET     /teams/:id                  controllers.Teams.view(id : Long)
 # Cities
+GET     /cities/                    controllers.Cities.list(p:Int ?= 0,s:Int ?= 2)
 GET     /cities/edit/:id             controllers.Cities.edit(id : Long)
 POST    /cities/edit/:id             controllers.Cities.update(id : Long)
 GET     /cities/new                  controllers.Cities.create
 POST    /cities/new                  controllers.Cities.save
 GET     /cities/:id                  controllers.Cities.view(id : Long)
 POST    /cities.json                 controllers.Cities.json
-GET     /cities/                    controllers.Cities.list
 # Provinces
 GET     /provinces/edit/:id             controllers.Provinces.edit(id : Long)
 POST    /provinces/edit/:id             controllers.Provinces.update(id : Long)
 GET     /provinces/new                  controllers.Provinces.create
 POST    /provinces/new                  controllers.Provinces.save
 GET     /provinces/:id                  controllers.Provinces.view(id : Long)
-POST    /provinces.json                 controllers.Provinces.json
-GET     /provinces/                      controllers.Provinces.list
+GET     /provinces/                      controllers.Provinces.list(p:Int ?= 0,s:Int ?= 2)
 # States
 GET     /states/edit/:id             controllers.States.edit(id : Long)
 POST    /states/edit/:id             controllers.States.update(id : Long)
 GET     /states/new                  controllers.States.create
 POST    /states/new                  controllers.States.save
 GET     /states/:id                  controllers.States.view(id : Long)
-GET     /states/                      controllers.States.list
-POST    /states.json                  controllers.States.json
+GET     /states/                      controllers.States.list(p:Int ?= 0,s:Int ?= 2)
 # Countries
 GET     /countries/edit/:id             controllers.Countries.edit(id : Long)
 POST    /countries/edit/:id             controllers.Countries.update(id : Long)
 GET     /countries/new                  controllers.Countries.create
 POST    /countries/new                  controllers.Countries.save
 GET     /countries/:id                  controllers.Countries.view(id : Long)
-GET     /countries/                  controllers.Countries.list
-POST    /countries.json                  controllers.Countries.json
+GET     /countries/                  controllers.Countries.list(p:Int ?= 0,s:Int ?= 2)
 # Players
 GET     /players                      controllers.Players.list(p:Int ?= 0,s:Int ?= 2)
 GET     /players/edit/:id             controllers.Players.edit(id : Long)

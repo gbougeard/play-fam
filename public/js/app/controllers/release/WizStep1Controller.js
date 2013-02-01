@@ -10,7 +10,7 @@ testus.controller('WizStep1Controller',
             $location.path('/wiz2');
         };
 
-        $scope.resetData = function(){
+        $scope.resetData = function () {
             releaseWizardSvc.resetStorage();
 
         }

@@ -1,75 +1,64 @@
 package models
 
-import play.api.db.DB
-import play.api.Play.current
+import common.{AppDB, Profile}
 
-import scala.slick.driver.MySQLDriver.simple._
-import scala.slick.session.Database
+import models.common.AppDB.dal.Provinces._
 
-// Use the implicit threadLocalSession
-
-import scala.slick.session.Database.threadLocalSession
-
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-
-import models.Provinces._
-
-case class City(id: Long,
+case class City(id: Option[Long],
                 code: String,
                 name: String,
                 upper: String,
                 lower: String,
                 provinceId: Long)
 
-// define tables
-object Cities extends Table[City]("fam_city") {
+trait CityComponent {
+  this: Profile =>
 
-  def id = column[Long]("id_city", O.PrimaryKey, O.AutoInc)
+  import profile.simple._
 
-  def code = column[String]("cod_city")
+  // define tables
+  object Cities extends Table[City]("fam_city") {
 
-  def name = column[String]("lib_city")
+    def id = column[Long]("id_city", O.PrimaryKey, O.AutoInc)
 
-  def upper = column[String]("lib_Upper")
+    def code = column[String]("cod_city")
 
-  def lower = column[String]("lib_lower")
+    def name = column[String]("lib_city")
 
-  def provinceId = column[Long]("id_province")
+    def upper = column[String]("lib_Upper")
 
-  def * = id ~ code ~ name ~ upper ~ lower ~ provinceId <>(City, City.unapply _)
+    def lower = column[String]("lib_lower")
 
-  // A reified foreign key relation that can be navigated to create a join
-  def province = foreignKey("PROVINCE_FK", provinceId, Provinces)(_.id)
+    def provinceId = column[Long]("id_province")
 
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-  val byUpper = createFinderBy(_.upper)
-  val byLower = createFinderBy(_.lower)
-  val byProvince = createFinderBy(_.provinceId)
+    def * = id.? ~ code ~ name ~ upper ~ lower ~ provinceId <>(City, City.unapply _)
+    def autoInc = id.? ~ code ~ name ~ upper ~ lower ~ provinceId <>(City, City.unapply _) returning id
 
-  lazy val database = Database.forDataSource(DB.getDataSource())
 
-  lazy val pageSize = 10
+    // A reified foreign key relation that can be navigated to create a join
+    def province = foreignKey("PROVINCE_FK", provinceId, AppDB.dal.Provinces)(_.id)
 
-  def findAll: Seq[City] = {
-    database.withSession {
+    val byId = createFinderBy(_.id)
+    val byName = createFinderBy(_.name)
+    val byCode = createFinderBy(_.code)
+    val byUpper = createFinderBy(_.upper)
+    val byLower = createFinderBy(_.lower)
+    val byProvince = createFinderBy(_.provinceId)
+
+    lazy val pageSize = 10
+
+    def findAll(implicit session: Session): Seq[City] = {
       (for (c <- Cities.sortBy(_.name)) yield c).list
     }
-  }
 
-  def count: Int = {
-    database.withSession {
+    def count(implicit session: Session): Int = {
       (for {c <- Cities} yield c.id).list.size
     }
-  }
 
-  def findPage(page: Int = 0, orderField: Int): Page[(City, Province)] = {
+    def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[(City, Province)] = {
 
-    val offset = pageSize * page
+      val offset = pageSize * page
 
-    database.withSession {
       val cities = (
         for {c <- Cities
           .sortBy(_.code)
@@ -81,45 +70,43 @@ object Cities extends Table[City]("fam_city") {
       val totalRows = count
       Page(cities, page, offset, totalRows)
     }
-  }
 
-  def findById(id: Long): Option[City] = database withSession {
-    Cities.byId(id).firstOption
-  }
+    def findById(id: Long)(implicit session: Session): Option[City] = {
+      Cities.byId(id).firstOption
+    }
 
-  def findByName(name: String): Option[City] = database withSession {
-    Cities.byName(name).firstOption
-  }
+    def findByName(name: String)(implicit session: Session): Option[City] = {
+      Cities.byName(name).firstOption
+    }
 
-  def findByCode(code: String): Option[City] = database withSession {
-    Cities.byCode(code).firstOption
-  }
+    def findByCode(code: String)(implicit session: Session): Option[City] = {
+      Cities.byCode(code).firstOption
+    }
 
-  def insert(city: City): Long = database withSession {
-    Cities.insert((city))
-  }
+    def insert(city: City)(implicit session: Session): Long = {
+      Cities.autoInc.insert((city))
+    }
 
-  def update(city: City) = database withSession {
-    Cities.where(_.id === city.id).update(city)
-  }
+    def update(city: City)(implicit session: Session) = {
+      Cities.where(_.id === city.id).update(city)
+    }
 
-  def delete(cityId: Long) = database withSession {
-    Cities.where(_.id === cityId).delete
-  }
+    def delete(cityId: Long)(implicit session: Session) = {
+      Cities.where(_.id === cityId).delete
+    }
 
-  /**
-   * Construct the Map[String,String] needed to fill a select options set.
-   */
-  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
+    /**
+     * Construct the Map[String,String] needed to fill a select options set.
+     */
+    def options(implicit session: Session): Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
 
 
-  def json(page: Int, pageSize: Int, orderField: Int): Seq[(City, Province)] = {
+    def json(page: Int, pageSize: Int, orderField: Int)(implicit session: Session): Seq[(City, Province)] = {
 
-    println("page " + page)
-    println("pageSize " + pageSize)
-    println("orderField " + orderField)
+      println("page " + page)
+      println("pageSize " + pageSize)
+      println("orderField " + orderField)
 
-    database withSession {
       val cities = for {c <- Cities
         .sortBy(city => orderField match {
         case 1 => city.id.asc
@@ -135,24 +122,9 @@ object Cities extends Table[City]("fam_city") {
       } yield (c, p)
       //      Json.toJson(cities.list)
       cities.list
-    }
 
+    }
   }
 
-  //JSON
-  implicit val cityFormat = Json.format[City]
-
-
-  implicit val cityWithProvinceReads: Reads[(City, Province)] = (
-    (__ \ 'city).read[City] ~
-      (__ \ 'province).read[Province]
-    ) tupled
-
-  // or using the operators inspired by Scala parser combinators for those who know them
-  implicit val cityWithProvinceWrites: Writes[(City, Province)] = (
-    (__ \ 'city).write[City] ~
-      (__ \ 'province).write[Province]
-    ) tupled
-  implicit val cityWithProvinceFormat = Format(cityWithProvinceReads, cityWithProvinceWrites)
 
 }

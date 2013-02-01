@@ -54,11 +54,11 @@ function dndCtrl($scope) {
         }).join(','));
     }, true);
 
-    $scope.sourceEmpty = function() {
+    $scope.sourceEmpty = function () {
         return $scope.source.length == 0;
     }
 
-    $scope.modelEmpty = function() {
+    $scope.modelEmpty = function () {
         return $scope.model.length == 0;
     }
 }

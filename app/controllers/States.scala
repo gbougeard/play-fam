@@ -4,29 +4,30 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.State
-import models.States._
 import play.api.libs.json.Json
 import com.yammer.metrics.Metrics
 import com.yammer.metrics.scala.Timer
-
+import models.common.AppDB
+import slick.session.Session
 
 
 object States extends Controller {
-  val metric = Metrics.defaultRegistry().newTimer(classOf[State], "ajax")
+  val metric = Metrics.defaultRegistry().newTimer(classOf[State], "page")
   val timer = new Timer(metric)
 
   /**
    * This result directly redirect to the application home.
    */
-  val Home = Redirect(routes.States.list)
-  lazy val statesCount = models.States.count
+  val Home = Redirect(routes.States.list(0, 0))
 
+  lazy val database = AppDB.database
+  lazy val dal = AppDB.dal
   /**
    * Describe the state form (used in both edit and create screens).
    */
   val stateForm = Form(
     mapping(
-      "id" -> longNumber,
+      "id" -> optional(longNumber),
       "code" -> nonEmptyText,
       "name" -> nonEmptyText,
       "upper" -> nonEmptyText,
@@ -46,69 +47,34 @@ object States extends Controller {
     Home
   }
 
-
-  def list = Action {
+  def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      Ok(views.html.states.list("Ajax"))
-  }
-
-  def json = Action(parse.urlFormEncoded) {
-    implicit request =>
-      request.body.keys.map(println(_))
-      println("iDisplayStart: " + request.body.get("iDisplayStart").head)
-      println("iDisplayLength: " + request.body.get("iDisplayLength").head)
-      println("sEcho: " + request.body.get("sEcho").head)
-      println("sSortDir_0: " + request.body.get("sSortDir_0").head)
-      println("sColumns: " + request.body.get("sColumns").head)
-      println("iSortCol_0: " + request.body.get("iSortCol_0").head)
-
-      val page: Int = request.body.get("iDisplayStart").head.head.toInt + 1
-      val pagesize = request.body.get("iDisplayLength").head.head.toInt
-      val columns = request.body.get("sColumns").head
-      val sortField = request.body.get("iSortCol_0").head.head.toInt
-      val sortOrder = request.body.get("sSortDir_0").head.head
-      val orderField = sortOrder match {
-        case "asc" => sortField + 1
-        case "desc" => -(sortField + 1)
-      }
-      val sEcho = request.body.get("sEcho").head.head
-
-      try {
-        val states = timer.time(models.States.json(page, pagesize, orderField))
-
-        println(states)
-        println(Json.toJson(states))
-
-        val json = Json.obj(
-          "sEcho" -> sEcho,
-          "iDisplayStart" -> page,
-          "iTotalRecords" -> pagesize,
-          "iTotalDisplayRecords" -> statesCount,
-          "aaData" -> states
-        )
-        println(json)
-        Ok(json)
-      }
-      catch {
-        case e: IllegalArgumentException => {
-          println("ERROR! " + e.getMessage())
-          BadRequest(e.getMessage())
-        }
+      database.withSession {
+        implicit session: Session =>
+          val states = dal.States.findPage(page, orderBy)
+          val html = views.html.states.list("Liste des states", states, orderBy)
+          Ok(html)
       }
   }
 
   def view(id: Long) = Action {
     implicit request =>
-      models.States.findById(id).map {
-        state => Ok(views.html.states.view("View State", state))
-      } getOrElse (NotFound)
+      database.withSession {
+        implicit session: Session =>
+          dal.States.findById(id).map {
+            state => Ok(views.html.states.view("View State", state))
+          } getOrElse (NotFound)
+      }
   }
 
   def edit(id: Long) = Action {
     implicit request =>
-      models.States.findById(id).map {
-        state => Ok(views.html.states.edit("Edit State", id, stateForm.fill(state), models.Countries.options))
-      } getOrElse (NotFound)
+      database.withSession {
+        implicit session: Session =>
+          dal.States.findById(id).map {
+            state => Ok(views.html.states.edit("Edit State", id, stateForm.fill(state), dal.Countries.options))
+          } getOrElse (NotFound)
+      }
   }
 
   /**
@@ -118,21 +84,27 @@ object States extends Controller {
    */
   def update(id: Long) = Action {
     implicit request =>
-      stateForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.states.edit("Edit State - errors", id, formWithErrors, models.Countries.options)),
-        state => {
-          models.States.update(state)
-          //        Home.flashing("success" -> "State %s has been updated".format(state.name))
-          Redirect(routes.States.view(state.id))
-        }
-      )
+      database.withSession {
+        implicit session: Session =>
+          stateForm.bindFromRequest.fold(
+            formWithErrors => BadRequest(views.html.states.edit("Edit State - errors", id, formWithErrors, dal.Countries.options)),
+            state => {
+              dal.States.update(state)
+              Redirect(routes.States.edit(id)).flashing("success" -> "State %s has been updated".format(state.name))
+              //Redirect(routes.States.view(state.id))
+            }
+          )
+      }
   }
 
   /**
    * Display the 'new computer form'.
    */
   def create = Action {
-    Ok(views.html.states.create("New State", stateForm, models.Countries.options))
+    database.withSession {
+      implicit session: Session =>
+        Ok(views.html.states.create("New State", stateForm, dal.Countries.options))
+    }
   }
 
   /**
@@ -140,22 +112,28 @@ object States extends Controller {
    */
   def save = Action {
     implicit request =>
-      stateForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.states.create("New State - errors", formWithErrors, models.Countries.options)),
-        state => {
-          models.States.insert(state)
-          //        Home.flashing("success" -> "State %s has been created".format(state.name))
-          Redirect(routes.States.view(state.id))
-        }
-      )
+      database.withSession {
+        implicit session: Session =>
+          stateForm.bindFromRequest.fold(
+            formWithErrors => BadRequest(views.html.states.create("New State - errors", formWithErrors, dal.Countries.options)),
+            state => {
+              dal.States.insert(state)
+              Redirect(routes.States.create).flashing("success" -> "State %s has been created".format(state.name))
+              //Redirect(routes.States.view(state.id))
+            }
+          )
+      }
   }
 
   /**
    * Handle computer deletion.
    */
   def delete(id: Long) = Action {
-    models.States.delete(id)
-    Home.flashing("success" -> "State has been deleted")
+    database.withSession {
+      implicit session: Session =>
+        dal.States.delete(id)
+        Home.flashing("success" -> "State has been deleted")
+    }
   }
 
 }

@@ -34,7 +34,7 @@ fam.config(function ($routeProvider) {
 fam.value('ui.config', {
     tinymce: {
 //       theme: 'simple'
-       theme: 'advanced'
+        theme: 'advanced'
 //        mode : "textareas",
 //        plugins : "autolink,lists,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
 
