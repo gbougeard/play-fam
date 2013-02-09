@@ -10,7 +10,8 @@ object ApplicationBuild extends Build {
     // Add your project dependencies here,
     jdbc
     //      ,anorm
-    , "com.typesafe" % "slick_2.10" % "1.0.0-RC1"
+//    , "com.typesafe" % "slick_2.10" % "1.0.0-RC2"
+    , "com.typesafe" % "play-slick_2.10" % "0.2.7-SNAPSHOT"
     //      ,"com.h2database" % "h2" % "1.3.166"
     //      ,"org.xerial" % "sqlite-jdbc" % "3.6.20"
     //      ,"org.slf4j" % "slf4j-nop" % "1.6.4" // <- disables logging
@@ -31,7 +32,7 @@ object ApplicationBuild extends Build {
 
     , "org.webjars" % "webjars-play" % "2.1-RC1"
     //    , "org.webjars" % "requirejs" % "2.1.1"
-    , "org.webjars" % "bootstrap" % "2.2.2"
+    , "org.webjars" % "bootstrap" % "2.3.0"
     //    , "org.webjars" % "bootstrap-datepicker" % "2.2.1"
     , "org.webjars" % "momentjs" % "1.7.2"
     , "org.webjars" % "angularjs" % "1.1.2"
@@ -48,7 +49,9 @@ object ApplicationBuild extends Build {
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
     // Add your own project settings here
-  )
+    //  ).dependsOn(RootProject( uri("git://github.com/gbougeard/play-slick.git") ))
+  ).dependsOn(RootProject( uri("git://github.com/freekh/play-slick.git") ))
+
 
 
 }

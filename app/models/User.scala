@@ -1,6 +1,19 @@
 package models
 
-import common.Profile
+import play.api.db.DB
+
+import play.api.Play.current
+
+import scala.slick.driver.MySQLDriver.simple._
+import scala.slick.session.Database
+
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
+
+
+// Use the implicit threadLocalSession
+
+import scala.slick.session.Database.threadLocalSession
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,38 +25,37 @@ import common.Profile
 case class User(id: Option[Long],
                 email: String)
 
-trait UserComponent {
-  this: Profile =>
+object Users extends Table[User]("fam_user") {
+  def id = column[Long]("id_user", O.PrimaryKey)
 
-  import profile.simple._
+  def email = column[String]("email", O.NotNull)
 
-  object Users extends Table[User]("fam_user") {
-    def id = column[Long]("id_user", O.PrimaryKey)
+  def * = id.? ~ email <>(User, User.unapply _)
 
-    def email = column[String]("email", O.NotNull)
+  lazy val database = Database.forDataSource(DB.getDataSource())
 
-    def * = id.? ~ email <>(User, User.unapply _)
+  def add(user: User) = database withSession {
+    this.insert(user)
+  }
 
-    def add(user: User)(implicit session: Session) = {
-      this.insert(user)
-    }
+  def countByEmail(email: String) = database withSession {
+    (for {
+      user <- Users
+      if (user.email === email)
+    } yield (user)).list.size
+  }
 
-    def countByEmail(email: String)(implicit session: Session) = {
-      (for {
-        user <- Users
-        if (user.email === email)
-      } yield (user)).list.size
-    }
+  def findAll = database withSession {
+    (for {
+      user <- Users
+    } yield (user)).list
+  }
 
-    def findAll(implicit session: Session) = {
-      (for {
-        user <- Users
-      } yield (user)).list
-    }
+  def findPage(page: Int = 0, orderField: Int): Page[User] = {
+    val pageSize = 10
+    val offset = pageSize * page
 
-    def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[User] = {
-      val pageSize = 10
-      val offset = pageSize * page
+    database withSession {
 
       val users = (
         for {t <- Users
@@ -60,7 +72,6 @@ trait UserComponent {
       val totalRows = (for {t <- Users} yield t.id).list.size
       Page(users, page, offset, totalRows)
     }
-
   }
 
 }

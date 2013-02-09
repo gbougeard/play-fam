@@ -1,47 +1,54 @@
 package models
 
-import common.Profile
+import play.api.db.DB
+
+import play.api.Play.current
+
+import scala.slick.driver.MySQLDriver.simple._
+import scala.slick.session.Database
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
+
+
+// Use the implicit threadLocalSession
+
+import scala.slick.session.Database.threadLocalSession
 
 case class Club(id: Option[Long],
                 code: Int,
                 name: String)
 
-trait ClubComponent {
-  this: Profile =>
 
-  import profile.simple._
+// define tables
+object Clubs extends Table[Club]("fam_club") {
 
-  implicit val clubFormat = Json.format[Club]
+  def id = column[Long]("id_club", O.PrimaryKey, O.AutoInc)
 
-  // define tables
-  object Clubs extends Table[Club]("fam_club") {
+  def name = column[String]("lib_club")
 
-    def id = column[Long]("id_club", O.PrimaryKey, O.AutoInc)
+  def code = column[Int]("code_fff")
 
-    def name = column[String]("lib_club")
+  def * = id.? ~ code ~ name <>(Club, Club.unapply _)
 
-    def code = column[Int]("code_fff")
+  def autoInc = id.? ~ code ~ name <>(Club, Club.unapply _) returning id
 
-    def * = id.? ~ code ~ name <>(Club, Club.unapply _)
+  val byId = createFinderBy(_.id)
+  val byName = createFinderBy(_.name)
+  val byCode = createFinderBy(_.code)
 
-    def autoInc = id.? ~ code ~ name <>(Club, Club.unapply _) returning id
+  lazy val database = Database.forDataSource(DB.getDataSource())
+  lazy val pageSize = 10
 
-    val byId = createFinderBy(_.id)
-    val byName = createFinderBy(_.name)
-    val byCode = createFinderBy(_.code)
+  def findAll: Seq[Club] = {
+    (for (c <- Clubs.sortBy(_.name)) yield c).list
+  }
 
-    lazy val pageSize = 10
+  def findPage(page: Int = 0, orderField: Int): Page[Club] = {
 
-    def findAll(implicit session: Session): Seq[Club] = {
-      (for (c <- Clubs.sortBy(_.name)) yield c).list
-    }
+    val offset = pageSize * page
 
-    def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[Club] = {
-
-      val offset = pageSize * page
+    database withSession {
       val clubs = (
         for {c <- Clubs
           .sortBy(club => orderField match {
@@ -57,37 +64,39 @@ trait ClubComponent {
       val totalRows = (for (c <- Clubs) yield c.id).list.size
       Page(clubs, page, offset, totalRows)
     }
-
-    def findById(id: Long)(implicit session: Session): Option[Club] = {
-      Clubs.byId(id).firstOption
-    }
-
-    def findByName(name: String)(implicit session: Session): Option[Club] = {
-      Clubs.byName(name).firstOption
-    }
-
-    def findByCode(code: Int)(implicit session: Session): Option[Club] = {
-      Clubs.byCode(code).firstOption
-    }
-
-    def insert(club: Club)(implicit session: Session): Long = {
-      Clubs.autoInc.insert((club))
-    }
-
-    def update(club: Club)(implicit session: Session) = {
-      Clubs.where(_.id === club.id).update(club)
-    }
-
-    def delete(clubId: Long)(implicit session: Session) = {
-      Clubs.where(_.id === clubId).delete
-    }
-
-    /**
-     * Construct the Map[String,String] needed to fill a select options set.
-     */
-    def options(implicit session: Session): Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
-
   }
+
+  def findById(id: Long): Option[Club] = database withSession {
+    Clubs.byId(id).firstOption
+  }
+
+  def findByName(name: String): Option[Club] = database withSession {
+    Clubs.byName(name).firstOption
+  }
+
+  def findByCode(code: Int): Option[Club] = database withSession {
+    Clubs.byCode(code).firstOption
+  }
+
+  def insert(club: Club): Long = database withSession {
+    Clubs.autoInc.insert((club))
+  }
+
+  def update(id: Long, club: Club) = database withSession {
+    val club2update = club.copy(Some(id), club.code, club.name)
+    Clubs.where(_.id === id).update(club2update)
+  }
+
+  def delete(clubId: Long) = database withSession {
+    Clubs.where(_.id === clubId).delete
+  }
+
+  /**
+   * Construct the Map[String,String] needed to fill a select options set.
+   */
+  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
+
+  implicit val clubFormat = Json.format[Club]
 
 }
 

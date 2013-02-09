@@ -1,9 +1,19 @@
 package models
 
-import common.Profile
+import play.api.db.DB
+
+import play.api.Play.current
+
+import scala.slick.driver.MySQLDriver.simple._
+import scala.slick.session.Database
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
+
+
+// Use the implicit threadLocalSession
+
+import scala.slick.session.Database.threadLocalSession
 
 case class Place(id: Option[Long],
                  name: String,
@@ -14,55 +24,52 @@ case class Place(id: Option[Long],
                  longitude: Option[Float]
                   )
 
-trait PlaceComponent {
-  this: Profile =>
 
-  import profile.simple._
+// define tables
+object Places extends Table[Place]("fam_place") {
 
-  implicit val placeFormat = Json.format[Place]
+  def id = column[Long]("id_place", O.PrimaryKey, O.AutoInc)
 
-  // define tables
-  object Places extends Table[Place]("fam_place") {
+  def name = column[String]("lib_place")
 
-    def id = column[Long]("id_place", O.PrimaryKey, O.AutoInc)
+  def address = column[String]("address")
 
-    def name = column[String]("lib_place")
+  def city = column[String]("city")
 
-    def address = column[String]("address")
+  def zipcode = column[Int]("zipcode")
 
-    def city = column[String]("city")
+  def latitude = column[Float]("latitude")
 
-    def zipcode = column[Int]("zipcode")
+  def longitude = column[Float]("longitude")
 
-    def latitude = column[Float]("latitude")
+  def * = id.? ~ name ~ address ~ city ~ zipcode ~ latitude.? ~ longitude.? <>(Place, Place.unapply _)
 
-    def longitude = column[Float]("longitude")
+  def autoInc = id.? ~ name ~ address ~ city ~ zipcode ~ latitude.? ~ longitude.? <>(Place, Place.unapply _) returning id
 
-    def * = id.? ~ name ~ address ~ city ~ zipcode ~ latitude.? ~ longitude.? <>(Place, Place.unapply _)
+  val byId = createFinderBy(_.id)
+  val byName = createFinderBy(_.name)
+  val byCode = createFinderBy(_.zipcode)
+  val byCity = createFinderBy(_.city)
 
-    def autoInc = id.? ~ name ~ address ~ city ~ zipcode ~ latitude.? ~ longitude.? <>(Place, Place.unapply _) returning id
+  lazy val database = Database.forDataSource(DB.getDataSource())
+  lazy val pageSize = 10
 
-    val byId = createFinderBy(_.id)
-    val byName = createFinderBy(_.name)
-    val byCode = createFinderBy(_.zipcode)
-    val byCity = createFinderBy(_.city)
+  def findAll: Seq[Place] = database withSession {
+    (for (c <- Places.sortBy(_.name)) yield c).list
+  }
 
-    lazy val pageSize = 10
+  def placesWithCoords: Seq[Place] = database withSession {
+    (for {c <- Places sortBy (_.name)
+          if (c.latitude isNotNull)
+          if (c.longitude isNotNull)
+    } yield c).list
+  }
 
-    def findAll(implicit session: Session): Seq[Place] = {
-      (for (c <- Places.sortBy(_.name)) yield c).list
-    }
+  def findPage(page: Int = 0, orderField: Int): Page[Place] = {
 
-    def placesWithCoords(implicit session: Session): Seq[Place] = {
-      (for {c <- Places sortBy(_.name)
-            if (c.latitude isNotNull)
-            if (c.longitude isNotNull)
-      } yield c).list
-    }
+    val offset = pageSize * page
 
-    def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[Place] = {
-
-      val offset = pageSize * page
+    database withSession {
       val places = (
         for {c <- Places
           .sortBy(place => orderField match {
@@ -78,41 +85,44 @@ trait PlaceComponent {
       val totalRows = (for (c <- Places) yield c.id).list.size
       Page(places, page, offset, totalRows)
     }
-
-    def findById(id: Long)(implicit session: Session): Option[Place] = {
-      Places.byId(id).firstOption
-    }
-
-    def findByName(name: String)(implicit session: Session): Option[Place] = {
-      Places.byName(name).firstOption
-    }
-
-    def findByZipcode(zipcode: Int)(implicit session: Session): Option[Place] = {
-      Places.byCode(zipcode).firstOption
-    }
-
-    def findByCity(city: String)(implicit session: Session): Option[Place] = {
-      Places.byCity(city).firstOption
-    }
-
-    def insert(place: Place)(implicit session: Session): Long = {
-      Places.autoInc.insert((place))
-    }
-
-    def update(place: Place)(implicit session: Session) = {
-      Places.where(_.id === place.id).update(place)
-    }
-
-    def delete(placeId: Long)(implicit session: Session) = {
-      Places.where(_.id === placeId).delete
-    }
-
-    /**
-     * Construct the Map[String,String] needed to fill a select options set.
-     */
-    def options(implicit session: Session): Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
-
   }
+
+  def findById(id: Long): Option[Place] = database withSession {
+    Places.byId(id).firstOption
+  }
+
+  def findByName(name: String): Option[Place] = database withSession {
+    Places.byName(name).firstOption
+  }
+
+  def findByZipcode(zipcode: Int): Option[Place] = database withSession {
+    Places.byCode(zipcode).firstOption
+  }
+
+  def findByCity(city: String): Option[Place] = database withSession {
+    Places.byCity(city).firstOption
+  }
+
+  def insert(place: Place): Long = database withSession {
+    Places.autoInc.insert((place))
+  }
+
+  def update(id: Long, place: Place) = database withSession {
+    val place2update = place.copy(Some(id))
+    Places.where(_.id === id).update(place2update)
+  }
+
+  def delete(placeId: Long) = database withSession {
+    Places.where(_.id === placeId).delete
+  }
+
+  /**
+   * Construct the Map[String,String] needed to fill a select options set.
+   */
+  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
+
+  implicit val placeFormat = Json.format[Place]
+
 
 }
 

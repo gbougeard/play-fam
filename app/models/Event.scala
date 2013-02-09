@@ -1,51 +1,61 @@
 package models
 
-import common.Profile
+import play.api.db.DB
+
+import play.api.Play.current
+
+import scala.slick.driver.MySQLDriver.simple._
+import scala.slick.session.Database
+
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
+
+
+// Use the implicit threadLocalSession
+
+import scala.slick.session.Database.threadLocalSession
 
 import org.joda.time.DateTime
 import java.sql.Timestamp
 
 case class Event(id: Option[Long],
-                dtEvent : DateTime,
-                duration: Int,
-                name: String)
+                 dtEvent: DateTime,
+                 duration: Int,
+                 name: String)
 
-trait EventComponent {
-  this: Profile =>
+// define tables
+object Events extends Table[Event]("fam_event") {
 
-  import profile.simple._
+  def id = column[Long]("id_event", O.PrimaryKey, O.AutoInc)
 
+  def name = column[String]("lib_event")
 
-  // define tables
-  object Events extends Table[Event]("fam_event") {
+  def duration = column[Int]("duration")
 
-    def id = column[Long]("id_event", O.PrimaryKey, O.AutoInc)
+  def dtEvent = column[DateTime]("dt_event")
 
-    def name = column[String]("lib_event")
+  implicit val dateTime: TypeMapper[DateTime]
+  = MappedTypeMapper.base[DateTime, Timestamp](dt => new
+      Timestamp(dt.getMillis), ts => new DateTime(ts.getTime))
 
-    def duration = column[Int]("duration")
-    def dtEvent = column[DateTime]("dt_event")
+  def * = id.? ~ dtEvent ~ duration ~ name <>(Event, Event.unapply _)
 
-    implicit val dateTime: TypeMapper[DateTime]
-    = MappedTypeMapper.base[DateTime, Timestamp](dt => new
-        Timestamp(dt.getMillis), ts => new DateTime(ts.getTime))
+  def autoInc = id.? ~ dtEvent ~ duration ~ name <>(Event, Event.unapply _) returning id
 
-    def * = id.? ~ dtEvent ~ duration ~ name <>(Event, Event.unapply _)
+  val byId = createFinderBy(_.id)
+  val byName = createFinderBy(_.name)
 
-    def autoInc = id.? ~ dtEvent ~ duration ~ name <>(Event, Event.unapply _) returning id
+  lazy val database = Database.forDataSource(DB.getDataSource())
+  lazy val pageSize = 10
 
-    val byId = createFinderBy(_.id)
-    val byName = createFinderBy(_.name)
+  def findAll: Seq[Event] = {
+    (for (c <- Events.sortBy(_.name)) yield c).list
+  }
 
-    lazy val pageSize = 10
+  def findPage(page: Int = 0, orderField: Int): Page[Event] = {
 
-    def findAll(implicit session: Session): Seq[Event] = {
-      (for (c <- Events.sortBy(_.name)) yield c).list
-    }
-
-    def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[Event] = {
-
-      val offset = pageSize * page
+    val offset = pageSize * page
+    database withSession {
       val events = (
         for {c <- Events
           .sortBy(event => orderField match {
@@ -61,33 +71,33 @@ trait EventComponent {
       val totalRows = (for (c <- Events) yield c.id).list.size
       Page(events, page, offset, totalRows)
     }
-
-    def findById(id: Long)(implicit session: Session): Option[Event] = {
-      Events.byId(id).firstOption
-    }
-
-    def findByName(name: String)(implicit session: Session): Option[Event] = {
-      Events.byName(name).firstOption
-    }
-
-    def insert(event: Event)(implicit session: Session): Long = {
-      Events.autoInc.insert((event))
-    }
-
-    def update(event: Event)(implicit session: Session) = {
-      Events.where(_.id === event.id).update(event)
-    }
-
-    def delete(eventId: Long)(implicit session: Session) = {
-      Events.where(_.id === eventId).delete
-    }
-
-    /**
-     * Construct the Map[String,String] needed to fill a select options set.
-     */
-    def options(implicit session: Session): Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
-
   }
+
+  def findById(id: Long): Option[Event] = database withSession {
+    Events.byId(id).firstOption
+  }
+
+  def findByName(name: String): Option[Event] = database withSession {
+    Events.byName(name).firstOption
+  }
+
+  def insert(event: Event): Long = database withSession {
+    Events.autoInc.insert((event))
+  }
+
+  def update(id: Long, event: Event) = database withSession {
+    val event2update = event.copy(Some(id))
+    Events.where(_.id === id).update(event2update)
+  }
+
+  def delete(eventId: Long) = database withSession {
+    Events.where(_.id === eventId).delete
+  }
+
+  /**
+   * Construct the Map[String,String] needed to fill a select options set.
+   */
+  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
 
 }
 

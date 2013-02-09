@@ -3,8 +3,7 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.{UserComponent, User}
-import models.common.{AppDB, DBeable}
+import models.User
 
 import play.api.Play.current
 import slick.session.Session
@@ -16,9 +15,6 @@ object Users extends Controller {
    * This result directly redirect to the application home.
    */
   val Home = Redirect(routes.Users.list(0, 0))
-
-  lazy val database = AppDB.database
-  lazy val dal = AppDB.dal
 
   /**
    * Describe the user form (used in both edit and create screens).
@@ -49,12 +45,9 @@ object Users extends Controller {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      database.withSession {
-        implicit session: Session =>
-          val users = dal.Users.findPage(page, orderBy)
-          val html = views.html.users.list("Liste des users", users, orderBy)
-          Ok(html)
-      }
+      val users = models.Users.findPage(page, orderBy)
+      val html = views.html.users.list("Liste des users", users, orderBy)
+      Ok(html)
   }
 
   def view(id: Long) = TODO
@@ -98,7 +91,8 @@ object Users extends Controller {
    * Display the 'new computer form'.
    */
   def create = Action {
-    Ok(views.html.users.create("New User", userForm))
+    implicit request =>
+      Ok(views.html.users.create("New User", userForm))
   }
 
   /**

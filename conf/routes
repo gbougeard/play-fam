@@ -35,7 +35,6 @@ POST    /cities/edit/:id             controllers.Cities.update(id : Long)
 GET     /cities/new                  controllers.Cities.create
 POST    /cities/new                  controllers.Cities.save
 GET     /cities/:id                  controllers.Cities.view(id : Long)
-POST    /cities.json                 controllers.Cities.json
 # Provinces
 GET     /provinces/edit/:id             controllers.Provinces.edit(id : Long)
 POST    /provinces/edit/:id             controllers.Provinces.update(id : Long)
@@ -64,7 +63,6 @@ POST    /players/edit/:id             controllers.Players.update(id : Long)
 GET     /players/new                  controllers.Players.create
 POST    /players/new                  controllers.Players.save
 GET     /players/:id                  controllers.Players.view(id : Long)
-GET     /players/:id/json             controllers.Players.json(id : Long)
 
 # Users
 GET     /users                      controllers.Users.list(p:Int ?= 0,s:Int ?= 2)
