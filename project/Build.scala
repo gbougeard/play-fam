@@ -49,8 +49,8 @@ object ApplicationBuild extends Build {
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
     // Add your own project settings here
-      ).dependsOn(RootProject( uri("git://github.com/gbougeard/play-slick.git") ))
-//  ).dependsOn(RootProject( uri("git://github.com/freekh/play-slick.git") ))
+//      ).dependsOn(RootProject( uri("git://github.com/gbougeard/play-slick.git") ))
+  ).dependsOn(RootProject( uri("git://github.com/freekh/play-slick.git") ))
 
 
 
