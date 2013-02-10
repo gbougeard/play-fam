@@ -10,9 +10,9 @@ import scala.slick.session.Database
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
+import play.api.Logger
 
 // Use the implicit threadLocalSession
-
 import scala.slick.session.Database.threadLocalSession
 
 case class Player(id: Option[Long],
@@ -92,6 +92,7 @@ object Players extends Table[Player]("fam_player") {
 
   def update(id:Long,player: Player) = database withSession{
     val player2update = player.copy(Some(id))
+    Logger.info("playe2update "+player2update)
     Players.where(_.id === id).update(player2update)
   }
 

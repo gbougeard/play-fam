@@ -6,6 +6,12 @@
 
 @main(message) {
 
+    @flash.get("success").map { message =>
+        <div class="alert alert-success">
+            <strong>Done!</strong> @message
+        </div>
+    }
+
     @form(routes.Cities.update(id), 'class -> "form-horizontal") {
 
         @inputText(cityForm("id"), '_label -> "Id")

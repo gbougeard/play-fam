@@ -6,6 +6,12 @@
 
 @main(message) {
 
+    @flash.get("success").map { message =>
+        <div class="alert alert-success">
+            <strong>Done!</strong> @message
+        </div>
+    }
+
     @form(routes.Events.update(id), 'class -> "form-horizontal") {
 
         @inputText(eventForm("id"), '_label -> "Id")

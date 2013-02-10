@@ -5,6 +5,8 @@ import play.api.data._
 import play.api.data.Forms._
 import models.Player
 
+import play.api.Logger
+
 object Players extends Controller {
 
   //implicit val playerFormat = Json.format[Player]
@@ -71,12 +73,14 @@ object Players extends Controller {
    */
   def update(id: Long) = Action {
     implicit request =>
+      Logger.info("update player "+id)
       playerForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.players.edit("Edit Player - errors", id, formWithErrors)),
         player => {
+
           models.Players.update(id, player)
-          //        Home.flashing("success" -> "Player %s has been updated".format(player.name))
-          Redirect(routes.Players.list(0, 2))
+          Redirect(routes.Players.edit(id)).flashing("success" -> "Player %s has been updated".format(player.firstName + " " + player.lastName))
+          //          Redirect(routes.Players.list(0, 2))
         }
       )
   }

@@ -6,6 +6,12 @@
 
 @main(message) {
 
+    @flash.get("success").map { message =>
+        <div class="alert alert-success">
+            <strong>Done!</strong> @message
+        </div>
+    }
+
     @form(routes.Teams.update(id), 'class -> "form-horizontal") {
 
         @inputText(teamForm("id"), '_label -> "Id")

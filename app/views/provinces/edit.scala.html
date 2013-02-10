@@ -5,6 +5,13 @@
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
 @main(message) {
+
+    @flash.get("success").map { message =>
+        <div class="alert alert-success">
+            <strong>Done!</strong> @message
+        </div>
+    }
+
     @form(routes.Provinces.update(id), 'class -> "form-horizontal") {
 
         @inputText(provinceForm("id"), '_label -> "Id")
