@@ -20,7 +20,7 @@ object Seasons extends Controller {
   val seasonForm = Form(
     mapping(
       "id" -> optional(longNumber),
-      "current" -> boolean,
+      "currentSeason" -> boolean,
       "name" -> nonEmptyText
       //      "discontinued" -> optional(date("yyyy-MM-dd")),
       //      "company" -> optional(longNumber)
@@ -74,8 +74,8 @@ object Seasons extends Controller {
         formWithErrors => BadRequest(views.html.seasons.edit("Edit Season - errors", id, formWithErrors)),
         season => {
           models.Seasons.update(id, season)
-          //        Home.flashing("success" -> "Season %s has been updated".format(season.name))
-          Redirect(routes.Seasons.list(0, 2))
+          Home.flashing("success" -> "Season %s has been updated".format(season.name))
+          //Redirect(routes.Seasons.list(0, 2))
         }
       )
   }

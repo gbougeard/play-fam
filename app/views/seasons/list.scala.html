@@ -38,7 +38,7 @@ if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
     @seasons.map { season =>
     <tr>
       @*  <td>@season.id</td>   *@
-        <td>@season.current</td>
+        <td>@season.currentSeason</td>
         <td><a href="@routes.Seasons.view(season.id.getOrElse(0))">@season.name</a></td>
     </tr>
     }

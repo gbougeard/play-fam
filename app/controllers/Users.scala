@@ -5,10 +5,6 @@ import play.api.data._
 import play.api.data.Forms._
 import models.User
 
-import play.api.Play.current
-import slick.session.Session
-
-
 object Users extends Controller {
 
   /**

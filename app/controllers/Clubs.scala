@@ -5,8 +5,6 @@ import play.api.data._
 import play.api.data.Forms._
 import models.Club
 
-import play.api.Play.current
-import slick.session.Session
 import com.yammer.metrics.Metrics
 import com.yammer.metrics.scala.Timer
 

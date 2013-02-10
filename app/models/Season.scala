@@ -11,11 +11,10 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 // Use the implicit threadLocalSession
-
 import scala.slick.session.Database.threadLocalSession
 
 case class Season(id: Option[Long],
-                  current: Boolean,
+                  currentSeason: Boolean,
                   name: String)
 
 // define tables
@@ -25,15 +24,15 @@ object Seasons extends Table[Season]("fam_season") {
 
   def name = column[String]("lib_season")
 
-  def current = column[Boolean]("current_season")
+  def currentSeason = column[Boolean]("current_season")
 
-  def * = id.? ~ current ~ name <>(Season, Season.unapply _)
+  def * = id.? ~ currentSeason ~ name <>(Season, Season.unapply _)
 
-  def autoInc = id.? ~ current ~ name <>(Season, Season.unapply _) returning id
+  def autoInc = id.? ~ currentSeason ~ name <>(Season, Season.unapply _) returning id
 
   val byId = createFinderBy(_.id)
   val byName = createFinderBy(_.name)
-  val byCurrent = createFinderBy(_.current)
+  val byCurrentSeason = createFinderBy(_.currentSeason)
 
   lazy val database = Database.forDataSource(DB.getDataSource())
   lazy val pageSize = 10
@@ -51,8 +50,8 @@ object Seasons extends Table[Season]("fam_season") {
       val seasons = (
         for {c <- Seasons
           .sortBy(season => orderField match {
-          case 1 => season.current.asc
-          case -1 => season.current.desc
+          case 1 => season.currentSeason.asc
+          case -1 => season.currentSeason.desc
           case 2 => season.name.asc
           case -2 => season.name.desc
         })
@@ -69,20 +68,13 @@ object Seasons extends Table[Season]("fam_season") {
     Seasons.byId(id).firstOption
   }
 
-  def findByName(name: String): Option[Season] = database withSession {
-    Seasons.byName(name).firstOption
-  }
-
-  def findByCurrent(current: Boolean): Option[Season] = database withSession {
-    Seasons.byCurrent(current).firstOption
-  }
-
   def insert(season: Season): Long = database withSession {
     Seasons.autoInc.insert((season))
   }
 
   def update(id: Long, season: Season) = database withSession {
-    Seasons.where(_.id === season.id).update(season.copy(Some(id)))
+    val season2update = season.copy(Some(id))
+        Seasons.where(_.id === id).update(season2update)
   }
 
   def delete(seasonId: Long) = database withSession {
@@ -97,4 +89,6 @@ object Seasons extends Table[Season]("fam_season") {
   implicit val seasonFormat = Json.format[Season]
 
 }
+
+
 
