@@ -1,19 +1,14 @@
 package models
 
-import play.api.db.DB
-
 import play.api.Play.current
 
-import scala.slick.driver.MySQLDriver.simple._
-import scala.slick.session.Database
+import play.api.db.slick.Config.driver.simple._
+import play.api.db.slick.DB
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 import Countries._
-
-// Use the implicit threadLocalSession
-import scala.slick.session.Database.threadLocalSession
 
 case class State(id: Option[Long],
                  code: String,
@@ -53,57 +48,74 @@ object States extends Table[State]("fam_state") {
   val byCountry = createFinderBy(_.countryId)
 
   lazy val pageSize = 10
-  lazy val database = Database.forDataSource(DB.getDataSource())
 
-  def findAll: Seq[State] = database withSession {
-    (for (c <- States.sortBy(_.name)) yield c).list
+  def findAll: Seq[State] = DB.withSession {
+    implicit session => {
+      (for (c <- States.sortBy(_.name)) yield c).list
+    }
   }
 
-  def count: Int = database withSession {
-    (for {c <- States} yield c.id).list.size
+  def count: Int = DB.withSession {
+    implicit session => {
+      (for {c <- States} yield c.id).list.size
+    }
   }
 
   def findPage(page: Int = 0, orderField: Int): Page[(State, Country)] = {
 
     val offset = pageSize * page
 
-    database withSession {
+    DB.withSession {
+      implicit session => {
 
-      val states = (
-        for {s <- States
-          .sortBy(_.lower)
-          .drop(offset)
-          .take(pageSize)
-             c <- s.country
-        } yield (s, c)).list
+        val states = (
+          for {s <- States
+            .sortBy(_.lower)
+            .drop(offset)
+            .take(pageSize)
+               c <- s.country
+          } yield (s, c)).list
 
-      val totalRows = count
-      Page(states, page, offset, totalRows)
+        val totalRows = count
+        Page(states, page, offset, totalRows)
+      }
     }
   }
 
-  def findById(id: Long): Option[State] = database withSession {
-    States.byId(id).firstOption
+  def findById(id: Long): Option[State] = DB.withSession {
+    implicit session => {
+      States.byId(id).firstOption
+    }
   }
 
-  def findByName(name: String): Option[State] = database withSession {
-    States.byName(name).firstOption
+  def findByName(name: String): Option[State] = DB.withSession {
+    implicit session => {
+      States.byName(name).firstOption
+    }
   }
 
-  def findByCode(code: String): Option[State] = database withSession {
-    States.byCode(code).firstOption
+  def findByCode(code: String): Option[State] = DB.withSession {
+    implicit session => {
+      States.byCode(code).firstOption
+    }
   }
 
-  def insert(state: State): Long = database withSession {
-    States.autoInc.insert((state))
+  def insert(state: State): Long = DB.withSession {
+    implicit session => {
+      States.autoInc.insert((state))
+    }
   }
 
-  def update(id: Long, state: State) = database withSession {
-    States.where(_.id === state.id).update(state.copy(Some(id)))
+  def update(id: Long, state: State) = DB.withSession {
+    implicit session => {
+      States.where(_.id === state.id).update(state.copy(Some(id)))
+    }
   }
 
-  def delete(stateId: Long) = database withSession {
-    States.where(_.id === stateId).delete
+  def delete(stateId: Long) = DB.withSession {
+    implicit session => {
+      States.where(_.id === stateId).delete
+    }
   }
 
   /**

@@ -1,19 +1,11 @@
 package models
 
-import play.api.db.DB
-
 import play.api.Play.current
-
-import scala.slick.driver.MySQLDriver.simple._
-import scala.slick.session.Database
+import play.api.db.slick.Config.driver.simple._
+import play.api.db.slick.DB
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
-
-
-// Use the implicit threadLocalSession
-
-import scala.slick.session.Database.threadLocalSession
 
 case class City(id: Option[Long],
                 code: String,
@@ -53,57 +45,74 @@ object Cities extends Table[City]("fam_city") {
   val byProvince = createFinderBy(_.provinceId)
 
   lazy val pageSize = 10
-  lazy val database = Database.forDataSource(DB.getDataSource())
 
-  def findAll: Seq[City] = {
-    (for (c <- Cities.sortBy(_.name)) yield c).list
+  def findAll: Seq[City] = DB.withSession {
+    implicit session => {
+      (for (c <- Cities.sortBy(_.name)) yield c).list
+    }
   }
 
-  def count: Int = {
-    (for {c <- Cities} yield c.id).list.size
+  def count: Int = DB.withSession {
+    implicit session => {
+      (for {c <- Cities} yield c.id).list.size
+    }
   }
 
   def findPage(page: Int = 0, orderField: Int): Page[(City, Province)] = {
 
     val offset = pageSize * page
 
-    database withSession {
-      val cities = (
-        for {c <- Cities
-          .sortBy(_.code)
-          .drop(offset)
-          .take(pageSize)
-             p <- c.province
-        } yield (c, p)).list
+    DB.withSession {
+      implicit session => {
+        val cities = (
+          for {c <- Cities
+            .sortBy(_.code)
+            .drop(offset)
+            .take(pageSize)
+               p <- c.province
+          } yield (c, p)).list
 
-      val totalRows = count
-      Page(cities, page, offset, totalRows)
+        val totalRows = count
+        Page(cities, page, offset, totalRows)
+      }
     }
   }
 
-  def findById(id: Long): Option[City] = database withSession {
-    Cities.byId(id).firstOption
+  def findById(id: Long): Option[City] = DB.withSession {
+    implicit session => {
+      Cities.byId(id).firstOption
+    }
   }
 
-  def findByName(name: String): Option[City] = database withSession{
-    Cities.byName(name).firstOption
+  def findByName(name: String): Option[City] = DB.withSession {
+    implicit session => {
+      Cities.byName(name).firstOption
+    }
   }
 
-  def findByCode(code: String): Option[City] =database withSession {
-    Cities.byCode(code).firstOption
+  def findByCode(code: String): Option[City] = DB.withSession {
+    implicit session => {
+      Cities.byCode(code).firstOption
+    }
   }
 
-  def insert(city: City): Long = database withSession{
-    Cities.autoInc.insert((city))
+  def insert(city: City): Long = DB.withSession {
+    implicit session => {
+      Cities.autoInc.insert((city))
+    }
   }
 
-  def update(id:Long,city: City) = database withSession{
-    val city2update = city.copy(Some(id), city.code, city.name, city.upper, city.lower, city.provinceId)
-    Cities.where(_.id === id).update(city2update)
+  def update(id: Long, city: City) = DB.withSession {
+    implicit session => {
+      val city2update = city.copy(Some(id), city.code, city.name, city.upper, city.lower, city.provinceId)
+      Cities.where(_.id === id).update(city2update)
+    }
   }
 
-  def delete(cityId: Long) = database withSession{
-    Cities.where(_.id === cityId).delete
+  def delete(cityId: Long) = DB.withSession {
+    implicit session => {
+      Cities.where(_.id === cityId).delete
+    }
   }
 
   /**
@@ -112,28 +121,30 @@ object Cities extends Table[City]("fam_city") {
   def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
 
 
-  def json(page: Int, pageSize: Int, orderField: Int): Seq[(City, Province)] = {
+  def json(page: Int, pageSize: Int, orderField: Int): Seq[(City, Province)] = DB.withSession {
+    implicit session => {
 
-    println("page " + page)
-    println("pageSize " + pageSize)
-    println("orderField " + orderField)
+      println("page " + page)
+      println("pageSize " + pageSize)
+      println("orderField " + orderField)
 
-    val cities = for {c <- Cities
-      .sortBy(city => orderField match {
-      case 1 => city.id.asc
-      case -1 => city.id.desc
-      case 2 => city.code.asc
-      case -2 => city.code.desc
-      case 3 => city.name.asc
-      case -3 => city.name.desc
-    })
-      .drop(page)
-      .take(pageSize)
-                      p <- c.province
-    } yield (c, p)
-    //      Json.toJson(cities.list)
-    cities.list
+      val cities = for {c <- Cities
+        .sortBy(city => orderField match {
+        case 1 => city.id.asc
+        case -1 => city.id.desc
+        case 2 => city.code.asc
+        case -2 => city.code.desc
+        case 3 => city.name.asc
+        case -3 => city.name.desc
+      })
+        .drop(page)
+        .take(pageSize)
+                        p <- c.province
+      } yield (c, p)
+      //      Json.toJson(cities.list)
+      cities.list
 
+    }
   }
 
 }

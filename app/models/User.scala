@@ -1,19 +1,12 @@
 package models
 
-import play.api.db.DB
-
 import play.api.Play.current
 
-import scala.slick.driver.MySQLDriver.simple._
-import scala.slick.session.Database
+import play.api.db.slick.Config.driver.simple._
+import play.api.db.slick.DB
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
-
-
-// Use the implicit threadLocalSession
-
-import scala.slick.session.Database.threadLocalSession
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,45 +25,51 @@ object Users extends Table[User]("fam_user") {
 
   def * = id.? ~ email <>(User, User.unapply _)
 
-  lazy val database = Database.forDataSource(DB.getDataSource())
-
-  def add(user: User) = database withSession {
-    this.insert(user)
+  def add(user: User) = DB.withSession {
+    implicit session => {
+      this.insert(user)
+    }
   }
 
-  def countByEmail(email: String) = database withSession {
-    (for {
-      user <- Users
-      if (user.email === email)
-    } yield (user)).list.size
+  def countByEmail(email: String) = DB.withSession {
+    implicit session => {
+      (for {
+        user <- Users
+        if (user.email === email)
+      } yield (user)).list.size
+    }
   }
 
-  def findAll = database withSession {
-    (for {
-      user <- Users
-    } yield (user)).list
+  def findAll = DB.withSession {
+    implicit session => {
+      (for {
+        user <- Users
+      } yield (user)).list
+    }
   }
 
   def findPage(page: Int = 0, orderField: Int): Page[User] = {
     val pageSize = 10
     val offset = pageSize * page
 
-    database withSession {
+    DB.withSession {
+      implicit session => {
 
-      val users = (
-        for {t <- Users
-          .sortBy(user => orderField match {
-          case 1 => user.id.asc
-          case -1 => user.id.desc
-          case 2 => user.email.asc
-          case -2 => user.email.desc
-        })
-          .drop(offset)
-          .take(pageSize)
-        } yield (t)).list
+        val users = (
+          for {t <- Users
+            .sortBy(user => orderField match {
+            case 1 => user.id.asc
+            case -1 => user.id.desc
+            case 2 => user.email.asc
+            case -2 => user.email.desc
+          })
+            .drop(offset)
+            .take(pageSize)
+          } yield (t)).list
 
-      val totalRows = (for {t <- Users} yield t.id).list.size
-      Page(users, page, offset, totalRows)
+        val totalRows = (for {t <- Users} yield t.id).list.size
+        Page(users, page, offset, totalRows)
+      }
     }
   }
 

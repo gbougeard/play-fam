@@ -1,19 +1,14 @@
 package models
 
-import play.api.db.DB
-
 import play.api.Play.current
 
-import scala.slick.driver.MySQLDriver.simple._
-import scala.slick.session.Database
+import play.api.db.slick.Config.driver.simple._
+import play.api.db.slick.DB
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 import play.api.Logger
-
-// Use the implicit threadLocalSession
-import scala.slick.session.Database.threadLocalSession
 
 case class Player(id: Option[Long],
                   firstName: String,
@@ -42,62 +37,77 @@ object Players extends Table[Player]("fam_player") {
   val byFirstName = createFinderBy(_.firstName)
   val byLastName = createFinderBy(_.lastName)
 
-  lazy val database = Database.forDataSource(DB.getDataSource())
   lazy val pageSize = 10
 
-  def findAll: Seq[Player] = {
-    (for (c <- Players.sortBy(_.lastName)) yield c).list
+  def findAll: Seq[Player] = DB.withSession {
+    implicit session => {
+      (for (c <- Players.sortBy(_.lastName)) yield c).list
+    }
   }
 
   def findPage(page: Int = 0, orderField: Int): Page[(Player)] = {
 
     val offset = pageSize * page
 
-    database withSession{
-    val players = (
-      for {t <- Players
-        .sortBy(player => orderField match {
-        case 1 => player.firstName.asc
-        case -1 => player.firstName.desc
-        case 2 => player.lastName.asc
-        case -2 => player.lastName.desc
-        case 3 => player.email.asc
-        case -3 => player.email.desc
-      })
-        .drop(offset)
-        .take(pageSize)
-      } yield (t)).list
+    DB.withSession {
+      implicit session => {
+        val players = (
+          for {t <- Players
+            .sortBy(player => orderField match {
+            case 1 => player.firstName.asc
+            case -1 => player.firstName.desc
+            case 2 => player.lastName.asc
+            case -2 => player.lastName.desc
+            case 3 => player.email.asc
+            case -3 => player.email.desc
+          })
+            .drop(offset)
+            .take(pageSize)
+          } yield (t)).list
 
-    val totalRows = (for {t <- Players} yield t.id).list.size
-    Page(players, page, offset, totalRows)
-  }
-  }
-
-  def findById(id: Long): Option[Player] = database withSession{
-    Players.byId(id).firstOption
+        val totalRows = (for {t <- Players} yield t.id).list.size
+        Page(players, page, offset, totalRows)
+      }
+    }
   }
 
-  def findByFirstName(firstName: String): Option[Player] =database withSession {
-    Players.byFirstName(firstName).firstOption
+  def findById(id: Long): Option[Player] = DB.withSession {
+    implicit session => {
+      Players.byId(id).firstOption
+    }
   }
 
-  def findByLastName(lastName: String): Option[Player] =database withSession {
-    Players.byLastName(lastName).firstOption
+  def findByFirstName(firstName: String): Option[Player] = DB.withSession {
+    implicit session => {
+      Players.byFirstName(firstName).firstOption
+    }
+  }
+
+  def findByLastName(lastName: String): Option[Player] = DB.withSession {
+    implicit session => {
+      Players.byLastName(lastName).firstOption
+    }
   }
 
 
-  def insert(player: Player): Long = database withSession{
-    Players.autoInc.insert((player))
+  def insert(player: Player): Long = DB.withSession {
+    implicit session => {
+      Players.autoInc.insert((player))
+    }
   }
 
-  def update(id:Long,player: Player) = database withSession{
-    val player2update = player.copy(Some(id))
-    Logger.info("playe2update "+player2update)
-    Players.where(_.id === id).update(player2update)
+  def update(id: Long, player: Player) = DB.withSession {
+    implicit session => {
+      val player2update = player.copy(Some(id))
+      Logger.info("playe2update " + player2update)
+      Players.where(_.id === id).update(player2update)
+    }
   }
 
-  def delete(playerId: Long) = database withSession{
-    Players.where(_.id === playerId).delete
+  def delete(playerId: Long) = DB.withSession {
+    implicit session => {
+      Players.where(_.id === playerId).delete
+    }
   }
 
   /**

@@ -1,19 +1,12 @@
 package models
 
-import play.api.db.DB
-
 import play.api.Play.current
 
-import scala.slick.driver.MySQLDriver.simple._
-import scala.slick.session.Database
+import play.api.db.slick.Config.driver.simple._
+import play.api.db.slick.DB
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
-
-
-// Use the implicit threadLocalSession
-
-import scala.slick.session.Database.threadLocalSession
 
 case class Place(id: Option[Long],
                  name: String,
@@ -51,69 +44,88 @@ object Places extends Table[Place]("fam_place") {
   val byCode = createFinderBy(_.zipcode)
   val byCity = createFinderBy(_.city)
 
-  lazy val database = Database.forDataSource(DB.getDataSource())
   lazy val pageSize = 10
 
-  def findAll: Seq[Place] = database withSession {
-    (for (c <- Places.sortBy(_.name)) yield c).list
+  def findAll: Seq[Place] = DB.withSession {
+    implicit session => {
+      (for (c <- Places.sortBy(_.name)) yield c).list
+    }
   }
 
-  def placesWithCoords: Seq[Place] = database withSession {
-    (for {c <- Places sortBy (_.name)
-          if (c.latitude isNotNull)
-          if (c.longitude isNotNull)
-    } yield c).list
+  def placesWithCoords: Seq[Place] = DB.withSession {
+    implicit session => {
+      (for {c <- Places sortBy (_.name)
+            if (c.latitude isNotNull)
+            if (c.longitude isNotNull)
+      } yield c).list
+    }
   }
 
   def findPage(page: Int = 0, orderField: Int): Page[Place] = {
 
     val offset = pageSize * page
 
-    database withSession {
-      val places = (
-        for {c <- Places
-          .sortBy(place => orderField match {
-          case 1 => place.zipcode.asc
-          case -1 => place.zipcode.desc
-          case 2 => place.name.asc
-          case -2 => place.name.desc
-        })
-          .drop(offset)
-          .take(pageSize)
-        } yield c).list
+    DB.withSession {
+      implicit session => {
+        val places = (
+          for {c <- Places
+            .sortBy(place => orderField match {
+            case 1 => place.zipcode.asc
+            case -1 => place.zipcode.desc
+            case 2 => place.name.asc
+            case -2 => place.name.desc
+          })
+            .drop(offset)
+            .take(pageSize)
+          } yield c).list
 
-      val totalRows = (for (c <- Places) yield c.id).list.size
-      Page(places, page, offset, totalRows)
+        val totalRows = (for (c <- Places) yield c.id).list.size
+        Page(places, page, offset, totalRows)
+      }
     }
   }
 
-  def findById(id: Long): Option[Place] = database withSession {
-    Places.byId(id).firstOption
+  def findById(id: Long): Option[Place] = DB.withSession {
+    implicit session => {
+      Places.byId(id).firstOption
+    }
   }
 
-  def findByName(name: String): Option[Place] = database withSession {
-    Places.byName(name).firstOption
+  def findByName(name: String): Option[Place] = DB.withSession {
+    implicit session => {
+      Places.byName(name).firstOption
+    }
   }
 
-  def findByZipcode(zipcode: Int): Option[Place] = database withSession {
-    Places.byCode(zipcode).firstOption
+  def findByZipcode(zipcode: Int): Option[Place] = DB.withSession {
+    implicit session => {
+      Places.byCode(zipcode).firstOption
+    }
   }
 
-  def findByCity(city: String): Option[Place] = database withSession {
-    Places.byCity(city).firstOption
+  def findByCity(city: String): Option[Place] = DB.withSession {
+    implicit session => {
+      Places.byCity(city).firstOption
+    }
   }
 
-  def insert(place: Place): Long = database withSession {
-    Places.autoInc.insert((place))
+  def insert(place: Place): Long = DB.withSession {
+    implicit session => {
+      Places.autoInc.insert((place))
+    }
   }
 
-  def update(id: Long, place: Place) = database withSession {
-    val place2update = place.copy(Some(id))
-    Places.where(_.id === id).update(place2update)
+  def update(id: Long, place: Place) = DB.withSession {
+    implicit session => {
+      val place2update = place.copy(Some(id))
+      Places.where(_.id === id).update(place2update)
+    }
   }
 
-  def delete(placeId: Long) = database withSession {
-    Places.where(_.id === placeId).delete
+  def delete(placeId: Long) = DB.withSession {
+    implicit session => {
+      Places.where(_.id === placeId).delete
+    }
   }
 
   /**
