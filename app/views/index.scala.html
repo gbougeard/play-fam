@@ -1,50 +1,47 @@
-@(message: String)
+@(user: securesocial.core.Identity)(implicit request: RequestHeader)
+@import securesocial.core.IdentityProvider
 
-@main("Welcome to Play 2.0") {
-
-@** {@play20.welcome(message) **@
-
-<ul class="nav nav-tabs" id="myTab">
-    <li class="active"><a href="#home" data-toggle="tab">Home</a></li>
-    <li><a href="#profile" data-toggle="tab">Profile</a></li>
-    <li><a href="#messages" data-toggle="tab">Messages</a></li>
-    <li><a href="#settings" data-toggle="tab">Settings</a></li>
-</ul>
-
-<div class="tab-content">
-    <div class="tab-pane active" id="home">home</div>
-    <div class="tab-pane " id="profile">profile</div>
-    <div class="tab-pane " id="messages">messages</div>
-    <div class="tab-pane " id="settings">settings</div>
-</div>
-
-
-<div class="accordion" id="accordion2">
-    <div class="accordion-group">
-        <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
-                Collapsible Group Item #1
-            </a>
-        </div>
-        <div id="collapseOne" class="accordion-body collapse in">
-            <div class="accordion-inner">
-                Anim pariatur cliche...
-            </div>
-        </div>
+@main("SecureSocial - Sample Protected Page") {
+    <div class="page-header">
+        <h2><img src="@user.avatarUrl" alt="@user.firstName" width="40px" height="40px"/> Welcome @user.firstName</h2>
     </div>
-    <div class="accordion-group">
-        <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
-                Collapsible Group Item #2
-            </a>
-        </div>
-        <div id="collapseTwo" class="accordion-body collapse">
-            <div class="accordion-inner">
-                Anim pariatur cliche...
-            </div>
-        </div>
+
+    <div class="clearfix">
+        <h2>User Details</h2>
+
+        <ul>
+            <li>User Id: @user.id.id</li>
+            <li>Fist name: @user.firstName</li>
+            <li>Last name: @user.lastName</li>
+            <li>Full name: @user.fullName</li>
+            <li>Logged in from: @user.id.providerId</li>
+            <li>Email: @user.email.map { email => @email }.getOrElse("Not Available")</li>
+            <li>Authentication method: @user.authMethod</li>
+        </ul>
+
+        @user.oAuth1Info.map { info =>
+            <h2>OAuth1 Info</h2>
+
+            <ul>
+                <li>Token: @info.token</li>
+                <li>Secret: @info.secret</li>
+            </ul>
+        }
+
+        @user.oAuth2Info.map { info =>
+            <h2>OAuth2 Info</h2>
+
+            <ul>
+                <li>Access Token: @info.accessToken</li>
+                @info.tokenType.map { t => <li>Token Type: @t</li> }
+                @info.expiresIn.map { exp => <li>Expires in: @exp seconds</li>}
+                @info.refreshToken.map { rt => <li>Refresh Token: @rt</li>}
+            </ul>
+        }
+        <hr>
+        @user.passwordInfo.map { info =>
+            <a class="btn" href="@securesocial.core.providers.utils.RoutesHelper.changePasswordPage.absoluteURL(IdentityProvider.sslEnabled)">Change Password</a>
+        }
+        <a class="btn" href="@securesocial.controllers.routes.LoginPage.logout()">Logout</a>
     </div>
-</div>
-
-
 }
