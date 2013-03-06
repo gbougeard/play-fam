@@ -17,8 +17,8 @@
 </div>
 
 <div class="form-actions">
-    @**<input type="submit" value="Edit this team" class="btn btn-primary"> or**@
-    <a href="@routes.Teams.edit(team.id.getOrElse(0))" class="btn btn-primary">Edit</a>or
+    @**<input type="submit" value="Edit this team" class="btn btn-primary"> **@
+    <a href="@routes.Teams.edit(team.id.getOrElse(0))" class="btn btn-primary">Edit</a>
     <a href="@routes.Teams.list()" class="btn">Cancel</a>
     <a href="@routes.Teams.create()" class="btn">New</a>
 </div>
