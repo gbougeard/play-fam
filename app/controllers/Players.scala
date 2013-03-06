@@ -1,5 +1,8 @@
 package controllers
 
+import _root_.securesocial.core.Authorization
+import _root_.securesocial.core.Identity
+
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
@@ -7,14 +10,8 @@ import models.Player
 
 import play.api.Logger
 
-object Players extends Controller {
+object Players extends Controller with securesocial.core.SecureSocial{
 
-  //implicit val playerFormat = Json.format[Player]
-
-  /**
-   * This result directly redirect to the application home.
-   */
-  val Home = Redirect(routes.Players.list(0, 0))
 
   /**
    * Describe the player form (used in both edit and create screens).
@@ -32,12 +29,6 @@ object Players extends Controller {
   )
 
   // -- Actions
-  /**
-   * Handle default path requests, redirect to computers list
-   */
-  def index = Action {
-    Home
-  }
 
   //  def list = Action {
   //    val players = models.Players.findAll
@@ -45,21 +36,21 @@ object Players extends Controller {
   //    Ok(html)
   //  }
 
-  def list(page: Int, orderBy: Int) = Action {
+  def list(page: Int, orderBy: Int) = SecuredAction {
     implicit request =>
       val players = models.Players.findPage(page, orderBy)
       val html = views.html.players.list("Liste des players", players, orderBy)
       Ok(html)
   }
 
-  def view(id: Long) = Action {
+  def view(id: Long) = SecuredAction {
     implicit request =>
       models.Players.findById(id).map {
         player => Ok(views.html.players.view("View Player", player))
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = Action {
+  def edit(id: Long) = SecuredAction {
     implicit request =>
       models.Players.findById(id).map {
         player => Ok(views.html.players.edit("Edit Player", id, playerForm.fill(player)))
@@ -88,7 +79,7 @@ object Players extends Controller {
   /**
    * Display the 'new computer form'.
    */
-  def create = Action {
+  def create = SecuredAction {
     implicit request =>
       Ok(views.html.players.create("New Player", playerForm))
   }
@@ -96,7 +87,7 @@ object Players extends Controller {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = Action {
+  def save = SecuredAction {
     implicit request =>
       playerForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.players.create("New Player - errors", formWithErrors)),
@@ -111,10 +102,10 @@ object Players extends Controller {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = Action {
+  def delete(id: Long) = SecuredAction {
     implicit request =>
       models.Players.delete(id)
-      Home.flashing("success" -> "Player has been deleted")
+      Redirect(routes.Players.list(0,0)).flashing("success" -> "Player has been deleted")
   }
 
 }
