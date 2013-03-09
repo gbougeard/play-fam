@@ -1,4 +1,4 @@
-@(message: String, typMatchForm: Form[TypCompetition])
+@(message: String, typMatchForm: Form[TypCompetition], typMatches : Seq[(String, String)])(implicit flash: play.api.mvc.Flash)
 
 @import helper._
 
@@ -6,9 +6,23 @@
 
 @main(message) {
 
+    @flash.get("success").map { message =>
+        <div class="alert alert-success">
+            <strong>Done!</strong> @message
+        </div>
+    }
+
     @form(routes.TypCompetitions.save(), 'class -> "form-horizontal") {
 
-        @inputText(typMatchForm("id"), '_label -> "Id")
+        @inputText(typMatchForm("code"), '_label -> "Code")
+        @inputText(typMatchForm("name"), '_label -> "Nom")
+
+        @select(
+            typMatchForm("typMatchId"),
+            typMatches,
+            '_label -> "TypMatch", '_default -> "-- Choose a typMatch --",
+            '_showConstraints -> false
+        )
 
         <div class="form-actions">
             <input type="submit" value="Save this typMatch" class="btn btn-primary">

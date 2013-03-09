@@ -1,4 +1,4 @@
-@(message: String, currentPage: Page[TypCompetition], currentOrderBy: Int)(implicit flash: play.api.mvc.Flash)
+@(message: String, currentPage: Page[(TypCompetition,TypMatch)], currentOrderBy: Int)(implicit flash: play.api.mvc.Flash)
 
 @****************************************
 * Helper generating navigation links    *
@@ -29,18 +29,21 @@ if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
     <thead>
     <tr>
       @*  @header(0,"Id")    *@
-        @header(1,"Code FFF")
-        @header(2,"Nom")
+        @header(1,"TypCompetition")
+        @header(2,"TypMatch")
     </tr>
     </thead>
     <tbody>
 
-    @typCompetitions.map { typMatch =>
+    @typCompetitions.map {
+        case (typCompetition, typMatch) => {
     <tr>
       @*  <td>@typMatch.id</td>   *@
-        <td>@typMatch.code</td>
-        <td><a href="@routes.TypCompetitions.view(typMatch.id.getOrElse(0))">@typMatch.name</a></td>
+        <td>@typCompetition.code</td>
+        <td><a href="@routes.TypCompetitions.view(typCompetition.id.getOrElse(0))">@typCompetition.name</a></td>
+        <td>@typMatch.name</td>
     </tr>
+        }
     }
 
     </tbody>

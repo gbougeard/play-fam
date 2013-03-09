@@ -1,4 +1,4 @@
-@(message: String, id: Long, seasonCompetitionForm: Form[SeasonCompetition])(implicit flash: play.api.mvc.Flash)
+@(message: String, id: Long, seasonCompetitionForm: Form[SeasonCompetition], categories : Seq[(String, String)], scales : Seq[(String, String)], seasons : Seq[(String, String)], typCompetitions : Seq[(String, String)])(implicit flash: play.api.mvc.Flash)
 
 @import helper._
 
@@ -15,6 +15,30 @@
     @form(routes.SeasonCompetitions.update(id), 'class -> "form-horizontal") {
 
         @inputText(seasonCompetitionForm("id"), '_label -> "Id")
+        @select(
+            seasonCompetitionForm("seasonId"),
+            seasons,
+            '_label -> "Season", '_default -> "-- Choose a season --",
+            '_showConstraints -> false
+        )
+        @select(
+            seasonCompetitionForm("typCompetition"),
+            typCompetitions,
+            '_label -> "TypCompetition", '_default -> "-- Choose a typCompetition --",
+            '_showConstraints -> false
+        )
+        @select(
+            seasonCompetitionForm("categoryId"),
+            categories,
+            '_label -> "Category", '_default -> "-- Choose a category --",
+            '_showConstraints -> false
+        )
+        @select(
+            seasonCompetitionForm("scaleId"),
+            scales,
+            '_label -> "Scale", '_default -> "-- Choose a scale --",
+            '_showConstraints -> false
+        )
 
         <div class="form-actions">
             <input type="submit" value="Save this seasonCompetition" class="btn btn-primary">

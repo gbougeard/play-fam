@@ -66,7 +66,7 @@ object TypCompetitions extends Controller {
   def edit(id: Long) = Action {
     implicit request =>
       models.TypCompetitions.findById(id).map {
-        typMatch => Ok(views.html.typCompetitions.edit("Edit TypMatch", id, typMatchForm.fill(typMatch)))
+        typMatch => Ok(views.html.typCompetitions.edit("Edit TypMatch", id, typMatchForm.fill(typMatch), models.TypMatches.options))
       } getOrElse (NotFound)
   }
 
@@ -78,7 +78,7 @@ object TypCompetitions extends Controller {
   def update(id: Long) = Action {
     implicit request =>
       typMatchForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.typCompetitions.edit("Edit TypMatch - errors", id, formWithErrors)),
+        formWithErrors => BadRequest(views.html.typCompetitions.edit("Edit TypMatch - errors", id, formWithErrors, models.TypMatches.options)),
         typMatch => {
           models.TypCompetitions.update(id, typMatch)
           //        Home.flashing("success" -> "TypMatch %s has been updated".format(typMatch.name))
@@ -94,7 +94,7 @@ object TypCompetitions extends Controller {
    */
   def create = Action {
     implicit request =>
-      Ok(views.html.typCompetitions.create("New TypMatch", typMatchForm))
+      Ok(views.html.typCompetitions.create("New TypMatch", typMatchForm, models.TypMatches.options))
   }
 
   /**
@@ -103,7 +103,7 @@ object TypCompetitions extends Controller {
   def save = Action {
     implicit request =>
       typMatchForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.typCompetitions.create("New TypMatch - errors", formWithErrors)),
+        formWithErrors => BadRequest(views.html.typCompetitions.create("New TypMatch - errors", formWithErrors, models.TypMatches.options)),
         typMatch => {
           models.TypCompetitions.insert(typMatch)
           //        Home.flashing("success" -> "TypMatch %s has been created".format(typMatch.name))

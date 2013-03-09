@@ -46,7 +46,7 @@ object TypCompetitions extends Table[TypCompetition]("fam_typ_competition") {
     }
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[TypCompetition] = {
+  def findPage(page: Int = 0, orderField: Int): Page[(TypCompetition, TypMatch)] = {
 
     val offset = pageSize * page
 
@@ -62,7 +62,8 @@ object TypCompetitions extends Table[TypCompetition]("fam_typ_competition") {
           })
             .drop(offset)
             .take(pageSize)
-          } yield c).list
+               m <- c.typMatch
+          } yield (c,m)).list
 
         val totalRows = (for (c <- TypCompetitions) yield c.id).list.size
         Page(typCompetitions, page, offset, totalRows)

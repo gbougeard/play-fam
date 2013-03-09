@@ -1,4 +1,4 @@
-@(message: String, currentPage: Page[SeasonCompetition], currentOrderBy: Int)(implicit flash: play.api.mvc.Flash)
+@(message: String, currentPage: Page[(SeasonCompetition, Category, Scale, Season, TypCompetition)], currentOrderBy: Int)(implicit flash: play.api.mvc.Flash)
 
 @****************************************
 * Helper generating navigation links    *
@@ -28,20 +28,22 @@ if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
 <table class="table table-striped table-bordered table-hover">
     <thead>
     <tr>
-        @header(0,"Id")
-        @header(1,"Code FFF")
-        @header(2,"Nom")
+        @header(1, "Season")
+        @header(2, "TypCompetition")
     </tr>
     </thead>
     <tbody>
 
-    @seasonCompetitions.map { seasonCompetition =>
-    <tr>
-        <td>@seasonCompetition.id</td>
-        <td>@seasonCompetition.typCompetitionId</td>
-        <td><a href="@routes.SeasonCompetitions.view(seasonCompetition.id.getOrElse(0))">@seasonCompetition.typCompetitionId</a></td>
-    </tr>
-    }
+        @seasonCompetitions.map {
+
+            case (sc,category,scale,season,typCompetition) => {
+                <tr>
+                <td><a href="@routes.SeasonCompetitions.view(sc.id.getOrElse(0))">@season.name</a></td>
+                <td>@typCompetition.name</td>
+                </tr>
+            }
+
+        }
 
     </tbody>
 </table>

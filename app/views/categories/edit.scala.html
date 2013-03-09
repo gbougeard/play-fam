@@ -14,8 +14,7 @@
 
     @form(routes.Categories.update(id), 'class -> "form-horizontal") {
 
-        @inputText(categoryForm("id"), '_label -> "Id")
-        @inputText(categoryForm("code"), '_label -> "Code FFF")
+        @inputText(categoryForm("code"), '_label -> "Code")
         @inputText(categoryForm("name"), '_label -> "Nom")
 
         <div class="form-actions">

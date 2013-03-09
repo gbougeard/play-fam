@@ -10,6 +10,7 @@ import play.api.libs.json._
 case class SeasonCompetition(id: Option[Long],
                              categoryId: Long,
                              scaleId: Long,
+                             seasonId: Long,
                              typCompetitionId: Long)
 
 
@@ -22,21 +23,26 @@ object SeasonCompetitions extends Table[SeasonCompetition]("fam_season_competiti
 
   def scaleId = column[Long]("id_scale")
 
+  def seasonId = column[Long]("id_season")
+
   def typCompetitionId = column[Long]("id_typ_competition")
 
-  def * = id.? ~ categoryId ~ scaleId ~ typCompetitionId <>(SeasonCompetition, SeasonCompetition.unapply _)
+  def * = id.? ~ categoryId ~ scaleId ~ seasonId ~ typCompetitionId <>(SeasonCompetition, SeasonCompetition.unapply _)
 
-  def autoInc = id.? ~ categoryId ~ scaleId ~ typCompetitionId <>(SeasonCompetition, SeasonCompetition.unapply _) returning id
+  def autoInc = id.? ~ categoryId ~ scaleId ~ seasonId ~ typCompetitionId <>(SeasonCompetition, SeasonCompetition.unapply _) returning id
 
   // A reified foreign key relation that can be navigated to create a join
   def category = foreignKey("CATEGORY_FK", categoryId, Categorys)(_.id)
 
   def scale = foreignKey("SCALE_FK", scaleId, Scales)(_.id)
 
+  def season = foreignKey("SEASON_FK", seasonId, Seasons)(_.id)
+
   def typCompetition = foreignKey("TYP_COMPETITION_FK", typCompetitionId, TypCompetitions)(_.id)
 
 
   val byId = createFinderBy(_.id)
+  val bySeason = createFinderBy(_.seasonId)
   val byTypCompetition = createFinderBy(_.typCompetitionId)
   val byCategory = createFinderBy(_.categoryId)
 
@@ -48,14 +54,14 @@ object SeasonCompetitions extends Table[SeasonCompetition]("fam_season_competiti
     }
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[SeasonCompetition] = {
+  def findPage(page: Int = 0, orderField: Int): Page[(SeasonCompetition, Category, Scale, Season, TypCompetition)] = {
 
     val offset = pageSize * page
 
     DB.withSession {
       implicit session =>
         val seasonCompetitions = (
-          for {c <- SeasonCompetitions
+          for {sc <- SeasonCompetitions
             .sortBy(seasonCompetition => orderField match {
             case 1 => seasonCompetition.categoryId.asc
             case -1 => seasonCompetition.categoryId.desc
@@ -64,9 +70,13 @@ object SeasonCompetitions extends Table[SeasonCompetition]("fam_season_competiti
           })
             .drop(offset)
             .take(pageSize)
-          } yield c).list
+               c <- sc.category
+               s <- sc.scale
+               se <- sc.season
+               tc <- sc.typCompetition
+          } yield (sc, c, s, se, tc)).list
 
-        val totalRows = (for (c <- SeasonCompetitions) yield c.id).list.size
+        val totalRows = (for (sc <- SeasonCompetitions) yield sc.id).list.size
         Page(seasonCompetitions, page, offset, totalRows)
     }
   }
@@ -80,6 +90,12 @@ object SeasonCompetitions extends Table[SeasonCompetition]("fam_season_competiti
   def findByCategory(category: Long): Option[SeasonCompetition] = DB.withSession {
     implicit session => {
       SeasonCompetitions.byCategory(category).firstOption
+    }
+  }
+
+  def findBySeason(season: Long): Option[SeasonCompetition] = DB.withSession {
+    implicit session => {
+      SeasonCompetitions.bySeason(season).firstOption
     }
   }
 

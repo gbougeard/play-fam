@@ -27,7 +27,8 @@ object SeasonCompetitions extends Controller {
       "id" -> optional(longNumber),
       "categoryId" -> longNumber,
       "scaleId" -> longNumber ,
-      "typCompetitionId" -> longNumber
+      "seasonId" -> longNumber,
+      "typCompetition" -> longNumber
       //      "discontinued" -> optional(date("yyyy-MM-dd")),
       //      "company" -> optional(longNumber)
     )
@@ -65,7 +66,7 @@ object SeasonCompetitions extends Controller {
   def edit(id: Long) = Action {
     implicit request =>
       models.SeasonCompetitions.findById(id).map {
-        seasonCompetition => Ok(views.html.seasonCompetitions.edit("Edit SeasonMatch", id, seasonCompetitionForm.fill(seasonCompetition)))
+        seasonCompetition => Ok(views.html.seasonCompetitions.edit("Edit SeasonMatch", id, seasonCompetitionForm.fill(seasonCompetition), models.Categorys.options, models.Scales.options, models.Seasons.options, models.TypCompetitions.options))
       } getOrElse (NotFound)
   }
 
@@ -77,7 +78,7 @@ object SeasonCompetitions extends Controller {
   def update(id: Long) = Action {
     implicit request =>
       seasonCompetitionForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.seasonCompetitions.edit("Edit SeasonMatch - errors", id, formWithErrors)),
+        formWithErrors => BadRequest(views.html.seasonCompetitions.edit("Edit SeasonMatch - errors", id, formWithErrors, models.Categorys.options, models.Scales.options, models.Seasons.options, models.TypCompetitions.options)),
         seasonCompetition => {
           models.SeasonCompetitions.update(id, seasonCompetition)
           //        Home.flashing("success" -> "SeasonMatch %s has been updated".format(seasonCompetition.name))
@@ -93,7 +94,7 @@ object SeasonCompetitions extends Controller {
    */
   def create = Action {
     implicit request =>
-      Ok(views.html.seasonCompetitions.create("New SeasonMatch", seasonCompetitionForm))
+      Ok(views.html.seasonCompetitions.create("New SeasonMatch", seasonCompetitionForm, models.Categorys.options, models.Scales.options, models.Seasons.options, models.TypCompetitions.options))
   }
 
   /**
@@ -102,7 +103,7 @@ object SeasonCompetitions extends Controller {
   def save = Action {
     implicit request =>
       seasonCompetitionForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.seasonCompetitions.create("New SeasonMatch - errors", formWithErrors)),
+        formWithErrors => BadRequest(views.html.seasonCompetitions.create("New SeasonMatch - errors", formWithErrors, models.Categorys.options, models.Scales.options, models.Seasons.options, models.TypCompetitions.options)),
         seasonCompetition => {
           models.SeasonCompetitions.insert(seasonCompetition)
           //        Home.flashing("success" -> "SeasonMatch %s has been created".format(seasonCompetition.name))

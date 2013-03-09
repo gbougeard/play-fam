@@ -1,4 +1,4 @@
-@(message: String, id: Long, typMatchForm: Form[TypCompetition])(implicit flash: play.api.mvc.Flash)
+@(message: String, id: Long, typMatchForm: Form[TypCompetition], typMatches : Seq[(String, String)])(implicit flash: play.api.mvc.Flash)
 
 @import helper._
 
@@ -14,9 +14,16 @@
 
     @form(routes.TypCompetitions.update(id), 'class -> "form-horizontal") {
 
-        @inputText(typMatchForm("id"), '_label -> "Id")
-        @inputText(typMatchForm("code"), '_label -> "Code FFF")
+        @inputText(typMatchForm("code"), '_label -> "Code")
         @inputText(typMatchForm("name"), '_label -> "Nom")
+        @inputText(typMatchForm("isChampionship"), '_label -> "Is championship")
+
+        @select(
+            typMatchForm("typMatchId"),
+            typMatches,
+            '_label -> "TypMatch", '_default -> "-- Choose a typMatch --",
+            '_showConstraints -> false
+        )
 
         <div class="form-actions">
             <input type="submit" value="Save this typMatch" class="btn btn-primary">
