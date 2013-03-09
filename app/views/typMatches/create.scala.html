@@ -1,0 +1,29 @@
+@(message: String, typMatchForm: Form[TypMatch])
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @form(routes.TypMatches.save(), 'class -> "form-horizontal") {
+
+        @inputText(typMatchForm("code"), '_label -> "Code")
+        @inputText(typMatchForm("name"), '_label -> "Nom")
+        @inputText(typMatchForm("nbSubstitute"), '_label -> "nbSubstitute")
+        @inputText(typMatchForm("nbPlayer"), '_label -> "nbPlayer")
+        @inputText(typMatchForm("periodDuration"), '_label -> "periodDuration")
+        @inputText(typMatchForm("hasExtraTime"), '_label -> "hasExtraTime")
+        @inputText(typMatchForm("extraTimeDuration"), '_label -> "extraTimeDuration")
+        @inputText(typMatchForm("hasInfiniteSubs"), '_label -> "hasInfiniteSubs")
+        @inputText(typMatchForm("nbSubstitution"), '_label -> "nbSubstitution")
+        @inputText(typMatchForm("hasPenalties"), '_label -> "hasPenalties")
+        @inputText(typMatchForm("nbPenalties"), '_label -> "nbPenalties")
+
+        <div class="form-actions">
+            <input type="submit" value="Save this typMatch" class="btn btn-primary">
+            <a href="@routes.TypMatches.list()" class="btn">Cancel</a>
+        </div>
+
+    }
+}

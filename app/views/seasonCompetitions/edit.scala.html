@@ -1,0 +1,27 @@
+@(message: String, id: Long, seasonCompetitionForm: Form[SeasonCompetition])(implicit flash: play.api.mvc.Flash)
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @flash.get("success").map { message =>
+        <div class="alert alert-success">
+            <strong>Done!</strong> @message
+        </div>
+    }
+
+    @form(routes.SeasonCompetitions.update(id), 'class -> "form-horizontal") {
+
+        @inputText(seasonCompetitionForm("id"), '_label -> "Id")
+
+        <div class="form-actions">
+            <input type="submit" value="Save this seasonCompetition" class="btn btn-primary">
+            <a href="@routes.SeasonCompetitions.view(id)" class="btn">View</a>
+            <a href="@routes.SeasonCompetitions.list()" class="btn">Cancel</a>
+            <a href="@routes.SeasonCompetitions.create()" class="btn">New</a>
+        </div>
+
+    }
+}

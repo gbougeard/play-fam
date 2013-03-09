@@ -96,6 +96,42 @@ GET     /places/:id                  controllers.Places.view(id : Long)
 GET     /places/gmap/                controllers.Places.gmap
 GET     /places/gmap/json            controllers.Places.gmapData
 
+# Categorys
+GET     /categories                      controllers.Categories.list(p:Int ?= 0,s:Int ?= 2)
+GET     /categories/edit/:id             controllers.Categories.edit(id : Long)
+POST    /categories/edit/:id             controllers.Categories.update(id : Long)
+GET     /categories/new                  controllers.Categories.create
+POST    /categories/new                  controllers.Categories.save
+GET     /categories/:id                  controllers.Categories.view(id : Long)
+# Scales
+GET     /scales                      controllers.Scales.list(p:Int ?= 0,s:Int ?= 2)
+GET     /scales/edit/:id             controllers.Scales.edit(id : Long)
+POST    /scales/edit/:id             controllers.Scales.update(id : Long)
+GET     /scales/new                  controllers.Scales.create
+POST    /scales/new                  controllers.Scales.save
+GET     /scales/:id                  controllers.Scales.view(id : Long)
+# TypMatches
+GET     /typMatches                      controllers.TypMatches.list(p:Int ?= 0,s:Int ?= 2)
+GET     /typMatches/edit/:id             controllers.TypMatches.edit(id : Long)
+POST    /typMatches/edit/:id             controllers.TypMatches.update(id : Long)
+GET     /typMatches/new                  controllers.TypMatches.create
+POST    /typMatches/new                  controllers.TypMatches.save
+GET     /typMatches/:id                  controllers.TypMatches.view(id : Long)
+# TypCompetitions
+GET     /typCompetitions                      controllers.TypCompetitions.list(p:Int ?= 0,s:Int ?= 2)
+GET     /typCompetitions/edit/:id             controllers.TypCompetitions.edit(id : Long)
+POST    /typCompetitions/edit/:id             controllers.TypCompetitions.update(id : Long)
+GET     /typCompetitions/new                  controllers.TypCompetitions.create
+POST    /typCompetitions/new                  controllers.TypCompetitions.save
+GET     /typCompetitions/:id                  controllers.TypCompetitions.view(id : Long)
+# SeasonCompetitions
+GET     /seasonCompetitions                      controllers.SeasonCompetitions.list(p:Int ?= 0,s:Int ?= 2)
+GET     /seasonCompetitions/edit/:id             controllers.SeasonCompetitions.edit(id : Long)
+POST    /seasonCompetitions/edit/:id             controllers.SeasonCompetitions.update(id : Long)
+GET     /seasonCompetitions/new                  controllers.SeasonCompetitions.create
+POST    /seasonCompetitions/new                  controllers.SeasonCompetitions.save
+GET     /seasonCompetitions/:id                  controllers.SeasonCompetitions.view(id : Long)
+
 # SecureSocial
 # Login page
 GET     /login                      securesocial.controllers.LoginPage.login

@@ -1,0 +1,29 @@
+@(message: String, id: Long, typMatchForm: Form[TypCompetition])(implicit flash: play.api.mvc.Flash)
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @flash.get("success").map { message =>
+        <div class="alert alert-success">
+            <strong>Done!</strong> @message
+        </div>
+    }
+
+    @form(routes.TypCompetitions.update(id), 'class -> "form-horizontal") {
+
+        @inputText(typMatchForm("id"), '_label -> "Id")
+        @inputText(typMatchForm("code"), '_label -> "Code FFF")
+        @inputText(typMatchForm("name"), '_label -> "Nom")
+
+        <div class="form-actions">
+            <input type="submit" value="Save this typMatch" class="btn btn-primary">
+            <a href="@routes.TypCompetitions.view(id)" class="btn">View</a>
+            <a href="@routes.TypCompetitions.list()" class="btn">Cancel</a>
+            <a href="@routes.TypCompetitions.create()" class="btn">New</a>
+        </div>
+
+    }
+}

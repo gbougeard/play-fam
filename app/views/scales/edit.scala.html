@@ -1,0 +1,29 @@
+@(message: String, id: Long, scaleForm: Form[Scale])(implicit flash: play.api.mvc.Flash)
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @flash.get("success").map { message =>
+        <div class="alert alert-success">
+            <strong>Done!</strong> @message
+        </div>
+    }
+
+    @form(routes.Scales.update(id), 'class -> "form-horizontal") {
+
+        @inputText(scaleForm("id"), '_label -> "Id")
+        @inputText(scaleForm("code"), '_label -> "Code FFF")
+        @inputText(scaleForm("name"), '_label -> "Nom")
+
+        <div class="form-actions">
+            <input type="submit" value="Save this scale" class="btn btn-primary">
+            <a href="@routes.Scales.view(id)" class="btn">View</a>
+            <a href="@routes.Scales.list()" class="btn">Cancel</a>
+            <a href="@routes.Scales.create()" class="btn">New</a>
+        </div>
+
+    }
+}

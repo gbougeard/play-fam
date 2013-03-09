@@ -1,0 +1,21 @@
+@(message: String, scaleForm: Form[Scale])
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @form(routes.Scales.save(), 'class -> "form-horizontal") {
+
+        @inputText(scaleForm("id"), '_label -> "Id")
+        @inputText(scaleForm("code"), '_label -> "Code FFF")
+        @inputText(scaleForm("name"), '_label -> "Nom")
+
+        <div class="form-actions">
+            <input type="submit" value="Save this scale" class="btn btn-primary">
+            <a href="@routes.Scales.list()" class="btn">Cancel</a>
+        </div>
+
+    }
+}

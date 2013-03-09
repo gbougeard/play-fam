@@ -1,0 +1,24 @@
+@(message: String, seasonCompetition: SeasonCompetition)(implicit flash: play.api.mvc.Flash)
+
+
+@main(message) {
+<div class="header">
+
+    <dl class="dl-horizontal">
+        <dt>Id</dt>
+        <dd>@seasonCompetition.id</dd>
+        <dt>Type</dt>
+        <dd>@seasonCompetition.typCompetitionId</dd>
+        <dt>Category</dt>
+        <dd>@seasonCompetition.categoryId</dd>
+    </dl>
+</div>
+
+<div class="form-actions">
+    @**<input type="submit" value="Edit this seasonCompetition" class="btn btn-primary"> **@
+    <a href="@routes.SeasonCompetitions.edit(seasonCompetition.id.getOrElse(0))" class="btn btn-primary">Edit</a>
+    <a href="@routes.SeasonCompetitions.list()" class="btn">Cancel</a>
+    <a href="@routes.SeasonCompetitions.create()" class="btn">New</a>
+</div>
+
+}

@@ -1,0 +1,37 @@
+@(message: String, id: Long, typMatchForm: Form[TypMatch])(implicit flash: play.api.mvc.Flash)
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @flash.get("success").map { message =>
+        <div class="alert alert-success">
+            <strong>Done!</strong> @message
+        </div>
+    }
+
+    @form(routes.TypMatches.update(id), 'class -> "form-horizontal") {
+
+        @inputText(typMatchForm("code"), '_label -> "Code")
+        @inputText(typMatchForm("name"), '_label -> "Nom")
+        @inputText(typMatchForm("nbSubstitute"), '_label -> "nbSubstitute")
+        @inputText(typMatchForm("nbPlayer"), '_label -> "nbPlayer")
+        @inputText(typMatchForm("periodDuration"), '_label -> "periodDuration")
+        @inputText(typMatchForm("hasExtraTime"), '_label -> "hasExtraTime")
+        @inputText(typMatchForm("extraTimeDuration"), '_label -> "extraTimeDuration")
+        @inputText(typMatchForm("hasInfiniteSubs"), '_label -> "hasInfiniteSubs")
+        @inputText(typMatchForm("nbSubstitution"), '_label -> "nbSubstitution")
+        @inputText(typMatchForm("hasPenalties"), '_label -> "hasPenalties")
+        @inputText(typMatchForm("nbPenalties"), '_label -> "nbPenalties")
+
+        <div class="form-actions">
+            <input type="submit" value="Save this typMatch" class="btn btn-primary">
+            <a href="@routes.TypMatches.view(id)" class="btn">View</a>
+            <a href="@routes.TypMatches.list()" class="btn">Cancel</a>
+            <a href="@routes.TypMatches.create()" class="btn">New</a>
+        </div>
+
+    }
+}
