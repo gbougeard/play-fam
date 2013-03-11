@@ -28,7 +28,7 @@ object SeasonCompetitions extends Controller {
       "categoryId" -> longNumber,
       "scaleId" -> longNumber ,
       "seasonId" -> longNumber,
-      "typCompetition" -> longNumber
+      "typCompetitionId" -> longNumber
       //      "discontinued" -> optional(date("yyyy-MM-dd")),
       //      "company" -> optional(longNumber)
     )
@@ -66,7 +66,10 @@ object SeasonCompetitions extends Controller {
   def edit(id: Long) = Action {
     implicit request =>
       models.SeasonCompetitions.findById(id).map {
-        seasonCompetition => Ok(views.html.seasonCompetitions.edit("Edit SeasonMatch", id, seasonCompetitionForm.fill(seasonCompetition), models.Categorys.options, models.Scales.options, models.Seasons.options, models.TypCompetitions.options))
+        seasonCompetition => {
+          play.Logger.debug("data "+seasonCompetition)
+          Ok(views.html.seasonCompetitions.edit("Edit SeasonMatch", id, seasonCompetitionForm.fill(seasonCompetition), models.Categorys.options, models.Scales.options, models.Seasons.options, models.TypCompetitions.options))
+        }
       } getOrElse (NotFound)
   }
 

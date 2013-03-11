@@ -27,15 +27,15 @@ object TypMatches extends Controller {
       "id" -> optional(longNumber),
       "code" -> nonEmptyText,
       "name" -> nonEmptyText,
-      "nbSubstitute" -> number,
-      "nbPlayer" -> number,
-      "periodDuration"-> number,
+      "nbSubstitute" -> number(min=0, max=12),
+      "nbPlayer" -> number(min=5, max=11),
+      "periodDuration"-> number(min=0, max=45),
       "hasExtraTime" -> checked("extratime"),
-      "extraTimeDuration" -> optional(number),
+      "extraTimeDuration" -> optional(number(min=0, max=15)),
       "hasInfiniteSubs" -> checked("infinite subsitutions"),
       "nbSubstitution" -> optional(number),
       "hasPenalties" -> checked("penalties"),
-      "nbPenalties" -> optional(number)
+      "nbPenalties" -> optional(number(min=0,max=5))
       //      "discontinued" -> optional(date("yyyy-MM-dd")),
       //      "company" -> optional(longNumber)
     )

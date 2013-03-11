@@ -111,7 +111,15 @@ object Teams extends Table[Team]("fam_team") {
   /**
    * Construct the Map[String,String] needed to fill a select options set.
    */
-  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
+//  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
+  def options: Seq[(String, String)] = DB.withSession {
+    implicit session =>
+      val query = (for {
+        item <- Teams
+      } yield (item.id, item.name)
+        ).sortBy(_._2)
+      query.list.map(row => (row._1.toString, row._2))
+  }
 
   implicit val teamFormat = Json.format[Team]
 

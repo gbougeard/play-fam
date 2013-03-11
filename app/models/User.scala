@@ -73,4 +73,13 @@ object Users extends Table[User]("fam_user") {
     }
   }
 
+  def options: Seq[(String, String)] = DB.withSession {
+    implicit session =>
+      val query = (for {
+        item <- Users
+      } yield (item.id, item.email)
+        ).sortBy(_._2)
+      query.list.map(row => (row._1.toString, row._2))
+  }
+
 }

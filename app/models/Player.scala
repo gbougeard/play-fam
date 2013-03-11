@@ -113,6 +113,14 @@ object Players extends Table[Player]("fam_player") {
   /**
    * Construct the Map[String,String] needed to fill a select options set.
    */
-  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.firstName + " " + c.lastName)
+//  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.firstName + " " + c.lastName)
 
+  def options: Seq[(String, String)] = DB.withSession {
+    implicit session =>
+      val query = (for {
+        item <- Players
+      } yield (item.id, item.firstName + " " + item.lastName)
+        ).sortBy(_._2)
+      query.list.map(row => (row._1.toString, row._2))
+  }
 }
