@@ -1,0 +1,26 @@
+@(message: String, fixture: Fixture)(implicit flash: play.api.mvc.Flash)
+@import helper.twitterBootstrap._
+
+@main(message) {
+<div class="header">
+
+    <dl class="dl-horizontal">
+        <dt>Id</dt>
+        <dd>@fixture.id</dd>
+        <dt>Name</dt>
+        <dd>@fixture.name</dd>
+        <dt>Code</dt>
+        <dd>@fixture.date</dd>
+        <dt>Club</dt>
+        <dd>@fixture.competitionId</dd>
+    </dl>
+</div>
+
+<div class="form-actions">
+    @**<input type="submit" value="Edit this fixture" class="btn btn-primary"> **@
+    <a href="@routes.Fixtures.edit(fixture.id.getOrElse(0))" class="btn btn-primary">Edit</a>
+    <a href="@routes.Fixtures.list()" class="btn">Cancel</a>
+    <a href="@routes.Fixtures.create()" class="btn">New</a>
+</div>
+
+}

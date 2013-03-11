@@ -1,0 +1,86 @@
+@(message: String, currentPage: Page[(Fixture,SeasonCompetition)], currentOrderBy: Int)(implicit flash: play.api.mvc.Flash)
+
+@****************************************
+* Helper generating navigation links    *
+****************************************@
+@link(newPage: Int, newOrderBy: Option[Int] = None) = @{
+routes.Fixtures.list(newPage
+, newOrderBy.map { orderBy =>
+if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
+}.getOrElse(currentOrderBy))
+}
+@**, currentFilter)
+**@
+
+@**********************************
+* Helper generating table headers *
+***********************************@
+@header(orderBy: Int, title: String) = {
+<th class="col@orderBy header @if(scala.math.abs(currentOrderBy) == orderBy) @{if(currentOrderBy < 0) "headerSortDown" else "headerSortUp"}">
+    <a href="@link(0, Some(orderBy))">@title</a>
+</th>
+}
+
+@main(message) {
+
+@Option(currentPage.items).filterNot(_.isEmpty).map { fixtures =>
+
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+    <tr>
+      @*  @header(0,"Id") *@
+        @header(1,"Nom")
+        @header(2,"Date")
+        @header(3,"Competition")
+    </tr>
+    </thead>
+    <tbody>
+
+    @fixtures.map {
+        case (fixture,competition) => {
+            <tr>
+              @*  <td>@fixture.id</td>  *@
+                <td><a href="@routes.Fixtures.view(fixture.id.getOrElse(0))">@fixture.name</a></td>
+                <td>@fixture.date.format("dd MMM yyyy")</td>
+                <td><a href="@routes.SeasonCompetitions.view(fixture.competitionId)">@competition.id</a></td>
+            </tr>
+        }
+    }
+
+    </tbody>
+</table>
+
+<div id="pagination" class="pagination">
+    <ul>
+        @currentPage.prev.map { page =>
+        <li class="prev">
+            <a href="@link(page)">&larr; Previous</a>
+        </li>
+        }.getOrElse {
+        <li class="prev disabled">
+            <a>&larr; Previous</a>
+        </li>
+        }
+        <li class="current">
+            <a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + fixtures.size) of @currentPage.total</a>
+        </li>
+        @currentPage.next.map { page =>
+        <li class="next">
+            <a href="@link(page)">Next &rarr;</a>
+        </li>
+        }.getOrElse {
+        <li class="next disabled">
+            <a>Next &rarr;</a>
+        </li>
+        }
+    </ul>
+</div>
+
+}.getOrElse {
+
+<div class="well">
+    <em>Nothing to display</em>
+</div>
+
+}
+}

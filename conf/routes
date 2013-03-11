@@ -131,6 +131,13 @@ POST    /seasonCompetitions/edit/:id             controllers.SeasonCompetitions.
 GET     /seasonCompetitions/new                  controllers.SeasonCompetitions.create
 POST    /seasonCompetitions/new                  controllers.SeasonCompetitions.save
 GET     /seasonCompetitions/:id                  controllers.SeasonCompetitions.view(id : Long)
+# Fixtures
+GET     /fixtures                      controllers.Fixtures.list(p:Int ?= 0,s:Int ?= 2)
+GET     /fixtures/edit/:id             controllers.Fixtures.edit(id : Long)
+POST    /fixtures/edit/:id             controllers.Fixtures.update(id : Long)
+GET     /fixtures/new                  controllers.Fixtures.create
+POST    /fixtures/new                  controllers.Fixtures.save
+GET     /fixtures/:id                  controllers.Fixtures.view(id : Long)
 
 # SecureSocial
 # Login page

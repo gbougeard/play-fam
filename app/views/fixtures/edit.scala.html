@@ -1,0 +1,36 @@
+@(message: String, id: Long, fixtureForm: Form[Fixture], competitions : Seq[(String, String)])(implicit flash: play.api.mvc.Flash)
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @flash.get("success").map { message =>
+        <div class="alert alert-success">
+            <strong>Done!</strong> @message
+        </div>
+    }
+
+    @form(routes.Fixtures.update(id), 'class -> "form-horizontal") {
+
+        @inputText(fixtureForm("id"), '_label -> "Id")
+        @inputText(fixtureForm("date"), '_label -> "Date")
+        @inputText(fixtureForm("name"), '_label -> "Nom")
+
+        @select(
+            fixtureForm("competitionId"),
+            competitions,
+            '_label -> "Competition", '_default -> "-- Choose a competition --",
+            '_showConstraints -> false
+        )
+
+        <div class="form-actions">
+            <input type="submit" value="Save this fixture" class="btn btn-primary">
+            <a href="@routes.Fixtures.view(id)" class="btn">View</a>
+            <a href="@routes.Fixtures.list()" class="btn">Cancel</a>
+            <a href="@routes.Fixtures.create()" class="btn">New</a>
+        </div>
+
+    }
+}

@@ -1,0 +1,28 @@
+@(message: String, fixtureForm: Form[Fixture], competitions : Seq[(String, String)])
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @form(routes.Fixtures.save(), 'class -> "form-horizontal") {
+
+        @inputText(fixtureForm("id"), '_label -> "Id")
+        @inputText(fixtureForm("date"), '_label -> "Date")
+        @inputText(fixtureForm("name"), '_label -> "Nom")
+
+        @select(
+        fixtureForm("competitionId"),
+            competitions,
+        '_label -> "Competition", '_default -> "-- Choose a competition --",
+        '_showConstraints -> false
+        )
+
+        <div class="form-actions">
+            <input type="submit" value="Save this fixture" class="btn btn-primary">
+            <a href="@routes.Fixtures.list()" class="btn">Cancel</a>
+        </div>
+
+    }
+}
