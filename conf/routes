@@ -138,6 +138,10 @@ POST    /fixtures/edit/:id             controllers.Fixtures.update(id : Long)
 GET     /fixtures/new                  controllers.Fixtures.create
 POST    /fixtures/new                  controllers.Fixtures.save
 GET     /fixtures/:id                  controllers.Fixtures.view(id : Long)
+# Rankings
+GET     /rankings                       controllers.Rankings.index
+GET     /rankings/:id                   controllers.Rankings.list(id:Long, s:Int ?= 1)
+
 
 # SecureSocial
 # Login page

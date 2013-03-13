@@ -131,6 +131,18 @@ object SeasonCompetitions extends Table[SeasonCompetition]("fam_season_competiti
     c <- findAll
   } yield (c.id.toString, c.typCompetitionId.toString())
 
+  def optionsChampionship: Seq[(Long, String)] = DB.withSession {
+    implicit session =>
+      val query = (for {
+        item <- SeasonCompetitions
+        s <- item.season
+        tc <- item.typCompetition
+        if tc.isChampionship
+      } yield (item.id, s.name, tc.name)
+        ).sortBy(_._2)
+      query.list.map(row => (row._1, row._2 + " "+ row._3))
+  }
+
   implicit val seasonCompetitionFormat = Json.format[SeasonCompetition]
 
 }

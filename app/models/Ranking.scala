@@ -8,6 +8,7 @@ import play.api.db.slick.DB
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
+
 case class Ranking(competitionId: Long,
                    clubId: Long,
                    teamId: Long,
@@ -84,21 +85,30 @@ object Rankings extends Table[Ranking]("v_rankings") {
   //    }
   //  }
 
-  def findByCompetition(id: Long): Option[Ranking] = DB.withSession {
+  def findByCompetition(id: Long): Seq[Ranking] = DB.withSession {
     implicit session => {
-      Rankings.byCompetition(id).firstOption
+      (for {
+        c <- Rankings.sortBy(_.points.desc)
+        if c.competitionId === id
+      } yield c).list
     }
   }
 
-  def findByClub(id: Long): Option[Ranking] = DB.withSession {
+  def findByClub(id: Long): Seq[Ranking] = DB.withSession {
     implicit session => {
-      Rankings.byClub(id).firstOption
+      (for {
+        c <- Rankings.sortBy(_.points.desc)
+        if c.clubId === id
+      } yield c).list
     }
   }
 
-  def findByTeam(id: Long): Option[Ranking] = DB.withSession {
+  def findByTeam(id: Long): Seq[Ranking] = DB.withSession {
     implicit session => {
-      Rankings.byTeam(id).firstOption
+      (for {
+        c <- Rankings.sortBy(_.points.desc)
+        if c.teamId === id
+      } yield c).list
     }
   }
 

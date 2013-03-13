@@ -1,0 +1,77 @@
+@(message: String, rankings: Seq[Ranking], competition: Long, currentOrderBy: Int, competitions: Seq[(Long, String)])
+
+@****************************************
+* Helper generating navigation links *
+****************************************@
+@link(compet: Long, newOrderBy: Option[Int] = None) = @{
+    routes.Rankings.list(compet
+        , newOrderBy.map {
+            orderBy =>
+                if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
+        }.getOrElse(currentOrderBy))
+}
+@**********************************
+* Helper generating table headers *
+***********************************@
+@header(orderBy: Int, title: String) = {
+    <th class="col  @orderBy
+    header
+        @if(scala.math.abs(currentOrderBy) == orderBy) @{
+            if(currentOrderBy < 0) "headerSortDown" else "headerSortUp"
+        }">
+        <a href="@link(competition, Some(orderBy))"> @title </a>
+    </th>
+}
+
+@main(message) {
+    <div>
+        <div id="navigation" class="well sidebar-nav span3">
+            <ul class="nav nav-list">
+                @for((id, name)<-competitions){
+                <li><a href="@routes.Rankings.list(id)">@name</a></li>
+               }
+            </ul>
+        </div>
+
+        <div class="span8">
+            @Option(rankings).filterNot(_.isEmpty).map { ranks =>
+
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            @header(0, "#")
+                            @header(1, "Pts")
+                            @header(2, "Team")
+                            @header(3, "Played")
+                            @header(4, "Win")
+                            @header(5, "Draw")
+                            @header(6, "Defeat")
+                            @header(7, "Scored")
+                            @header(8, "Shipped")
+                            @header(9, "Goal average")
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @ranks.zipWithIndex.map{
+                            case (rank, idx) =>  {
+                            <tr>
+                                <td> @{idx+1} </td>
+                                <td> @rank.points </td>
+                                <td> <a href="@routes.Teams.view(rank.teamId)"> @rank.team </a> </td>
+                                <td> @rank.played </td>
+                                <td> @rank.victory </td>
+                                <td> @rank.draw </td>
+                                <td> @rank.defeat </td>
+                                <td> @rank.goalScored </td>
+                                <td> @rank.goalShipped </td>
+                                <td> @(rank.goalScored - rank.goalShipped) </td>
+                            </tr>
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+}
