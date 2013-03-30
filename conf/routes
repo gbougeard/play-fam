@@ -138,6 +138,13 @@ POST    /fixtures/edit/$id<[0-9]+>             controllers.Fixtures.update(id : 
 GET     /fixtures/new                  controllers.Fixtures.create
 POST    /fixtures/new                  controllers.Fixtures.save
 GET     /fixtures/$id<[0-9]+>                  controllers.Fixtures.view(id : Long)
+# Matchs
+GET     /matchs                      controllers.Matchs.list(p:Int ?= 0,s:Int ?= 1)
+GET     /matchs/edit/$id<[0-9]+>             controllers.Matchs.edit(id : Long)
+POST    /matchs/edit/$id<[0-9]+>             controllers.Matchs.update(id : Long)
+GET     /matchs/new                  controllers.Matchs.create
+POST    /matchs/new                  controllers.Matchs.save
+GET     /matchs/$id<[0-9]+>                  controllers.Matchs.view(id : Long)
 # Rankings
 GET     /rankings                       controllers.Rankings.index
 GET     /rankings/$id<[0-9]+>                   controllers.Rankings.list(id:Long, s:Int ?= 1)

@@ -1,0 +1,22 @@
+@(message: String, matchForm: Form[Match])
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @form(routes.Matchs.save(), 'class -> "form-horizontal") {
+
+        @inputText(matchForm("id"), '_label -> "Id")
+        @inputText(matchForm("firstName"), '_label -> "FirstName")
+        @inputText(matchForm("lastName"), '_label -> "LastName")
+        @inputText(matchForm("email"), '_label -> "Email")
+
+        <div class="form-actions">
+            <input type="submit" value="Save this match" class="btn btn-primary">
+            <a href="@routes.Matchs.list()" class="btn">Cancel</a>
+        </div>
+
+    }
+}
