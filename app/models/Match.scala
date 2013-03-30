@@ -13,7 +13,7 @@ import play.api.Logger
 case class Match(id: Option[Long],
                  fixtureId: Option[Long],
                  competitionId: Long,
-                 eventId: Long)
+                 eventId: Option[Long])
 
 // define tables
 object Matchs extends Table[Match]("fam_match") {
@@ -26,9 +26,9 @@ object Matchs extends Table[Match]("fam_match") {
 
   def eventId = column[Long]("id_event")
 
-  def * = id.? ~ fixtureId.? ~ competitionId ~ eventId <>(Match, Match.unapply _)
+  def * = id.? ~ fixtureId.? ~ competitionId ~ eventId.? <>(Match, Match.unapply _)
 
-  def autoInc = id.? ~ fixtureId.? ~ competitionId ~ eventId <>(Match, Match.unapply _) returning id
+  def autoInc = id.? ~ fixtureId.? ~ competitionId ~ eventId.? <>(Match, Match.unapply _) returning id
 
 
   // A reified foreign key relation that can be navigated to create a join
@@ -56,12 +56,9 @@ object Matchs extends Table[Match]("fam_match") {
       implicit session => {
         val matchs = (
           for {t <- Matchs
-            .sortBy(m => orderField match {
-            case 1 => m.id.asc
-            case -1 => m.id.desc
-          })
             .drop(offset)
             .take(pageSize)
+            if t.eventId.isNotNull
                c <- t.competition
                e <- t.event
           } yield (t, c, e)).list

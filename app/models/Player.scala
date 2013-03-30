@@ -13,7 +13,11 @@ import play.api.Logger
 case class Player(id: Option[Long],
                   firstName: String,
                   lastName: String,
-                  email: String)
+                  email: String){
+  def displayName : String = {
+    firstName + " " + lastName
+  }
+}
 
 // define tables
 object Players extends Table[Player]("fam_player") {

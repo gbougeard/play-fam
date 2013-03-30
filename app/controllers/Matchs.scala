@@ -21,7 +21,7 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
       "id" -> optional(longNumber),
       "fixtureId" -> optional(longNumber),
       "competitionId" -> longNumber,
-      "eventId" -> longNumber
+      "eventId" -> optional(longNumber)
       //      "discontinued" -> optional(date("yyyy-MM-dd")),
       //      "company" -> optional(longNumber)
     )
@@ -47,15 +47,19 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
     implicit request =>
       models.Matchs.findById(id).map {
         m => {
-          models.Events.findById(m.eventId).map {
+          models.Events.findById(m.eventId.getOrElse(0)).map {
             event => {
               models.MatchTeams.findByMatchAndHome(id).map {
                 case (home, homeTeam) => {
+                  val homeGoals = models.Goals.findByMatchAndTeam(id,  homeTeam.id.getOrElse(0))
                   val homePlayers = models.MatchPlayers.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
+                  val homeSubs = models.Substitutions.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
                   models.MatchTeams.findByMatchAndAway(id).map {
                   case  (away, awayTeam ) => {
-                      val awayPlayers = models.MatchPlayers.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
-                      Ok(views.html.matchs.view("View Match", m, event, (home,homeTeam), (away, awayTeam), homePlayers, awayPlayers))
+                    val awayGoals = models.Goals.findByMatchAndTeam(id,  awayTeam.id.getOrElse(0))
+                    val awayPlayers = models.MatchPlayers.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
+                    val awaySubs = models.Substitutions.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
+                      Ok(views.html.matchs.view("View Match", m, event, (home,homeTeam), (away, awayTeam), homeGoals, awayGoals,  homePlayers, awayPlayers, homeSubs, awaySubs))
                     }
                   } getOrElse (NotFound)
                 }
