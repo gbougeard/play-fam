@@ -38,7 +38,7 @@
         @countries.map {
             case (country) => {
             <tr>
-                <td>@flag(country.code)</td>
+                <td>@country.code</td>
                 <td><a href="@routes.Countries.view(country.id.getOrElse(0))">@country.name</a></td>
             </tr>
         }
