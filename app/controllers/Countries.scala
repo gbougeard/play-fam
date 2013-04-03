@@ -11,8 +11,12 @@ import slick.session.Session
 
 
 object Countries extends Controller {
-  val metric = Metrics.defaultRegistry().newTimer(classOf[Country], "page")
-  val timer = new Timer(metric)
+  val metricList = Metrics.defaultRegistry().newTimer(classOf[Country], "list")
+  val timerList = new Timer(metricList)
+  val metricView = Metrics.defaultRegistry().newTimer(classOf[Country], "view")
+  val timerView = new Timer(metricView)
+  val metricDisplayList = Metrics.defaultRegistry().newTimer(classOf[Country], "displayList")
+  val timerDisplayList = new Timer(metricDisplayList)
 
   /**
    * This result directly redirect to the application home.
@@ -45,15 +49,15 @@ object Countries extends Controller {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val countries = models.Countries.findPage(page, orderBy)
+      val countries = timerList.time(models.Countries.findPage(page, orderBy))
       val html = views.html.countries.list("Liste des countries", countries, orderBy)
-      Ok(html)
+      timerDisplayList.time(Ok(html))
   }
 
 
   def view(id: Long) = Action {
     implicit request =>
-      models.Countries.findById(id).map {
+      timerView.time(models.Countries.findById(id)).map {
         country => Ok(views.html.countries.view("View Country", country))
       } getOrElse (NotFound)
   }

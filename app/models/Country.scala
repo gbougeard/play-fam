@@ -7,6 +7,8 @@ import play.api.db.slick.DB
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import com.yammer.metrics.Metrics
+import com.yammer.metrics.scala.Timer
 
 case class Country(id: Option[Long],
                    code: String,
@@ -39,6 +41,15 @@ object Countries extends Table[Country]("fam_country") {
 
   lazy val pageSize = 10
 
+  val metricCount = Metrics.defaultRegistry().newTimer(classOf[Country], "count")
+  val timerCount = new Timer(metricCount)
+  val metricPage = Metrics.defaultRegistry().newTimer(classOf[Country], "page")
+  val timerPage = new Timer(metricPage)
+  val metricById = Metrics.defaultRegistry().newTimer(classOf[Country], "byId")
+  val timerById = new Timer(metricById)
+
+  lazy val countryCount = count
+
   def findAll: Seq[Country] = DB.withSession {
     implicit session => {
       (for (c <- Countries.sortBy(_.name)) yield c).list
@@ -47,7 +58,8 @@ object Countries extends Table[Country]("fam_country") {
 
   def count: Int = DB.withSession {
     implicit session => {
-      (for {c <- Countries} yield c.id).list.size
+      val query = (for {c <- Countries} yield c.id)
+      timerCount.time(query.list.size)
     }
   }
 
@@ -61,29 +73,28 @@ object Countries extends Table[Country]("fam_country") {
             .sortBy(_.id)
             .drop(offset)
             .take(pageSize)
-          } yield t).list
+          } yield t)
 
-        val totalRows = (for {t <- Countries} yield t.id).list.size
-        Page(countrys, page, offset, totalRows)
+        Page(timerPage.time(countrys.list), page, offset, countryCount)
       }
     }
   }
 
   def findById(id: Long): Option[Country] = DB.withSession {
     implicit session => {
-      Countries.byId(id).firstOption
+      timerById.time(Countries.byId(id).firstOption)
     }
   }
 
   def findByName(name: String): Option[Country] = DB.withSession {
     implicit session => {
-      Countries.byName(name).firstOption
+      timerById.time(Countries.byName(name).firstOption)
     }
   }
 
   def findByCode(code: String): Option[Country] = DB.withSession {
     implicit session => {
-      Countries.byCode(code).firstOption
+      timerById.time(Countries.byCode(code).firstOption)
     }
   }
 
