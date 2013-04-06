@@ -8,7 +8,9 @@ awayGoals: Seq[(Goal, Option[Player])],
 homePlayers:Seq[(MatchPlayer, Match, Player, Team)],
 awayPlayers:Seq[(MatchPlayer, Match, Player, Team)],
 homeSubs:Seq[(Substitution, Match, Team, Player, Player)],
-awaySubs:Seq[(Substitution, Match, Team, Player, Player)])(implicit flash: play.api.mvc.Flash)
+awaySubs:Seq[(Substitution, Match, Team, Player, Player)],
+homeCards:Seq[(Card, Match, Team, Player, TypCard)],
+awayCards:Seq[(Card, Match, Team, Player, TypCard)] )(implicit flash: play.api.mvc.Flash)
 
 
 @main(event.name+" "+event.dtEvent.toString("dd MM yyyy")) {
@@ -31,6 +33,18 @@ awaySubs:Seq[(Substitution, Match, Team, Player, Player)])(implicit flash: play.
                                             @if(goal.penalty){sp}
                                         </em>
                                     </span>
+                                </p>
+                            </li>
+                        }
+                    </ul>
+                    &nbsp;
+                    <ul class="unstyled">
+                        @homeCards.map { case (card, m, team, player, typCard) =>
+                            <li>
+                                <p>
+                                    <span class="span1">@card.time'</span>
+                                    <span class="span11">@player.displayName <em>@typCard.name</em>
+                        </span>
                                 </p>
                             </li>
                         }
@@ -86,6 +100,18 @@ awaySubs:Seq[(Substitution, Match, Team, Player, Player)])(implicit flash: play.
                                 </em>
                             </div>
                         </li>
+                    }
+                </ul>
+                &nbsp;
+                <ul class="unstyled">
+                    @awayCards.map { case (card, m, team, player, typCard) =>
+                    <li>
+                        <p>
+                        <span class="span1">@card.time'</span>
+                            <span class="span11">@player.displayName <em>@typCard.name</em>
+                    </span>
+                    </p>
+                    </li>
                     }
                 </ul>
                 &nbsp;

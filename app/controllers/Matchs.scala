@@ -54,12 +54,15 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
                   val homeGoals = models.Goals.findByMatchAndTeam(id,  homeTeam.id.getOrElse(0))
                   val homePlayers = models.MatchPlayers.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
                   val homeSubs = models.Substitutions.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
+                  val homeCards = models.Cards.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
+
                   models.MatchTeams.findByMatchAndAway(id).map {
                   case  (away, awayTeam ) => {
                     val awayGoals = models.Goals.findByMatchAndTeam(id,  awayTeam.id.getOrElse(0))
                     val awayPlayers = models.MatchPlayers.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
                     val awaySubs = models.Substitutions.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
-                      Ok(views.html.matchs.view("View Match", m, event, (home,homeTeam), (away, awayTeam), homeGoals, awayGoals,  homePlayers, awayPlayers, homeSubs, awaySubs))
+                    val awayCards = models.Cards.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
+                      Ok(views.html.matchs.view("View Match", m, event, (home,homeTeam), (away, awayTeam), homeGoals, awayGoals,  homePlayers, awayPlayers, homeSubs, awaySubs, homeCards, awayCards))
                     }
                   } getOrElse (NotFound)
                 }
