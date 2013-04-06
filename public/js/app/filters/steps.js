@@ -33,3 +33,15 @@ testus.filter('notPending', function () {
         return STATUS[status];
     };
 });
+
+testus.filter('notPending', function () {
+    var STATUS = {
+        "OK": "disabled",
+        "KO": "disabled",
+        "PENDING": ""
+    };
+
+    return function (status) {
+        return STATUS[status];
+    };
+});

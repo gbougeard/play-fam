@@ -5,6 +5,7 @@ import play.api.data._
 import play.api.data.Forms._
 import models.Event
 import models.Events._
+import models.TypEvents._
 
 import slick.session.Session
 import com.yammer.metrics.Metrics
@@ -31,7 +32,8 @@ object Events extends Controller {
       "id" -> optional(longNumber),
       "dtEvent" -> jodaDate,
       "duration" -> number,
-      "name" -> nonEmptyText
+      "name" -> nonEmptyText,
+      "typEventId" -> longNumber
       //      "discontinued" -> optional(date("yyyy-MM-dd")),
       //      "company" -> optional(longNumber)
     )

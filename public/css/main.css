@@ -112,3 +112,19 @@ table .headerSortUp.purple, table .headerSortDown.purple {
 .minimalList {
     min-height: 100px;
 }
+
+.typEvent1,
+.fc-agenda .typEvent1 .fc-event-time,
+.typEvent1 a {
+    background-color: green; /* background color */
+    border-color: green;     /* border color */
+    color: yellow;           /* text color */
+}
+
+.typEvent2,
+.fc-agenda .typEvent2 .fc-event-time,
+.typEvent2 a {
+    background-color: red; /* background color */
+    border-color: red;     /* border color */
+    color: orange;           /* text color */
+}

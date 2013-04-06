@@ -14,7 +14,8 @@ import java.sql.Timestamp
 case class Event(id: Option[Long],
                  dtEvent: DateTime,
                  duration: Int,
-                 name: String)
+                 name: String,
+                 typEventId: Long)
 
 // define tables
 object Events extends Table[Event]("fam_event") {
@@ -27,13 +28,18 @@ object Events extends Table[Event]("fam_event") {
 
   def dtEvent = column[DateTime]("dt_event")
 
+  def typEventId = column[Long]("id_typ_event")
+
   implicit val dateTime: TypeMapper[DateTime]
   = MappedTypeMapper.base[DateTime, Timestamp](dt => new
       Timestamp(dt.getMillis), ts => new DateTime(ts.getTime))
 
-  def * = id.? ~ dtEvent ~ duration ~ name <>(Event, Event.unapply _)
+  def * = id.? ~ dtEvent ~ duration ~ name ~ typEventId <>(Event, Event.unapply _)
 
-  def autoInc = id.? ~ dtEvent ~ duration ~ name <>(Event, Event.unapply _) returning id
+  def autoInc = id.? ~ dtEvent ~ duration ~ name ~ typEventId <>(Event, Event.unapply _) returning id
+
+  // A reified foreign key relation that can be navigated to create a join
+  def typEvent = foreignKey("TYP_EVENT_FK", typEventId, TypEvents)(_.id)
 
   val byId = createFinderBy(_.id)
   val byName = createFinderBy(_.name)
@@ -42,7 +48,9 @@ object Events extends Table[Event]("fam_event") {
 
   def findAll: Seq[Event] = DB.withSession {
     implicit session => {
-      (for (c <- Events.sortBy(_.name)) yield c).list
+      (for {c <- Events.sortBy(_.name)
+//            t <- c.typEvent
+      } yield c).list
     }
   }
 
@@ -103,7 +111,7 @@ object Events extends Table[Event]("fam_event") {
   /**
    * Construct the Map[String,String] needed to fill a select options set.
    */
-//  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
+  //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
   def options: Seq[(String, String)] = DB.withSession {
     implicit session =>
       val query = (for {

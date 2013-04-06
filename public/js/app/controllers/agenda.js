@@ -7,7 +7,20 @@
  * Time: 01:22
  * To change this template use File | Settings | File Templates.
  */
-function AgendaCtrl($scope, $http) {
+fam.filter('eventBkgColor', function () {
+    var CSS = {
+        1: "red",
+        2: "green",
+        3: "orange"
+    };
+
+    return function (id) {
+        return CSS[id];
+    };
+});
+
+
+function AgendaCtrl($scope, $http, $filter) {
 
     var date = new Date();
     var d = date.getDate();
@@ -15,7 +28,7 @@ function AgendaCtrl($scope, $http) {
     var y = date.getFullYear();
 
     $scope.eventSource = {
-        url: "http://www.google.com/calendar/feeds/usa__en%40holiday.calendar.google.com/public/basic",
+        url: "https://www.google.com/calendar/feeds/os5iqgd70elova2if2f8jdffh8%40group.calendar.google.com/public/basic",
         className: 'gcal-event',           // an option!
 //        currentTimezone: 'France/Paris' // an option!
     };
@@ -23,8 +36,8 @@ function AgendaCtrl($scope, $http) {
     $scope.events = [
         {title: 'All Day Event', start: new Date(y, m, 1)},
         {title: 'Long Event', start: new Date(y, m, d - 5), end: new Date(y, m, d - 2)},
-        {id: 999, title: 'Repeating Event', start: new Date(y, m, d - 3, 16, 0), allDay: false},
-        {id: 999, title: 'Repeating Event', start: new Date(y, m, d + 4, 16, 0), allDay: false},
+        {id: 999, title: 'Repeating Event', start: new Date(y, m, d - 3, 16, 0), allDay: false, className:'typEvent1'},
+        {id: 999, title: 'Repeating Event', start: new Date(y, m, d + 4, 16, 0), allDay: false, className:'typEvent2'},
         {title: 'Birthday Party', start: new Date(y, m, d + 1, 19, 0), end: new Date(y, m, d + 1, 22, 30), allDay: false},
         {title: 'Click for Google', start: new Date(y, m, 28), end: new Date(y, m, 29), url: 'http://google.com/'}
     ];
@@ -63,9 +76,13 @@ function AgendaCtrl($scope, $http) {
                         title: item.name,
                         start: dtStart,
                         end: dtEnd,
-                        url:  '/events/'+item.id
+                        url:  '/events/'+item.id,
+//                        className: 'typEvent'+item.typEventId ,
+                        editable:false,
+                        backgroundColor: $filter('eventBkgColor')(item.typEventId)
+
                     };
-//                    console.log(event);
+                    console.log(item, event);
                     $scope.events.push(event);
                 });
 
@@ -77,6 +94,8 @@ function AgendaCtrl($scope, $http) {
                 $scope.$digest();
             }
         });
+
+
     };
 
     $scope.loadEvents();
