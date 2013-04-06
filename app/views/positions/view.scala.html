@@ -1,0 +1,24 @@
+@(message: String, position: Position)(implicit flash: play.api.mvc.Flash)
+
+
+@main(message) {
+<div class="header">
+
+    <dl class="dl-horizontal">
+        <dt>Id</dt>
+        <dd>@position.id</dd>
+        <dt>Name</dt>
+        <dd>@position.name</dd>
+        <dt>Code</dt>
+        <dd>@position.code</dd>
+    </dl>
+</div>
+
+<div class="form-actions">
+    @**<input type="submit" value="Edit this position" class="btn btn-primary"> **@
+    <a href="@routes.Positions.edit(position.id.getOrElse(0))" class="btn btn-primary">Edit</a>
+    <a href="@routes.Positions.list()" class="btn">Cancel</a>
+    <a href="@routes.Positions.create()" class="btn">New</a>
+</div>
+
+}

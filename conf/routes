@@ -152,6 +152,13 @@ POST    /typCards/edit/$id<[0-9]+>            controllers.TypCards.update(id : L
 GET     /typCards/new                         controllers.TypCards.create
 POST    /typCards/new                         controllers.TypCards.save
 GET     /typCards/$id<[0-9]+>                 controllers.TypCards.view(id : Long)
+# Positions
+GET     /positions                             controllers.Positions.list(p:Int ?= 0,s:Int ?= 1)
+GET     /positions/edit/$id<[0-9]+>            controllers.Positions.edit(id : Long)
+POST    /positions/edit/$id<[0-9]+>            controllers.Positions.update(id : Long)
+GET     /positions/new                         controllers.Positions.create
+POST    /positions/new                         controllers.Positions.save
+GET     /positions/$id<[0-9]+>                 controllers.Positions.view(id : Long)
 # Rankings
 GET     /rankings                       controllers.Rankings.index
 GET     /rankings/$id<[0-9]+>                   controllers.Rankings.list(id:Long, s:Int ?= 1)

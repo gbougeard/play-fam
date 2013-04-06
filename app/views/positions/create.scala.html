@@ -1,0 +1,20 @@
+@(message: String, positionForm: Form[Position])
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @form(routes.Positions.save(), 'class -> "form-horizontal") {
+
+        @inputText(positionForm("code"), '_label -> "Code")
+        @inputText(positionForm("name"), '_label -> "Nom")
+
+        <div class="form-actions">
+            <input type="submit" value="Save this position" class="btn btn-primary">
+            <a href="@routes.Positions.list()" class="btn">Cancel</a>
+        </div>
+
+    }
+}

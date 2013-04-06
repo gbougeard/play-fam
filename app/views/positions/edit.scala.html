@@ -1,0 +1,28 @@
+@(message: String, id: Long, positionForm: Form[Position])(implicit flash: play.api.mvc.Flash)
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @flash.get("success").map { message =>
+        <div class="alert alert-success">
+            <strong>Done!</strong> @message
+        </div>
+    }
+
+    @form(routes.Positions.update(id), 'class -> "form-horizontal") {
+
+        @inputText(positionForm("code"), '_label -> "Code")
+        @inputText(positionForm("name"), '_label -> "Nom")
+
+        <div class="form-actions">
+            <input type="submit" value="Save this position" class="btn btn-primary">
+            <a href="@routes.Positions.view(id)" class="btn">View</a>
+            <a href="@routes.Positions.list()" class="btn">Cancel</a>
+            <a href="@routes.Positions.create()" class="btn">New</a>
+        </div>
+
+    }
+}
