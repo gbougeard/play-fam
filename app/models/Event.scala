@@ -15,7 +15,9 @@ case class Event(id: Option[Long],
                  dtEvent: DateTime,
                  duration: Int,
                  name: String,
-                 typEventId: Long)
+                 typEventId: Long,
+                 placeId: Option[Long],
+                 eventStatusId: Long)
 
 // define tables
 object Events extends Table[Event]("fam_event") {
@@ -30,16 +32,24 @@ object Events extends Table[Event]("fam_event") {
 
   def typEventId = column[Long]("id_typ_event")
 
+  def placeId = column[Long]("id_place")
+
+  def eventStatusId = column[Long]("id_eventStatus")
+
   implicit val dateTime: TypeMapper[DateTime]
   = MappedTypeMapper.base[DateTime, Timestamp](dt => new
       Timestamp(dt.getMillis), ts => new DateTime(ts.getTime))
 
-  def * = id.? ~ dtEvent ~ duration ~ name ~ typEventId <>(Event, Event.unapply _)
+  def * = id.? ~ dtEvent ~ duration ~ name ~ typEventId ~ placeId.? ~ eventStatusId <>(Event, Event.unapply _)
 
-  def autoInc = id.? ~ dtEvent ~ duration ~ name ~ typEventId <>(Event, Event.unapply _) returning id
+  def autoInc = id.? ~ dtEvent ~ duration ~ name ~ typEventId ~ placeId.? ~ eventStatusId <>(Event, Event.unapply _) returning id
 
   // A reified foreign key relation that can be navigated to create a join
   def typEvent = foreignKey("TYP_EVENT_FK", typEventId, TypEvents)(_.id)
+
+  def place = foreignKey("PLACE_FK", placeId, Places)(_.id)
+
+  def eventStatus = foreignKey("EVENT_STATUS_FK", eventStatusId, EventStatuses)(_.id)
 
   val byId = createFinderBy(_.id)
   val byName = createFinderBy(_.name)
@@ -49,7 +59,7 @@ object Events extends Table[Event]("fam_event") {
   def findAll: Seq[Event] = DB.withSession {
     implicit session => {
       (for {c <- Events.sortBy(_.name)
-//            t <- c.typEvent
+      //            t <- c.typEvent
       } yield c).list
     }
   }
@@ -77,9 +87,15 @@ object Events extends Table[Event]("fam_event") {
     }
   }
 
-  def findById(id: Long): Option[Event] = DB.withSession {
+  def findById(id: Long): Option[(Event, TypEvent, EventStatus)] = DB.withSession {
     implicit session => {
-      Events.byId(id).firstOption
+      val query = (
+        for {e <- Events
+             if e.id === id
+             te <- e.typEvent
+             es <- e.eventStatus
+        } yield (e, te, es))
+      query.firstOption
     }
   }
 

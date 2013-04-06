@@ -1,26 +1,32 @@
-@(message: String, event: Event)(implicit flash: play.api.mvc.Flash)
+@(message: String, data: (Event, TypEvent, EventStatus))(implicit flash: play.api.mvc.Flash)
 
 
 @main(message) {
-<div class="header">
+    @Option(data).map { case (event, typEvent, eventStatus) =>
+    <div class="header">
 
-    <dl class="dl-horizontal">
-        <dt>Id</dt>
-        <dd>@event.id</dd>
-        <dt>Name</dt>
-        <dd>@event.name</dd>
-        <dt>Date</dt>
-        <dd>@event.dtEvent</dd>
-        <dt>Duration</dt>
-        <dd>@event.duration</dd>
-    </dl>
-</div>
+        <dl class="dl-horizontal">
+            <dt>Id</dt>
+            <dd>@event.id</dd>
+            <dt>Name</dt>
+            <dd>@event.name</dd>
+            <dt>Date</dt>
+            <dd>@event.dtEvent.toString("dd MMMM yyyy HH:mm")</dd>
+            <dt>Duration</dt>
+            <dd>@event.duration minutes</dd>
+            <dt>Type</dt>
+            <dd>@typEvent.name</dd>
+            <dt>Status</dt>
+            <dd>@eventStatus.name</dd>
+        </dl>
+    </div>
 
-<div class="form-actions">
-    @**<input type="submit" value="Edit this event" class="btn btn-primary"> **@
-    <a href="@routes.Events.edit(event.id.getOrElse(0))" class="btn btn-primary">Edit</a>
-    <a href="@routes.Events.list()" class="btn">Cancel</a>
-    <a href="@routes.Events.create()" class="btn">New</a>
-</div>
+    <div class="form-actions">
+        @**<input type="submit" value="Edit this event" class="btn btn-primary"> **@
+        <a href="@routes.Events.edit(event.id.getOrElse(0))" class="btn btn-primary">Edit</a>
+        <a href="@routes.Events.list()" class="btn">Cancel</a>
+        <a href="@routes.Events.create()" class="btn">New</a>
+    </div>
 
+    }
 }

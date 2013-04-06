@@ -39,6 +39,7 @@ object Matchs extends Table[Match]("fam_match") {
   def event = foreignKey("EVENT_FK", eventId, Events)(_.id)
 
   val byId = createFinderBy(_.id)
+  val byEventId = createFinderBy(_.eventId)
 
   lazy val pageSize = 10
 
@@ -72,6 +73,11 @@ object Matchs extends Table[Match]("fam_match") {
   def findById(id: Long): Option[Match] = DB.withSession {
     implicit session => {
       Matchs.byId(id).firstOption
+    }
+  }
+ def findByEventId(id: Long): Option[Match] = DB.withSession {
+    implicit session => {
+      Matchs.byEventId(id).firstOption
     }
   }
 

@@ -87,6 +87,13 @@ POST    /events/new                  controllers.Events.save
 GET     /events/$id<[0-9]+>                  controllers.Events.view(id : Long)
 GET     /events/json            controllers.Events.eventsData
 GET     /events/agenda            controllers.Events.agenda
+# EventStatuses
+GET     /eventStatuses                      controllers.EventStatuses.list(p:Int ?= 0,s:Int ?= 2)
+GET     /eventStatuses/edit/$id<[0-9]+>             controllers.EventStatuses.edit(id : Long)
+POST    /eventStatuses/edit/$id<[0-9]+>             controllers.EventStatuses.update(id : Long)
+GET     /eventStatuses/new                  controllers.EventStatuses.create
+POST    /eventStatuses/new                  controllers.EventStatuses.save
+GET     /eventStatuses/$id<[0-9]+>                  controllers.EventStatuses.view(id : Long)
 
 # Places
 GET     /places                      controllers.Places.list(p:Int ?= 0,s:Int ?= 2)
@@ -147,6 +154,7 @@ POST    /matchs/edit/$id<[0-9]+>            controllers.Matchs.update(id : Long)
 GET     /matchs/new                         controllers.Matchs.create
 POST    /matchs/new                         controllers.Matchs.save
 GET     /matchs/$id<[0-9]+>                 controllers.Matchs.view(id : Long)
+GET     /matchs/event/$id<[0-9]+>           controllers.Matchs.byEventId(id : Long)
 # TypCards
 GET     /typCards                             controllers.TypCards.list(p:Int ?= 0,s:Int ?= 1)
 GET     /typCards/edit/$id<[0-9]+>            controllers.TypCards.edit(id : Long)

@@ -18,6 +18,66 @@ fam.filter('eventBkgColor', function () {
         return CSS[id];
     };
 });
+fam.filter('eventColor', function () {
+    var CSS = {
+        1: "red",
+        2: "green",
+        3: "orange"
+    };
+
+    return function (id) {
+        return CSS[id];
+    };
+});
+fam.filter('eventTextColor', function () {
+    var CSS = {
+        1: "black",
+        2: "grey",
+        3: "white"
+    };
+
+    return function (id) {
+        return CSS[id];
+    };
+});
+fam.filter('eventBorderColor', function () {
+    var CSS = {
+        1: "red",
+        2: "green",
+        3: "orange"
+    };
+
+    return function (id) {
+        return CSS[id];
+    };
+});
+
+fam.filter('eventUrl', function () {
+
+    return function (data) {
+        console.log(data);
+        var url = '';
+        switch(data.typEventId){
+            case  1 : // Workout
+                url += '/workouts/';
+                break;
+            case  2 : // Match
+                url += '/matchs/' ;
+                break;
+            default:
+                url += '/events/';
+                break;
+        }
+        switch(data.eventStatusId){
+            case  27 : // Fini
+                url += 'event/';
+                break;
+            default:
+                break;
+        }
+        return url + data.id
+    };
+});
 
 
 function AgendaCtrl($scope, $http, $filter) {
@@ -31,6 +91,7 @@ function AgendaCtrl($scope, $http, $filter) {
         url: "https://www.google.com/calendar/feeds/os5iqgd70elova2if2f8jdffh8%40group.calendar.google.com/public/basic",
         className: 'gcal-event',           // an option!
 //        currentTimezone: 'France/Paris' // an option!
+
     };
 
     $scope.events = [
@@ -76,10 +137,11 @@ function AgendaCtrl($scope, $http, $filter) {
                         title: item.name,
                         start: dtStart,
                         end: dtEnd,
-                        url:  '/events/'+item.id,
+                        url:   $filter('eventUrl')(item),
 //                        className: 'typEvent'+item.typEventId ,
                         editable:false,
-                        backgroundColor: $filter('eventBkgColor')(item.typEventId)
+                        color: $filter('eventColor')(item.typEventId),
+                        textColor: $filter('eventTextColor')(item.typEventId)
 
                     };
                     console.log(item, event);

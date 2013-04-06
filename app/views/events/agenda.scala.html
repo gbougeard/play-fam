@@ -12,7 +12,9 @@
 @main(message, scripts) {
     <div class="well" ng-controller="AgendaCtrl">
         <div class="row" ng-controller="AgendaCtrl">
-            <div ui-calendar="{height: 450,editable: false}" class="span8 offset1 calendar" ng-model="eventSources"></div>
+            <div ui-calendar="{height: 450,editable: false,  firstDay: 1, weekNumbers: true, year :2009}"
+            class="span10 offset1 calendar"
+            ng-model="eventSources"></div>
         </div>
     </div>
 }

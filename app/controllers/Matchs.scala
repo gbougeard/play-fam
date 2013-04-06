@@ -43,12 +43,19 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
       Ok(html)
   }
 
+  def byEventId(id: Long) = Action {
+    implicit request =>
+      models.Matchs.findByEventId(id).map{
+        m => Redirect(routes.Matchs.view(m.id.getOrElse(0)))
+      } getOrElse (NotFound)
+  }
+
   def view(id: Long) = SecuredAction {
     implicit request =>
       models.Matchs.findById(id).map {
         m => {
           models.Events.findById(m.eventId.getOrElse(0)).map {
-            event => {
+            case (event, typEvent, eventStatus) => {
               models.MatchTeams.findByMatchAndHome(id).map {
                 case (home, homeTeam) => {
                   val homeGoals = models.Goals.findByMatchAndTeam(id,  homeTeam.id.getOrElse(0))

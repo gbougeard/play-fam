@@ -33,7 +33,9 @@ object Events extends Controller {
       "dtEvent" -> jodaDate,
       "duration" -> number,
       "name" -> nonEmptyText,
-      "typEventId" -> longNumber
+      "typEventId" -> longNumber,
+      "placeId" -> optional(longNumber),
+      "eventStatusId" -> longNumber
       //      "discontinued" -> optional(date("yyyy-MM-dd")),
       //      "company" -> optional(longNumber)
     )
@@ -71,7 +73,7 @@ object Events extends Controller {
   def edit(id: Long) = Action {
     implicit request =>
       models.Events.findById(id).map {
-        event => Ok(views.html.events.edit("Edit Event", id, eventForm.fill(event)))
+        case(event, typEvent, eventStatus) => Ok(views.html.events.edit("Edit Event", id, eventForm.fill(event)))
       } getOrElse (NotFound)
   }
 
