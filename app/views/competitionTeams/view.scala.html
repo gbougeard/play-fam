@@ -1,0 +1,72 @@
+@(message: String, values: (models.PlayerSeason, models.Player, models.Season, models.Club))(implicit flash: play.api.mvc.Flash)
+
+
+@main(message) {
+    @Option(values).map { case (playerSeason, player, season, club) =>
+        @club.name - saison @season.name
+<div class="header">
+
+    <dl class="dl-horizontal">
+        <dt>FirstName</dt>
+        <dd>@player.firstName</dd>
+        <dt>LastName</dt>
+        <dd>@player.lastName</dd>
+    </dl>
+
+    <dl class="dl-horizontal">
+        <dt>Height</dt>
+        <dd>@playerSeason.height</dd>
+        <dt>Weight</dt>
+        <dd>@playerSeason.weight</dd>
+    </dl>
+
+    <dl class="dl-horizontal">
+        <dt>Att</dt>
+        <dd>@playerSeason.cap_att</dd>
+        <dt>Def</dt>
+        <dd>@playerSeason.cap_def</dd>
+        <dt>Phy</dt>
+        <dd>@playerSeason.cap_phy</dd>
+        <dt>Pui</dt>
+        <dd>@playerSeason.cap_pui</dd>
+        <dt>Tec</dt>
+        <dd>@playerSeason.cap_tec</dd>
+        <dt>Vit</dt>
+        <dd>@playerSeason.cap_vit</dd>
+    </dl>
+
+    <dl class="dl-horizontal">
+        <dt>Avg assist per match</dt>
+        <dd>@playerSeason.statAvgAssistPerMatch</dd>
+        <dt>Avg goal per match</dt>
+        <dd>@playerSeason.statAvgGoalPerMatch</dd>
+        <dt>Avg note</dt>
+        <dd>@playerSeason.statAvgNote</dd>
+        <dt>Nb assist</dt>
+        <dd>@playerSeason.statNbAssist</dd>
+        <dt>Nb goal</dt>
+        <dd>@playerSeason.statNbGoal</dd>
+        <dt>Nb match</dt>
+        <dd>@playerSeason.statNbMatch</dd>
+        <dt>Nb substitute</dt>
+        <dd>@playerSeason.statNbSubstitute</dd>
+        <dt>Nb workout</dt>
+        <dd>@playerSeason.statNbWorkout</dd>
+        <dt>Time played</dt>
+        <dd>@playerSeason.statTimePlayed</dd>
+    </dl>
+</div>
+
+<div class="form-actions">
+    <a href="@routes.Players.edit(player.id.getOrElse(0))" class="btn btn-primary">Edit</a>
+    <a href="@routes.Players.list()" class="btn">Cancel</a>
+    <a href="@routes.Players.create()" class="btn">New</a>
+</div>
+    }.getOrElse {
+
+        <div class="well">
+            <em>Nothing to display</em>
+        </div>
+
+    }
+}

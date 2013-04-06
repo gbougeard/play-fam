@@ -176,7 +176,9 @@ GET     /rankings/$id<[0-9]+>                   controllers.Rankings.list(id:Lon
 GET     /playerseasons/season/$id<[0-9]+>       controllers.PlayerSeasons.bySeason(id:Long)
 GET     /playerseasons/season/$id<[0-9]+>/club/$idclub<[0-9]+> controllers.PlayerSeasons.byClubAndSeason(idclub:Long, id:Long)
 GET     /playerseasons/season/$id<[0-9]+>/club/$idclub<[0-9]+>/player/$idplayer<[0-9]+> controllers.PlayerSeasons.playerByClubAndSeason(idplayer:Long, idclub:Long, id:Long)
-
+# CompetitionTeam
+GET     /competitionteams/competition/$id<[0-9]+>   controllers.CompetitionTeams.byCompetition(id:Long)
+GET     /competitionteams/team/$id<[0-9]+>   controllers.CompetitionTeams.byTeam(id:Long)
 
 # SecureSocial
 # Login page

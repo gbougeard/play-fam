@@ -1,0 +1,37 @@
+@(message: String, currentPage: Seq[(CompetitionTeam, SeasonCompetition, Team)])(implicit flash: play.api.mvc.Flash)
+
+
+
+@main(message) {
+
+@Option(currentPage).filterNot(_.isEmpty).map { competitionteams =>
+
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+    <tr>
+     <th>Competition</th>
+     <th>Team</th>
+    </tr>
+    </thead>
+    <tbody>
+
+     @competitionteams.map {
+        case (ct, competition, team) => {
+        <tr>
+            <td>@competition</td>
+            <td>@team.name</td>
+        </tr>
+        }
+    }
+
+    </tbody>
+</table>
+
+}.getOrElse {
+
+<div class="well">
+    <em>Nothing to display</em>
+</div>
+
+}
+}

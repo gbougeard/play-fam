@@ -87,6 +87,18 @@ object SeasonCompetitions extends Table[SeasonCompetition]("fam_season_competiti
     }
   }
 
+  def findByIdComplete(id: Long): Option[(SeasonCompetition, Season, TypCompetition)] = DB.withSession {
+    implicit session => {
+      val query = (
+        for {sc <- SeasonCompetitions
+             if sc.id === id
+             s <- sc.season
+             c <- sc.typCompetition
+        } yield (sc, s, c))
+      query.firstOption
+    }
+  }
+
   def findByCategory(category: Long): Option[SeasonCompetition] = DB.withSession {
     implicit session => {
       SeasonCompetitions.byCategory(category).firstOption
