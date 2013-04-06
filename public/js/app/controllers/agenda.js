@@ -9,7 +9,7 @@
  */
 fam.filter('eventBkgColor', function () {
     var CSS = {
-        1: "red",
+        1: "grey",
         2: "green",
         3: "orange"
     };
@@ -20,8 +20,8 @@ fam.filter('eventBkgColor', function () {
 });
 fam.filter('eventColor', function () {
     var CSS = {
-        1: "red",
-        2: "green",
+        1: "Gray",
+        2: "CadetBlue",
         3: "orange"
     };
 
@@ -141,7 +141,7 @@ function AgendaCtrl($scope, $http, $filter) {
 //                        className: 'typEvent'+item.typEventId ,
                         editable:false,
                         color: $filter('eventColor')(item.typEventId),
-                        textColor: $filter('eventTextColor')(item.typEventId)
+//                        textColor: $filter('eventTextColor')(item.typEventId)
 
                     };
                     console.log(item, event);

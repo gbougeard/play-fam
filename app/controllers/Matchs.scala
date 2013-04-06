@@ -36,7 +36,7 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
   //    Ok(html)
   //  }
 
-  def list(page: Int, orderBy: Int) = SecuredAction {
+  def list(page: Int, orderBy: Int) = Action {
     implicit request =>
       val matchs = models.Matchs.findPage(page, orderBy)
       val html = views.html.matchs.list("Liste des matchs", matchs, orderBy)
@@ -50,7 +50,7 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
       } getOrElse (NotFound)
   }
 
-  def view(id: Long) = SecuredAction {
+  def view(id: Long) = Action {
     implicit request =>
       models.Matchs.findById(id).map {
         m => {
@@ -92,7 +92,7 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = Action {
+  def update(id: Long) = SecuredAction {
     implicit request =>
       Logger.info("update match " + id)
       matchForm.bindFromRequest.fold(
