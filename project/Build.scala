@@ -43,7 +43,7 @@ object ApplicationBuild extends Build {
     , "org.webjars" % "bootstrap-timepicker" % "0.2.1"
     , "org.webjars" % "bootswatch" % "2.2.2+1"
     , "org.webjars" % "font-awesome" % "3.0.2"
-    , "org.webjars" % "jquery-ui" % "1.9.2"
+    , "org.webjars" % "jquery-ui" % "1.10.2"
     , "org.webjars" % "momentjs" % "1.7.2"
     , "org.webjars" % "tinymce-jquery" % "3.4.9"
     , "org.webjars" % "famfamfam-flags" % "0.0"

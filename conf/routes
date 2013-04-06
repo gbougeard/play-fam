@@ -85,6 +85,8 @@ POST    /events/edit/$id<[0-9]+>             controllers.Events.update(id : Long
 GET     /events/new                  controllers.Events.create
 POST    /events/new                  controllers.Events.save
 GET     /events/$id<[0-9]+>                  controllers.Events.view(id : Long)
+GET     /events/json            controllers.Events.eventsData
+GET     /events/agenda            controllers.Events.agenda
 
 # Places
 GET     /places                      controllers.Places.list(p:Int ?= 0,s:Int ?= 2)

@@ -113,5 +113,7 @@ object Events extends Table[Event]("fam_event") {
       query.list.map(row => (row._1.toString, row._2))
   }
 
+  implicit val eventFormat = Json.format[Event]
+
 }
 

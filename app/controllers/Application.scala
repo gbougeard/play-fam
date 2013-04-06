@@ -48,7 +48,9 @@ object Application extends Controller with securesocial.core.SecureSocial {
       import routes.javascript._
       Ok(
         Routes.javascriptRouter("jsRoutes")(
-          Places.gmapData
+          Places.gmapData,
+          Events.eventsData,
+          Events.view
         )
       ).as("text/javascript")
   }

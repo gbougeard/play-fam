@@ -1,0 +1,18 @@
+@(message: String)
+
+@scripts = {
+
+    <script type="text/javascript" src='@routes.Assets.at("js/fullcalendar.js")'></script>
+   @* <script src="http://arshaw.com/js/fullcalendar-1.5.3/fullcalendar/gcal.js"></script> *@
+    <script type="text/javascript" src='@routes.Assets.at("js/gcal.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("js/app/controllers/agenda.js")'></script>
+
+}
+
+@main(message, scripts) {
+    <div class="well" ng-controller="AgendaCtrl">
+        <div class="row" ng-controller="AgendaCtrl">
+            <div ui-calendar="{height: 450,editable: false}" class="span8 offset1 calendar" ng-model="eventSources"></div>
+        </div>
+    </div>
+}

@@ -3,11 +3,14 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.{Event}
+import models.Event
+import models.Events._
 
 import slick.session.Session
 import com.yammer.metrics.Metrics
 import com.yammer.metrics.scala.Timer
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
 
 object Events extends Controller {
@@ -117,6 +120,20 @@ object Events extends Controller {
     implicit request =>
       models.Events.delete(id)
       Home.flashing("success" -> "Event has been deleted")
+  }
+
+  /**
+   * Display the 'new computer form'.
+   */
+  def agenda = Action {
+    implicit request =>
+      Ok(views.html.events.agenda("Agenda"))
+  }
+
+  def eventsData = Action {
+    implicit request =>
+      val events = models.Events.findAll
+      Ok(Json.toJson(events))
   }
 
 }
