@@ -80,38 +80,68 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = SecuredAction {
+  def debrief(id: Long) = Action {
     implicit request =>
       models.Matchs.findById(id).map {
-        m => Ok(views.html.matchs.edit("Edit Match", id, matchForm.fill(m)))
+        m => {
+          models.Events.findById(m.eventId.getOrElse(0)).map {
+            case (event, typEvent, eventStatus) => {
+              models.MatchTeams.findByMatchAndHome(id).map {
+                case (home, homeTeam) => {
+                  val homeGoals = models.Goals.findByMatchAndTeam(id,  homeTeam.id.getOrElse(0))
+                  val homePlayers = models.MatchPlayers.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
+                  val homeSubs = models.Substitutions.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
+                  val homeCards = models.Cards.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
+
+                  models.MatchTeams.findByMatchAndAway(id).map {
+                  case  (away, awayTeam ) => {
+                    val awayGoals = models.Goals.findByMatchAndTeam(id,  awayTeam.id.getOrElse(0))
+                    val awayPlayers = models.MatchPlayers.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
+                    val awaySubs = models.Substitutions.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
+                    val awayCards = models.Cards.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
+                      Ok(views.html.matchs.edit("Debrief Match", m, event, (home,homeTeam), (away, awayTeam), homeGoals, awayGoals,  homePlayers, awayPlayers, homeSubs, awaySubs, homeCards, awayCards))
+                    }
+                  } getOrElse (NotFound)
+                }
+              } getOrElse (NotFound)
+            }
+          } getOrElse (NotFound)
+        }
       } getOrElse (NotFound)
   }
+
+//  def edit(id: Long) = SecuredAction {
+//    implicit request =>
+//      models.Matchs.findById(id).map {
+//        m => Ok(views.html.matchs.edit("Edit Match", id, matchForm.fill(m)))
+//      } getOrElse (NotFound)
+//  }
 
   /**
    * Handle the 'edit form' submission
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = SecuredAction {
-    implicit request =>
-      Logger.info("update match " + id)
-      matchForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.matchs.edit("Edit Match - errors", id, formWithErrors)),
-        m => {
-          models.Matchs.update(id, m)
-          Redirect(routes.Matchs.edit(id)).flashing("success" -> "Match %s has been updated".format(m.id))
-          //          Redirect(routes.Matchs.list(0, 2))
-        }
-      )
-  }
+//  def update(id: Long) = SecuredAction {
+//    implicit request =>
+//      Logger.info("update match " + id)
+//      matchForm.bindFromRequest.fold(
+//        formWithErrors => BadRequest(views.html.matchs.edit("Edit Match - errors", id, formWithErrors)),
+//        m => {
+//          models.Matchs.update(id, m)
+//          Redirect(routes.Matchs.debrief(id)).flashing("success" -> "Match %s has been updated".format(m.id))
+//          //          Redirect(routes.Matchs.list(0, 2))
+//        }
+//      )
+//  }
 
   /**
    * Display the 'new computer form'.
    */
-  def create = SecuredAction {
-    implicit request =>
-      Ok(views.html.matchs.create("New Match", matchForm))
-  }
+//  def create = SecuredAction {
+//    implicit request =>
+//      Ok(views.html.matchs.create("New Match", matchForm))
+//  }
 
   /**
    * Handle the 'new computer form' submission.

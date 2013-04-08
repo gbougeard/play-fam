@@ -47,6 +47,8 @@ object ApplicationBuild extends Build {
     , "org.webjars" % "momentjs" % "1.7.2"
     , "org.webjars" % "tinymce-jquery" % "3.4.9"
     , "org.webjars" % "famfamfam-flags" % "0.0"
+    , "org.webjars" % "x-editable-bootstrap" % "1.4.3"
+    , "org.webjars" % "select2" % "3.3.1"
   )
 
 

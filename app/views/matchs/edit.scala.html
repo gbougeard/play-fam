@@ -1,30 +1,169 @@
-@(message: String, id: Long, matchForm: Form[Match])(implicit flash: play.api.mvc.Flash)
+@(message: String,
+m: Match,
+event:Event,
+home: (MatchTeam, Team),
+away: (MatchTeam, Team),
+homeGoals: Seq[(Goal, Option[Player])],
+awayGoals: Seq[(Goal, Option[Player])],
+homePlayers:Seq[(MatchPlayer, Match, Player, Team)],
+awayPlayers:Seq[(MatchPlayer, Match, Player, Team)],
+homeSubs:Seq[(Substitution, Match, Team, Player, Player)],
+awaySubs:Seq[(Substitution, Match, Team, Player, Player)],
+homeCards:Seq[(Card, Match, Team, Player, TypCard)],
+awayCards:Seq[(Card, Match, Team, Player, TypCard)] )(implicit flash: play.api.mvc.Flash)
 
-@import helper._
+@scripts = {
+    <script>
+            var f = 'bootstrap';
+            //turn to inline mode
+            $.fn.editable.defaults.mode = 'inline';
+            $(function(){
+                $('#homeScore').editable();
+                $('#awayScore').editable();
+ 		$('#homeResume').editable();
+                $('#awayResume').editable();
+            });
+    </script>
 
-@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+}
 
-@main(message) {
-
-    @flash.get("success").map { message =>
-        <div class="alert alert-success">
-            <strong>Done!</strong> @message
+@main(event.name+" "+event.dtEvent.toString("dd MM yyyy"), scripts) {
+    <div class="clearfix"></div>
+    <div id="preview">
+        @Option(home).map { case (mtHome, homeTeam) =>
+        <div class="span5 offset1">
+            <div class="well">
+            <h2 class="text-center">@homeTeam.name</h2>
+            <h3 class="text-right muted"><a href="#" id="homeScore" data-type="text" data-pk="1" data-url="/post" data-original-title="Enter home score">@mtHome.goalScored</a></h3>
+            <hr>
+            <ul class="unstyled">
+                @homeGoals.map { case (goal, striker) =>
+                <li>
+                    <p>
+                    <span class="span1">@goal.goalTime'</span>
+                        <span class="span11">@striker.map(_.displayName).getOrElse {<em>-</em>}
+                            <em>
+                                            @if(goal.csc){csc}
+                                            @if(goal.penalty){sp}
+                </em>
+                </span>
+                </p>
+                </li>
+                }
+            </ul>
+                &nbsp;
+            <ul class="unstyled">
+                @homeCards.map { case (card, m, team, player, typCard) =>
+                <li>
+                    <p>
+                    <span class="span1">@card.time'</span>
+                        <span class="span11">@player.displayName <em>@typCard.name</em>
+                </span>
+                </p>
+                </li>
+                }
+            </ul>
+                &nbsp;
+            <hr>
+            <ul class="unstyled">
+                @homeSubs.map { case (s, m, team, in, out) =>
+                <li>
+                    <p>
+                    <span class="span1">@s.time'</span>
+                    <span class="span5 text-error">@out.displayName</span>
+                    <span class="span1"><i class="icon-exchange"></i></span>
+                        <span class="span5 text-success">@in.displayName</span>
+                </p>
+                </li>
+                }
+            </ul>
+                &nbsp;
+            <hr>
+            <ul class="unstyled">
+                @homePlayers.map { case (mp, m, p, t) =>
+                <li>
+                    <a href="#" data-toggle="tooltip" title="@mp.comments">
+                    <span class="span1"><span class="badge">@mp.num</span></span>
+                    <span class="span9">@p.displayName</span>
+                    <span class="span1">@mp.note</span>
+                        <span class="span1">@mp.timePlayed'</span>
+                </a>
+                </li>
+                }
+            </ul>
+                &nbsp;
+            <hr>
+                <p><div id="homeResume" data-type="wysihtml5" data-pk="1">@Html(mtHome.resume.getOrElse(""))</div></p>
         </div>
-    }
-
-    @form(routes.Matchs.update(id), 'class -> "form-horizontal") {
-
-        @inputText(matchForm("id"), '_label -> "Id")
-        @inputText(matchForm("firstName"), '_label -> "FirstName")
-        @inputText(matchForm("lastName"), '_label -> "LastName")
-        @inputText(matchForm("email"), '_label -> "Email")
-
-        <div class="form-actions">
-            <input type="submit" value="Save this match" class="btn btn-primary">
-            <a href="@routes.Matchs.view(id)" class="btn">View</a>
-            <a href="@routes.Matchs.list(0)" class="btn">Cancel</a>
-            <a href="@routes.Matchs.create()" class="btn">New</a>
         </div>
+        }
+        @Option(away).map { case (mtAway, awayTeam) =>
+        <div class="span5">
+            <div class="well">
+            <h2 class="text-center">@awayTeam.name</h2>
+            <h3 class="text-left muted"><a href="#" id="awayScore" data-type="text" data-pk="1" data-url="/post" data-original-title="Enter home score">@mtAway.goalScored</a></h3>
+            <hr>
+            <ul class="unstyled">
+                @awayGoals.map { case (goal, striker) =>
+                <li>
+                <div class="span1">@goal.goalTime'</div>
+                    <div class="span11">@striker.map(_.displayName).getOrElse {<em>-</em>}
+                        <em>
+                                    @if(goal.csc){csc}
+                                    @if(goal.penalty){sp}
+                </em>
+                </div>
+                </li>
+                }
+            </ul>
+                &nbsp;
+            <ul class="unstyled">
+                @awayCards.map { case (card, m, team, player, typCard) =>
+                <li>
+                    <p>
+                    <span class="span1">@card.time'</span>
+                        <span class="span11">@player.displayName <em>@typCard.name</em>
+                </span>
+                </p>
+                </li>
+                }
+            </ul>
+                &nbsp;
+            <hr>
+            <ul class="unstyled">
+                @awaySubs.map { case (s, m, team, in, out) =>
+                <li>
+                    <p>
+                    <span class="span1">@s.time'</span>
+                    <span class="span5 text-error">@out.displayName</span>
+                    <span class="span1"><i class="icon-exchange"></i></span>
+                        <span class="span5 text-success">@in.displayName</span>
+                </p>
+                </li>
+                }
+            </ul>
+                &nbsp;
+            <hr>
+            <ul class="unstyled">
+                @awayPlayers.map { case (mp, m, p, t) =>
+                <li>
+                    <a href="#" data-toggle="tooltip" title="@mp.comments">
+                    <div class="span1"><span class="badge">@mp.num</span></div>
+                    <div class="span9">@p.displayName</div>
+                    <div class="span1">@mp.note</div>
+                        <div class="span1">@mp.timePlayed'</div>
+                </a>
+                </li>
+                }
+            </ul>
+                &nbsp;
+            <hr>
+                <p><div id="awayResume" data-type="wysihtml5" data-pk="1">@Html(mtAway.resume.getOrElse(""))</div></p>
+        </div>
+        </div>
+        }
+    </div>
 
-    }
+
+
 }
