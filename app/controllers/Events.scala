@@ -140,4 +140,10 @@ object Events extends Controller {
       Ok(Json.toJson(events))
   }
 
+  def jsonById(id:Long) = Action {
+    implicit request =>
+      val m = models.Events.findById(id)
+      Ok(Json.toJson(m))
+  }
+
 }

@@ -22,6 +22,14 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)])(implicit flash: play.api.mv
                 $('#awayScore').editable();
                 $('#homeResume').editable();
                 $('#awayResume').editable();
+                $('#anote1').editable({
+            source: [
+              {value: 0, text: '0'},
+              {value: 1, text: '1'},
+              {value: 2, text: '2'}
+           ]
+            });
+                 
             });
     </script>
 
@@ -31,7 +39,7 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)])(implicit flash: play.api.mv
     <div class="clearfix"></div>
     <div id="preview">
         @Option(home).map { case (mtHome, homeTeam) =>
-        <div class="span5 offset1">
+        <div class="span6">
             <div class="well">
                 <h2 class="text-center">@homeTeam.name</h2>
                 <h3 class="text-right muted">
@@ -86,7 +94,14 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)])(implicit flash: play.api.mv
                         <a href="#" data-toggle="tooltip" title="@mp.comments">
                             <span class="span1"><span class="badge">@mp.num</span></span>
                             <span class="span9">@p.displayName</span>
-                            <span class="span1">@mp.note</span>
+                            <span class="span1">
+                            <select ui-select2 ng-model="select2">
+                            <option value="">Pick a number</option>
+                            <option value="one">First</option>
+                            <option value="two">Second</option>
+                            <option value="three">Third</option>
+                            </select>
+                            </span>
                             <span class="span1">@mp.timePlayed'</span>
                         </a>
                     </li>
@@ -99,7 +114,7 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)])(implicit flash: play.api.mv
         </div>
         }
         @Option(away).map { case (mtAway, awayTeam) =>
-        <div class="span5">
+        <div class="span6">
             <div class="well">
                 <h2 class="text-center">@awayTeam.name</h2>
                 <h3 class="text-left muted">
@@ -152,7 +167,14 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)])(implicit flash: play.api.mv
                         <a href="#" data-toggle="tooltip" title="@mp.comments">
                             <div class="span1"><span class="badge">@mp.num</span></div>
                             <div class="span9">@p.displayName</div>
-                            <div class="span1">@mp.note</div>
+                            <span class="span1">
+                            <select ui-select2 ng-model="select2">
+                                <option value="">N</option>
+                                <option value="one">0</option>
+                                <option value="two">1</option>
+                                <option value="three">2</option>
+                            </select>
+                            </span>
                             <div class="span1">@mp.timePlayed'</div>
                         </a>
                     </li>

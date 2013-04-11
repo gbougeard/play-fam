@@ -7,6 +7,7 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Match
+import play.api.libs.json._
 
 import play.api.Logger
 
@@ -165,6 +166,12 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
     implicit request =>
       models.Matchs.delete(id)
       Redirect(routes.Matchs.list(0, 0)).flashing("success" -> "Match has been deleted")
+  }
+
+  def jsonById(id:Long) = Action {
+    implicit request =>
+      val m = models.Matchs.findById(id)
+      Ok(Json.toJson(m))
   }
 
 }

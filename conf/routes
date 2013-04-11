@@ -79,14 +79,15 @@ GET     /seasons/new                  controllers.Seasons.create
 POST    /seasons/new                  controllers.Seasons.save
 GET     /seasons/$id<[0-9]+>                  controllers.Seasons.view(id : Long)
 # Events
-GET     /events                      controllers.Events.list(p:Int ?= 0,s:Int ?= 2)
-GET     /events/edit/$id<[0-9]+>             controllers.Events.edit(id : Long)
-POST    /events/edit/$id<[0-9]+>             controllers.Events.update(id : Long)
-GET     /events/new                  controllers.Events.create
-POST    /events/new                  controllers.Events.save
-GET     /events/$id<[0-9]+>                  controllers.Events.view(id : Long)
-GET     /events/json            controllers.Events.eventsData
-GET     /events/agenda            controllers.Events.agenda
+GET     /events                         controllers.Events.list(p:Int ?= 0,s:Int ?= 2)
+GET     /events/edit/$id<[0-9]+>        controllers.Events.edit(id : Long)
+POST    /events/edit/$id<[0-9]+>        controllers.Events.update(id : Long)
+GET     /events/new                     controllers.Events.create
+POST    /events/new                     controllers.Events.save
+GET     /events/$id<[0-9]+>             controllers.Events.view(id : Long)
+GET     /events/json                    controllers.Events.eventsData
+GET     /events/$id<[0-9]+>.json        controllers.Events.jsonById(id: Long)
+GET     /events/agenda                  controllers.Events.agenda
 # EventStatuses
 GET     /eventStatuses                      controllers.EventStatuses.list(p:Int ?= 0,s:Int ?= 2)
 GET     /eventStatuses/edit/$id<[0-9]+>             controllers.EventStatuses.edit(id : Long)
@@ -149,7 +150,8 @@ POST    /fixtures/new                  controllers.Fixtures.save
 GET     /fixtures/$id<[0-9]+>                  controllers.Fixtures.view(id : Long)
 # Matchs
 GET     /matchs                             controllers.Matchs.list(p:Int ?= 0,s:Int ?= 1)
-GET     /matchs/debrief/$id<[0-9]+>            controllers.Matchs.debrief(id : Long)
+GET     /matchs/debrief/$id<[0-9]+>         controllers.Matchs.debrief(id : Long)
+GET     /matchs/$id<[0-9]+>.json            controllers.Matchs.jsonById(id: Long)
 # POST    /matchs/edit/$id<[0-9]+>            controllers.Matchs.update(id : Long)
 # GET     /matchs/new                         controllers.Matchs.create
 POST    /matchs/new                         controllers.Matchs.save
@@ -170,15 +172,24 @@ GET     /positions/new                         controllers.Positions.create
 POST    /positions/new                         controllers.Positions.save
 GET     /positions/$id<[0-9]+>                 controllers.Positions.view(id : Long)
 # Rankings
-GET     /rankings                       controllers.Rankings.index
+GET     /rankings                               controllers.Rankings.index
 GET     /rankings/$id<[0-9]+>                   controllers.Rankings.list(id:Long, s:Int ?= 1)
 # PlayerSeasons
-GET     /playerseasons/season/$id<[0-9]+>       controllers.PlayerSeasons.bySeason(id:Long)
-GET     /playerseasons/season/$id<[0-9]+>/club/$idclub<[0-9]+> controllers.PlayerSeasons.byClubAndSeason(idclub:Long, id:Long)
+GET     /playerseasons/season/$id<[0-9]+>                                               controllers.PlayerSeasons.bySeason(id:Long)
+GET     /playerseasons/season/$id<[0-9]+>/club/$idclub<[0-9]+>                          controllers.PlayerSeasons.byClubAndSeason(idclub:Long, id:Long)
 GET     /playerseasons/season/$id<[0-9]+>/club/$idclub<[0-9]+>/player/$idplayer<[0-9]+> controllers.PlayerSeasons.playerByClubAndSeason(idplayer:Long, idclub:Long, id:Long)
 # CompetitionTeam
 GET     /competitionteams/competition/$id<[0-9]+>   controllers.CompetitionTeams.byCompetition(id:Long)
-GET     /competitionteams/team/$id<[0-9]+>   controllers.CompetitionTeams.byTeam(id:Long)
+GET     /competitionteams/team/$id<[0-9]+>          controllers.CompetitionTeams.byTeam(id:Long)
+# Goals
+GET     /goals/match/$idmatch<[0-9]+>/team/$idteam<[0-9]+>.json             controllers.Goals.jsonByMatchAndTeam(idmatch:Long, idteam:Long)
+# Substitutions
+GET     /substitutions/match/$idmatch<[0-9]+>/team/$idteam<[0-9]+>.json     controllers.Substitutions.jsonByMatchAndTeam(idmatch:Long, idteam:Long)
+# Cards
+GET     /cards/match/$idmatch<[0-9]+>/team/$idteam<[0-9]+>.json             controllers.Cards.jsonByMatchAndTeam(idmatch:Long, idteam:Long)
+# MatchTeam
+GET     /match/$idmatch<[0-9]+>/home.json        controllers.MatchTeams.jsonByMatchAndHome(idmatch:Long)
+GET     /match/$idmatch<[0-9]+>/away.json        controllers.MatchTeams.jsonByMatchAndAway(idmatch:Long)
 
 # SecureSocial
 # Login page
