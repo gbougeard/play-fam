@@ -8,6 +8,8 @@ import play.api.db.slick.DB
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
+import models.Players._
+
 case class Goal(id: Option[Long],
                 matchId: Long,
                 teamId: Long,
@@ -84,5 +86,15 @@ object Goals extends Table[Goal]("fam_goal") {
 
 
   implicit val goalFormat = Json.format[Goal]
+
+  implicit val goalCompleteReads: Reads[(Goal, Option[Player])] = (
+    (__ \ 'goal).read[Goal] ~
+      (__ \ 'player).readNullable[Player]
+    ) tupled
+
+  implicit val goalCompleteWrites: Writes[(Goal, Option[Player])] = (
+    (__ \ 'goal).write[Goal] ~
+      (__ \ 'player).write[Option[Player]]
+    ) tupled
 
 }

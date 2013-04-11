@@ -8,6 +8,11 @@ import play.api.db.slick.DB
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
+import models.Matchs._
+import models.Teams._
+import models.Players._
+import models.TypCards._
+
 import play.api.Logger
 
 case class Card(id: Option[Long],
@@ -80,5 +85,23 @@ object Cards extends Table[Card]("fam_card") {
       Cards.where(_.id === id).delete
     }
   }
+
+  implicit val cardFormat = Json.format[Card]
+
+  implicit val cardCompleteReads: Reads[(Card, Match, Team, Player, TypCard)] = (
+    (__ \ 'card).read[Card] ~
+      (__ \ 'match).read[Match] ~
+      (__ \ 'team).read[Team] ~
+      (__ \ 'player).read[Player] ~
+      (__ \ 'typcard).read[TypCard]
+    ) tupled
+
+  implicit val cardCompleteWrites: Writes[(Card, Match, Team, Player, TypCard)] = (
+    (__ \ 'card).write[Card] ~
+      (__ \ 'match).write[Match] ~
+      (__ \ 'team).write[Team] ~
+      (__ \ 'player).write[Player] ~
+      (__ \ 'typcard).write[TypCard]
+    ) tupled
 
 }

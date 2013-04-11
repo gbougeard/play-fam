@@ -73,7 +73,7 @@ object Events extends Controller {
   def edit(id: Long) = Action {
     implicit request =>
       models.Events.findById(id).map {
-        case(event, typEvent, eventStatus) => Ok(views.html.events.edit("Edit Event", id, eventForm.fill(event)))
+        case (event, typEvent, eventStatus) => Ok(views.html.events.edit("Edit Event", id, eventForm.fill(event)))
       } getOrElse (NotFound)
   }
 
@@ -140,10 +140,12 @@ object Events extends Controller {
       Ok(Json.toJson(events))
   }
 
-  def jsonById(id:Long) = Action {
+  def jsonById(id: Long) = Action {
     implicit request =>
-      val m = models.Events.findById(id)
-      Ok(Json.toJson(m))
+      models.Events.findById(id).map {
+        m => Ok(Json.toJson(m))
+      } getOrElse (NotFound)
+
   }
 
 }

@@ -11,6 +11,9 @@ import play.api.libs.functional.syntax._
 import org.joda.time.DateTime
 import java.sql.Timestamp
 
+import models.TypEvents._
+import models.EventStatuses._
+
 case class Event(id: Option[Long],
                  dtEvent: DateTime,
                  duration: Int,
@@ -138,6 +141,18 @@ object Events extends Table[Event]("fam_event") {
   }
 
   implicit val eventFormat = Json.format[Event]
+
+  implicit val eventCompleteReads: Reads[(Event, TypEvent, EventStatus)] = (
+    (__ \ 'event).read[Event] ~
+      (__ \ 'typevent).read[TypEvent] ~
+      (__ \ 'eventstatus).read[EventStatus]
+    ) tupled
+
+  implicit val eventCompleteWrites: Writes[(Event, TypEvent, EventStatus)] = (
+    (__ \ 'event).write[Event] ~
+      (__ \ 'typevent).write[TypEvent] ~
+      (__ \ 'eventstatus).write[EventStatus]
+    ) tupled
 
 }
 

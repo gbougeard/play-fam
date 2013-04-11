@@ -13,6 +13,8 @@ homeCards:Seq[(Card, Match, Team, Player, TypCard)],
 awayCards:Seq[(Card, Match, Team, Player, TypCard)])(implicit flash: play.api.mvc.Flash)
 
 @scripts = {
+    <script type="text/javascript" src='@routes.Assets.at("js/app/controllers/debriefing.js")'></script>
+
     <script>
             var f = 'bootstrap';
             //turn to inline mode
@@ -36,6 +38,7 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)])(implicit flash: play.api.mv
 }
 
 @main(event.name+" "+event.dtEvent.toString("dd MM yyyy"), scripts) {
+<div class="row-fluid" ng-controller="DebriefingCtrl">
     <div class="clearfix"></div>
     <div id="preview">
         @Option(home).map { case (mtHome, homeTeam) =>
@@ -186,5 +189,6 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)])(implicit flash: play.api.mv
             </div>
         </div>
         }
+    </div>
     </div>
 }

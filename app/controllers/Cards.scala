@@ -2,6 +2,7 @@ package controllers
 
 import play.api.mvc._
 import models.Card
+import models.Cards._
 
 import com.yammer.metrics.Metrics
 import com.yammer.metrics.scala.Timer
@@ -15,8 +16,8 @@ object Cards extends Controller {
 
   def jsonByMatchAndTeam(idMatch:Long, idTeam:Long) = Action {
     implicit request =>
-      val goals = models.Cards.findByMatchAndTeam(idMatch, idTeam)
-      Ok(Json.toJson(goals))
+      val cards = models.Cards.findByMatchAndTeam(idMatch, idTeam)
+      Ok(Json.toJson(cards))
   }
 
 }

@@ -127,4 +127,6 @@ object Players extends Table[Player]("fam_player") {
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))
   }
+
+  implicit val playerFormat = Json.format[Player]
 }

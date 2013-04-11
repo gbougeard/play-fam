@@ -8,6 +8,10 @@ import play.api.db.slick.DB
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
+import models.Matchs._
+import models.Teams._
+import models.Players._
+
 import play.api.Logger
 
 case class Substitution(id: Option[Long],
@@ -80,5 +84,23 @@ object Substitutions extends Table[Substitution]("fam_substitution") {
       Substitutions.where(_.id === id).delete
     }
   }
+
+  implicit val substitutionFormat = Json.format[Substitution]
+
+  implicit val subCompleteReads: Reads[(Substitution, Match, Team, Player, Player)] = (
+    (__ \ 'substitution).read[Substitution] ~
+      (__ \ 'match).read[Match] ~
+      (__ \ 'team).read[Team] ~
+        (__ \ 'striker).read[Player] ~
+        (__ \ 'assist).read[Player]
+    ) tupled
+
+  implicit val subCompleteWrites: Writes[(Substitution, Match, Team, Player, Player)] = (
+    (__ \ 'substitution).write[Substitution] ~
+      (__ \ 'match).write[Match] ~
+      (__ \ 'team).write[Team] ~
+      (__ \ 'striker).write[Player] ~
+      (__ \ 'assist).write[Player]
+    ) tupled
 
 }

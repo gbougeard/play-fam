@@ -4,6 +4,7 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Goal
+import models.Goals._
 
 import com.yammer.metrics.Metrics
 import com.yammer.metrics.scala.Timer

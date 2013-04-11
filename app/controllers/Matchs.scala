@@ -7,6 +7,7 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Match
+import models.Matchs._
 import play.api.libs.json._
 
 import play.api.Logger
@@ -170,8 +171,9 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
 
   def jsonById(id:Long) = Action {
     implicit request =>
-      val m = models.Matchs.findById(id)
-      Ok(Json.toJson(m))
+      models.Matchs.findById(id).map {
+       m => Ok(Json.toJson(m))
+      } getOrElse(NotFound)
   }
 
 }

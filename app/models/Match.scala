@@ -100,5 +100,6 @@ object Matchs extends Table[Match]("fam_match") {
       Matchs.where(_.id === matchId).delete
     }
   }
+  implicit val matchFormat = Json.format[Match]
 
 }

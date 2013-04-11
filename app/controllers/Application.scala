@@ -50,7 +50,15 @@ object Application extends Controller with securesocial.core.SecureSocial {
         Routes.javascriptRouter("jsRoutes")(
           Places.gmapData,
           Events.eventsData,
-          Events.view
+          Events.view,
+          Matchs.jsonById,
+          Events.jsonById,
+          Cards.jsonByMatchAndTeam,
+          Goals.jsonByMatchAndTeam,
+          Substitutions.jsonByMatchAndTeam,
+          MatchTeams.jsonByMatchAndHome,
+          MatchTeams.jsonByMatchAndAway,
+          MatchPlayers.jsonByMatchAndTeam
         )
       ).as("text/javascript")
   }

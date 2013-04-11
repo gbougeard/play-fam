@@ -2,6 +2,7 @@ package controllers
 
 import play.api.mvc._
 import models.MatchPlayer
+import models.MatchPlayers._
 
 import com.yammer.metrics.Metrics
 import com.yammer.metrics.scala.Timer

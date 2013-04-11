@@ -187,6 +187,8 @@ GET     /goals/match/$idmatch<[0-9]+>/team/$idteam<[0-9]+>.json             cont
 GET     /substitutions/match/$idmatch<[0-9]+>/team/$idteam<[0-9]+>.json     controllers.Substitutions.jsonByMatchAndTeam(idmatch:Long, idteam:Long)
 # Cards
 GET     /cards/match/$idmatch<[0-9]+>/team/$idteam<[0-9]+>.json             controllers.Cards.jsonByMatchAndTeam(idmatch:Long, idteam:Long)
+# MatchPlayers
+GET     /players/match/$idmatch<[0-9]+>/team/$idteam<[0-9]+>.json             controllers.MatchPlayers.jsonByMatchAndTeam(idmatch:Long, idteam:Long)
 # MatchTeam
 GET     /match/$idmatch<[0-9]+>/home.json        controllers.MatchTeams.jsonByMatchAndHome(idmatch:Long)
 GET     /match/$idmatch<[0-9]+>/away.json        controllers.MatchTeams.jsonByMatchAndAway(idmatch:Long)
