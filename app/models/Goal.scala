@@ -89,12 +89,12 @@ object Goals extends Table[Goal]("fam_goal") {
 
   implicit val goalCompleteReads: Reads[(Goal, Option[Player])] = (
     (__ \ 'goal).read[Goal] ~
-      (__ \ 'player).readNullable[Player]
+      (__ \ 'striker).readNullable[Player]
     ) tupled
 
   implicit val goalCompleteWrites: Writes[(Goal, Option[Player])] = (
     (__ \ 'goal).write[Goal] ~
-      (__ \ 'player).write[Option[Player]]
+      (__ \ 'striker).write[Option[Player]]
     ) tupled
 
 }

@@ -50,19 +50,17 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)])(implicit flash: play.api.mv
                     </h3>
                 <hr>
                 <ul class="unstyled">
-                    @homeGoals.map { case (goal, striker) =>
-                    <li>
+                                                <pre>{{homeGoals | json}}</pre>
+                    <li ng-repeat="goals in homeGoals">
                         <p>
-                        	<span class="span1">@goal.goalTime'</span>
-                            <span class="span11">@striker.map(_.displayName).getOrElse {<em>-</em>}
+                        	<span class="span1">{{goals.goal.goalTime}}'</span>
+                            <span class="span11">{{goals.striker.displayName}}
         	                    <em>
-                                	@if(goal.csc){csc}
-                                    @if(goal.penalty){sp}
+
                         		</em>
                         	</span>
                    	   </p>
                     </li>
-                    }
                 </ul>
                 &nbsp;
                 <ul class="unstyled">
@@ -125,6 +123,7 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)])(implicit flash: play.api.mv
                 </h3>
                 <hr>
                 <ul class="unstyled">
+                <pre>{{awayGoals | json}}</pre>
                     @awayGoals.map { case (goal, striker) =>
                     <li>
                         <div class="span1">@goal.goalTime'</div>
@@ -164,6 +163,7 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)])(implicit flash: play.api.mv
                 </ul>
                 &nbsp;
                 <hr>
+            <pre>{{awayPlayers | json}}</pre>
                 <ul class="unstyled">
                     @awayPlayers.map { case (mp, m, p, t) =>
                     <li>

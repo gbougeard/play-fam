@@ -55,6 +55,7 @@ object MatchPlayers extends Table[MatchPlayer]("fam_match_player") {
 
   def findByMatchAndTeam(idMatch: Long, idTeam: Long): Seq[(MatchPlayer, Match, Player, Team)] = DB.withSession {
     implicit session => {
+      Logger.debug("slick MatchPlayers "+idMatch +" "+idTeam)
       val query = (
         for {mp <- MatchPlayers
              if mp.matchId === idMatch
