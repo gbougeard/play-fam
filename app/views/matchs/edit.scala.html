@@ -85,24 +85,22 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)])(implicit flash: play.api.mv
                 <hr>
                 <ul class="unstyled">
                     <li ng-repeat="players in homePlayers">
-                        <a href="#" data-toggle="tooltip" title="{{players.matchplayer.comments}}">
                             <span class="span1"><span class="badge">{{players.matchplayer.num}}</span></span>
                             <span class="span9">{{players.player.firstName}} {{players.player.lastName}} </span>
-                            <span class="span1"> {{players.matchplayer.note}}
+                            <select class="span1" ng-model="selectedItem" id="note-{{players.matchplayer.num}}" ng-options="value.id as value.name for (key, value) in notes" data-style="btn-primary" bs-select></select>
                             @*<select ui-select2 ng-model="select2">
                             <option value="">Pick a number</option>
                             <option value="one">First</option>
                             <option value="two">Second</option>
                             <option value="three">Third</option>
                             </select>  *@
-                            </span>
                             <span class="span1">{{players.matchplayer.timePlayed}}'</span>
-                        </a>
                     </li>
                 </ul>
                 &nbsp;
                 <hr>
-                <p><div id="homeResume" data-type="wysihtml5" data-pk="1">{{mtHome.resume}}</div></p>
+                <div ng-bind-html-unsafe="mtHome.matchteam.resume"></div>
+               @* <p><div id="homeResume" data-type="wysihtml5" data-pk="1"><span ng-bind-html-unsafe="mtHome.matchteam.resume"></span></div></p> *@
             </div>
         </div>
         @*** AWAY ***@
@@ -166,7 +164,8 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)])(implicit flash: play.api.mv
                 </ul>
                     &nbsp;
                 <hr>
-                <p><div id="awayResume" data-type="wysihtml5" data-pk="1">{{mtAway.resume}}</div></p>
+                <div ng-bind-html-unsafe="mtAway.matchteam.resume"></div>
+                @*<p><div id="awayResume" data-type="wysihtml5" data-pk="1"><span ng-bind-html-unsafe="{{mtAway.matchteam.resume}}"></span></div></p>*@
                 </div>
         </div>
     </div>

@@ -19,6 +19,13 @@ function DebriefingCtrl($scope, $http, $location, $rootScope, $q) {
     $scope.homePlayers = [];
     $scope.awayPlayers = [];
 
+    $scope.selectedItem = '10';
+
+    $scope.notes = [
+        {id: "10", name: "10"},
+        {id: "9.5", name: "9.5"}
+    ];
+
     $scope.loadMatch = function (idMatch) {
         console.log(jsRoutes.controllers.Matchs.jsonById(idMatch));
         jsRoutes.controllers.Matchs.jsonById(idMatch).ajax().then(function (response) {
@@ -30,7 +37,7 @@ function DebriefingCtrl($scope, $http, $location, $rootScope, $q) {
 
 
             }
-        ).then(function(){
+        ).then(function () {
                 console.log($scope.homeGoals, $scope.awayPlayers);
                 $rootScope.$digest();
             });
