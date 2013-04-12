@@ -27,22 +27,29 @@ function DebriefingCtrl($scope, $http, $location, $rootScope, $q) {
                 $scope.loadEvent(response.eventId);
                 $scope.loadHome(idMatch);
                 $scope.loadAway(idMatch);
+
+
             }
-        );
+        ).then(function(){
+                console.log($scope.homeGoals, $scope.awayPlayers);
+                $rootScope.$digest();
+            });
     };
 
     $scope.loadEvent = function (idEvent) {
         jsRoutes.controllers.Events.jsonById(idEvent).ajax().then(function (response) {
                 console.log(response);
                 $scope.event = response;
+                $rootScope.$digest();
             }
         );
     };
 
     $scope.loadHome = function (idMatch) {
         jsRoutes.controllers.MatchTeams.jsonByMatchAndHome(idMatch).ajax().then(function (response) {
-                console.log(response);
+                console.log("Home", idMatch, response);
                 $scope.mtHome = response;
+                $rootScope.$digest();
                 $scope.loadTeamData(idMatch, response.team.id, true);
             }
         );
@@ -50,8 +57,9 @@ function DebriefingCtrl($scope, $http, $location, $rootScope, $q) {
 
     $scope.loadAway = function (idMatch) {
         jsRoutes.controllers.MatchTeams.jsonByMatchAndAway(idMatch).ajax().then(function (response) {
-                console.log(response);
-                $scope.mtHome = response;
+                console.log("Away", idMatch, response);
+                $scope.mtAway = response;
+                $rootScope.$digest();
                 $scope.loadTeamData(idMatch, response.team.id, false);
 
             }
@@ -74,6 +82,7 @@ function DebriefingCtrl($scope, $http, $location, $rootScope, $q) {
                 } else {
                     $scope.awayPlayers = response;
                 }
+                $rootScope.$digest();
             }
         );
     };
@@ -87,6 +96,7 @@ function DebriefingCtrl($scope, $http, $location, $rootScope, $q) {
                 } else {
                     $scope.awayGoals = response;
                 }
+                $rootScope.$digest();
             }
         );
     };
@@ -100,6 +110,7 @@ function DebriefingCtrl($scope, $http, $location, $rootScope, $q) {
                 } else {
                     $scope.awayCards = response;
                 }
+                $rootScope.$digest();
             }
         );
     };
@@ -113,6 +124,7 @@ function DebriefingCtrl($scope, $http, $location, $rootScope, $q) {
                 } else {
                     $scope.awaySubs = response;
                 }
+                $rootScope.$digest();
             }
         );
     };

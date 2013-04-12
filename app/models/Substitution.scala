@@ -91,16 +91,16 @@ object Substitutions extends Table[Substitution]("fam_substitution") {
     (__ \ 'substitution).read[Substitution] ~
       (__ \ 'match).read[Match] ~
       (__ \ 'team).read[Team] ~
-        (__ \ 'striker).read[Player] ~
-        (__ \ 'assist).read[Player]
+        (__ \ 'playerin).read[Player] ~
+        (__ \ 'playerout).read[Player]
     ) tupled
 
   implicit val subCompleteWrites: Writes[(Substitution, Match, Team, Player, Player)] = (
     (__ \ 'substitution).write[Substitution] ~
       (__ \ 'match).write[Match] ~
       (__ \ 'team).write[Team] ~
-      (__ \ 'striker).write[Player] ~
-      (__ \ 'assist).write[Player]
+      (__ \ 'playerin).write[Player] ~
+      (__ \ 'playerout).write[Player]
     ) tupled
 
 }

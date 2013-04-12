@@ -41,22 +41,20 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)])(implicit flash: play.api.mv
 <div class="row-fluid" ng-controller="DebriefingCtrl">
     <div class="clearfix"></div>
     <div id="preview">
-        @Option(home).map { case (mtHome, homeTeam) =>
+        @*** HOME ***@
         <div class="span6">
             <div class="well">
-                <h2 class="text-center">@homeTeam.name</h2>
-                <h3 class="text-right muted">
-                    <a href="#" id="homeScore" data-type="text" data-pk="1" data-url="/post" data-original-title="Enter home score">@mtHome.goalScored</a>
-                    </h3>
-                <hr>
+                <h2 class="text-center">{{mtHome.team.name}}</h2>
+                <h3 class="text-right muted"> {{mtHome.matchteam.goalScored}}</h3>
+            <hr>
                 <ul class="unstyled">
-                                                <pre>{{homeGoals | json}}</pre>
                     <li ng-repeat="goals in homeGoals">
                         <p>
                         	<span class="span1">{{goals.goal.goalTime}}'</span>
-                            <span class="span11">{{goals.striker.displayName}}
+                            <span class="span11">{{goals.striker.firstName}} {{goals.striker.lastName}}
         	                    <em>
-
+                                <span ng-show="{{goals.goal.csc}}">csc</span>
+                                <span ng-show="{{goals.goal.penalty}}">sp</span>
                         		</em>
                         	</span>
                    	   </p>
@@ -64,131 +62,113 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)])(implicit flash: play.api.mv
                 </ul>
                 &nbsp;
                 <ul class="unstyled">
-                    @homeCards.map { case (card, m, team, player, typCard) =>
-                    <li>
+                     <li ng-repeat="cards in homeCards">
                         <p>
-                            <span class="span1">@card.time'</span>
-                            <span class="span11">@player.displayName <em>@typCard.name</em></span>
+                            <span class="span1">{{cards.card.time}}'</span>
+                            <span class="span11">{{cards.player.firstName}} {{cards.player.lastName}} <em>{{cards.typcard.name}}</em></span>
                         </p>
                     </li>
-                    }
                 </ul>
                 &nbsp;
                 <hr>
                 <ul class="unstyled">
-                    @homeSubs.map { case (s, m, team, in, out) =>
-                    <li>
+                     <li ng-repeat="subs in homeSubs">
                         <p>
-                            <span class="span1">@s.time'</span>
-                            <span class="span5 text-error">@out.displayName</span>
+                            <span class="span1">{{subs.substitution.time}}'</span>
+                            <span class="span5 text-error">{{subs.playerout.firstName}} {{subs.playerout.lastName}}</span>
                             <span class="span1"><i class="icon-exchange"></i></span>
-        	               <span class="span5 text-success">@in.displayName</span>
+        	               <span class="span5 text-success">{{subs.playerin.firstName}} {{subs.playerin.lastName}}</span>
                         </p>
                     </li>
-                    }
                 </ul>
                 &nbsp;
                 <hr>
                 <ul class="unstyled">
-                    @homePlayers.map { case (mp, m, p, t) =>
-                    <li>
-                        <a href="#" data-toggle="tooltip" title="@mp.comments">
-                            <span class="span1"><span class="badge">@mp.num</span></span>
-                            <span class="span9">@p.displayName</span>
-                            <span class="span1">
-                            <select ui-select2 ng-model="select2">
+                    <li ng-repeat="players in homePlayers">
+                        <a href="#" data-toggle="tooltip" title="{{players.matchplayer.comments}}">
+                            <span class="span1"><span class="badge">{{players.matchplayer.num}}</span></span>
+                            <span class="span9">{{players.player.firstName}} {{players.player.lastName}} </span>
+                            <span class="span1"> {{players.matchplayer.note}}
+                            @*<select ui-select2 ng-model="select2">
                             <option value="">Pick a number</option>
                             <option value="one">First</option>
                             <option value="two">Second</option>
                             <option value="three">Third</option>
-                            </select>
+                            </select>  *@
                             </span>
-                            <span class="span1">@mp.timePlayed'</span>
+                            <span class="span1">{{players.matchplayer.timePlayed}}'</span>
                         </a>
                     </li>
-                    }
                 </ul>
                 &nbsp;
                 <hr>
-                <p><div id="homeResume" data-type="wysihtml5" data-pk="1">@Html(mtHome.resume.getOrElse(""))</div></p>
+                <p><div id="homeResume" data-type="wysihtml5" data-pk="1">{{mtHome.resume}}</div></p>
             </div>
         </div>
-        }
-        @Option(away).map { case (mtAway, awayTeam) =>
+        @*** AWAY ***@
         <div class="span6">
             <div class="well">
-                <h2 class="text-center">@awayTeam.name</h2>
-                <h3 class="text-left muted">
-                    <a href="#" id="awayScore" data-type="text" data-pk="1" data-url="/post" data-original-title="Enter home score">@mtAway.goalScored</a>
-                </h3>
+                <h2 class="text-center">{{mtAway.team.name}}</h2>
+                <h3 class="text-right muted"> {{mtAway.matchteam.goalScored}}</h3>
                 <hr>
                 <ul class="unstyled">
-                <pre>{{awayGoals | json}}</pre>
-                    @awayGoals.map { case (goal, striker) =>
-                    <li>
-                        <div class="span1">@goal.goalTime'</div>
-                        <div class="span11">@striker.map(_.displayName).getOrElse {<em>-</em>}
-                            <em>
-                                @if(goal.csc){csc}
-                                @if(goal.penalty){sp}
-                            </em>
-                        </div>
-                    </li>
-                    }
-                </ul>
-                &nbsp;
-                <ul class="unstyled">
-                    @awayCards.map { case (card, m, team, player, typCard) =>
-                    <li>
+                    <li ng-repeat="goals in awayGoals">
                         <p>
-                            <span class="span1">@card.time'</span>
-                            <span class="span11">@player.displayName <em>@typCard.name</em></span>
-                        </p>
-                    </li>
-                    }
-                </ul>
-                &nbsp;
-                <hr>
-                <ul class="unstyled">
-                    @awaySubs.map { case (s, m, team, in, out) =>
-                    <li>
-                        <p>
-                            <span class="span1">@s.time'</span>
-                            <span class="span5 text-error">@out.displayName</span>
-                            <span class="span1"><i class="icon-exchange"></i></span>
-                            <span class="span5 text-success">@in.displayName</span>
-                        </p>
-                    </li>
-                    }
-                </ul>
-                &nbsp;
-                <hr>
-            <pre>{{awayPlayers | json}}</pre>
-                <ul class="unstyled">
-                    @awayPlayers.map { case (mp, m, p, t) =>
-                    <li>
-                        <a href="#" data-toggle="tooltip" title="@mp.comments">
-                            <div class="span1"><span class="badge">@mp.num</span></div>
-                            <div class="span9">@p.displayName</div>
-                            <span class="span1">
-                            <select ui-select2 ng-model="select2">
-                                <option value="">N</option>
-                                <option value="one">0</option>
-                                <option value="two">1</option>
-                                <option value="three">2</option>
-                            </select>
+                            <span class="span1">{{goals.goal.goalTime}}'</span>
+                            <span class="span11">{{goals.striker.firstName}} {{goals.striker.lastName}}
+                                <em>
+                                    <span ng-show="{{goals.goal.csc}}">csc</span>
+                                    <span ng-show="{{goals.goal.penalty}}">sp</span>
+                                </em>
                             </span>
-                            <div class="span1">@mp.timePlayed'</div>
+                        </p>
+                    </li>
+                </ul>
+                    &nbsp;
+                <ul class="unstyled">
+                    <li ng-repeat="cards in awayCards">
+                        <p>
+                            <span class="span1">{{cards.card.time}}'</span>
+                            <span class="span11">{{cards.player.firstName}} {{cards.player.lastName}} <em>{{cards.typcard.name}}</em></span>
+                        </p>
+                    </li>
+                </ul>
+                    &nbsp;
+                <hr>
+                <ul class="unstyled">
+                    <li ng-repeat="subs in awaySubs">
+                        <p>
+                            <span class="span1">{{subs.substitution.time}}'</span>
+                            <span class="span5 text-error">{{subs.playerout.firstName}} {{subs.playerout.lastName}}</span>
+                            <span class="span1"><i class="icon-exchange"></i></span>
+                            <span class="span5 text-success">{{subs.playerin.firstName}} {{subs.playerin.lastName}}</span>
+                        </p>
+                    </li>
+                </ul>
+                    &nbsp;
+                <hr>
+                <ul class="unstyled">
+                    <li ng-repeat="players in awayPlayers">
+                        <a href="#" data-toggle="tooltip" title="{{players.matchplayer.comments}}">
+                            <span class="span1"><span class="badge">{{players.matchplayer.num}}</span></span>
+                            <span class="span9">{{players.player.firstName}} {{players.player.lastName}} </span>
+                            <span class="span1"> {{players.matchplayer.note}}
+                                @*<select ui-select2 ng-model="select2">
+                                <option value="">Pick a number</option>
+                                <option value="one">First</option>
+                                <option value="two">Second</option>
+                                <option value="three">Third</option>
+                                </select>  *@
+                            </span>
+                            <span class="span1">{{players.matchplayer.timePlayed}}'</span>
                         </a>
                     </li>
-                    }
                 </ul>
-                &nbsp;
+                    &nbsp;
                 <hr>
-                <p><div id="awayResume" data-type="wysihtml5" data-pk="1">@Html(mtAway.resume.getOrElse(""))</div></p>
-            </div>
+                <p><div id="awayResume" data-type="wysihtml5" data-pk="1">{{mtAway.resume}}</div></p>
+                </div>
         </div>
-        }
     </div>
     </div>
 }
