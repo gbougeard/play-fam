@@ -171,6 +171,14 @@ POST    /positions/edit/$id<[0-9]+>            controllers.Positions.update(id :
 GET     /positions/new                         controllers.Positions.create
 POST    /positions/new                         controllers.Positions.save
 GET     /positions/$id<[0-9]+>                 controllers.Positions.view(id : Long)
+# Answers
+#GET     /answers                             controllers.Answers.list(p:Int ?= 0,s:Int ?= 1)
+#GET     /answers/edit/$id<[0-9]+>            controllers.Answers.edit(id : Long)
+#POST    /answers/edit/$id<[0-9]+>            controllers.Answers.update(id : Long)
+#GET     /answers/new                         controllers.Answers.create
+#POST    /answers/new                         controllers.Answers.save
+#GET     /answers/$id<[0-9]+>                 controllers.Answers.view(id : Long)
+GET     /event/$id<[0-9]+>/answers           controllers.Answers.byEvent(id : Long)
 # Rankings
 GET     /rankings                               controllers.Rankings.index
 GET     /rankings/$id<[0-9]+>                   controllers.Rankings.list(id:Long, s:Int ?= 1)

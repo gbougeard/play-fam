@@ -1,0 +1,41 @@
+@(message: String, events: (Event, TypEvent, EventStatus), answers: Seq[(Answer, Event, Player, TypAnswer)])(implicit flash: play.api.mvc.Flash)
+
+
+@main(message) {
+    @Option(events).map { case (event, typEvent, eventStatus) =>
+    <fieldset>
+    <legend>@event.name</legend>
+        <div class="span4">
+            <ul class="unstyled">
+            <legend>YES</legend>
+                @answers.filter(x => x._4.group.equals("YES")).map { case (answer, event, player, typAnswer) =>
+                <li>
+                    <a href="#" data-toggle="tooltip" title="@typAnswer.name">@player.displayName</a>
+                </li>
+            }
+            </ul>
+        </div>
+        <div class="span4">
+            <ul class="unstyled">
+                <legend>MAYBE</legend>
+                @answers.filter(x => x._4.group.equals("MAYBE")).map { case (answer, event, player, typAnswer) =>
+                <li>
+                    <a href="#" data-toggle="tooltip" title="@typAnswer.name">@player.displayName</a>
+                </li>
+            }
+            </ul>
+        </div>
+        <div class="span3">
+            <ul class="unstyled">
+                <legend>NO</legend>
+                @answers.filter(x => x._4.group.equals("NO")).map { case (answer, event, player, typAnswer) =>
+                <li>
+                    <a href="#" data-toggle="tooltip" title="@typAnswer.name">@player.displayName</a>
+                </li>
+            }
+            </ul>
+        </div>
+    </fieldset>
+
+    }
+}

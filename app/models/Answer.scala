@@ -23,9 +23,9 @@ case class Answer(id: Option[Long],
 // define tables
 object Answers extends Table[Answer]("fam_answer") {
 
-  def id = column[Long]("id_match")
+  def id = column[Long]("id_answer")
 
-  def eventId = column[Long]("id_player")
+  def eventId = column[Long]("id_event")
 
   def playerId = column[Long]("id_player")
 
@@ -54,7 +54,6 @@ object Answers extends Table[Answer]("fam_answer") {
              e <- a.event
              p <- a.player
              ta <- a.typAnswer
-
         } yield (a, e, p, ta))
       query.list
     }
