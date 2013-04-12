@@ -10,7 +10,7 @@
             <legend>YES</legend>
                 @answers.filter(x => x._4.group.equals("YES")).map { case (answer, event, player, typAnswer) =>
                 <li>
-                    <a href="#" data-toggle="tooltip" title="@typAnswer.name">@player.displayName</a>
+                    <a href="#" data-toggle="tooltip" title="@typAnswer.name"><i class="@typAnswer.code"></i>@player.displayName</a>
                 </li>
             }
             </ul>
@@ -20,7 +20,7 @@
                 <legend>MAYBE</legend>
                 @answers.filter(x => x._4.group.equals("MAYBE")).map { case (answer, event, player, typAnswer) =>
                 <li>
-                    <a href="#" data-toggle="tooltip" title="@typAnswer.name">@player.displayName</a>
+                    <a href="#" data-toggle="tooltip" title="@typAnswer.name"><i class="@typAnswer.code"></i>@player.displayName</a>
                 </li>
             }
             </ul>
@@ -30,7 +30,7 @@
                 <legend>NO</legend>
                 @answers.filter(x => x._4.group.equals("NO")).map { case (answer, event, player, typAnswer) =>
                 <li>
-                    <a href="#" data-toggle="tooltip" title="@typAnswer.name">@player.displayName</a>
+                    <a href="#" data-toggle="tooltip" title="@typAnswer.name"><i class="@typAnswer.code"></i>@player.displayName</a>
                 </li>
             }
             </ul>
