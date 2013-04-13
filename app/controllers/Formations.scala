@@ -53,7 +53,7 @@ object Formations extends Controller {
   def view(id: Long) = Action {
     implicit request =>
       models.Formations.findById(id).map {
-        formation => Ok(views.html.formations.view("View Formation", formation))
+        formation => Ok(views.html.formations.view("View Formation", formation, models.FormationItems.findByFormation(id)))
       } getOrElse (NotFound)
   }
 

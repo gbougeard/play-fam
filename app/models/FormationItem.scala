@@ -41,7 +41,6 @@ object FormationItems extends Table[FormationItem]("fam_formation_item") {
     }
   }
 
-
   def insert(formationItem: FormationItem): Long = DB.withSession {
     implicit session => {
       FormationItems.autoInc.insert((formationItem))

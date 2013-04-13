@@ -128,3 +128,11 @@ table .headerSortUp.purple, table .headerSortDown.purple {
     border-color: red;     /* border color */
     color: orange;           /* text color */
 }
+
+.soccer_field {
+    height: 500px;
+    /*width: 384px;*/
+    background-image: url(../images/493px-Soccer_field_-_empty.png);
+    overflow: hidden;
+    background-repeat: no-repeat;
+}

@@ -1,26 +1,42 @@
-@(message: String, formation: Formation)(implicit flash: play.api.mvc.Flash)
+@(message: String, formation: Formation, items: Seq[FormationItem])(implicit flash: play.api.mvc.Flash)
 @import helper.twitterBootstrap._
 
 @main(message) {
-<div class="header">
+    <div class="header">
 
-    <dl class="dl-horizontal">
-        <dt>Id</dt>
-        <dd>@formation.id</dd>
-        <dt>Name</dt>
-        <dd>@formation.name</dd>
-        <dt>Code</dt>
-        <dd>@formation.code</dd>
-        <dt>Club</dt>
-        <dd>@formation.typMatchId</dd>
-    </dl>
-</div>
+        <dl class="dl-horizontal">
+            <dt> Id </dt>
+            <dd> @formation.id </dd>
+            <dt> Name </dt>
+            <dd> @formation.name </dd>
+            <dt> Code </dt>
+            <dd> @formation.code </dd>
+            <dt> Club </dt>
+            <dd> @formation.typMatchId </dd>
+        </dl>
+        <div class="row">
+            <div class="span4 offset1 soccer_field">
+                @for(j <- 1 to 6) {
+                    <div class="row " style="@if(j == 1){padding-top: 30px;} margin-left: 10px;">
+                        @for(i <- 1 to 5) {
+                            <div class="span2 " style="height:80px; margin-left: 15px;">
+                                @items.filter(_.coord == ((j-1)*5 +i)).map { i =>
+                                    <span class="badge">@i.numItem</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 
-<div class="form-actions">
-    @**<input type="submit" value="Edit this formation" class="btn btn-primary"> **@
-    <a href="@routes.Formations.edit(formation.id.getOrElse(0))" class="btn btn-primary">Edit</a>
-    <a href="@routes.Formations.list()" class="btn">Cancel</a>
-    <a href="@routes.Formations.create()" class="btn">New</a>
-</div>
+    <div class="form-actions">
+
+        @**<input type="submit" value="Edit this formation" class="btn btn-primary"> **@
+        <a href="@routes.Formations.edit(formation.id.getOrElse(0))" class="btn btn-primary"> Edit </a>
+        <a href="@routes.Formations.list()" class="btn"> Cancel </a>
+        <a href="@routes.Formations.create()" class="btn"> New </a>
+    </div>
 
 }
