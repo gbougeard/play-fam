@@ -1,0 +1,26 @@
+@(message: String, formation: Formation)(implicit flash: play.api.mvc.Flash)
+@import helper.twitterBootstrap._
+
+@main(message) {
+<div class="header">
+
+    <dl class="dl-horizontal">
+        <dt>Id</dt>
+        <dd>@formation.id</dd>
+        <dt>Name</dt>
+        <dd>@formation.name</dd>
+        <dt>Code</dt>
+        <dd>@formation.code</dd>
+        <dt>Club</dt>
+        <dd>@formation.typMatchId</dd>
+    </dl>
+</div>
+
+<div class="form-actions">
+    @**<input type="submit" value="Edit this formation" class="btn btn-primary"> **@
+    <a href="@routes.Formations.edit(formation.id.getOrElse(0))" class="btn btn-primary">Edit</a>
+    <a href="@routes.Formations.list()" class="btn">Cancel</a>
+    <a href="@routes.Formations.create()" class="btn">New</a>
+</div>
+
+}

@@ -68,15 +68,15 @@ object EventCategorys extends Table[EventCategory]("fam_event_category") {
 //  }
 
 
-  implicit val eventFormat = Json.format[EventCategory]
+  implicit val eventCategoryFormat = Json.format[EventCategory]
 
-  implicit val eventCompleteReads: Reads[(EventCategory, Event, Category)] = (
+  implicit val eventCatCompleteReads: Reads[(EventCategory, Event, Category)] = (
     (__ \ 'eventcategory).read[EventCategory] ~
       (__ \ 'event).read[Event] ~
       (__ \ 'category).read[Category]
     ) tupled
 
-  implicit val eventCompleteWrites: Writes[(EventCategory, Event, Category)] = (
+  implicit val eventCatCompleteWrites: Writes[(EventCategory, Event, Category)] = (
     (__ \ 'eventcategory).write[EventCategory] ~
       (__ \ 'event).write[Event] ~
       (__ \ 'category).write[Category]

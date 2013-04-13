@@ -1,0 +1,36 @@
+@(message: String, id: Long, formationForm: Form[Formation], typMatchs : Seq[(String, String)])(implicit flash: play.api.mvc.Flash)
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @flash.get("success").map { message =>
+        <div class="alert alert-success">
+            <strong>Done!</strong> @message
+        </div>
+    }
+
+    @form(routes.Formations.update(id), 'class -> "form-horizontal") {
+
+        @inputText(formationForm("id"), '_label -> "Id")
+        @inputText(formationForm("code"), '_label -> "Code")
+        @inputText(formationForm("name"), '_label -> "Nom")
+
+        @select(
+            formationForm("typMatchId"),
+            typMatchs,
+            '_label -> "TypMatch", '_default -> "-- Choose a typMatch --",
+            '_showConstraints -> false
+        )
+
+        <div class="form-actions">
+            <input type="submit" value="Save this formation" class="btn btn-primary">
+            <a href="@routes.Formations.view(id)" class="btn">View</a>
+            <a href="@routes.Formations.list()" class="btn">Cancel</a>
+            <a href="@routes.Formations.create()" class="btn">New</a>
+        </div>
+
+    }
+}

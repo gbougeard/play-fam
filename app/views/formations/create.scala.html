@@ -1,0 +1,28 @@
+@(message: String, formationForm: Form[Formation], typMatchs : Seq[(String, String)])
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @form(routes.Formations.save(), 'class -> "form-horizontal") {
+
+        @inputText(formationForm("id"), '_label -> "Id")
+        @inputText(formationForm("code"), '_label -> "Code FFF")
+        @inputText(formationForm("name"), '_label -> "Nom")
+
+        @select(
+        formationForm("typMatchId"),
+            typMatchs,
+        '_label -> "TypMatch", '_default -> "-- Choose a typMatch --",
+        '_showConstraints -> false
+        )
+
+        <div class="form-actions">
+            <input type="submit" value="Save this formation" class="btn btn-primary">
+            <a href="@routes.Formations.list()" class="btn">Cancel</a>
+        </div>
+
+    }
+}
