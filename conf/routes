@@ -178,6 +178,7 @@ POST    /formations/edit/$id<[0-9]+>            controllers.Formations.update(id
 GET     /formations/new                         controllers.Formations.create
 POST    /formations/new                         controllers.Formations.save
 GET     /formations/$id<[0-9]+>                 controllers.Formations.view(id : Long)
+POST    /formations/items           controllers.Formations.saveItems
 # Answers
 #GET     /answers                             controllers.Answers.list(p:Int ?= 0,s:Int ?= 1)
 #GET     /answers/edit/$id<[0-9]+>            controllers.Answers.edit(id : Long)

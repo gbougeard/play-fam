@@ -4,7 +4,7 @@ import play.api.Play.current
 
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
-
+import play.api.Logger
 import play.api.libs.json._
 
 case class FormationItem(id: Option[Long],
@@ -26,7 +26,7 @@ object FormationItems extends Table[FormationItem]("fam_formation_item") {
 
   def * = id.? ~ coord ~ numItem ~ formationId <>(FormationItem, FormationItem.unapply _)
 
-  def autoInc = id.? ~  coord ~ numItem ~ formationId <>(FormationItem, FormationItem.unapply _) returning id
+  def autoInc = id.? ~ coord ~ numItem ~ formationId <>(FormationItem, FormationItem.unapply _) returning id
 
   // A reified foreign key relation that can be navigated to create a join
   def formation = foreignKey("FORMATION_FK", formationId, Formations)(_.id)
@@ -50,6 +50,7 @@ object FormationItems extends Table[FormationItem]("fam_formation_item") {
   def update(id: Long, formationItem: FormationItem) = DB.withSession {
     implicit session => {
       val formationItem2update = formationItem.copy(Some(id))
+      Logger.info("update "+formationItem2update)
       FormationItems.where(_.id === id).update(formationItem2update)
     }
   }
@@ -57,6 +58,31 @@ object FormationItems extends Table[FormationItem]("fam_formation_item") {
   def delete(formationItemId: Long) = DB.withSession {
     implicit session => {
       FormationItems.where(_.id === formationItemId).delete
+    }
+  }
+
+  def save(items: Seq[FormationItem]) {
+    Logger.info("save iteems!")
+    items.map(item => update(item.id.getOrElse(0), item))
+  }
+
+  def init(formationId: Long) = DB.withSession {
+    implicit session => {
+      Formations.findById(formationId).map {
+        formation => TypMatches.findById(formation.typMatchId).map {
+          typMatch => for (i <- 1 to typMatch.nbPlayer) {
+            insert(new FormationItem(None, i, i, formationId))
+          }
+        }
+      }
+    }
+  }
+
+  def copy(formationIdToCopy: Long, formationId: Long) = DB.withSession {
+    implicit session => {
+      findByFormation(formationIdToCopy).map {
+        item => insert(new FormationItem(None, item.coord, item.numItem, formationId))
+      }
     }
   }
 

@@ -4,9 +4,9 @@ import play.api.Logger
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.Formation
+import models.{FormationItem, Formation}
 import models.FormationItems._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsError, Json}
 
 
 object Formations extends Controller {
@@ -65,8 +65,8 @@ object Formations extends Controller {
 
       models.Formations.findById(id).map {
         formation =>
-        val  items = models.FormationItems.findByFormation(id).sortBy(_.numItem)
-        Ok(views.html.formations.edit("Edit Formation", id, formationForm.fill(formation), items, Json.toJson(items).toString(), models.TypMatches.options))
+          val items = models.FormationItems.findByFormation(id).sortBy(_.numItem)
+          Ok(views.html.formations.edit("Edit Formation", id, formationForm.fill(formation), items, Json.toJson(items).toString(), models.TypMatches.options))
       } getOrElse (NotFound)
   }
 
@@ -77,7 +77,7 @@ object Formations extends Controller {
    */
   def update(id: Long) = Action {
     implicit request =>
-      val  items = models.FormationItems.findByFormation(id).sortBy(_.numItem)
+      val items = models.FormationItems.findByFormation(id).sortBy(_.numItem)
       Logger.warn(items.toString())
       formationForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.formations.edit("Edit Formation - errors", id, formWithErrors, items, Json.toJson(items).toString(), models.TypMatches.options)),
@@ -110,6 +110,19 @@ object Formations extends Controller {
           Redirect(routes.Formations.list(0, 2))
         }
       )
+  }
+
+  def saveItems = Action(parse.json) {
+    implicit request =>
+      val itemsJson = request.body
+      Logger.info(itemsJson.toString())
+      //      val items = itemsJson.as[Seq[FormationItem]]
+      itemsJson.validate[Seq[FormationItem]].map {
+        case items => models.FormationItems.save(items)
+        Ok("Saved")
+      }.recoverTotal {
+        e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      }
   }
 
   /**

@@ -17,11 +17,12 @@
                 drop: function(ev, ui) {
                     var dropped = ui.draggable;
                     var droppedOn = $(this);
-                    var numItem = dropped[0].id.substr("drag-".length);
-                    var coord = droppedOn[0].id.substr("drop-".length);
+                    var numItem = parseInt(dropped[0].id.substr("drag-".length));
+                    var coord = parseInt(droppedOn[0].id.substr("drop-".length));
                     var oldCoord = 0;
                     var swap = false;
                     var swapItem = {};
+            console.log(numItem, coord);
                     angular.forEach(myItems, function(value, key){
                         if (value.coord == coord){
                             swap = true;
@@ -50,6 +51,21 @@
             });
 
         });
+
+        function saveItems(){
+            var outputData = JSON.stringify(myItems);
+            console.log(jsRoutes.controllers.Formations.saveItems(), outputData);
+            jsRoutes.controllers.Formations.saveItems().ajax({
+            data : outputData,
+            dataType: 'text',
+            contentType:'application/json',
+            success: function (data, status) {
+            console.log("save success", data, status);
+            }, error: function (data, status) {
+            console.error("save failed", data, status);
+            }
+            });
+        }
 
     </script>
 }
@@ -96,6 +112,9 @@
                     </div>
                 }
             </div>
+        </div>
+        <div class="form-actions">
+            <div class="btn btn-primary" onclick="saveItems()">Save </div>
         </div>
 
     }

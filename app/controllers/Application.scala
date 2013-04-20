@@ -9,6 +9,7 @@ import play.api.data._
 import play.api.data.Forms._
 
 import views._
+import models.FormationItems
 
 
 object Application extends Controller with securesocial.core.SecureSocial {
@@ -58,7 +59,8 @@ object Application extends Controller with securesocial.core.SecureSocial {
           Substitutions.jsonByMatchAndTeam,
           MatchTeams.jsonByMatchAndHome,
           MatchTeams.jsonByMatchAndAway,
-          MatchPlayers.jsonByMatchAndTeam
+          MatchPlayers.jsonByMatchAndTeam,
+          Formations.saveItems
         )
       ).as("text/javascript")
   }
