@@ -19,16 +19,33 @@
                     var droppedOn = $(this);
                     var numItem = dropped[0].id.substr("drag-".length);
                     var coord = droppedOn[0].id.substr("drop-".length);
+                    var oldCoord = 0;
+                    var swap = false;
+                    var swapItem = {};
                     angular.forEach(myItems, function(value, key){
-
+                        if (value.coord == coord){
+                            swap = true;
+                            swapItem = value;
+                        }
+                        if (value.numItem == numItem){
+                            oldCoord = value.coord;
+                        }
+                    });
+                    angular.forEach(myItems, function(value, key){
                         if (value.numItem == numItem){
                             value.coord = coord;
                             return;
                         }
                     });
-                    $(droppedOn).droppable("disable");
+                    if (swap == true){
+                        swapItem.coord = oldCoord;
+                        var id = $(dropped).parent()[0].id;
+                        $("#drag-"+swapItem.numItem).appendTo($("#"+id));
+                    }
+
                     $(dropped).parent().droppable("enable");
                     $(dropped).detach().css({top: 0, left: 0}).appendTo(droppedOn);
+
                 }
             });
 
