@@ -1,9 +1,12 @@
 package controllers
 
+import play.api.Logger
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Formation
+import models.FormationItems._
+import play.api.libs.json.Json
 
 
 object Formations extends Controller {
@@ -59,8 +62,11 @@ object Formations extends Controller {
 
   def edit(id: Long) = Action {
     implicit request =>
+
       models.Formations.findById(id).map {
-        formation => Ok(views.html.formations.edit("Edit Formation", id, formationForm.fill(formation), models.TypMatches.options))
+        formation =>
+        val  items = models.FormationItems.findByFormation(id).sortBy(_.numItem)
+        Ok(views.html.formations.edit("Edit Formation", id, formationForm.fill(formation), items, Json.toJson(items).toString(), models.TypMatches.options))
       } getOrElse (NotFound)
   }
 
@@ -71,8 +77,10 @@ object Formations extends Controller {
    */
   def update(id: Long) = Action {
     implicit request =>
+      val  items = models.FormationItems.findByFormation(id).sortBy(_.numItem)
+      Logger.warn(items.toString())
       formationForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.formations.edit("Edit Formation - errors", id, formWithErrors, models.TypMatches.options)),
+        formWithErrors => BadRequest(views.html.formations.edit("Edit Formation - errors", id, formWithErrors, items, Json.toJson(items).toString(), models.TypMatches.options)),
         formation => {
           models.Formations.update(id, formation)
           //        Home.flashing("success" -> "Formation %s has been updated".format(formation.name))

@@ -12,6 +12,7 @@
 #footer {
     height: 60px;
 }
+
 #footer {
     background-color: #f5f5f5;
 }
@@ -31,12 +32,10 @@
     }
 }
 
-
-
-
 table .header {
     cursor: pointer;
 }
+
 table .header:after {
     border-color: #000000 transparent;
     border-style: solid;
@@ -46,6 +45,7 @@ table .header:after {
     margin-top: 7px;
     visibility: hidden;
 }
+
 table .headerSortUp, table .headerSortDown {
     background-color: rgba(141, 192, 219, 0.25);
     text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
@@ -54,10 +54,12 @@ table .headerSortUp, table .headerSortDown {
 table .header:hover:after {
     visibility: visible;
 }
+
 table .headerSortDown:after, table .headerSortDown:hover:after {
     opacity: 0.6;
     visibility: visible;
 }
+
 table .headerSortUp:after {
     border-color: #000000 transparent -moz-use-text-color;
     border-style: solid solid none;
@@ -66,45 +68,57 @@ table .headerSortUp:after {
     opacity: 0.6;
     visibility: visible;
 }
+
 table .blue {
     border-bottom-color: #049CDB;
     color: #049CDB;
 }
+
 table .headerSortUp.blue, table .headerSortDown.blue {
     background-color: #ADE6FE;
 }
+
 table .green {
     border-bottom-color: #46A546;
     color: #46A546;
 }
+
 table .headerSortUp.green, table .headerSortDown.green {
     background-color: #CDEACD;
 }
+
 table .red {
     border-bottom-color: #9D261D;
     color: #9D261D;
 }
+
 table .headerSortUp.red, table .headerSortDown.red {
     background-color: #F4C8C5;
 }
+
 table .yellow {
     border-bottom-color: #FFC40D;
     color: #FFC40D;
 }
+
 table .headerSortUp.yellow, table .headerSortDown.yellow {
     background-color: #FFF6D9;
 }
+
 table .orange {
     border-bottom-color: #F89406;
     color: #F89406;
 }
+
 table .headerSortUp.orange, table .headerSortDown.orange {
     background-color: #FEE9CC;
 }
+
 table .purple {
     border-bottom-color: #7A43B6;
     color: #7A43B6;
 }
+
 table .headerSortUp.purple, table .headerSortDown.purple {
     background-color: #E2D5F0;
 }
@@ -117,16 +131,16 @@ table .headerSortUp.purple, table .headerSortDown.purple {
 .fc-agenda .typEvent1 .fc-event-time,
 .typEvent1 a {
     background-color: green; /* background color */
-    border-color: green;     /* border color */
-    color: yellow;           /* text color */
+    border-color: green; /* border color */
+    color: yellow; /* text color */
 }
 
 .typEvent2,
 .fc-agenda .typEvent2 .fc-event-time,
 .typEvent2 a {
     background-color: red; /* background color */
-    border-color: red;     /* border color */
-    color: orange;           /* text color */
+    border-color: red; /* border color */
+    color: orange; /* text color */
 }
 
 .soccer_field {
@@ -136,3 +150,71 @@ table .headerSortUp.purple, table .headerSortDown.purple {
     overflow: hidden;
     background-repeat: no-repeat;
 }
+
+.drag {
+    opacity: 0.7;
+    background-color: blue;
+}
+
+.drop {
+    background-color: green;
+}
+
+/* Gridster styles */
+.demo {
+    margin: 3em 0;
+    padding: 7.5em 0 5.5em;
+    background: #004756;
+}
+
+.demo:hover .gridster {
+    opacity: 1;
+}
+
+.gridster {
+    /*width: 940px;*/
+    margin: 0 auto;
+
+    opacity: .8;
+
+    -webkit-transition: opacity .6s;
+    -moz-transition: opacity .6s;
+    -o-transition: opacity .6s;
+    -ms-transition: opacity .6s;
+    transition: opacity .6s;
+}
+
+.gridster .gs_w {
+    background: #FFF;
+    cursor: pointer;
+    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.gridster .player {
+    -webkit-box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+}
+
+.gridster .preview-holder {
+    border: none !important;
+    border-radius: 0 !important;
+    background: rgba(255, 255, 255, .2) !important;
+}
+
+tr:nth-child(odd) td:nth-child(even), tr:nth-child(even) td:nth-child(odd) {
+    background-color: grey;
+}
+
+tr:nth-child(odd) td:nth-child(odd), tr:nth-child(even) td:nth-child(even) {
+    background-color: #CCC;
+}
+
+.item {
+    height: 60px;
+    width: 50px;
+    border: 1px dashed;
+    margin-bottom: 13px;
+    position: relative;
+}
+

@@ -1,20 +1,53 @@
-@(message: String, id: Long, formationForm: Form[Formation], typMatchs : Seq[(String, String)])(implicit flash: play.api.mvc.Flash)
+@(message: String, id: Long, formationForm: Form[Formation], items: Seq[FormationItem], jsonItems: String, typMatchs: Seq[(String, String)])(implicit flash: play.api.mvc.Flash)
 
 @import helper._
 
-@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+@implicitFieldConstructor = @{
+    FieldConstructor(twitterBootstrapInput.f)
+}
 
-@main(message) {
+@scripts = {
+
+    <script>
+        var myItems = @Html(jsonItems);
+
+        $(function(){ //DOM Ready
+            $('.badge').draggable({ containment: ".soccer_field", revert: 'invalid' });
+            $('.item').droppable({
+                drop: function(ev, ui) {
+                    var dropped = ui.draggable;
+                    var droppedOn = $(this);
+                    var numItem = dropped[0].id.substr("drag-".length);
+                    var coord = droppedOn[0].id.substr("drop-".length);
+                    angular.forEach(myItems, function(value, key){
+
+                        if (value.numItem == numItem){
+                            value.coord = coord;
+                            return;
+                        }
+                    });
+                    $(droppedOn).droppable("disable");
+                    $(dropped).parent().droppable("enable");
+                    $(dropped).detach().css({top: 0, left: 0}).appendTo(droppedOn);
+                }
+            });
+
+        });
+
+    </script>
+}
+
+@main(message, scripts) {
 
     @flash.get("success").map { message =>
         <div class="alert alert-success">
-            <strong>Done!</strong> @message
+            <strong> Done! </strong> @message
         </div>
     }
 
     @form(routes.Formations.update(id), 'class -> "form-horizontal") {
 
-        @inputText(formationForm("id"), '_label -> "Id")
+        @* @inputText(formationForm("id"), '_label -> "Id") *@
         @inputText(formationForm("code"), '_label -> "Code")
         @inputText(formationForm("name"), '_label -> "Nom")
 
@@ -27,9 +60,25 @@
 
         <div class="form-actions">
             <input type="submit" value="Save this formation" class="btn btn-primary">
-            <a href="@routes.Formations.view(id)" class="btn">View</a>
-            <a href="@routes.Formations.list()" class="btn">Cancel</a>
-            <a href="@routes.Formations.create()" class="btn">New</a>
+            <a href="@routes.Formations.view(id)" class="btn"> View </a>
+            <a href="@routes.Formations.list()" class="btn"> Cancel </a>
+            <a href="@routes.Formations.create()" class="btn"> New </a>
+        </div>
+
+        <div class="row">
+            <div class="span4 offset1 container soccer_field">
+                @for(j <- 1 to 6) {
+                     <div class="row" style="@if(j == 1) { padding-top: 30px; } margin-left: 10px;">
+                        @for(i <- 1 to 5) {
+                         <div id="drop-@{val idx=(j - 1) * 5 + i;idx}" class="span2 item" style=" margin-left: 15px;">
+                             @items.filter(_.coord == ((j - 1) * 5 + i)).map { fi =>
+                                 <a id="drag-@fi.numItem" class="badge">@fi.numItem</a>
+                             }
+                         </div>
+                        }
+                    </div>
+                }
+            </div>
         </div>
 
     }
