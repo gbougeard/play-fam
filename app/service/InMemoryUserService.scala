@@ -36,17 +36,20 @@ class InMemoryUserService(application: Application) extends UserServicePlugin(ap
   private var tokens = Map[String, Token]()
 
   def find(id: UserId): Option[Identity] = {
-    if ( Logger.isDebugEnabled ) {
+    Logger.info("find %s".format(id))
       Logger.debug("users = %s".format(users))
-    }
+    val user = models.Users.findByOauth(id.providerId, id.id)
+    Logger.info("found user %s".format(user.toString()))
     users.get(id.id + id.providerId)
   }
 
   def findByEmailAndProvider(email: String, providerId: String): Option[Identity] = {
-    if ( Logger.isDebugEnabled ) {
-      Logger.debug("users = %s".format(users))
-    }
+    Logger.info("findByEmailAndProvider %s %s".format(email, providerId))
+//    if ( Logger.isDebugEnabled ) {
+//      Logger.debug("users = %s".format(users))
+//    }
     users.values.find( u => u.email.map( e => e == email && u.id.providerId == providerId).getOrElse(false))
+//    models.Users.findByEmailAndProvider(email, providerId)
   }
 
   def save(user: Identity): Identity = {

@@ -7,7 +7,6 @@ import models.Event
 import models.Events._
 import models.TypEvents._
 
-import slick.session.Session
 import com.yammer.metrics.Metrics
 import com.yammer.metrics.scala.Timer
 import play.api.libs.json._

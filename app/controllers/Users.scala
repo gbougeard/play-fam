@@ -18,7 +18,9 @@ object Users extends Controller {
   val userForm = Form(
     mapping(
       "id" -> optional(longNumber),
-      "email" -> email
+      "email" -> email ,
+      "oauthProvider" -> optional(text) ,
+      "oauthId" -> optional(text)
       //      "discontinued" -> optional(date("yyyy-MM-dd")),
       //      "company" -> optional(longNumber)
     )
