@@ -32,7 +32,7 @@ class MyEventListener(app: Application) extends EventListener {
     // if you wanted to change the session then you'd do something like
     // Some(session + ("your_key" -> "your_value"))
     event match {
-      case e: LoginEvent =>  Some(session + ("email" -> event.user.email))
+      case e: LoginEvent =>  Some(session + ("email" -> event.user.email.getOrElse("")))
       case e: LogoutEvent => None
       case e: SignUpEvent => None
       case e: PasswordResetEvent => None
