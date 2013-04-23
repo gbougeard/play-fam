@@ -3,13 +3,15 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
+import play.Logger
 import models.Club
+
 
 import com.yammer.metrics.Metrics
 import com.yammer.metrics.scala.Timer
 
 
-object Clubs extends Controller {
+object Clubs extends Controller with securesocial.core.SecureSocial {
 
   val metric = Metrics.defaultRegistry().newTimer(classOf[Club], "page")
   val timer = new Timer(metric)
@@ -61,7 +63,7 @@ object Clubs extends Controller {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = Action {
+  def edit(id: Long) = SecuredAction (WithRightClub(id)) {
     implicit request =>
       models.Clubs.findById(id).map {
         club => Ok(views.html.clubs.edit("Edit Club", id, clubForm.fill(club)))
@@ -73,7 +75,7 @@ object Clubs extends Controller {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = Action {
+  def update(id: Long) = SecuredAction (WithRightClub(id)) {
     implicit request =>
       clubForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.clubs.edit("Edit Club - errors", id, formWithErrors)),
@@ -86,6 +88,25 @@ object Clubs extends Controller {
         }
       )
   }
+
+  def page = UserAwareAction {
+    implicit request =>
+    val userName = request.user match {
+      case Some(user) => user.fullName
+      case _ => "guest"
+    }
+    Ok("Hello %s".format(userName))
+  }
+
+  // you don't want to redirect to the login page for ajax calls so
+  // adding a ajaxCall = true will make SecureSocial return a forbidden error
+  // instead.
+//  def ajaxCall = SecuredAction(ajaxCall = true) {
+//    implicit request =>
+//    // return some json
+//  }
+
+
 
   /**
    * Display the 'new computer form'.

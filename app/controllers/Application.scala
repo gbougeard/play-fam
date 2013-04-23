@@ -9,7 +9,6 @@ import play.api.data._
 import play.api.data.Forms._
 
 import views._
-import models.FormationItems
 
 
 object Application extends Controller with securesocial.core.SecureSocial {
@@ -71,5 +70,19 @@ object Application extends Controller with securesocial.core.SecureSocial {
 case class WithProvider(provider: String) extends Authorization {
   def isAuthorized(user: Identity) = {
     user.id.providerId == provider
+  }
+}
+
+case class WithRightClub(id: Long) extends Authorization {
+  def isAuthorized(user: Identity) = {
+    val res =  user match {
+      case u: service.FamUser => u.user.map {
+        us => us.currentClubId.map {
+          clubId => clubId == id
+        } getOrElse (false)
+      } getOrElse (false)
+      case  _ => false
+    }
+    res
   }
 }
