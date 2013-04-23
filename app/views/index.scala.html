@@ -38,10 +38,25 @@
                 @info.refreshToken.map { rt => <li>Refresh Token: @rt</li>}
             </ul>
         }
-        <hr>
+
         @user.passwordInfo.map { info =>
             <a class="btn" href="@securesocial.core.providers.utils.RoutesHelper.changePasswordPage.absoluteURL(IdentityProvider.sslEnabled)">Change Password</a>
         }
+        @user match {
+        case u:service.FamUser => {
+            @u.user.map { info =>
+                <h2>User Info</h2>
+
+                <ul>
+                    @info.currentClubId.map { t => <li>CurrentClubId: @t</li> }
+                </ul>
+
+            }
+            }
+         case u: securesocial.core.SocialUser  =>{ <h3> User does not exist in Fam DB</h3> <em>TODO create a new FAM user</em>}
+        }
+
+        <hr>
         <a class="btn" href="@securesocial.controllers.routes.LoginPage.logout()">Logout</a>
     </div>
 }

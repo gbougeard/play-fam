@@ -19,6 +19,9 @@ object Users extends Controller {
     mapping(
       "id" -> optional(longNumber),
       "email" -> email ,
+      "firstName" -> text ,
+      "lastName" -> text ,
+      "email" -> optional(longNumber) ,
       "oauthProvider" -> optional(text) ,
       "oauthId" -> optional(text)
       //      "discontinued" -> optional(date("yyyy-MM-dd")),

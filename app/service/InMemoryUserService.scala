@@ -17,10 +17,10 @@
 package service
 
 import play.api.{Logger, Application}
+
 import securesocial.core._
 import securesocial.core.providers.Token
 import securesocial.core.UserId
-import scala.Some
 import org.mindrot.jbcrypt.BCrypt
 
 
@@ -37,10 +37,14 @@ class InMemoryUserService(application: Application) extends UserServicePlugin(ap
 
   def find(id: UserId): Option[Identity] = {
     Logger.info("find %s".format(id))
-      Logger.debug("users = %s".format(users))
-    val user = models.Users.findByOauth(id.providerId, id.id)
-    Logger.info("found user %s".format(user.toString()))
-    users.get(id.id + id.providerId)
+//    Logger.debug("users = %s".format(users))
+    users.get(id.id + id.providerId).map {
+      u => models.Users.findByOauth(id.providerId, id.id).map {
+        user => Logger.info("found user %s for id %s".format(user.toString(), id))
+//        Some(session + ("user" -> Json.toJson(user).toString()))
+        FamUser(u, user)
+      } getOrElse (u)
+    }
   }
 
   def findByEmailAndProvider(email: String, providerId: String): Option[Identity] = {

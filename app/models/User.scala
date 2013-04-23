@@ -7,7 +7,6 @@ import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 import play.api.libs.json.Json
 
-
 /**
  * Created with IntelliJ IDEA.
  * User: gonto
@@ -17,21 +16,31 @@ import play.api.libs.json.Json
  */
 case class User(id: Option[Long],
                 email: String,
+                firstName: String,
+                lastName: String,
+                currentClubId: Option[Long],
                 oauthProvider: Option[String],
                 oauthId: Option[String])
+
 
 object Users extends Table[User]("fam_user") {
   def id = column[Long]("id_user", O.PrimaryKey)
 
   def email = column[String]("email", O.NotNull)
 
+  def firstName = column[String]("first_name", O.NotNull)
+
+  def lastName = column[String]("last_name", O.NotNull)
+
+  def currentClubId = column[Long]("id_current_club")
+
   def oauthProvider = column[String]("oauth_provider")
 
   def oauthId = column[String]("oauth_id")
 
-  def * = id.? ~ email ~ oauthProvider.? ~ oauthId.? <>(User, User.unapply _)
+  def * = id.? ~ email ~ firstName ~ lastName ~ currentClubId.? ~ oauthProvider.? ~ oauthId.? <>(User, User.unapply _)
 
-  def autoInc = id.? ~ email ~ oauthProvider.? ~ oauthId.? <>(User, User.unapply _) returning id
+  def autoInc = id.? ~ email ~ firstName ~ lastName ~ currentClubId.? ~ oauthProvider.? ~ oauthId.? <>(User, User.unapply _) returning id
 
   def add(user: User) = DB.withSession {
     implicit session => {
@@ -56,14 +65,14 @@ object Users extends Table[User]("fam_user") {
     }
   }
 
-  def findByOauth(provider:String, inId:String) = DB.withSession {
+  def findByOauth(provider: String, inId: String): Option[User] = DB.withSession {
     implicit session => {
       Logger.info("finding oauth user for %s %s".format(provider, inId))
       (for {
         user <- Users
         if (user.oauthProvider === provider)
         if (user.oauthId === inId)
-      } yield (user)).first
+      } yield (user)).firstOption
     }
   }
 
