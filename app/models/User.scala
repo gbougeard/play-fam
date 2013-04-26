@@ -20,11 +20,12 @@ case class User(id: Option[Long],
                 lastName: String,
                 currentClubId: Option[Long],
                 oauthProvider: Option[String],
-                oauthId: Option[String])
+                oauthId: Option[String],
+                password: Option[String])
 
 
 object Users extends Table[User]("fam_user") {
-  def id = column[Long]("id_user", O.PrimaryKey)
+  def id = column[Long]("id_user", O.PrimaryKey, O.AutoInc)
 
   def email = column[String]("email", O.NotNull)
 
@@ -37,16 +38,27 @@ object Users extends Table[User]("fam_user") {
   def oauthProvider = column[String]("oauth_provider")
 
   def oauthId = column[String]("oauth_id")
+  def password = column[String]("password")
 
-  def * = id.? ~ email ~ firstName ~ lastName ~ currentClubId.? ~ oauthProvider.? ~ oauthId.? <>(User, User.unapply _)
+  def * = id.? ~ email ~ firstName ~ lastName ~ currentClubId.? ~ oauthProvider.? ~ oauthId.? ~ password.? <>(User, User.unapply _)
 
-  def autoInc = id.? ~ email ~ firstName ~ lastName ~ currentClubId.? ~ oauthProvider.? ~ oauthId.? <>(User, User.unapply _) returning id
+  def autoInc = id.? ~ email ~ firstName ~ lastName ~ currentClubId.? ~ oauthProvider.? ~ oauthId.? ~ password.? <>(User, User.unapply _) returning id
+
+  val byId = createFinderBy(_.id)
+
 
   def add(user: User) = DB.withSession {
     implicit session => {
       this.insert(user)
     }
   }
+
+  def findById(id: Long): Option[User] = DB.withSession {
+    implicit session => {
+      Users.byId(id).firstOption
+    }
+  }
+
 
   def countByEmail(email: String) = DB.withSession {
     implicit session => {
@@ -98,6 +110,12 @@ object Users extends Table[User]("fam_user") {
         val totalRows = (for {t <- Users} yield t.id).list.size
         Page(users, page, offset, totalRows)
       }
+    }
+  }
+
+  def insert(user: User): Long = DB.withSession {
+    implicit session => {
+      Users.autoInc.insert((user))
     }
   }
 

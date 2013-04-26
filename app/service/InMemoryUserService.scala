@@ -36,15 +36,24 @@ class InMemoryUserService(application: Application) extends UserServicePlugin(ap
   private var tokens = Map[String, Token]()
 
   def find(id: UserId): Option[Identity] = {
-    Logger.info("find %s".format(id))
-//    Logger.debug("users = %s".format(users))
+    Logger.info("find UserId %s".format(id))
+    //    Logger.debug("users = %s".format(users))
+    //
+    val tst =  users.get(id.id + id.providerId)
     users.get(id.id + id.providerId).map {
-      u => models.Users.findByOauth(id.providerId, id.id).map {
-        user => Logger.info("found user %s for id %s".format(user.toString(), id))
-//        Some(session + ("user" -> Json.toJson(user).toString()))
-        FamUser(u, user)
-      } getOrElse (u)
+      user =>
+        models.Users.findByOauth(id.providerId, id.id).map {
+          u =>
+            Logger.info("found user %s for id %s".format(u.toString(), id))
+            FamUser(user, u)
+        } getOrElse (user)
     }
+//    users.get(id.id + id.providerId)
+//      .map {
+//      u =>   FamUser(u, user)
+//      //        Some(session + ("user" -> Json.toJson(user).toString()))
+//
+//    }
   }
 
   def findByEmailAndProvider(email: String, providerId: String): Option[Identity] = {
@@ -57,30 +66,54 @@ class InMemoryUserService(application: Application) extends UserServicePlugin(ap
   }
 
   def save(user: Identity): Identity = {
+    Logger.info("save identity %s".format(user))
+
     users = users + (user.id.id + user.id.providerId -> user)
     // this sample returns the same user object, but you could return an instance of your own class
     // here as long as it implements the Identity trait. This will allow you to use your own class in the protected
     // actions and event callbacks. The same goes for the find(id: UserId) method.
+
+    models.Users.findByOauth(user.id.providerId, user.id.id).map {
+      u => Logger.info("user already in DB ")
+      FamUser(user, u)
+    } getOrElse ({
+      Logger.info("user not inDB => create it")
+
+      val famUser = new models.User(None, user.email.getOrElse("nomail"), user.firstName, user.lastName, None, Some(user.id.providerId), Some(user.id.id), Some(user.passwordInfo.map {
+        pi => pi.password
+      } getOrElse ("NoPwd")))
+      Logger.info("create famUser %s".format(famUser))
+      val id = models.Users.insert(famUser)
+      models.Users.findById(id).map {
+        u => Logger.info("created FamUser %s".format(u))
+        FamUser(user, u)
+      }
+    })
     user
   }
 
   def save(token: Token) {
+    Logger.info("Save token %s".format(token))
     tokens += (token.uuid -> token)
   }
 
   def findToken(token: String): Option[Token] = {
+    Logger.info("Find token %s".format(token))
     tokens.get(token)
   }
 
   def deleteToken(uuid: String) {
+    Logger.info("delete token %s".format(uuid))
     tokens -= uuid
   }
 
   def deleteTokens() {
+    Logger.info("delete tokens")
     tokens = Map()
   }
 
   def deleteExpiredTokens() {
+    Logger.info("deleteExpiredTokens")
     tokens = tokens.filter(!_._2.isExpired)
   }
 }
