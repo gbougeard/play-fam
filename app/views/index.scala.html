@@ -43,15 +43,13 @@
             <a class="btn" href="@securesocial.core.providers.utils.RoutesHelper.changePasswordPage.absoluteURL(IdentityProvider.sslEnabled)">Change Password</a>
         }
         @user match {
-        case u:service.FamUser => {
-            @u.user.map { info =>
+        case u:models.User => {
                 <h2>User Info</h2>
 
                 <ul>
-                    @info.currentClubId.map { t => <li>CurrentClubId: @t</li> }
+                    @u.currentClubId.map { t => <li>CurrentClubId: @t</li> }
                 </ul>
 
-            }
             }
          case u: securesocial.core.SocialUser  =>{ <h3> User does not exist in Fam DB</h3> <em>TODO create a new FAM user</em>}
         }

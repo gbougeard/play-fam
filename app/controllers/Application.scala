@@ -13,33 +13,37 @@ import views._
 
 object Application extends Controller with securesocial.core.SecureSocial {
 
-  def index = SecuredAction { implicit request =>
-    Ok(views.html.index(request.user))
+  def index = SecuredAction {
+    implicit request =>
+      Ok(views.html.index(request.user))
   }
 
   // a sample action using the new authorization hook
-  def onlyTwitter = SecuredAction(WithProvider("twitter")) { implicit request =>
-  //
-  //    Note: If you had a User class and returned an instance of it from UserService, this
-  //          is how you would convert Identity to your own class:
-  //
-  //    request.user match {
-  //      case user: User => // do whatever you need with your user class
-  //      case _ => // did not get a User instance, should not happen,log error/thow exception
-  //    }
-    Ok("You can see this because you logged in using Twitter")
+  def onlyTwitter = SecuredAction(WithProvider("twitter")) {
+    implicit request =>
+    //
+    //    Note: If you had a User class and returned an instance of it from UserService, this
+    //          is how you would convert Identity to your own class:
+    //
+    //    request.user match {
+    //      case user: User => // do whatever you need with your user class
+    //      case _ => // did not get a User instance, should not happen,log error/thow exception
+    //    }
+      Ok("You can see this because you logged in using Twitter")
   }
+
   // a sample action using the new authorization hook
-  def onlyGithub = SecuredAction(WithProvider("github")) { implicit request =>
-  //
-  //    Note: If you had a User class and returned an instance of it from UserService, this
-  //          is how you would convert Identity to your own class:
-  //
-  //    request.user match {
-  //      case user: User => // do whatever you need with your user class
-  //      case _ => // did not get a User instance, should not happen,log error/thow exception
-  //    }
-    Ok("You can see this because you logged in using Github")
+  def onlyGithub = SecuredAction(WithProvider("github")) {
+    implicit request =>
+    //
+    //    Note: If you had a User class and returned an instance of it from UserService, this
+    //          is how you would convert Identity to your own class:
+    //
+    //    request.user match {
+    //      case user: User => // do whatever you need with your user class
+    //      case _ => // did not get a User instance, should not happen,log error/thow exception
+    //    }
+      Ok("You can see this because you logged in using Github")
   }
 
   // -- Javascript routing
@@ -75,13 +79,12 @@ case class WithProvider(provider: String) extends Authorization {
 
 case class WithRightClub(id: Long) extends Authorization {
   def isAuthorized(user: Identity) = {
-    val res =  user match {
-      case u: service.FamUser => u.user.map {
-        us => us.currentClubId.map {
+    val res = user match {
+      case u: models.User =>
+       u.currentClubId.map {
           clubId => clubId == id
-        } getOrElse (false)
-      } getOrElse (false)
-      case  _ => false
+        } getOrElse(false)
+      case _ => false
     }
     res
   }

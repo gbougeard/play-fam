@@ -12,24 +12,6 @@ object Users extends Controller {
    */
   val Home = Redirect(routes.Users.list(0, 0))
 
-  /**
-   * Describe the user form (used in both edit and create screens).
-   */
-  val userForm = Form(
-    mapping(
-      "id" -> optional(longNumber),
-      "email" -> email ,
-      "firstName" -> text ,
-      "lastName" -> text ,
-      "email" -> optional(longNumber) ,
-      "oauthProvider" -> optional(text) ,
-      "oauthId" -> optional(text),
-      "password" -> optional(text)
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
-    )
-      (User.apply)(User.unapply)
-  )
 
   // -- Actions
   /**
@@ -38,12 +20,6 @@ object Users extends Controller {
   def index = Action {
     Home
   }
-
-  //  def list = Action {
-  //    val users = models.Users.findAll
-  //    val html = views.html.users("Liste des users", users)
-  //    Ok(html)
-  //  }
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
@@ -54,74 +30,11 @@ object Users extends Controller {
 
   def view(id: Long) = TODO
 
-  /*Action {
-      implicit request =>
-        models.Users.findById(id).map {
-          user => Ok(views.html.users.view("View User", user))
-        } getOrElse (NotFound)
-    } */
-
-  def edit(id: Long) = TODO
-
-  /*Action {
-      implicit request =>
-        models.Users.findById(id).map {
-          user => Ok(views.html.users.edit("Edit User", id, userForm.fill(user)))
-        } getOrElse (NotFound)
-    }*/
-
-  /**
-   * Handle the 'edit form' submission
-   *
-   * @param id Id of the computer to edit
-   */
-  def update(id: Long) = TODO
-
-  /*Action {
-      implicit request =>
-        userForm.bindFromRequest.fold(
-          formWithErrors => BadRequest(views.html.users.edit("Edit User - errors", id, formWithErrors)),
-          user => {
-            models.Users.update(user)
-            //        Home.flashing("success" -> "User %s has been updated".format(user.name))
-            Redirect(routes.Users.list(0, 2))
-          }
-        )
-    }   */
-
-  /**
-   * Display the 'new computer form'.
-   */
-  def create = Action {
-    implicit request =>
-      Ok(views.html.users.create("New User", userForm))
-  }
-
-  /**
-   * Handle the 'new computer form' submission.
-   */
-  def save = TODO
-
-  /*Action {
-      implicit request =>
-        userForm.bindFromRequest.fold(
-          formWithErrors => BadRequest(views.html.users.create("New User - errors", formWithErrors)),
-          user => {
-            models.Users.insert(user)
-            //        Home.flashing("success" -> "User %s has been created".format(user.name))
-            Redirect(routes.Users.list(0, 2))
-          }
-        )
-    }   */
 
   /**
    * Handle computer deletion.
    */
   def delete(id: Long) = TODO
 
-  /*Action {
-      models.Users.delete(id)
-      Home.flashing("success" -> "User has been deleted")
-    }  */
 
 }

@@ -36,7 +36,7 @@ if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
 
     @users.map { user =>
     <tr>
-        <td>@user.id.getOrElse("None")</td>
+        <td>@user.pid.getOrElse("None")</td>
         <td>@user.email</td>
     </tr>
     }

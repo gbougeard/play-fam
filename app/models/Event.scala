@@ -39,9 +39,9 @@ object Events extends Table[Event]("fam_event") {
 
   def eventStatusId = column[Long]("id_eventStatus")
 
-  implicit val dateTime: TypeMapper[DateTime]
-  = MappedTypeMapper.base[DateTime, Timestamp](dt => new
-      Timestamp(dt.getMillis), ts => new DateTime(ts.getTime))
+  implicit val dateTime: TypeMapper[DateTime] = MappedTypeMapper.base[DateTime, Timestamp](
+    dt => new Timestamp(dt.getMillis),
+    ts => new DateTime(ts.getTime))
 
   def * = id.? ~ dtEvent ~ duration ~ name ~ typEventId ~ placeId.? ~ eventStatusId <>(Event, Event.unapply _)
 

@@ -6,7 +6,6 @@ import play.api.{Application, Logger}
 
 import models.User
 import models.Users._
-import service.FamUser._
 
 import play.api.libs.json._
 
