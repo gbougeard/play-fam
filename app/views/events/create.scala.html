@@ -1,4 +1,4 @@
-@(message: String, eventForm: Form[Event])
+@(message: String, eventForm: Form[Event], typEvents : Seq[(String, String)], places: Seq[(String, String)], eventStatuses: Seq[(String, String)])
 
 @import helper._
 
@@ -12,6 +12,24 @@
         @inputDate(eventForm("dtEvent"), '_label -> "Date")
         @inputText(eventForm("duration"), '_label -> "Duration")
         @inputText(eventForm("name"), '_label -> "Nom")
+        @select(
+            eventForm("typEventId"),
+            typEvents,
+            '_label -> "TypEvent", '_default -> "-- Choose a type --",
+            '_showConstraints -> true
+        )
+        @select(
+            eventForm("placeId"),
+            places,
+            '_label -> "Place", '_default -> "-- Choose a place --",
+            '_showConstraints -> true
+        )
+        @select(
+            eventForm("eventStatusId"),
+            eventStatuses,
+            '_label -> "Status", '_default -> "-- Choose a status --",
+            '_showConstraints -> true
+        )
 
         <div class="form-actions">
             <input type="submit" value="Save this event" class="btn btn-primary">

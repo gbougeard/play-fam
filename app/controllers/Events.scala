@@ -98,7 +98,7 @@ object Events extends Controller {
    */
   def create = Action {
     implicit request =>
-      Ok(views.html.events.create("New Event", eventForm))
+      Ok(views.html.events.create("New Event", eventForm, models.TypEvents.options, models.Places.options, models.EventStatuses.options))
   }
 
   /**
@@ -107,7 +107,7 @@ object Events extends Controller {
   def save = Action {
     implicit request =>
       eventForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.events.create("New Event - errors", formWithErrors)),
+        formWithErrors => BadRequest(views.html.events.create("New Event - errors", formWithErrors, models.TypEvents.options, models.Places.options, models.EventStatuses.options)),
         event => {
           models.Events.insert(event)
           //        Home.flashing("success" -> "Event %s has been created".format(event.name))
