@@ -6,12 +6,14 @@ import play.api.db.slick.Config.driver.simple._
 import securesocial.core._
 import securesocial.core.providers.Token
 
-import _root_.java.sql.Date
+import com.github.tototoshi.slick.JodaSupport._
 import org.joda.time.DateTime
 
 import play.api.Play.current
 
 import play.api.libs.json.Json
+
+import play.Logger
 
 /*
   Slick Table for securesocial.core.providers.Token
@@ -26,12 +28,6 @@ import play.api.libs.json.Json
 
 
 object Tokens extends Table[Token]("tokens") {
-
-  // Conversions for JodaTime
-  implicit def date2dateTime = MappedTypeMapper.base[DateTime, Date] (
-    dateTime => new Date(dateTime.getMillis),
-    date => new DateTime(date)
-  )
 
   def uuid = column[String]("uuid", O.PrimaryKey)
   def email = column[String]("email")
@@ -55,10 +51,12 @@ object Tokens extends Table[Token]("tokens") {
     } getOrElse {
       this.insert(token)
     }
+    Logger.debug("saved token %s".format(token))
     token
   }
 
   def delete(uuid: String) = DB.withTransaction { implicit session =>
+    Logger.debug("delete token %s".format(uuid))
     this.where(_.uuid is uuid).mutate(_.delete)
   }
 
@@ -78,6 +76,7 @@ object Tokens extends Table[Token]("tokens") {
 
   def findByUUID(uuid: String): Option[Token] = DB.withSession { implicit session =>
     def byUUID = createFinderBy(_.uuid)
+    Logger.debug("find token %s".format(uuid))
     byUUID(uuid).firstOption
   }
 

@@ -1,86 +1,38 @@
 package models
 
-import play.api.libs.Codecs
-
-import models.Tokens._
-
-import securesocial.core._
-
 import play.api.Play.current
-import play.api.Logger
 
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
-import play.api.libs.json.Json
 
-/**
- * Created with IntelliJ IDEA.
- * User: gonto
- * Date: 11/23/12
- * Time: 9:47 PM
- * To change this template use File | Settings | File Templates.
- */
-case class User(pid: Option[Long] = None,
+import securesocial.core._
+
+import play.Logger
+
+case class User(pid: Option[Long],
                 userId: String,
                 providerId: String,
                 email: Option[String],
                 firstName: String,
                 lastName: String,
                 authMethod: AuthenticationMethod,
-                oAuth1Info: Option[OAuth1Info] = None,
-                oAuth2Info: Option[OAuth2Info] = None,
-                passwordInfo: Option[PasswordInfo] = None,
-                currentClubId: Option[Long] = None
-                 ) extends Identity {
+                hasher: Option[String],
+                password: Option[String],
+                salt: Option[String],
+                currentClubId: Option[Long],
+                avatarUrl: Option[String]
+                 ) {
   def id: UserId = UserId(userId, providerId)
 
   def fullName: String = s"$firstName $lastName"
 
-  def avatarUrl: Option[String] = email.map {
-    e => s"http://www.gravatar.com/avatar/${Codecs.md5(e.getBytes)}.png"
-  }
-}
-
-object User {
-  def fromIdentity(user: Identity) = {
-    User(pid = None,
-      userId = user.id.id,
-      providerId = user.id.providerId,
-      email = user.email,
-      firstName = user.firstName,
-      lastName = user.lastName,
-      authMethod = user.authMethod,
-      oAuth1Info = user.oAuth1Info,
-      oAuth2Info = user.oAuth2Info,
-      passwordInfo = user.passwordInfo,
-      currentClubId = None
-    )
-  }
+//  def avatarUrl: Option[String] = email.map {
+//    e => s"http://www.gravatar.com/avatar/${Codecs.md5(e.getBytes)}.png"
+//  }
 }
 
 
 object Users extends Table[User]("fam_user") {
-
-  def oAuth1Info = {
-    def token = column[String]("token")
-    def secret = column[String]("secret")
-    token ~ secret <>(OAuth1Info.apply _, OAuth1Info.unapply _)
-  }
-
-  def oAuth2Info = {
-    def accessToken = column[String]("accessToken")
-    def tokenType = column[Option[String]]("tokenType")
-    def expiresIn = column[Option[Int]]("expiresIn")
-    def refreshToken = column[Option[String]]("refreshToken")
-    accessToken ~ tokenType ~ expiresIn ~ refreshToken <>(OAuth2Info.apply _, OAuth2Info.unapply _)
-  }
-
-  def passwordInfo = {
-    def hasher = column[String]("hasher")
-    def password = column[String]("password")
-    def salt = column[Option[String]]("salt")
-    hasher ~ password ~ salt <>(PasswordInfo.apply _, PasswordInfo.unapply _)
-  }
 
   // Conversions for AuthenticationMethod
   implicit def string2AuthenticationMethod: TypeMapper[AuthenticationMethod] = MappedTypeMapper.base[AuthenticationMethod, String](
@@ -90,42 +42,58 @@ object Users extends Table[User]("fam_user") {
 
   def pid = column[Long]("id_user", O.PrimaryKey, O.AutoInc)
 
-  def email = column[String]("email", O.NotNull)
+  def userId = column[String]("userId")
 
-  def firstName = column[String]("first_name", O.NotNull)
+  def providerId = column[String]("providerId")
 
-  def lastName = column[String]("last_name", O.NotNull)
+  def email = column[String]("email")
 
-  def currentClubId = column[Long]("id_current_club")
+  def firstName = column[String]("first_name")
 
-  def userId = column[String]("user_id")
-
-  def providerId = column[String]("provider_id")
-
-  def password = column[String]("password")
+  def lastName = column[String]("last_name")
 
   def authMethod = column[AuthenticationMethod]("authMethod")
 
+  //  def oAuth1Info = {
+  //    def token = column[String]("token")
+  //    def secret = column[String]("secret")
+  //    token ~ secret <> (OAuth1Info.apply _, OAuth1Info.unapply _)
+  //  }
+
+  //  def oAuth2Info = {
+  //    def accessToken = column[String]("accessToken")
+  //    def tokenType = column[Option[String]]("tokenType")
+  //    def expiresIn = column[Option[Int]]("expiresIn")
+  //    def refreshToken = column[Option[String]]("refreshToken")
+  //    accessToken ~ tokenType ~ expiresIn ~ refreshToken <> (OAuth2Info.apply _, OAuth2Info.unapply _)
+  //  }
+
+  //    def passwordInfo = {
+  def hasher = column[String]("hasher")
+
+  def password = column[String]("password")
+
+  def salt = column[String]("salt")
+
+  def currentClubId = column[Long]("id_current_club")
+
+  def avatarUrl = column[String]("avatarUrl")
+
+  //      def apply = hasher ~ password ~ salt.? <> (PasswordInfo.apply _, PasswordInfo.unapply _)
+  //    }
+
   // Projections
-  def * = {
-    pid.? ~
-      userId ~
-      providerId ~
-      email.? ~
-      firstName ~
-      lastName ~
-      authMethod ~
-      oAuth1Info.? ~
-      oAuth2Info.? ~
-      passwordInfo.? ~
-      currentClubId.? <>(User.apply _, User.unapply _)
-  }
+  //  def * =  pid.? ~ userId ~ providerId ~ email.? ~ firstName ~ lastName ~  authMethod ~ passwordInfo.? <>(User.apply _, User.unapply _)
+  def * = pid.? ~ userId ~ providerId ~ email.? ~ firstName ~ lastName ~ authMethod ~ hasher.? ~ password.? ~ salt.? ~ currentClubId.? ~ avatarUrl.? <>(User.apply _, User.unapply _)
 
   def autoInc = * returning pid
 
   // Operations
   def save(user: User): User = DB.withTransaction {
     implicit session =>
+      Logger.info("save %s".format(user))
+      val u = findByUserId(user.id)
+      Logger.info("found user %s".format(u))
       user.pid match {
         case None | Some(0) => {
           val pid = this.autoInc.insert(user)
@@ -140,41 +108,48 @@ object Users extends Table[User]("fam_user") {
 
   def delete(pid: Long) = DB.withTransaction {
     implicit session =>
+      Logger.info("delete %s".format(pid))
       this.where(_.pid is pid).mutate(_.delete)
   }
 
   // Queries
   def all: List[User] = DB.withSession {
     implicit session =>
+      Logger.info("all")
       val q = for (user <- Users) yield user
       q.list
   }
 
   def findById(pid: Long): Option[User] = DB.withSession {
     implicit session =>
+      Logger.info("findById %s".format(pid))
       def byId = createFinderBy(_.pid)
       byId(pid).firstOption
   }
 
-  def findByEmail(email: String): Option[User] = DB.withSession {
-    implicit session =>
-      def byEmail = createFinderBy(_.email)
-      byEmail(email).firstOption
-  }
+  //  def findByEmail(email: String): Option[User] = DB.withSession {
+  //    implicit session =>
+  //      def byEmail = createFinderBy(_.email)
+  //      byEmail(email).firstOption
+  //  }
 
-  def findByUserId(userId: UserId): Option[User] = DB.withSession {
+  def findByUserId(u: UserId): Option[User] = DB.withSession {
     implicit session =>
+      Logger.info("findByUserId %s".format(u))
       val q = for {
-        user <- this if (this.userId is userId.id) && (this.providerId is userId.providerId)
+        user <- Users
+        if (user.userId is u.id) && (user.providerId is u.providerId)
       } yield user
 
       q.firstOption
   }
 
-  def findByEmailAndProvider(email: String, providerId: String): Option[User] = DB.withSession {
+  def findByEmailAndProvider(e: String, p: String): Option[User] = DB.withSession {
     implicit session =>
+      Logger.info("findByEmailAndProvider %s %s".format(e, p))
       val q = for {
-        user <- this if (this.email is email) && (this.providerId is providerId)
+        user <- Users
+        if (user.email is e)  && (user.providerId is p)
       } yield user
 
       q.firstOption
@@ -214,10 +189,36 @@ object Users extends Table[User]("fam_user") {
   //      query.list.map(row => (row._1.toString, row._2))
   //  }
 
-  implicit val authenticationMethodFormat = Json.format[AuthenticationMethod]
-  implicit val oAuth1InfoFormat = Json.format[OAuth1Info]
-  implicit val oAuth2InfoFormat = Json.format[OAuth2Info]
-  implicit val passwordInfoFormat = Json.format[PasswordInfo]
-  implicit val userFormat = Json.format[User]
+  //  implicit val authenticationMethodFormat = Json.format[AuthenticationMethod]
+  //  implicit val oAuth1InfoFormat = Json.format[OAuth1Info]
+  //  implicit val oAuth2InfoFormat = Json.format[OAuth2Info]
+  //  implicit val passwordInfoFormat = Json.format[PasswordInfo]
+  //  implicit val userFormat = Json.format[User]
 
+}
+
+object User {
+  def fromIdentity(user: Identity) = {
+    Logger.debug("fromIdentity %s".format(user))
+    User(
+      pid = None,
+      userId = user.id.id,
+      providerId = user.id.providerId,
+      email = user.email,
+      firstName = user.firstName,
+      lastName = user.lastName,
+      authMethod = user.authMethod,
+      hasher = user.passwordInfo.map {
+        p => p.hasher
+      },
+      password = user.passwordInfo.map {
+        p => p.password
+      },
+      salt = user.passwordInfo.map {
+        p => p.salt
+      }.getOrElse(None),
+      currentClubId = None,
+      avatarUrl = user.avatarUrl
+    )
+  }
 }

@@ -66,10 +66,6 @@ GET     /players/$id<[0-9]+>                  controllers.Players.view(id : Long
 
 # Users
 GET     /users                      controllers.Users.list(p:Int ?= 0,s:Int ?= 2)
-GET     /users/edit/$id<[0-9]+>             controllers.Users.edit(id : Long)
-POST    /users/edit/$id<[0-9]+>             controllers.Users.update(id : Long)
-GET     /users/new                  controllers.Users.create
-POST    /users/new                  controllers.Users.save
 GET     /users/$id<[0-9]+>                  controllers.Users.view(id : Long)
 # Seasons
 GET     /seasons                      controllers.Seasons.list(p:Int ?= 0,s:Int ?= 2)

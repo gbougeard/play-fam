@@ -40,10 +40,12 @@
         }
 
         @user.passwordInfo.map { info =>
-            <a class="btn" href="@securesocial.core.providers.utils.RoutesHelper.changePasswordPage.absoluteURL(IdentityProvider.sslEnabled)">Change Password</a>
+            @info.password.map{ password =>
+                <a class="btn" href="@securesocial.core.providers.utils.RoutesHelper.changePasswordPage.absoluteURL(IdentityProvider.sslEnabled)">Change Password</a>
+            }
         }
         @user match {
-        case u:models.User => {
+        case u:models.FamUser => {
                 <h2>User Info</h2>
 
                 <ul>

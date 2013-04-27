@@ -1,0 +1,29 @@
+CREATE TABLE fam_user
+(
+    id_user BIGINT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    dt_creat DATETIME,
+    dt_modif DATETIME,
+    email VARCHAR(255),
+    first_name VARCHAR(255),
+    last_name VARCHAR(255),
+    authMethod VARCHAR(50),
+    password VARCHAR(255),
+    VERSION BIGINT,
+    id_current_club BIGINT,
+    providerId VARCHAR(50),
+    userId VARCHAR(50),
+    hasher VARCHAR(128),
+    salt VARCHAR(128),
+    avatarUrl VARCHAR(255),
+    FOREIGN KEY ( id_current_club ) REFERENCES fam_club ( id_club )
+);
+CREATE UNIQUE INDEX UNQ_fam_user_0 ON fam_user ( email );
+
+CREATE TABLE tokens
+(
+    uuid VARCHAR(255) PRIMARY KEY NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    creationTime DATETIME,
+    expirationTime DATETIME,
+    isSignUp BIT NOT NULL
+);
