@@ -92,16 +92,27 @@ object Users extends Table[User]("fam_user") {
   def save(user: User): User = DB.withTransaction {
     implicit session =>
       Logger.info("save %s".format(user))
-      val u = findByUserId(user.id)
-      Logger.info("found user %s".format(u))
-      user.pid match {
-        case None | Some(0) => {
+//      val u = findByUserId(user.id).match{
+//         x => Query(Users).where(_.pid is user.pid).update(user)
+//          user
+//      } getOrElse(
+//
+//        )
+//      u
+
+//      Logger.info("found user %s".format(u))
+      val x = findByUserId(user.id)
+      Logger.info("found %s".format(x))
+      findByUserId(user.id) match {
+        case None  => {
+          Logger.info("create user")
           val pid = this.autoInc.insert(user)
           user.copy(pid = Some(pid))
         }
-        case Some(pid) => {
-          Query(Users).where(_.pid is pid).update(user)
-          user
+        case Some(u) => {
+          Logger.info("update user %s".format(user.email))
+          Query(Users).where(_.email is u.email).update(user.copy(pid=u.pid, currentClubId=u.currentClubId))
+          u
         }
       }
   }
@@ -205,8 +216,8 @@ object User {
       userId = user.id.id,
       providerId = user.id.providerId,
       email = user.email,
-      firstName = user.firstName,
-      lastName = user.lastName,
+      firstName = if (!user.firstName.isEmpty) user.firstName else user.fullName.split(' ').head,
+      lastName = if (!user.lastName.isEmpty) user.lastName else user.fullName.split(' ').tail.head,
       authMethod = user.authMethod,
       hasher = user.passwordInfo.map {
         p => p.hasher

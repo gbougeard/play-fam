@@ -40,14 +40,13 @@
         }
 
         @user.passwordInfo.map { info =>
-            @info.password.map{ password =>
-                <a class="btn" href="@securesocial.core.providers.utils.RoutesHelper.changePasswordPage.absoluteURL(IdentityProvider.sslEnabled)">Change Password</a>
-            }
+            <a class="btn" href="@securesocial.core.providers.utils.RoutesHelper.changePasswordPage.absoluteURL(IdentityProvider.sslEnabled)">Change Password</a>
         }
+
         @user match {
         case u:models.FamUser => {
                 <h2>User Info</h2>
-
+                <img src="@u.gravatar" alt="@user.firstName" width="40px" height="40px"/>
                 <ul>
                     @u.currentClubId.map { t => <li>CurrentClubId: @t</li> }
                 </ul>
