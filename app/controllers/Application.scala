@@ -80,7 +80,7 @@ case class WithProvider(provider: String) extends Authorization {
 case class WithRightClub(id: Long) extends Authorization {
   def isAuthorized(user: Identity) = {
     val res = user match {
-      case u: models.User =>
+      case u: models.FamUser =>
        u.currentClubId.map {
           clubId => clubId == id
         } getOrElse(false)
