@@ -1,7 +1,14 @@
 @(message: String, events: (Event, TypEvent, EventStatus), answers: Seq[(Answer, Event, Player, TypAnswer)])(implicit flash: play.api.mvc.Flash)
 
+@scripts ={
+    <script>
+            $(function ()
+            { $(".comment").popover();
+            });
+    </script>
+}
 
-@main(message) {
+@main(message, scripts) {
     @Option(events).map { case (event, typEvent, eventStatus) =>
     <fieldset>
     <legend>@event.name</legend>
@@ -10,7 +17,10 @@
             <legend>YES</legend>
                 @answers.filter(x => x._4.group.equals("YES")).map { case (answer, event, player, typAnswer) =>
                 <li>
-                    <a href="#" data-toggle="tooltip" title="@typAnswer.name"><i class="@typAnswer.code"></i>@player.displayName</a>
+                    <i class="@typAnswer.code"></i>
+                    @player.displayName @answer.comments.map{comment =>
+                    <a href="#" class="comment" data-toggle="popover" data-unique="1" data-placement="right" data-content="@comment" title="@typAnswer.name"><i class="icon-comment"></i></a>
+                }
                 </li>
             }
             </ul>
@@ -20,7 +30,10 @@
                 <legend>MAYBE</legend>
                 @answers.filter(x => x._4.group.equals("MAYBE")).map { case (answer, event, player, typAnswer) =>
                 <li>
-                    <a href="#" data-toggle="tooltip" title="@typAnswer.name"><i class="@typAnswer.code"></i>@player.displayName</a>
+                    <i class="@typAnswer.code"></i>
+                    @player.displayName @answer.comments.map{comment =>
+                    <a href="#" class="comment" data-toggle="popover" data-unique="1" data-placement="right" data-content="@comment" title="@typAnswer.name"><i class="icon-comment"></i></a>
+                    }
                 </li>
             }
             </ul>
@@ -30,7 +43,10 @@
                 <legend>NO</legend>
                 @answers.filter(x => x._4.group.equals("NO")).map { case (answer, event, player, typAnswer) =>
                 <li>
-                    <a href="#" data-toggle="tooltip" title="@typAnswer.name"><i class="@typAnswer.code"></i>@player.displayName</a>
+                    <i class="@typAnswer.code"></i>
+                    @player.displayName @answer.comments.map{comment =>
+                    <a href="#" class="comment" data-toggle="popover" data-unique="1" data-placement="right" data-content="@comment" title="@typAnswer.name"><i class="icon-comment"></i></a>
+                }
                 </li>
             }
             </ul>
