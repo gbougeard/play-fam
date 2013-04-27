@@ -25,7 +25,8 @@ object ApplicationBuild extends Build {
     //    ,  "org.apache.derby" % "derby" % "10.6.1.0"
     //     , "org.hsqldb" % "hsqldb" % "2.0.0"
     //      ,"postgresql" % "postgresql" % "8.4-701.jdbc4"
-    , "mysql" % "mysql-connector-java" % "5.1.23"
+    , "mysql" % "mysql-connector-java" % "5.1.24"
+    , "com.github.tototoshi" %% "slick-joda-mapper" % "0.2.1"
     // Metrics
     , "nl.grons" % "metrics-scala_2.10" % "2.2.0"
     //    , "com.yammer.metrics" % "metrics-scala_2.10" % "2.2.0"
