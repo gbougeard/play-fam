@@ -2,20 +2,21 @@
 
 @scripts ={
     <script>
-            $(function ()
+        $(function ()
             { $(".comment").popover();
-            });
+        });
     </script>
 }
 
 @main(message, scripts) {
     @Option(events).map { case (event, typEvent, eventStatus) =>
     <fieldset>
-    <legend>@event.name</legend>
+    <legend><span class="badge">@eventStatus.name</span> @event.name - @event.dtEvent.toString("d MMM YYYY HH:mm") </legend>
+        <div class="span12 well">@event.placeId</div>
         <div class="span4">
             <ul class="unstyled">
-            <legend>YES</legend>
-                @answers.filter(x => x._4.group.equals("YES")).map { case (answer, event, player, typAnswer) =>
+            <legend>YES (@answers.filter(x => x._4.group.equals("YES")).length)</legend>
+                @answers.filter(x => x._4.group.equals("YES")).sortBy(y=>y._3.lastName).map { case (answer, e, player, typAnswer) =>
                 <li>
                     <i class="@typAnswer.code"></i>
                     @player.displayName @answer.comments.map{comment =>
@@ -27,8 +28,8 @@
         </div>
         <div class="span4">
             <ul class="unstyled">
-                <legend>MAYBE</legend>
-                @answers.filter(x => x._4.group.equals("MAYBE")).map { case (answer, event, player, typAnswer) =>
+                <legend>MAYBE (@answers.filter(x => x._4.group.equals("MAYBE")).length)</legend>
+                @answers.filter(x => x._4.group.equals("MAYBE")).sortBy(y=>y._3.lastName).map { case (answer, e, player, typAnswer) =>
                 <li>
                     <i class="@typAnswer.code"></i>
                     @player.displayName @answer.comments.map{comment =>
@@ -40,8 +41,8 @@
         </div>
         <div class="span3">
             <ul class="unstyled">
-                <legend>NO</legend>
-                @answers.filter(x => x._4.group.equals("NO")).map { case (answer, event, player, typAnswer) =>
+                <legend>NO (@answers.filter(x => x._4.group.equals("NO")).length)</legend>
+                @answers.filter(x => x._4.group.equals("NO")).sortBy(y=>y._3.lastName).map { case (answer, e, player, typAnswer) =>
                 <li>
                     <i class="@typAnswer.code"></i>
                     @player.displayName @answer.comments.map{comment =>
