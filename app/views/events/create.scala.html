@@ -1,4 +1,4 @@
-@(message: String, eventForm: Form[Event], typEvents : Seq[(String, String)], places: Seq[(String, String)], eventStatuses: Seq[(String, String)])
+@(message: String, eventForm: Form[Event], typEvents : Seq[(String, String)], places: Seq[(String, String)], eventStatuses: Seq[(String, String)], teams:Seq[Team])
 
 @import helper._
 
@@ -8,7 +8,7 @@
 
     @form(routes.Events.save(), 'class -> "form-horizontal") {
 
-        @inputText(eventForm("id"), '_label -> "Id")
+     @*   @inputText(eventForm("id"), '_label -> "Id")      *@
         @inputDate(eventForm("dtEvent"), '_label -> "Date")
         @inputText(eventForm("duration"), '_label -> "Duration")
         @inputText(eventForm("name"), '_label -> "Nom")
@@ -30,6 +30,12 @@
             '_label -> "Status", '_default -> "-- Choose a status --",
             '_showConstraints -> true
         )
+
+        <ul>
+            @for(team <- teams){
+                <li>@team.name</li>
+            }
+        </ul>
 
         <div class="form-actions">
             <input type="submit" value="Save this event" class="btn btn-primary">

@@ -3,19 +3,17 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.Event
+import models.{FamUser, Event}
 import models.Events._
-import models.TypEvents._
 
 import com.yammer.metrics.Metrics
 import com.yammer.metrics.scala.Timer
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
 
 
-object Events extends Controller {
+object Events extends Controller with securesocial.core.SecureSocial {
 
-  val metric = Metrics.defaultRegistry().newTimer(classOf[Event], "Minute")
+  val metric = Metrics.defaultRegistry().newTimer(classOf[Event], "Page")
   val timer = new Timer(metric)
 
   /**
@@ -81,7 +79,7 @@ object Events extends Controller {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = Action {
+  def update(id: Long) = SecuredAction {
     implicit request =>
       eventForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.events.edit("Edit Event - errors", id, formWithErrors)),
@@ -96,24 +94,42 @@ object Events extends Controller {
   /**
    * Display the 'new computer form'.
    */
-  def create = Action {
+  def create = SecuredAction {
     implicit request =>
-      Ok(views.html.events.create("New Event", eventForm, models.TypEvents.options, models.Places.options, models.EventStatuses.options))
+      request.user match {
+        case user: FamUser => // do whatever you need with your user class
+          user.currentClubId.map {
+            idClub => Ok(views.html.events.create("New Event", eventForm, models.TypEvents.options, models.Places.options, models.EventStatuses.options, models.Teams.findByClub(idClub)))
+          } getOrElse Unauthorized("You don't belong to any club")
+
+        case _ => // did not get a User instance, should not happen,log error/thow exception
+          Unauthorized("Not a valid user")
+      }
+
   }
 
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = Action {
+  def save = SecuredAction {
     implicit request =>
-      eventForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.events.create("New Event - errors", formWithErrors, models.TypEvents.options, models.Places.options, models.EventStatuses.options)),
-        event => {
-          models.Events.insert(event)
-          //        Home.flashing("success" -> "Event %s has been created".format(event.name))
-          Redirect(routes.Events.list(0, 2))
-        }
-      )
+      request.user match {
+        case user: FamUser => // do whatever you need with your user class
+          user.currentClubId.map {
+            idClub =>
+              eventForm.bindFromRequest.fold(
+                formWithErrors => BadRequest(views.html.events.create("New Event - errors", formWithErrors, models.TypEvents.options, models.Places.options, models.EventStatuses.options, models.Teams.findByClub(idClub))),
+                event => {
+                  models.Events.insert(event)
+                  //        Home.flashing("success" -> "Event %s has been created".format(event.name))
+                  Redirect(routes.Events.list(0, 2))
+                }
+              )
+          } getOrElse Unauthorized
+
+        case _ => // did not get a User instance, should not happen,log error/thow exception
+          Unauthorized("Not a valid user")
+      }
   }
 
   /**

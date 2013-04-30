@@ -37,6 +37,7 @@ object Teams extends Table[Team]("fam_team") {
   val byId = createFinderBy(_.id)
   val byName = createFinderBy(_.name)
   val byCode = createFinderBy(_.code)
+  val byClub = createFinderBy(_.clubId)
 
   lazy val pageSize = 10
 
@@ -86,6 +87,12 @@ object Teams extends Table[Team]("fam_team") {
   def findByCode(code: String): Option[Team] = DB.withSession {
     implicit session => {
       Teams.byCode(code).firstOption
+    }
+  }
+
+  def findByClub(id: Long): Seq[Team] = DB.withSession {
+    implicit session => {
+      Teams.byClub(id).list
     }
   }
 
