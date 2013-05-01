@@ -1,46 +1,77 @@
-@(message: String, eventForm: Form[Event], typEvents : Seq[(String, String)], places: Seq[(String, String)], eventStatuses: Seq[(String, String)], teams:Seq[Team])
+@(message: String, typEvents : String, places: String, teams: String)
 
 @import helper._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
-@main(message) {
+    @scripts={
+        <script type="text/javascript" src='@routes.Assets.at("js/app/controllers/event.js")'></script>
 
-    @form(routes.Events.save(), 'class -> "form-horizontal") {
-
-     @*   @inputText(eventForm("id"), '_label -> "Id")      *@
-        @inputDate(eventForm("dtEvent"), '_label -> "Date")
-        @inputText(eventForm("duration"), '_label -> "Duration")
-        @inputText(eventForm("name"), '_label -> "Nom")
-        @select(
-            eventForm("typEventId"),
-            typEvents,
-            '_label -> "TypEvent", '_default -> "-- Choose a type --",
-            '_showConstraints -> true
-        )
-        @select(
-            eventForm("placeId"),
-            places,
-            '_label -> "Place", '_default -> "-- Choose a place --",
-            '_showConstraints -> true
-        )
-        @select(
-            eventForm("eventStatusId"),
-            eventStatuses,
-            '_label -> "Status", '_default -> "-- Choose a status --",
-            '_showConstraints -> true
-        )
-
-        <ul>
-            @for(team <- teams){
-                <li>@team.name</li>
-            }
-        </ul>
-
-        <div class="form-actions">
-            <input type="submit" value="Save this event" class="btn btn-primary">
-            <a href="@routes.Events.list()" class="btn">Cancel</a>
-        </div>
-
+        <script>
+        </script>
     }
+
+
+@main(message, scripts) {
+    <div data-ng-controller="EventCtrl" ng-init="teams=@teams ; places=@places ; types=@typEvents">
+        <form id="formEvent" class="form-horizontal" data-ng-submit="save()">
+            <div class="control-group" ng-class="{error: formEvent.name.$invalid}">
+                <label class="control-label" for="eventName">Title</label>
+                <div class="controls">
+                    <input type="text" id="eventName" name="name" placeholder="Title" class="input-with-feedback" data-ng-model="name" required>
+                </div>
+            </div>
+            <div class="control-group input-append" ng-class="{error: formEvent.date.$invalid}">
+                <label class="control-label" for="eventDate">Date</label>
+                <div class="controls">
+                    <input type="text" id="eventDate" name="date" ng-model="datepicker.date" data-date-format="dd/mm/yyyy" bs-datepicker required>
+                    <button type="button" class="btn" data-toggle="datepicker"><i class="icon-calendar"></i></button>
+                </div>
+            </div>
+
+            <div class="control-group  input-append" ng-class="{error: formEvent.time.$invalid}">
+                <label class="control-label" for="eventTime">Time</label>
+                <div class="controls">
+                    <input type="text" id="eventTime" name="time" ng-model="timepicker.time" data-show-meridian="false" data-show-seconds="false" bs-timepicker>
+                    <button type="button" class="btn" data-toggle="timepicker"><i class="icon-time"></i></button>
+                </div>
+            </div>
+
+            <div class="control-group" ng-class="{error: formEvent.type.$invalid}">
+                <label class="control-label" for="type">Type</label>
+                <div class="controls">
+                    <select class="span2" name="type" ng-model="selectedType" ng-options="value.id as value.name for (key, value) in types" data-style="btn-primary" bs-select required></select>
+                </div>
+            </div>
+
+            <div class="control-group" ng-class="{error: formEvent.duration.$invalid}">
+                <label class="control-label" for="duration">Duration</label>
+                <div class="controls">
+                    <input type="number" id="duration" name="duration" placeholder="Duration" class="input-with-feedback" data-ng-model="duration" required>
+                </div>
+            </div>
+
+            <div class="control-group" ng-class="{error: formEvent.place.$invalid}">
+                <label class="control-label" for="place">Place</label>
+                <div class="controls">
+                    <select class="span2" name="place" ng-model="selectedPlace" ng-options="value.id as value.name for (key, value) in places" data-style="btn-primary" bs-select></select>
+                </div>
+            </div>
+
+
+            <div class="control-group" ng-class="{error: formEvent.teams.$invalid}">
+                <label class="control-label" for="teams">Teams</label>
+                <div class="controls">
+                    <select id="teams" class="span4" name="teams" ng-model="selectedTeams" multiple title="Choose teams..." ng-options="value.id as value.name for (key, value) in teams" data-style="btn-primary" bs-select></select>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <input type="submit" value="Save this event" class="btn btn-primary">
+                <a href="@routes.Events.list()" class="btn">Cancel</a>
+            </div>
+
+        </form>
+    </div>
+
 }

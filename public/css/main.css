@@ -146,7 +146,7 @@ table .headerSortUp.purple, table .headerSortDown.purple {
 .soccer_field {
     height: 500px;
     /*width: 384px;*/
-    background-image: url(../images/493px-Soccer_field_-_empty.png);
+    background-image: url(../img/493px-Soccer_field_-_empty.png);
     overflow: hidden;
     background-repeat: no-repeat;
 }

@@ -128,6 +128,17 @@ object Teams extends Table[Team]("fam_team") {
       query.list.map(row => (row._1.toString, row._2))
   }
 
+  def findByClubOptions(id: Long): Seq[(String, String)] = DB.withSession {
+    implicit session =>
+      val query = (for {
+        item <- Teams
+        if (item.clubId is id)
+      } yield (item.id, item.name)
+        ).sortBy(_._2)
+      query.list.map(row => (row._1.toString, row._2))
+  }
+
+
   implicit val teamFormat = Json.format[Team]
 
 }

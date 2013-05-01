@@ -55,8 +55,10 @@ object Application extends Controller with securesocial.core.SecureSocial {
           Places.gmapData,
           Events.eventsData,
           Events.view,
-          Matchs.jsonById,
           Events.jsonById,
+          Events.save,
+          Events.saveTeams,
+          Matchs.jsonById,
           Cards.jsonByMatchAndTeam,
           Goals.jsonByMatchAndTeam,
           Substitutions.jsonByMatchAndTeam,
@@ -65,7 +67,7 @@ object Application extends Controller with securesocial.core.SecureSocial {
           MatchPlayers.jsonByMatchAndTeam,
           Formations.saveItems
         )
-      ).as("text/javascript")
+      ).as(JAVASCRIPT)
   }
 
 }

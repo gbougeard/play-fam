@@ -1,15 +1,22 @@
 package controllers
 
+import play.Logger
+
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.{FamUser, Event}
+import models.{EventTeam, FamUser, Event}
 import models.Events._
+import models.Teams._
+import models.Places._
+import models.TypEvents._
+import models.EventTeams._
 
 import com.yammer.metrics.Metrics
 import com.yammer.metrics.scala.Timer
 import play.api.libs.json._
 
+case class EventWithTeams(event:Event, listTeamId:Seq[Long])
 
 object Events extends Controller with securesocial.core.SecureSocial {
 
@@ -21,22 +28,27 @@ object Events extends Controller with securesocial.core.SecureSocial {
    */
   val Home = Redirect(routes.Events.list(0, 0))
 
+
+
   /**
    * Describe the event form (used in both edit and create screens).
    */
   val eventForm = Form(
     mapping(
-      "id" -> optional(longNumber),
-      "dtEvent" -> jodaDate,
-      "duration" -> number,
-      "name" -> nonEmptyText,
-      "typEventId" -> longNumber,
-      "placeId" -> optional(longNumber),
-      "eventStatusId" -> longNumber
+      "event" -> mapping(
+        "id" -> optional(longNumber),
+        "dtEvent" -> jodaDate,
+        "duration" -> number,
+        "name" -> nonEmptyText,
+        "typEventId" -> longNumber,
+        "placeId" -> optional(longNumber),
+        "eventStatusId" -> longNumber
+      )(Event.apply)(Event.unapply),
+       "teams" -> seq(longNumber)
       //      "discontinued" -> optional(date("yyyy-MM-dd")),
       //      "company" -> optional(longNumber)
     )
-      (Event.apply)(Event.unapply)
+      (EventWithTeams.apply)(EventWithTeams.unapply)
   )
 
   // -- Actions
@@ -70,7 +82,9 @@ object Events extends Controller with securesocial.core.SecureSocial {
   def edit(id: Long) = Action {
     implicit request =>
       models.Events.findById(id).map {
-        case (event, typEvent, eventStatus) => Ok(views.html.events.edit("Edit Event", id, eventForm.fill(event)))
+        case (event, typEvent, eventStatus) =>
+          val teams = models.EventTeams.findByEvent(id).map{_._3.id.get}
+          Ok(views.html.events.edit("Edit Event", id, eventForm.fill(EventWithTeams(event, teams))))
       } getOrElse (NotFound)
   }
 
@@ -83,8 +97,8 @@ object Events extends Controller with securesocial.core.SecureSocial {
     implicit request =>
       eventForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.events.edit("Edit Event - errors", id, formWithErrors)),
-        event => {
-          models.Events.update(id, event)
+        eventWithTeams => {
+          models.Events.update(id, eventWithTeams.event)
           //        Home.flashing("success" -> "Event %s has been updated".format(event.name))
           Redirect(routes.Events.list(0, 2))
         }
@@ -99,7 +113,8 @@ object Events extends Controller with securesocial.core.SecureSocial {
       request.user match {
         case user: FamUser => // do whatever you need with your user class
           user.currentClubId.map {
-            idClub => Ok(views.html.events.create("New Event", eventForm, models.TypEvents.options, models.Places.options, models.EventStatuses.options, models.Teams.findByClub(idClub)))
+            idClub =>
+              Ok(views.html.events.create("New Event", Json.toJson(models.TypEvents.findAll).toString(), Json.toJson(models.Places.findAll).toString(),  Json.toJson(models.Teams.findByClub(idClub)).toString()))
           } getOrElse Unauthorized("You don't belong to any club")
 
         case _ => // did not get a User instance, should not happen,log error/thow exception
@@ -111,25 +126,40 @@ object Events extends Controller with securesocial.core.SecureSocial {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = SecuredAction {
+  def save = Action(parse.json) {
     implicit request =>
-      request.user match {
-        case user: FamUser => // do whatever you need with your user class
-          user.currentClubId.map {
-            idClub =>
-              eventForm.bindFromRequest.fold(
-                formWithErrors => BadRequest(views.html.events.create("New Event - errors", formWithErrors, models.TypEvents.options, models.Places.options, models.EventStatuses.options, models.Teams.findByClub(idClub))),
-                event => {
-                  models.Events.insert(event)
-                  //        Home.flashing("success" -> "Event %s has been created".format(event.name))
-                  Redirect(routes.Events.list(0, 2))
-                }
-              )
-          } getOrElse Unauthorized
+      val json = request.body
+            println(json)
+      val event = json.as[Event]
+      val id = models.Events.insert(event)
+      Ok(Json.toJson(id))
+//      request.user match {
+//        case user: FamUser => // do whatever you need with your user class
+//          user.currentClubId.map {
+//            idClub =>
+//              eventForm.bindFromRequest.fold(
+//                formWithErrors => BadRequest(views.html.events.create("New Event - errors", formWithErrors, Json.toJson(models.TypEvents.findAll).toString(), Json.toJson(models.Places.findAll).toString(), Json.toJson(models.Teams.findByClub(idClub)).toString())),
+//                event => {
+//                  models.Events.insert(event.event)
+//                  //        Home.flashing("success" -> "Event %s has been created".format(event.name))
+//                  Redirect(routes.Events.list(0, 2))
+//                }
+//              )
+//          } getOrElse Unauthorized
+//
+//        case _ => // did not get a User instance, should not happen,log error/thow exception
+//          Unauthorized("Not a valid user")
+//      }
+  }
 
-        case _ => // did not get a User instance, should not happen,log error/thow exception
-          Unauthorized("Not a valid user")
-      }
+  def saveTeams = Action(parse.json){
+    implicit request =>
+      val json = request.body
+      println(json)
+      val eventTeams = json.as[Seq[EventTeam]]
+      models.EventTeams.deleteForEvent(eventTeams.head.eventId)
+      eventTeams.map(eventTeam => models.EventTeams.insert(eventTeam))
+      Ok
   }
 
   /**

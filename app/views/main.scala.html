@@ -8,7 +8,7 @@
     <head>
         <meta charset="utf-8">
         <title>@title</title>
-        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("img/favicon.png")">
 
         <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("cerulean/bootstrap.min.css"))'>
       @*  <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("2.3.1/css/bootstrap.min.css"))'> *@
@@ -20,6 +20,8 @@
         <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
 
         <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap/2.3.1/js/bootstrap.min.js"))'></script>
+        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap-datepicker.js"))'></script>
+        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap-timepicker.js"))'></script>
        @* <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("bootswatch.js"))'></script> *@
         <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("moment.min.js"))'></script>
         <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("tiny_mce/tiny_mce.js"))'></script>
@@ -36,13 +38,20 @@
         <script src='@routes.Assets.at("js/libs/wysihtml5/bootstrap-wysihtml5-0.0.2/wysihtml5-0.3.0.min.js")'></script>
         <script src='@routes.Assets.at("js/libs/wysihtml5/bootstrap-wysihtml5-0.0.2/bootstrap-wysihtml5-0.0.2.min.js")'></script>
         <script src='@routes.Assets.at("js/libs/wysihtml5/wysihtml5.js")'></script>
+        <script src='@routes.Assets.at("js/libs/bootstrap-select.js")'></script>
+        <script src='@routes.Assets.at("js/libs/jquery.pnotify.min.js")'></script>
 
+
+        <link href="//mgcrea.github.com/angular-strap/vendor/bootstrap-select.css" rel="stylesheet">
+        <link rel="stylesheet" href='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap-datepicker.css"))'>
+        <link rel="stylesheet" href='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap-timepicker.css"))'>
         <link rel="stylesheet" href='@routes.WebJarAssets.at(WebJarAssets.locate("angular-ui.min.css"))'>
         <link rel="stylesheet" href='@routes.WebJarAssets.at(WebJarAssets.locate("select2.css.css"))'>
         <link rel="stylesheet" href='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap-editable.css"))'>
         <link rel="stylesheet" href='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.ui.css"))'>
       @*  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css">  *@
 
+        <link rel="stylesheet" media="screen" href='@routes.Assets.at("css/bootstrap-select.css")'>
         <link rel="stylesheet" media="screen" href='@routes.Assets.at("css/fullcalendar.css")'>
         <link rel="stylesheet" media="screen" href='@routes.Assets.at("css/main.css")'>
 
@@ -50,6 +59,10 @@
 
         @** Application AngularJS module **@
         <script type="text/javascript" src='@routes.Assets.at("js/app/app.js")'></script>
+        <script type="text/javascript" src='@routes.Assets.at("js/app/filters.js")'></script>
+        <script type="text/javascript" src='@routes.Assets.at("js/app/services.js")'></script>
+        <script type="text/javascript" src='@routes.Assets.at("js/app/directives.js")'></script>
+        <script type="text/javascript" src='@routes.Assets.at("js/app/controllers.js")'></script>
 
         @scripts
 

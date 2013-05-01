@@ -60,12 +60,18 @@ object EventTeams extends Table[EventTeam]("fam_event_team") {
     }
   }
 
+  def deleteForEvent(id: Long) = DB.withSession {
+    implicit session => {
+      EventTeams.where(_.eventId === id).delete
+    }
+  }
 
-//  def delete(eId: Long, tId : Long) = DB.withSession {
-//    implicit session => {
-//      EventTeams.where(_.eventId === eId).and( _.teamId === tId).delete
-//    }
-//  }
+
+  //  def delete(eId: Long, tId : Long) = DB.withSession {
+  //    implicit session => {
+  //      EventTeams.where(_.eventId === eId).and( _.teamId === tId).delete
+  //    }
+  //  }
 
 
   implicit val eventTeamFormat = Json.format[EventTeam]
