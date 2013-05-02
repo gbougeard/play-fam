@@ -1,4 +1,4 @@
-@(message: String, data: (Event, TypEvent, EventStatus))(implicit flash: play.api.mvc.Flash)
+@(message: String, data: (Event, TypEvent, EventStatus), teams: Seq[(EventTeam, Event, Team)])(implicit flash: play.api.mvc.Flash)
 
 
 @main(message) {
@@ -6,8 +6,8 @@
     <div class="header">
 
         <dl class="dl-horizontal">
-            <dt>Id</dt>
-            <dd>@event.id</dd>
+            @*<dt>Id</dt>*@
+            @*<dd>@event.id</dd>*@
             <dt>Name</dt>
             <dd>@event.name</dd>
             <dt>Date</dt>
@@ -19,6 +19,11 @@
             <dt>Status</dt>
             <dd>@eventStatus.name</dd>
         </dl>
+
+        <ul class="unstyled">
+            <legend>Teams</legend>
+            @for(team <- teams){<li>@team._3.name</li>}
+        </ul>
     </div>
 
     <div class="form-actions">

@@ -2,6 +2,8 @@ package models
 
 import play.api.Play.current
 
+import play.Logger
+
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
@@ -110,6 +112,7 @@ object Events extends Table[Event]("fam_event") {
 
   def insert(event: Event): Long = DB.withSession {
     implicit session => {
+      Logger.debug("insert %s".format(event))
       Events.autoInc.insert((event))
     }
   }

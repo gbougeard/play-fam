@@ -15,8 +15,9 @@ import models.EventTeams._
 import com.yammer.metrics.Metrics
 import com.yammer.metrics.scala.Timer
 import play.api.libs.json._
+import scala.util.{Failure, Success}
 
-case class EventWithTeams(event:Event, listTeamId:Seq[Long])
+case class EventWithTeams(event: Event, listTeamId: Seq[Long])
 
 object Events extends Controller with securesocial.core.SecureSocial {
 
@@ -27,7 +28,6 @@ object Events extends Controller with securesocial.core.SecureSocial {
    * This result directly redirect to the application home.
    */
   val Home = Redirect(routes.Events.list(0, 0))
-
 
 
   /**
@@ -44,7 +44,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
         "placeId" -> optional(longNumber),
         "eventStatusId" -> longNumber
       )(Event.apply)(Event.unapply),
-       "teams" -> seq(longNumber)
+      "teams" -> seq(longNumber)
       //      "discontinued" -> optional(date("yyyy-MM-dd")),
       //      "company" -> optional(longNumber)
     )
@@ -75,7 +75,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
   def view(id: Long) = Action {
     implicit request =>
       models.Events.findById(id).map {
-        event => Ok(views.html.events.view("View Event", event))
+        event => Ok(views.html.events.view("View Event", event, models.EventTeams.findByEvent(id)))
       } getOrElse (NotFound)
   }
 
@@ -83,7 +83,9 @@ object Events extends Controller with securesocial.core.SecureSocial {
     implicit request =>
       models.Events.findById(id).map {
         case (event, typEvent, eventStatus) =>
-          val teams = models.EventTeams.findByEvent(id).map{_._3.id.get}
+          val teams = models.EventTeams.findByEvent(id).map {
+            _._3.id.get
+          }
           Ok(views.html.events.edit("Edit Event", id, eventForm.fill(EventWithTeams(event, teams))))
       } getOrElse (NotFound)
   }
@@ -114,7 +116,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
         case user: FamUser => // do whatever you need with your user class
           user.currentClubId.map {
             idClub =>
-              Ok(views.html.events.create("New Event", Json.toJson(models.TypEvents.findAll).toString(), Json.toJson(models.Places.findAll).toString(),  Json.toJson(models.Teams.findByClub(idClub)).toString()))
+              Ok(views.html.events.create("New Event", Json.toJson(models.TypEvents.findAll).toString(), Json.toJson(models.Places.findAll).toString(), Json.toJson(models.Teams.findByClub(idClub)).toString()))
           } getOrElse Unauthorized("You don't belong to any club")
 
         case _ => // did not get a User instance, should not happen,log error/thow exception
@@ -129,37 +131,47 @@ object Events extends Controller with securesocial.core.SecureSocial {
   def save = Action(parse.json) {
     implicit request =>
       val json = request.body
-            println(json)
+      println(json)
       val event = json.as[Event]
       val id = models.Events.insert(event)
       Ok(Json.toJson(id))
-//      request.user match {
-//        case user: FamUser => // do whatever you need with your user class
-//          user.currentClubId.map {
-//            idClub =>
-//              eventForm.bindFromRequest.fold(
-//                formWithErrors => BadRequest(views.html.events.create("New Event - errors", formWithErrors, Json.toJson(models.TypEvents.findAll).toString(), Json.toJson(models.Places.findAll).toString(), Json.toJson(models.Teams.findByClub(idClub)).toString())),
-//                event => {
-//                  models.Events.insert(event.event)
-//                  //        Home.flashing("success" -> "Event %s has been created".format(event.name))
-//                  Redirect(routes.Events.list(0, 2))
-//                }
-//              )
-//          } getOrElse Unauthorized
-//
-//        case _ => // did not get a User instance, should not happen,log error/thow exception
-//          Unauthorized("Not a valid user")
-//      }
+    //      request.user match {
+    //        case user: FamUser => // do whatever you need with your user class
+    //          user.currentClubId.map {
+    //            idClub =>
+    //              eventForm.bindFromRequest.fold(
+    //                formWithErrors => BadRequest(views.html.events.create("New Event - errors", formWithErrors, Json.toJson(models.TypEvents.findAll).toString(), Json.toJson(models.Places.findAll).toString(), Json.toJson(models.Teams.findByClub(idClub)).toString())),
+    //                event => {
+    //                  models.Events.insert(event.event)
+    //                  //        Home.flashing("success" -> "Event %s has been created".format(event.name))
+    //                  Redirect(routes.Events.list(0, 2))
+    //                }
+    //              )
+    //          } getOrElse Unauthorized
+    //
+    //        case _ => // did not get a User instance, should not happen,log error/thow exception
+    //          Unauthorized("Not a valid user")
+    //      }
   }
 
-  def saveTeams = Action(parse.json){
+  def saveTeams = Action(parse.json) {
     implicit request =>
       val json = request.body
       println(json)
+
       val eventTeams = json.as[Seq[EventTeam]]
-      models.EventTeams.deleteForEvent(eventTeams.head.eventId)
-      eventTeams.map(eventTeam => models.EventTeams.insert(eventTeam))
-      Ok
+      val id = eventTeams.head.eventId
+      models.EventTeams.deleteForEvent(id)
+      models.EventTeams.insert(eventTeams) match {
+        case Success(a) => {
+          Logger.info("saveTeams success")
+          Ok
+        }
+        case Failure(e) => {
+          Logger.error("update error:", e)
+          BadRequest(Json.toJson(Map("error" -> e.getMessage())))
+        }
+      }
   }
 
   /**

@@ -1,6 +1,7 @@
 package models
 
 import play.api.Play.current
+import play.Logger
 
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
@@ -10,6 +11,7 @@ import play.api.libs.functional.syntax._
 
 import models.Events._
 import models.Teams._
+import scala.util.Try
 
 case class EventTeam(eventId: Long,
                      teamId: Long)
@@ -54,14 +56,21 @@ object EventTeams extends Table[EventTeam]("fam_event_team") {
     }
   }
 
-  def insert(event: EventTeam): Long = DB.withSession {
+  def insert(event: EventTeam):EventTeam = DB.withSession {
     implicit session => {
-      EventTeams.insert((event))
+      Logger.debug("insert %s".format(event))
+        EventTeams.insert((event))
+    }
+  }
+  def insert(events: Seq[EventTeam]):Try[Option[Int]] = DB.withSession {
+    implicit session => {
+      Try(EventTeams.insertAll(events:_*))
     }
   }
 
   def deleteForEvent(id: Long) = DB.withSession {
     implicit session => {
+      Logger.debug("delete %s".format(id))
       EventTeams.where(_.eventId === id).delete
     }
   }

@@ -1,7 +1,7 @@
 'use strict';
 
 
-function EventCtrl($scope, $http) {
+function EventCtrl($scope, $http, $location) {
 
     var date = new Date();
     var d = date.getDate();
@@ -81,12 +81,13 @@ function EventCtrl($scope, $http) {
 
                 var id = data;
                 var c = [];
-                angular.forEach(teams, function (team) {
+                angular.forEach($scope.selectedTeams, function (team) {
                     c.push({
                         eventId: id,
                         teamId: team
                     });
                 });
+                console.log(c);
                 jsRoutes.controllers.Events.saveTeams().ajax({
                     data: JSON.stringify(c),
                     contentType: "application/json",
@@ -99,6 +100,7 @@ function EventCtrl($scope, $http) {
                             text: 'The Event teams have been successfully created',
                             type: 'success'
                         });
+                        $location.path(jsRoutes.controllers.Events.view(id).url);
                     },
                     error: function (data, status) {
                         console.log("Failed!", data, status);
