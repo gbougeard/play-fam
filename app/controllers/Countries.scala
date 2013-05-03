@@ -49,17 +49,9 @@ object Countries extends Controller {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      play.Logger.info(request.session.data.toString())
-      request.session.get("user").map {
-        user =>
-          play.Logger.info("Hello " + user)
-
-          val countries = timerList.time(models.Countries.findPage(page, orderBy))
-          val html = views.html.countries.list("Liste des countries", countries, orderBy)
-          timerDisplayList.time(Ok(html))
-      }.getOrElse {
-        Unauthorized("Oops, you are not connected")
-      }
+      val countries = timerList.time(models.Countries.findPage(page, orderBy))
+      val html = views.html.countries.list("Liste des countries", countries, orderBy)
+      timerDisplayList.time(Ok(html))
   }
 
 
