@@ -1,8 +1,4 @@
-@(message: String, typEvents : String, places: String, teams: String)
-
-@import helper._
-
-@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+@(message: String, typEvents: String, places: String, teams: String)
 
     @scripts={
         <script type="text/javascript" src='@routes.Assets.at("js/app/controllers/event.js")'></script>

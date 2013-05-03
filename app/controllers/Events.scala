@@ -11,15 +11,17 @@ import models.Teams._
 import models.Places._
 import models.TypEvents._
 import models.EventTeams._
+import models.EventStatuses._
 
 import com.yammer.metrics.Metrics
 import com.yammer.metrics.scala.Timer
 import play.api.libs.json._
 import scala.util.{Failure, Success}
 
-case class EventWithTeams(event: Event, listTeamId: Seq[Long])
+case class EventWithTeams(event: Event, teams: Seq[Long])
 
 object Events extends Controller with securesocial.core.SecureSocial {
+  implicit val eventWithTeamsFormat = Json.format[EventWithTeams]
 
   val metric = Metrics.defaultRegistry().newTimer(classOf[Event], "Page")
   val timer = new Timer(metric)
@@ -76,18 +78,32 @@ object Events extends Controller with securesocial.core.SecureSocial {
     implicit request =>
       models.Events.findById(id).map {
         event => Ok(views.html.events.view("View Event", event, models.EventTeams.findByEvent(id)))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
-  def edit(id: Long) = Action {
+  def edit(id: Long) = SecuredAction {
     implicit request =>
-      models.Events.findById(id).map {
-        case (event, typEvent, eventStatus) =>
-          val teams = models.EventTeams.findByEvent(id).map {
-            _._3.id.get
-          }
-          Ok(views.html.events.edit("Edit Event", id, eventForm.fill(EventWithTeams(event, teams))))
-      } getOrElse (NotFound)
+      request.user match {
+        case user: FamUser => // do whatever you need with your user class
+          user.currentClubId.map {
+            idClub =>
+              val teams = models.EventTeams.findByEvent(id).map {
+                x => x._3.id.get
+              }
+              models.Events.findById(id).map {
+                case (event, typEvent, eventStatus) =>
+                  Ok(views.html.events.edit("Edit Event", Json.toJson(EventWithTeams(event, teams)).toString(), Json.toJson(models.TypEvents.findAll).toString(), Json.toJson(models.Places.findAll).toString(), Json.toJson(models.Teams.findByClub(idClub)).toString(), Json.toJson(models.EventStatuses.findAll).toString()))
+                case _ =>
+                  NotFound
+
+              } getOrElse NotFound
+
+          } getOrElse Unauthorized //("You don't belong to any club")
+
+        case _ => // did not get a User instance, should not happen,log error/thow exception
+          Unauthorized("Not a valid user")
+      }
+
   }
 
   /**
@@ -95,16 +111,24 @@ object Events extends Controller with securesocial.core.SecureSocial {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = SecuredAction {
+  //  def update(id: Long) = SecuredAction {
+  //    implicit request =>
+  //      eventForm.bindFromRequest.fold(
+  //        formWithErrors => BadRequest(views.html.events.edit("Edit Event - errors", id, formWithErrors)),
+  //        eventWithTeams => {
+  //          models.Events.update(id, eventWithTeams.event)
+  //          //        Home.flashing("success" -> "Event %s has been updated".format(event.name))
+  //          Redirect(routes.Events.list(0, 2))
+  //        }
+  //      )
+  //  }
+  def update(id: Long) = Action(parse.json) {
     implicit request =>
-      eventForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.events.edit("Edit Event - errors", id, formWithErrors)),
-        eventWithTeams => {
-          models.Events.update(id, eventWithTeams.event)
-          //        Home.flashing("success" -> "Event %s has been updated".format(event.name))
-          Redirect(routes.Events.list(0, 2))
-        }
-      )
+      val json = request.body
+      println(json)
+      val event = json.as[Event]
+      models.Events.update(id, event)
+      Ok(Json.toJson(id))
   }
 
   /**
@@ -135,23 +159,6 @@ object Events extends Controller with securesocial.core.SecureSocial {
       val event = json.as[Event]
       val id = models.Events.insert(event)
       Ok(Json.toJson(id))
-    //      request.user match {
-    //        case user: FamUser => // do whatever you need with your user class
-    //          user.currentClubId.map {
-    //            idClub =>
-    //              eventForm.bindFromRequest.fold(
-    //                formWithErrors => BadRequest(views.html.events.create("New Event - errors", formWithErrors, Json.toJson(models.TypEvents.findAll).toString(), Json.toJson(models.Places.findAll).toString(), Json.toJson(models.Teams.findByClub(idClub)).toString())),
-    //                event => {
-    //                  models.Events.insert(event.event)
-    //                  //        Home.flashing("success" -> "Event %s has been created".format(event.name))
-    //                  Redirect(routes.Events.list(0, 2))
-    //                }
-    //              )
-    //          } getOrElse Unauthorized
-    //
-    //        case _ => // did not get a User instance, should not happen,log error/thow exception
-    //          Unauthorized("Not a valid user")
-    //      }
   }
 
   def saveTeams = Action(parse.json) {

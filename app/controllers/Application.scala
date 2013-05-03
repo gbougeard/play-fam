@@ -58,6 +58,7 @@ object Application extends Controller with securesocial.core.SecureSocial {
           Events.jsonById,
           Events.save,
           Events.saveTeams,
+          Events.update,
           Matchs.jsonById,
           Cards.jsonByMatchAndTeam,
           Goals.jsonByMatchAndTeam,
