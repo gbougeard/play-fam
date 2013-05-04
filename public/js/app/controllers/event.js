@@ -75,8 +75,8 @@ function EventCtrl($scope, $http, $location) {
                             type: 'success'
                         });
                         console.log("goto", jsRoutes.controllers.Events.view(id).url);
-                        $location.path(jsRoutes.controllers.Events.view(id).url).replace();
-                        $scope.$apply()
+//                        $location.path(jsRoutes.controllers.Events.view(id).url).replace();
+                        window.location = jsRoutes.controllers.Events.view(id).url;
                     },
                     error: function (data, status) {
                         console.log("Failed!", data, status);
@@ -149,8 +149,8 @@ function EventCtrl($scope, $http, $location) {
                             type: 'success'
                         });
                         console.log("goto", jsRoutes.controllers.Events.view(id).url);
-                        $location.path(jsRoutes.controllers.Events.view(id).url).replace();
-                        $scope.$apply()
+//                        $location.path(jsRoutes.controllers.Events.view(id).url).replace();
+                        window.location = jsRoutes.controllers.Events.view(id).url;
                     },
                     error: function (data, status) {
                         console.log("Failed!", data, status);
