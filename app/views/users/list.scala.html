@@ -28,16 +28,18 @@ if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
 <table class="table table-striped table-bordered table-hover">
     <thead>
     <tr>
-        @header(1,"Id")
         @header(2,"Email")
+        @header(3,"FullName")
+        @header(4,"AuthMethod")
     </tr>
     </thead>
     <tbody>
 
     @users.map { user =>
     <tr>
-        <td>@user.pid.getOrElse("None")</td>
         <td>@user.email</td>
+        <td>@user.fullName</td>
+        <td>@user.authMethod.method</td>
     </tr>
     }
 

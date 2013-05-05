@@ -176,10 +176,12 @@ object Users extends Table[User]("fam_user") {
         val users = (
           for {t <- Users
             .sortBy(user => orderField match {
-            case 1 => user.pid.asc
-            case -1 => user.pid.desc
             case 2 => user.email.asc
             case -2 => user.email.desc
+            case 3 => user.lastName.asc
+            case -3 => user.lastName.desc
+            case 4 => user.authMethod.asc
+            case -4 => user.authMethod.desc
           })
             .drop(offset)
             .take(pageSize)
