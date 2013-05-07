@@ -9,7 +9,9 @@
 
 
 @main(message, scripts) {
-    <div data-ng-controller="EventCtrl" ng-init="event=@event; teams=@teams ; places=@places ; types=@typEvents; statuses=@statuses; datepicker.date=(event.event.dtEvent| date)">
+
+
+    <div data-ng-controller="EventCtrl" ng-init="event=@event; teams=@teams ; places=@places ; types=@typEvents; statuses=@statuses; datepicker.date=(event.event.dtEvent | date:'dd/MM/yyyy'); timepicker.time=(event.event.dtEvent |date:'HH:mm')">
         <form id="formEvent" class="form-horizontal" data-ng-submit="update()">
             <div class="control-group" ng-class="{error: formEvent.name.$invalid}">
                 <label class="control-label" for="eventName">Title</label>
@@ -28,7 +30,7 @@
             <div class="control-group  input-append" ng-class="{error: formEvent.time.$invalid}">
                 <label class="control-label" for="eventTime">Time</label>
                 <div class="controls">
-                    <input type="text" id="eventTime" name="time" ng-model="timepicker.time" data-show-meridian="false" data-show-seconds="false" bs-timepicker>
+                    <input type="text" id="eventTime" name="time" ng-model="timepicker.time" class="input-small"  data-show-meridian="false" data-show-seconds="false" bs-timepicker>
                     <button type="button" class="btn" data-toggle="timepicker"><i class="icon-time"></i></button>
                 </div>
             </div>

@@ -1,12 +1,12 @@
 'use strict';
 
 
-function EventCtrl($scope, $http, $location) {
+fam.controller('EventCtrl', function($scope, $http, $location) {
 
-    var date = new Date();
-    var d = date.getDate();
-    var m = date.getMonth();
-    var y = date.getFullYear();
+//    var date = new Date();
+//    var d = date.getDate();
+//    var m = date.getMonth();
+//    var y = date.getFullYear();
 
     $scope.event = {};
 
@@ -22,10 +22,12 @@ function EventCtrl($scope, $http, $location) {
     $scope.types = [];
     $scope.selectedType = "";
 
+    $scope.dateObject = "";
+
     $scope.name = "";
     $scope.duration = 0;
-    $scope.datepicker = { "date": date};
-    $scope.timepicker = { "time": ""};
+    $scope.datepicker = {date: ""};
+//    $scope.timepicker = { "time": $scope.dateObject || moment(date.getTime())};
 
     $scope.save = function () {
         var event = {
@@ -174,4 +176,4 @@ function EventCtrl($scope, $http, $location) {
             }
         });
     };
-}
+});
