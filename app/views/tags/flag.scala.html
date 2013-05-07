@@ -1,2 +1,2 @@
 @(country: String = "")
-<img src="@(country).png"/>
+<img src='@routes.WebJarAssets.at(WebJarAssets.locate(country+".png"))'/>
