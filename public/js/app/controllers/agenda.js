@@ -55,7 +55,7 @@ fam.filter('eventBorderColor', function () {
 fam.filter('eventUrl', function () {
 
     return function (data) {
-        console.log(data);
+//        console.log(data);
         var url = '';
         switch(data.typEventId){
             case  1 : // Workout
@@ -144,7 +144,7 @@ function AgendaCtrl($scope, $http, $filter) {
 //                        textColor: $filter('eventTextColor')(item.typEventId)
 
                     };
-                    console.log(item, event);
+//                    console.log(item, event);
                     $scope.events.push(event);
                 });
 
