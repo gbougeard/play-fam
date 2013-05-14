@@ -52,6 +52,12 @@ object Places extends Table[Place]("fam_place") {
     }
   }
 
+  def count: Int = DB.withSession {
+    implicit session => {
+      Query(Places.length).first
+    }
+  }
+
   def placesWithCoords: Seq[Place] = DB.withSession {
     implicit session => {
       (for {c <- Places sortBy (_.name)
@@ -79,8 +85,7 @@ object Places extends Table[Place]("fam_place") {
             .take(pageSize)
           } yield c).list
 
-        val totalRows = (for (c <- Places) yield c.id).list.size
-        Page(places, page, offset, totalRows)
+        Page(places, page, offset, count)
       }
     }
   }

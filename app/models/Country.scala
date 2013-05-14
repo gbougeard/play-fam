@@ -58,8 +58,7 @@ object Countries extends Table[Country]("fam_country") {
 
   def count: Int = DB.withSession {
     implicit session => {
-      val query = (for {c <- Countries} yield c.id)
-      timerCount.time(query.list.size)
+      Query(Countries.length).first
     }
   }
 

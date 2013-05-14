@@ -49,6 +49,12 @@ object Players extends Table[Player]("fam_player") {
     }
   }
 
+  def count: Int = DB.withSession {
+    implicit session => {
+      Query(Players.length).first
+    }
+  }
+
   def findPage(page: Int = 0, orderField: Int): Page[(Player)] = {
 
     val offset = pageSize * page
@@ -69,8 +75,7 @@ object Players extends Table[Player]("fam_player") {
             .take(pageSize)
           } yield (t)).list
 
-        val totalRows = (for {t <- Players} yield t.id).list.size
-        Page(players, page, offset, totalRows)
+        Page(players, page, offset, count)
       }
     }
   }

@@ -48,6 +48,12 @@ object Scales extends Table[Scale]("fam_scale") {
     }
   }
 
+  def count: Int = DB.withSession {
+    implicit session => {
+      Query(Scales.length).first
+    }
+  }
+
   def findPage(page: Int = 0, orderField: Int): Page[Scale] = {
 
     val offset = pageSize * page
@@ -66,8 +72,7 @@ object Scales extends Table[Scale]("fam_scale") {
             .take(pageSize)
           } yield c).list
 
-        val totalRows = (for (c <- Scales) yield c.id).list.size
-        Page(scales, page, offset, totalRows)
+        Page(scales, page, offset, count)
     }
   }
 

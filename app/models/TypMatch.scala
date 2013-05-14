@@ -64,6 +64,12 @@ object TypMatches extends Table[TypMatch]("fam_typ_match") {
     }
   }
 
+  def count: Int = DB.withSession {
+    implicit session => {
+      Query(TypMatches.length).first
+    }
+  }
+
   def findPage(page: Int = 0, orderField: Int): Page[TypMatch] = {
 
     val offset = pageSize * page
@@ -82,8 +88,7 @@ object TypMatches extends Table[TypMatch]("fam_typ_match") {
             .take(pageSize)
           } yield c).list
 
-        val totalRows = (for (c <- TypMatches) yield c.id).list.size
-        Page(typMatchs, page, offset, totalRows)
+        Page(typMatchs, page, offset, count)
     }
   }
 

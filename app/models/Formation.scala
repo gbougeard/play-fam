@@ -46,6 +46,12 @@ object Formations extends Table[Formation]("fam_formation") {
     }
   }
 
+  def count: Int = DB.withSession {
+    implicit session => {
+      Query(Formations.length).first
+    }
+  }
+
   def findPage(page: Int = 0, orderField: Int): Page[(Formation, TypMatch)] = {
 
     val offset = pageSize * page
@@ -66,8 +72,7 @@ object Formations extends Table[Formation]("fam_formation") {
                tm <- c.typMatch
           } yield (c, tm)).list
 
-        val totalRows = (for (c <- Formations) yield c.id).list.size
-        Page(formations, page, offset, totalRows)
+        Page(formations, page, offset, count)
     }
   }
 

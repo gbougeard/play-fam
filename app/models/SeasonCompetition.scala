@@ -54,6 +54,12 @@ object SeasonCompetitions extends Table[SeasonCompetition]("fam_season_competiti
     }
   }
 
+  def count: Int = DB.withSession {
+    implicit session => {
+      Query(SeasonCompetitions.length).first
+    }
+  }
+
   def findPage(page: Int = 0, orderField: Int): Page[(SeasonCompetition, Category, Scale, Season, TypCompetition)] = {
 
     val offset = pageSize * page
@@ -76,8 +82,7 @@ object SeasonCompetitions extends Table[SeasonCompetition]("fam_season_competiti
                tc <- sc.typCompetition
           } yield (sc, c, s, se, tc)).list
 
-        val totalRows = (for (sc <- SeasonCompetitions) yield sc.id).list.size
-        Page(seasonCompetitions, page, offset, totalRows)
+        Page(seasonCompetitions, page, offset, count)
     }
   }
 

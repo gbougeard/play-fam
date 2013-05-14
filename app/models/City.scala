@@ -54,7 +54,7 @@ object Cities extends Table[City]("fam_city") {
 
   def count: Int = DB.withSession {
     implicit session => {
-      (for {c <- Cities} yield c.id).list.size
+      Query(Cities.length).first
     }
   }
 

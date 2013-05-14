@@ -40,6 +40,12 @@ object TypCards extends Table[TypCard]("fam_typ_card") {
     }
   }
 
+  def count: Int = DB.withSession {
+    implicit session => {
+      Query(TypCards.length).first
+    }
+  }
+
   def findPage(page: Int = 0, orderField: Int): Page[TypCard] = {
 
     val offset = pageSize * page
@@ -58,8 +64,7 @@ object TypCards extends Table[TypCard]("fam_typ_card") {
             .take(pageSize)
           } yield c).list
 
-        val totalRows = (for (c <- TypCards) yield c.id).list.size
-        Page(typCards, page, offset, totalRows)
+        Page(typCards, page, offset, count)
     }
   }
 

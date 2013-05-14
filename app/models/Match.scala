@@ -49,6 +49,12 @@ object Matchs extends Table[Match]("fam_match") {
     }
   }
 
+  def count: Int = DB.withSession {
+    implicit session => {
+      Query(Matches.length).first
+    }
+  }
+
   def findPage(page: Int = 0, orderField: Int): Page[(Match, SeasonCompetition, Event)] = {
 
     val offset = pageSize * page

@@ -52,6 +52,12 @@ object Fixtures extends Table[Fixture]("fam_fixture") {
     }
   }
 
+  def count: Int = DB.withSession {
+    implicit session => {
+      Query(Fixtures.length).first
+    }
+  }
+
   def findPage(page: Int = 0, orderField: Int): Page[(Fixture, SeasonCompetition)] = {
 
     val offset = pageSize * page
@@ -71,8 +77,7 @@ object Fixtures extends Table[Fixture]("fam_fixture") {
 
           } yield (t, c)).list
 
-        val totalRows = (for {t <- Fixtures} yield t.id).list.size
-        Page(fixtures, page, offset, totalRows)
+        Page(fixtures, page, offset, count)
       }
     }
   }
