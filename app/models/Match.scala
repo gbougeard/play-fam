@@ -51,7 +51,7 @@ object Matchs extends Table[Match]("fam_match") {
 
   def count: Int = DB.withSession {
     implicit session => {
-      Query(Matches.length).first
+      Query(Matchs.length).first
     }
   }
 
@@ -70,8 +70,7 @@ object Matchs extends Table[Match]("fam_match") {
                e <- t.event
           } yield (t, c, e)).list
 
-        val totalRows = (for {t <- Matchs} yield t.id).list.size
-        Page(matchs, page, offset, totalRows)
+        Page(matchs, page, offset, count)
       }
     }
   }
