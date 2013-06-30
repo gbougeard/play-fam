@@ -5,12 +5,11 @@ import play.api.data._
 import play.api.data.Forms._
 import models.City
 import play.api.libs.json.Json
-import com.yammer.metrics.Metrics
-import com.yammer.metrics.scala.Timer
+import metrics.Instrumented
 
-object Cities extends Controller {
-  val metric = Metrics.defaultRegistry().newTimer(classOf[City], "page")
-  val timer = new Timer(metric)
+object Cities extends Controller  with Instrumented {
+  private[this] val timer = metrics.timer("count")
+
 
   /**
    * This result directly redirect to the application home.

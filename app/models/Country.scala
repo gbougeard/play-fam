@@ -7,8 +7,9 @@ import play.api.db.slick.DB
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
-import com.yammer.metrics.Metrics
-import com.yammer.metrics.scala.Timer
+
+import metrics.Instrumented
+
 
 case class Country(id: Option[Long],
                    code: String,
@@ -17,7 +18,7 @@ case class Country(id: Option[Long],
                    lower: String)
 
 // define tables
-object Countries extends Table[Country]("fam_country") {
+object Countries extends Table[Country]("fam_country") with Instrumented {
 
   def id = column[Long]("id_country", O.PrimaryKey, O.AutoInc)
 
@@ -41,12 +42,9 @@ object Countries extends Table[Country]("fam_country") {
 
   lazy val pageSize = 10
 
-  val metricCount = Metrics.defaultRegistry().newTimer(classOf[Country], "count")
-  val timerCount = new Timer(metricCount)
-  val metricPage = Metrics.defaultRegistry().newTimer(classOf[Country], "page")
-  val timerPage = new Timer(metricPage)
-  val metricById = Metrics.defaultRegistry().newTimer(classOf[Country], "byId")
-  val timerById = new Timer(metricById)
+  private[this] val timerCount = metrics.timer("count")
+  private[this] val timerPage = metrics.timer("page")
+  private[this] val timerById = metrics.timer("byId")
 
   lazy val countryCount = count
 

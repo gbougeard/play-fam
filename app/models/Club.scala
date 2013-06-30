@@ -11,7 +11,9 @@ import play.api.libs.functional.syntax._
 
 case class Club(id: Option[Long],
                 code: Int,
-                name: String)
+                name: String,
+                countryId: Option[Long],
+                cityId: Option[Long])
 
 
 // define tables
@@ -23,9 +25,14 @@ object Clubs extends Table[Club]("fam_club") {
 
   def code = column[Int]("code_fff")
 
-  def * = id.? ~ code ~ name <>(Club, Club.unapply _)
+  def countryId = column[Long]("id_country")
 
-  def autoInc = id.? ~ code ~ name <>(Club, Club.unapply _) returning id
+  def cityId = column[Long]("id_city")
+
+  def * = id.? ~ code ~ name ~ countryId.? ~ cityId.? <>(Club, Club.unapply _)
+
+  def autoInc = id.? ~ code ~ name ~ countryId.? ~ cityId.? <>(Club, Club.unapply _) returning id
+
 
   val byId = createFinderBy(_.id)
   val byName = createFinderBy(_.name)
@@ -107,9 +114,9 @@ object Clubs extends Table[Club]("fam_club") {
   /**
    * Construct the Map[String,String] needed to fill a select options set.
    */
-//  def options: Seq[(String, String)] = for {
-//    c <- findAll
-//  } yield (c.id.toString, c.name)
+  //  def options: Seq[(String, String)] = for {
+  //    c <- findAll
+  //  } yield (c.id.toString, c.name)
   def options: Seq[(String, String)] = DB.withSession {
     implicit session =>
       val query = (for {

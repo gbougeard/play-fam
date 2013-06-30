@@ -13,6 +13,8 @@ import views._
 
 object Application extends Controller with securesocial.core.SecureSocial {
 
+  val metricRegistry = new com.codahale.metrics.MetricRegistry()
+
   def index = SecuredAction {
     implicit request =>
       Ok(views.html.index(request.user))

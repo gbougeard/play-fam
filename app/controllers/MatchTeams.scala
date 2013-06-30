@@ -1,18 +1,17 @@
 package controllers
 
 import play.api.mvc._
-import models.MatchTeam
 import models.MatchTeams._
 
-import com.yammer.metrics.Metrics
-import com.yammer.metrics.scala.Timer
 import play.api.libs.json._
 
+import metrics.Instrumented
 
-object MatchTeams extends Controller {
 
-  val metric = Metrics.defaultRegistry().newTimer(classOf[MatchTeam], "Minute")
-  val timer = new Timer(metric)
+object MatchTeams extends Controller  with Instrumented {
+  private[this] val timer = metrics.timer("count")
+
+
 
   def jsonByMatchAndHome(idMatch: Long) = Action {
     implicit request =>

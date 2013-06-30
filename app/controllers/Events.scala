@@ -13,18 +13,17 @@ import models.TypEvents._
 import models.EventTeams._
 import models.EventStatuses._
 
-import com.yammer.metrics.Metrics
-import com.yammer.metrics.scala.Timer
+import metrics.Instrumented
+
 import play.api.libs.json._
 import scala.util.{Failure, Success}
 
 case class EventWithTeams(event: Event, teams: Seq[Long])
 
-object Events extends Controller with securesocial.core.SecureSocial {
+object Events extends Controller with securesocial.core.SecureSocial with Instrumented{
   implicit val eventWithTeamsFormat = Json.format[EventWithTeams]
 
-  val metric = Metrics.defaultRegistry().newTimer(classOf[Event], "Page")
-  val timer = new Timer(metric)
+  private[this] val timer = metrics.timer("list")
 
   /**
    * This result directly redirect to the application home.

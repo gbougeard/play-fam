@@ -4,15 +4,12 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Scale
-
-import com.yammer.metrics.Metrics
-import com.yammer.metrics.scala.Timer
+import metrics.Instrumented
 
 
-object Scales extends Controller {
+object Scales extends Controller with Instrumented{
 
-  val metric = Metrics.defaultRegistry().newTimer(classOf[Scale], "page")
-  val timer = new Timer(metric)
+  private[this] val timer = metrics.timer("list")
 
   /**
    * This result directly redirect to the application home.

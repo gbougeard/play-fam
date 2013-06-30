@@ -2,9 +2,17 @@
 
 @import helper._
 
-@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+    @implicitFieldConstructor = @{
+        FieldConstructor(twitterBootstrapInput.f)
+    }
 
-@main(message) {
+    @scripts ={
+
+        <script type="text/javascript" src='@routes.Assets.at("js/app/controllers/places.js")'></script>
+
+    }
+
+@main(message, scripts) {
 
     @flash.get("success").map { message =>
         <div class="alert alert-success">
@@ -14,9 +22,14 @@
 
     @form(routes.Places.update(id), 'class -> "form-horizontal") {
 
-        @inputText(placeForm("id"), '_label -> "Id")
-        @inputText(placeForm("zipcode"), '_label -> "Code FFF")
         @inputText(placeForm("name"), '_label -> "Nom")
+        @inputText(placeForm("address"), '_label -> "Address")
+        @inputText(placeForm("zipcode"), '_label -> "Zipcode")
+        @inputText(placeForm("city"), '_label -> "City")
+        @inputText(placeForm("latitude"), '_label -> "Latitude")
+        @inputText(placeForm("longitude"), '_label -> "Longitude")
+
+
 
         <div class="form-actions">
             <input type="submit" value="Save this place" class="btn btn-primary">
@@ -26,4 +39,15 @@
         </div>
 
     }
+    @placeForm("address").value
+    <section ng-controller="PlacesCtrl" style="height:400px;">
+        <div class="well" ng-init="address='@placeForm("address").value, @placeForm("zipcode").value @placeForm("city").value'">
+        <div class="row">
+            <div class="span2"><button id="btnGeo" class="btn" ng-click="codeAddress(address)">Geocode</button></div>
+            <div  ui-map="myMap" class="span8 map" ui-options="mapOptions"  ui-event="{'map-click': 'addMarker($event)'}"> </div>
+        </div>
+        </div>
+        @*<pre>{{marker}}</pre>*@
+
+    </section>
 }

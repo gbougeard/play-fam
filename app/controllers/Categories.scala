@@ -4,15 +4,13 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Category
+import metrics.Instrumented
 
-import com.yammer.metrics.Metrics
-import com.yammer.metrics.scala.Timer
+object Categories extends Controller  with Instrumented {
+  private[this] val timer = metrics.timer("count")
 
 
-object Categories extends Controller {
 
-  val metric = Metrics.defaultRegistry().newTimer(classOf[Category], "page")
-  val timer = new Timer(metric)
 
   /**
    * This result directly redirect to the application home.

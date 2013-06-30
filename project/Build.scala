@@ -18,35 +18,35 @@ object ApplicationBuild extends Build {
     //      ,"org.slf4j" % "slf4j-nop" % "1.6.4" // <- disables logging
 
     // enables logging
-    , "org.slf4j" % "slf4j-api" % "1.7.2"
-    , "ch.qos.logback" % "logback-classic" % "1.0.9"
+    , "org.slf4j" % "slf4j-api" % "1.7.5"
+    , "ch.qos.logback" % "logback-classic" % "1.0.13"
 
     // Other database drivers
     //    ,  "org.apache.derby" % "derby" % "10.6.1.0"
     //     , "org.hsqldb" % "hsqldb" % "2.0.0"
     //      ,"postgresql" % "postgresql" % "8.4-701.jdbc4"
-    , "mysql" % "mysql-connector-java" % "5.1.24"
-    , "com.github.tototoshi" %% "slick-joda-mapper" % "0.2.1"
+    , "mysql" % "mysql-connector-java" % "5.1.25"
+    , "com.github.tototoshi" %% "slick-joda-mapper" % "0.3.0"
     // Metrics
-    , "nl.grons" % "metrics-scala_2.10" % "2.2.0"
+    , "nl.grons" % "metrics-scala_2.10" % "3.0.0"
     //    , "com.yammer.metrics" % "metrics-scala_2.10" % "2.2.0"
     //    , "com.yammer.metrics" % "metrics-graphite" % "2.2.0"
 
     , "securesocial" %% "securesocial" % "master-SNAPSHOT"
 
-    , "org.webjars" % "webjars-play" % "2.1.0-1"
+    , "org.webjars" % "webjars-play_2.10" % "2.1.0-2"
     //    , "org.webjars" % "requirejs" % "2.1.1"
-    , "org.webjars" % "angularjs" % "1.1.4"
+    , "org.webjars" % "angularjs" % "1.1.5-1"
     , "org.webjars" % "angular-ui" % "0.4.0-1"
-    , "org.webjars" % "angular-ui-bootstrap" % "0.3.0"
+    , "org.webjars" % "angular-ui-bootstrap" % "0.4.0"
     , "org.webjars" % "angular-strap" % "0.7.3"
-    , "org.webjars" % "bootstrap" % "2.3.1-1"
+    , "org.webjars" % "bootstrap" % "2.3.2"
     , "org.webjars" % "bootstrap-datepicker" % "1.0.1"
-    , "org.webjars" % "bootstrap-timepicker" % "0.2.1-1"
+    , "org.webjars" % "bootstrap-timepicker" % "0.2.3"
     , "org.webjars" % "bootswatch" % "2.3.1"
-    , "org.webjars" % "font-awesome" % "3.1.1-1"
+    , "org.webjars" % "font-awesome" % "3.2.1"
     , "org.webjars" % "jquery-ui" % "1.10.2-1"
-    , "org.webjars" % "momentjs" % "2.0.0"
+    , "org.webjars" % "momentjs" % "2.0.0-1"
     , "org.webjars" % "tinymce-jquery" % "3.4.9"
     , "org.webjars" % "famfamfam-flags" % "0.0"
     , "org.webjars" % "x-editable-bootstrap" % "1.4.3-1"

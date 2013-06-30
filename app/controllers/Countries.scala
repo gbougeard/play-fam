@@ -5,18 +5,14 @@ import play.api.data._
 import play.api.data.Forms._
 import models.Country
 import play.api.libs.json.Json
-import com.yammer.metrics.Metrics
-import com.yammer.metrics.scala.Timer
 import slick.session.Session
+import metrics.Instrumented
 
 
-object Countries extends Controller {
-  val metricList = Metrics.defaultRegistry().newTimer(classOf[Country], "list")
-  val timerList = new Timer(metricList)
-  val metricView = Metrics.defaultRegistry().newTimer(classOf[Country], "view")
-  val timerView = new Timer(metricView)
-  val metricDisplayList = Metrics.defaultRegistry().newTimer(classOf[Country], "displayList")
-  val timerDisplayList = new Timer(metricDisplayList)
+object Countries extends Controller  with Instrumented {
+  private[this] val timerList = metrics.timer("list")
+  private[this] val timerView = metrics.timer("View")
+  private[this] val timerDisplayList = metrics.timer("displayList")
 
   /**
    * This result directly redirect to the application home.

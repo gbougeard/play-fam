@@ -5,14 +5,11 @@ import play.api.data._
 import play.api.data.Forms._
 import models.State
 import play.api.libs.json.Json
-import com.yammer.metrics.Metrics
-import com.yammer.metrics.scala.Timer
-import slick.session.Session
+import metrics.Instrumented
 
+object States extends Controller  with Instrumented {
+  private[this] val timer = metrics.timer("count")
 
-object States extends Controller {
-  val metric = Metrics.defaultRegistry().newTimer(classOf[State], "page")
-  val timer = new Timer(metric)
 
   /**
    * This result directly redirect to the application home.

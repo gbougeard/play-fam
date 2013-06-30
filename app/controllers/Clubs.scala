@@ -5,16 +5,13 @@ import play.api.data._
 import play.api.data.Forms._
 import play.Logger
 import models.Club
+import metrics.Instrumented
 
 
-import com.yammer.metrics.Metrics
-import com.yammer.metrics.scala.Timer
+object Clubs extends Controller with securesocial.core.SecureSocial with Instrumented {
 
 
-object Clubs extends Controller with securesocial.core.SecureSocial {
-
-  val metric = Metrics.defaultRegistry().newTimer(classOf[Club], "page")
-  val timer = new Timer(metric)
+  private[this] val timer = metrics.timer("page")
 
   /**
    * This result directly redirect to the application home.
@@ -28,9 +25,10 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
     mapping(
       "id" -> optional(longNumber),
       "code" -> number,
-      "name" -> nonEmptyText
+      "name" -> nonEmptyText,
       //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
+            "country" -> optional(longNumber),
+            "city" -> optional(longNumber)
     )
       (Club.apply)(Club.unapply)
   )

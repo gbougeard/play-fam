@@ -4,15 +4,12 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Ranking
-
-import com.yammer.metrics.Metrics
-import com.yammer.metrics.scala.Timer
+import metrics.Instrumented
 
 
-object Rankings extends Controller {
+object Rankings extends Controller with Instrumented{
 
-  val metric = Metrics.defaultRegistry().newTimer(classOf[Ranking], "page")
-  val timer = new Timer(metric)
+  private[this] val timer = metrics.timer("RankingLoad")
 
 
   // -- Actions

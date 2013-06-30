@@ -6,16 +6,15 @@ import play.api.data.Forms._
 import models.Answer
 import models.Answers._
 
-import com.yammer.metrics.Metrics
-import com.yammer.metrics.scala.Timer
 import play.api.libs.json._
 import play.api.Logger
 
+import metrics.Instrumented
 
-object Answers extends Controller {
+object Answers extends Controller with Instrumented {
+  private[this] val timer = metrics.timer("count")
 
-  val metric = Metrics.defaultRegistry().newTimer(classOf[Answer], "Minute")
-  val timer = new Timer(metric)
+
 
   /**
    * This result directly redirect to the application home.

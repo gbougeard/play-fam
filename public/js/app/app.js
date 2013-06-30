@@ -10,7 +10,15 @@
 //require(['./controllers', './directives', './filters', './services', 'webjars!angular.js','webjars!bootstrap.js'],
 //    function (controllers) {
 
-var fam = angular.module('fam', ['fam.filters', 'fam.services', 'fam.directives', 'ui', 'ui.bootstrap', '$strap.directives']);
+var fam = angular.module('fam',
+    [
+        'fam.filters',
+        'fam.services',
+        'fam.directives',
+        'ui',
+//        'ui.bootstrap',
+        '$strap.directives'
+    ]);
 
 fam.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.
