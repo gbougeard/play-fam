@@ -39,7 +39,7 @@ object ApplicationBuild extends Build {
     , "org.webjars" % "angularjs" % "1.1.5-1"
     , "org.webjars" % "angular-ui" % "0.4.0-1"
     , "org.webjars" % "angular-ui-bootstrap" % "0.4.0"
-    , "org.webjars" % "angular-strap" % "0.7.3"
+    , "org.webjars" % "angular-strap" % "0.7.4"
     , "org.webjars" % "bootstrap" % "2.3.2"
     , "org.webjars" % "bootstrap-datepicker" % "1.0.1"
     , "org.webjars" % "bootstrap-timepicker" % "0.2.3"
@@ -49,8 +49,8 @@ object ApplicationBuild extends Build {
     , "org.webjars" % "momentjs" % "2.0.0-1"
     , "org.webjars" % "tinymce-jquery" % "3.4.9"
     , "org.webjars" % "famfamfam-flags" % "0.0"
-    , "org.webjars" % "x-editable-bootstrap" % "1.4.3-1"
-    , "org.webjars" % "select2" % "3.3.1-1"
+    , "org.webjars" % "x-editable-bootstrap" % "1.4.5"
+    , "org.webjars" % "select2" % "3.4.1"
   )
 
 
