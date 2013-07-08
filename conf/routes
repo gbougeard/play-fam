@@ -4,7 +4,6 @@
 
 # Home page
 GET     /                           controllers.Application.index
-GET     /polymer                           controllers.Application.polymer
 
 GET     /webjars/*file              controllers.WebJarAssets.at(file)
 GET     /fragments/*file            controllers.FragmentAssets.at(file)
