@@ -1,7 +1,7 @@
 package models
 
 import securesocial.core._
-import securesocial.core.UserId
+import securesocial.core.IdentityId
 import securesocial.core.OAuth2Info
 import securesocial.core.OAuth1Info
 import securesocial.core.PasswordInfo
@@ -31,7 +31,7 @@ case class FamUser(
                     passwordInfo: Option[PasswordInfo] = None,
                     currentClubId: Option[Long] = None
                     ) extends Identity {
-  def id: UserId = UserId(userId, providerId)
+  def identityId: IdentityId = IdentityId(userId, providerId)
 
   //  def fullName: String = s"$firstName $lastName"
 
@@ -44,8 +44,8 @@ object FamUser {
   def fromIdentity(user: Identity) = {
     FamUser(
       pid = None,
-      userId = user.id.id,
-      providerId = user.id.providerId,
+      userId = user.identityId.userId,
+      providerId = user.identityId.providerId,
       email = user.email,
       firstName = user.firstName,
       lastName = user.lastName,

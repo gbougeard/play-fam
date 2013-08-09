@@ -21,12 +21,12 @@ package service
 import play.api._
 import securesocial.core._
 import securesocial.core.providers.Token
-import securesocial.core.UserId
+import securesocial.core.IdentityId
 import models._
 
 class SlickUserService(application: Application) extends UserServicePlugin(application) {
 
-  def find(id: UserId): Option[Identity] = Users.findByUserId(id).map {
+  def find(id: IdentityId): Option[Identity] = Users.findByUserId(id).map {
     u => FamUser.fromUser(u)
   }
 

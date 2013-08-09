@@ -22,7 +22,7 @@ case class User(pid: Option[Long],
                 currentClubId: Option[Long],
                 avatarUrl: Option[String]
                  ) {
-  def id: UserId = UserId(userId, providerId)
+  def id: IdentityId = IdentityId(userId, providerId)
 
   def fullName: String = s"$firstName $lastName"
 
@@ -144,12 +144,12 @@ object Users extends Table[User]("fam_user") {
   //      byEmail(email).firstOption
   //  }
 
-  def findByUserId(u: UserId): Option[User] = DB.withSession {
+  def findByUserId(u: IdentityId): Option[User] = DB.withSession {
     implicit session =>
       Logger.info("findByUserId %s".format(u))
       val q = for {
         user <- Users
-        if (user.userId is u.id) && (user.providerId is u.providerId)
+        if (user.userId is u.userId) && (user.providerId is u.providerId)
       } yield user
 
       q.firstOption
@@ -220,8 +220,8 @@ object User {
     Logger.debug("fromIdentity %s".format(user))
     User(
       pid = None,
-      userId = user.id.id,
-      providerId = user.id.providerId,
+      userId = user.identityId.userId,
+      providerId = user.identityId.providerId,
       email = user.email,
       firstName = if (!user.firstName.isEmpty) user.firstName else user.fullName.split(' ').head,
       lastName = if (!user.lastName.isEmpty) user.lastName else user.fullName.split(' ').tail.head,
