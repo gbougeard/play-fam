@@ -1,48 +1,23 @@
 @(message: String,
 m: Match,
 event:Event,
-home: (MatchTeam, Team),
-away: (MatchTeam, Team),
-homeGoals: Seq[(Goal, Option[Player])],
-awayGoals: Seq[(Goal, Option[Player])],
-homePlayers:Seq[(MatchPlayer, Match, Player, Team)],
-awayPlayers:Seq[(MatchPlayer, Match, Player, Team)],
-homeSubs:Seq[(Substitution, Match, Team, Player, Player)],
-awaySubs:Seq[(Substitution, Match, Team, Player, Player)],
-homeCards:Seq[(Card, Match, Team, Player, TypCard)],
-awayCards:Seq[(Card, Match, Team, Player, TypCard)])(implicit flash: play.api.mvc.Flash)
+idMatch:Long,
+    idTeam:Long
+        )(implicit flash: play.api.mvc.Flash)
 
 @scripts = {
-    <script type="text/javascript" src='@routes.Assets.at("js/app/controllers/debriefing.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("js/app/controllers/debriefing.js")'
+    xmlns="http://www.w3.org/1999/html"></script>
 
-    <script>
-            var f = 'bootstrap';
-            //turn to inline mode
-            $.fn.editable.defaults.mode = 'inline';
-            $(function(){
-                $('#homeScore').editable();
-                $('#awayScore').editable();
-                $('#homeResume').editable();
-                $('#awayResume').editable();
-                $('#anote1').editable({
-            source: [
-              {value: 0, text: '0'},
-              {value: 1, text: '1'},
-              {value: 2, text: '2'}
-           ]
-            });
-                 
-            });
-    </script>
 
 }
 
 @main(event.name+" "+event.dtEvent.toString("dd MM yyyy"), scripts) {
-<div class="row-fluid" ng-controller="DebriefingCtrl">
-    <div class="clearfix"></div>
+<div class="row-fluid" data-ng-controller="DebriefingCtrl" ng-init="idMatch=@idMatch ; idTeam=@idTeam ; loadMatch()">
+    <div class="clearfix" ></div>
     <div id="preview">
         @*** HOME ***@
-        <div class="span6">
+        <div class="span12">
             <div class="well">
                 <h2 class="text-center">{{mtHome.team.name}}</h2>
                 <h3 class="text-right muted"> {{mtHome.matchteam.goalScored}}</h3>
@@ -77,24 +52,29 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)])(implicit flash: play.api.mv
                             <span class="span1">{{subs.substitution.time}}'</span>
                             <span class="span5 text-error">{{subs.playerout.firstName}} {{subs.playerout.lastName}}</span>
                             <span class="span1"><i class="icon-exchange"></i></span>
-        	               <span class="span5 text-success">{{subs.playerin.firstName}} {{subs.playerin.lastName}}</span>
+        	                <span class="span5 text-success">{{subs.playerin.firstName}} {{subs.playerin.lastName}}</span>
                         </p>
                     </li>
                 </ul>
                 &nbsp;
                 <hr>
                 <ul class="unstyled">
-                    <li ng-repeat="players in homePlayers">
-                            <span class="span1"><span class="badge">{{players.matchplayer.num}}</span></span>
-                            <span class="span9">{{players.player.firstName}} {{players.player.lastName}} </span>
-                            <select class="span1" ng-model="selectedItem" id="note-{{players.matchplayer.num}}" ng-options="value.id as value.name for (key, value) in notes" data-style="btn-primary" bs-select></select>
-                            @*<select ui-select2 ng-model="select2">
-                            <option value="">Pick a number</option>
-                            <option value="one">First</option>
-                            <option value="two">Second</option>
-                            <option value="three">Third</option>
-                            </select>  *@
-                            <span class="span1">{{players.matchplayer.timePlayed}}'</span>
+                    <li ng-repeat="player in homePlayers">
+
+                        <span class="span1"><span class="badge">{{player.matchplayer.num}}</span></span>
+                        <span class="span7">{{player.player.firstName}} {{player.player.lastName}} </span>
+                        <span ng-hide="player.editing">
+                            <span class="span1"><span class="label">{{player.matchplayer.note}} </span></span>
+                            <span class="span1">{{player.matchplayer.timePlayed}}'</span>
+                            <span class="span2"><button><i class="icon-edit" ng-click="edit(player)"></i></button></span>
+                        </span>
+                        <form class="span4" ng-show="player.editing" ng-submit="player.editing = false">
+                            <div class="input-append">
+                                <input type="numeric" class="input-mini" ng-model="player.matchplayer.note" placeholder="Note"/>
+                                <button class="btn btn-success" type="submit"><i class="icon-save"></i></button>
+                                <button class="btn btn-danger" type="cancel"><i class="icon-remove"></i></button>
+                            </div>
+                        </form>
                     </li>
                 </ul>
                 &nbsp;
@@ -103,70 +83,6 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)])(implicit flash: play.api.mv
                @* <p><div id="homeResume" data-type="wysihtml5" data-pk="1"><span ng-bind-html-unsafe="mtHome.matchteam.resume"></span></div></p> *@
             </div>
         </div>
-        @*** AWAY ***@
-        <div class="span6">
-            <div class="well">
-                <h2 class="text-center">{{mtAway.team.name}}</h2>
-                <h3 class="text-right muted"> {{mtAway.matchteam.goalScored}}</h3>
-                <hr>
-                <ul class="unstyled">
-                    <li ng-repeat="goals in awayGoals">
-                        <p>
-                            <span class="span1">{{goals.goal.goalTime}}'</span>
-                            <span class="span11">{{goals.striker.firstName}} {{goals.striker.lastName}}
-                                <em>
-                                    <span ng-show="{{goals.goal.csc}}">csc</span>
-                                    <span ng-show="{{goals.goal.penalty}}">sp</span>
-                                </em>
-                            </span>
-                        </p>
-                    </li>
-                </ul>
-                    &nbsp;
-                <ul class="unstyled">
-                    <li ng-repeat="cards in awayCards">
-                        <p>
-                            <span class="span1">{{cards.card.time}}'</span>
-                            <span class="span11">{{cards.player.firstName}} {{cards.player.lastName}} <em>{{cards.typcard.name}}</em></span>
-                        </p>
-                    </li>
-                </ul>
-                    &nbsp;
-                <hr>
-                <ul class="unstyled">
-                    <li ng-repeat="subs in awaySubs">
-                        <p>
-                            <span class="span1">{{subs.substitution.time}}'</span>
-                            <span class="span5 text-error">{{subs.playerout.firstName}} {{subs.playerout.lastName}}</span>
-                            <span class="span1"><i class="icon-exchange"></i></span>
-                            <span class="span5 text-success">{{subs.playerin.firstName}} {{subs.playerin.lastName}}</span>
-                        </p>
-                    </li>
-                </ul>
-                    &nbsp;
-                <hr>
-                <ul class="unstyled">
-                    <li ng-repeat="players in awayPlayers">
-                        <a href="#" data-toggle="tooltip" title="{{players.matchplayer.comments}}">
-                            <span class="span1"><span class="badge">{{players.matchplayer.num}}</span></span>
-                            <span class="span9">{{players.player.firstName}} {{players.player.lastName}} </span>
-                            <span class="span1"> {{players.matchplayer.note}}
-                                @*<select ui-select2 ng-model="select2">
-                                <option value="">Pick a number</option>
-                                <option value="one">First</option>
-                                <option value="two">Second</option>
-                                <option value="three">Third</option>
-                                </select>  *@
-                            </span>
-                            <span class="span1">{{players.matchplayer.timePlayed}}'</span>
-                        </a>
-                    </li>
-                </ul>
-                    &nbsp;
-                <hr>
-                <div ng-bind-html-unsafe="mtAway.matchteam.resume"></div>
-                @*<p><div id="awayResume" data-type="wysihtml5" data-pk="1"><span ng-bind-html-unsafe="{{mtAway.matchteam.resume}}"></span></div></p>*@
-                </div>
         </div>
     </div>
     </div>

@@ -134,7 +134,7 @@ GET     /typCompetitions/$id<[0-9]+>          controllers.TypCompetitions.view(i
 # SeasonCompetitions
 GET     /seasonCompetitions                   controllers.SeasonCompetitions.list(p:Int ?= 0,s:Int ?= 2)
 GET     /seasonCompetitions/edit/$id<[0-9]+>  controllers.SeasonCompetitions.edit(id : Long)
-PUT    /seasonCompetitions/$id<[0-9]+>        controllers.SeasonCompetitions.update(id : Long)
+PUT     /seasonCompetitions/$id<[0-9]+>       controllers.SeasonCompetitions.update(id : Long)
 GET     /seasonCompetitions/new               controllers.SeasonCompetitions.create
 POST    /seasonCompetitions                   controllers.SeasonCompetitions.save
 GET     /seasonCompetitions/$id<[0-9]+>       controllers.SeasonCompetitions.view(id : Long)
@@ -147,7 +147,7 @@ POST    /fixtures                      controllers.Fixtures.save
 GET     /fixtures/$id<[0-9]+>          controllers.Fixtures.view(id : Long)
 # Matchs
 GET     /matchs                        controllers.Matchs.list(p:Int ?= 0,s:Int ?= 1)
-GET     /matchs/debrief/$id<[0-9]+>    controllers.Matchs.debrief(id : Long)
+GET     /matchs/$idMatch<[0-9]+>/debrief/$idTeam<[0-9]+>    controllers.Matchs.debrief(idMatch : Long, idTeam:Long)
 GET     /matchs/$id<[0-9]+>.json       controllers.Matchs.jsonById(id: Long)
 # POST    /matchs/edit/$id<[0-9]+>            controllers.Matchs.update(id : Long)
 # GET     /matchs/new                         controllers.Matchs.create
@@ -205,6 +205,7 @@ GET     /players/match/$idmatch<[0-9]+>/team/$idteam<[0-9]+>.json           cont
 # MatchTeam
 GET     /match/$idmatch<[0-9]+>/home.json        controllers.MatchTeams.jsonByMatchAndHome(idmatch:Long)
 GET     /match/$idmatch<[0-9]+>/away.json        controllers.MatchTeams.jsonByMatchAndAway(idmatch:Long)
+GET     /match/$idmatch<[0-9]+>/team/$idTeam<[0-9]+>.json        controllers.MatchTeams.jsonByMatchAndTeam(idmatch:Long, idTeam:Long)
 
 # SecureSocial
 # Login page

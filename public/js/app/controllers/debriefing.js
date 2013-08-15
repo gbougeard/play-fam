@@ -3,37 +3,32 @@
 
 function DebriefingCtrl($scope, $http, $location, $rootScope, $q) {
 
-    $scope.idMatch = $location.absUrl().substring($location.absUrl().lastIndexOf('/') + 1);
-    console.log($scope.idMatch);
+    $scope.idMatch = 0;
+    $scope.idTeam = 0;
 
     $scope.match = {};
     $scope.event = {};
     $scope.mtHome = {};
-    $scope.mtAway = {};
     $scope.homeGoals = [];
-    $scope.awayGoals = [];
-    $scope.homeCards = [];
-    $scope.awayCards = [];
     $scope.homeSubs = [];
-    $scope.awaySubs = [];
     $scope.homePlayers = [];
-    $scope.awayPlayers = [];
 
-    $scope.selectedItem = '10';
+    $scope.selectedItem = {};
+    $scope.editing = false;
 
     $scope.notes = [
         {id: "10", name: "10"},
         {id: "9.5", name: "9.5"}
     ];
 
-    $scope.loadMatch = function (idMatch) {
-        console.log(jsRoutes.controllers.Matchs.jsonById(idMatch));
-        jsRoutes.controllers.Matchs.jsonById(idMatch).ajax().then(function (response) {
-                console.log(response);
+    $scope.loadMatch = function () {
+        console.log('loadMatch', $scope.idMatch, $scope.idTeam);
+
+        jsRoutes.controllers.Matchs.jsonById($scope.idMatch).ajax().then(function (response) {
+//                console.log(response);
                 $scope.match = response;
                 $scope.loadEvent(response.eventId);
-                $scope.loadHome(idMatch);
-                $scope.loadAway(idMatch);
+                $scope.loadHome($scope.idMatch, $scope.idTeam);
 
 
             }
@@ -45,30 +40,19 @@ function DebriefingCtrl($scope, $http, $location, $rootScope, $q) {
 
     $scope.loadEvent = function (idEvent) {
         jsRoutes.controllers.Events.jsonById(idEvent).ajax().then(function (response) {
-                console.log(response);
+//                console.log(response);
                 $scope.event = response;
                 $rootScope.$digest();
             }
         );
     };
 
-    $scope.loadHome = function (idMatch) {
-        jsRoutes.controllers.MatchTeams.jsonByMatchAndHome(idMatch).ajax().then(function (response) {
-                console.log("Home", idMatch, response);
+    $scope.loadHome = function (idMatch, idTeam) {
+        jsRoutes.controllers.MatchTeams.jsonByMatchAndTeam(idMatch, idTeam).ajax().then(function (response) {
+//                console.log("Home", idMatch, response);
                 $scope.mtHome = response;
                 $rootScope.$digest();
                 $scope.loadTeamData(idMatch, response.team.id, true);
-            }
-        );
-    };
-
-    $scope.loadAway = function (idMatch) {
-        jsRoutes.controllers.MatchTeams.jsonByMatchAndAway(idMatch).ajax().then(function (response) {
-                console.log("Away", idMatch, response);
-                $scope.mtAway = response;
-                $rootScope.$digest();
-                $scope.loadTeamData(idMatch, response.team.id, false);
-
             }
         );
     };
@@ -83,12 +67,11 @@ function DebriefingCtrl($scope, $http, $location, $rootScope, $q) {
     $scope.loadPlayers = function (idMatch, idTeam, home) {
         console.log(idMatch, idTeam, home);
         jsRoutes.controllers.MatchPlayers.jsonByMatchAndTeam(idMatch, idTeam).ajax().then(function (response) {
-                console.log(response);
-                if (home) {
+//                console.log(response);
                     $scope.homePlayers = response;
-                } else {
-                    $scope.awayPlayers = response;
-                }
+                angular.forEach($scope.homePlayers, function (player) {
+                   player.editing = false;
+                });
                 $rootScope.$digest();
             }
         );
@@ -97,7 +80,7 @@ function DebriefingCtrl($scope, $http, $location, $rootScope, $q) {
     $scope.loadGoals = function (idMatch, idTeam, home) {
         console.log(idMatch, idTeam, home);
         jsRoutes.controllers.Goals.jsonByMatchAndTeam(idMatch, idTeam).ajax().then(function (response) {
-                console.log(response);
+//                console.log(response);
                 if (home) {
                     $scope.homeGoals = response;
                 } else {
@@ -111,7 +94,7 @@ function DebriefingCtrl($scope, $http, $location, $rootScope, $q) {
     $scope.loadCards = function (idMatch, idTeam, home) {
         console.log(idMatch, idTeam, home);
         jsRoutes.controllers.Cards.jsonByMatchAndTeam(idMatch, idTeam).ajax().then(function (response) {
-                console.log(response);
+//                console.log(response);
                 if (home) {
                     $scope.homeCards = response;
                 } else {
@@ -125,7 +108,7 @@ function DebriefingCtrl($scope, $http, $location, $rootScope, $q) {
     $scope.loadSubs = function (idMatch, idTeam, home) {
         console.log(idMatch, idTeam, home);
         jsRoutes.controllers.Substitutions.jsonByMatchAndTeam(idMatch, idTeam).ajax().then(function (response) {
-                console.log(response);
+//                console.log(response);
                 if (home) {
                     $scope.homeSubs = response;
                 } else {
@@ -136,6 +119,16 @@ function DebriefingCtrl($scope, $http, $location, $rootScope, $q) {
         );
     };
 
+    $scope.edit = function(matchPlayer){
+        matchPlayer.editing = true;
+        $scope.selectedItem = matchPlayer;
+        console.log("edit", $scope.selectedItem);
+    }
 
-    $scope.loadMatch($scope.idMatch);
+    $scope.save = function(){
+        console.log("save", $scope.selectedItem);
+    }
+
+
+//    $scope.loadMatch($scope.idMatch, $scope.idTeam);
 }

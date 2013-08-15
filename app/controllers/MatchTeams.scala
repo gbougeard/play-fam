@@ -13,6 +13,11 @@ object MatchTeams extends Controller  with Instrumented {
 
 
 
+  def jsonByMatchAndTeam(idMatch: Long, idTeam :Long) = Action {
+    implicit request =>
+      Ok(Json.toJson(models.MatchTeams.findByMatchAndTeam(idMatch, idTeam)))
+  }
+
   def jsonByMatchAndHome(idMatch: Long) = Action {
     implicit request =>
       val goals = models.MatchTeams.findByMatchAndHome(idMatch)

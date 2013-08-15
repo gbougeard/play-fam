@@ -67,6 +67,7 @@ object Application extends Controller with securesocial.core.SecureSocial {
           Substitutions.jsonByMatchAndTeam,
           MatchTeams.jsonByMatchAndHome,
           MatchTeams.jsonByMatchAndAway,
+          MatchTeams.jsonByMatchAndTeam,
           MatchPlayers.jsonByMatchAndTeam,
           Formations.saveItems
         )

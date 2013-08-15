@@ -76,7 +76,7 @@ object MatchTeams extends Table[MatchTeam]("fam_match_team") {
 
   lazy val pageSize = 10
 
-  def findByMatchAndTeam(idMatch: Long, idTeam: Long): Option[(MatchTeam, Match, Team)] = DB.withSession {
+  def findByMatchAndTeam(idMatch: Long, idTeam: Long): Option[(MatchTeam, Team)] = DB.withSession {
     implicit session => {
       val query = (
         for {mt <- MatchTeams
@@ -85,7 +85,7 @@ object MatchTeams extends Table[MatchTeam]("fam_match_team") {
              m <- mt.matche
              t <- mt.team
 
-        } yield (mt, m, t))
+        } yield (mt, t))
       query.firstOption
     }
   }
