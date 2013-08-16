@@ -123,7 +123,7 @@ object Provinces extends Table[Province]("fam_province") {
   def options: Seq[(String, String)] = DB.withSession {
     implicit session =>
       val query = (for {
-        item <- Places
+        item <- Provinces
       } yield (item.id, item.name)
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))

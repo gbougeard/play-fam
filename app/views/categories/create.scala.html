@@ -1,6 +1,7 @@
 @(message: String, categoryForm: Form[Category])
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
@@ -12,8 +13,8 @@
         @inputText(categoryForm("name"), '_label -> "Nom")
 
         <div class="form-actions">
-            <input type="submit" value="Save this category" class="btn btn-primary">
-            <a href="@routes.Categories.list()" class="btn">Cancel</a>
+            @btnSubmit("Save this category")
+            @btnCancel(routes.Categories.list())
         </div>
 
     }

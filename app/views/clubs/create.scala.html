@@ -1,6 +1,7 @@
 @(message: String, clubForm: Form[Club])
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
@@ -13,8 +14,8 @@
         @inputText(clubForm("name"), '_label -> "Nom")
 
         <div class="form-actions">
-            <input type="submit" value="Save this club" class="btn btn-primary">
-            <a href="@routes.Clubs.list()" class="btn">Cancel</a>
+            @btnSubmit("Save this club")
+            @btnCancel(routes.Clubs.list())
         </div>
 
     }

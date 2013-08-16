@@ -1,6 +1,7 @@
 @(message: String, id: Long, cityForm: Form[City], provinces : Seq[(String, String)])(implicit flash: play.api.mvc.Flash)
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
@@ -26,10 +27,10 @@
         )
 
         <div class="form-actions">
-            <input type="submit" value="Save this city" class="btn btn-primary">
-            <a href="@routes.Cities.view(id)" class="btn">View</a>
-            <a href="@routes.Cities.list()" class="btn">Cancel</a>
-            <a href="@routes.Cities.create()" class="btn">New</a>
+            @btnSubmit("Save this city")
+            @btnView(routes.Cities.view(id))
+            @btnCancel(routes.Cities.list())
+            @btnNew(routes.Cities.create())
         </div>
 
     }
