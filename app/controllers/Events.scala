@@ -43,7 +43,8 @@ object Events extends Controller with securesocial.core.SecureSocial with Instru
         "name" -> nonEmptyText,
         "typEventId" -> longNumber,
         "placeId" -> optional(longNumber),
-        "eventStatusId" -> longNumber
+        "eventStatusId" -> longNumber,
+        "comments" -> optional(text)
       )(Event.apply)(Event.unapply),
       "teams" -> seq(longNumber)
       //      "discontinued" -> optional(date("yyyy-MM-dd")),

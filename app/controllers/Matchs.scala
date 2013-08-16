@@ -89,7 +89,38 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
         m => {
           models.Events.findById(m.eventId.getOrElse(0)).map {
             case (event, typEvent, eventStatus) => {
-              Ok(views.html.matchs.edit("Debrief Match", m, event, idMatch, idTeam))
+              Ok(views.html.matchs.debrief("Debrief Match", m, event, idMatch, idTeam))
+//              models.MatchTeams.findByMatchAndHome(id).map {
+//                case (home, homeTeam) => {
+//                  val homeGoals = models.Goals.findByMatchAndTeam(id,  homeTeam.id.getOrElse(0))
+//                  val homePlayers = models.MatchPlayers.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
+//                  val homeSubs = models.Substitutions.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
+//                  val homeCards = models.Cards.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
+//
+//                  models.MatchTeams.findByMatchAndAway(id).map {
+//                  case  (away, awayTeam ) => {
+//                    val awayGoals = models.Goals.findByMatchAndTeam(id,  awayTeam.id.getOrElse(0))
+//                    val awayPlayers = models.MatchPlayers.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
+//                    val awaySubs = models.Substitutions.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
+//                    val awayCards = models.Cards.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
+//                      Ok(views.html.matchs.edit("Debrief Match", m, event, (home,homeTeam), (away, awayTeam), homeGoals, awayGoals,  homePlayers, awayPlayers, homeSubs, awaySubs, homeCards, awayCards))
+//                    }
+//                  } getOrElse (NotFound)
+//                }
+//              } getOrElse (NotFound)
+            }
+          } getOrElse (NotFound)
+        }
+      } getOrElse (NotFound)
+  }
+
+def prepare(idMatch:Long, idTeam: Long) = Action {
+    implicit request =>
+      models.Matchs.findById(idMatch).map {
+        m => {
+          models.Events.findById(m.eventId.getOrElse(0)).map {
+            case (event, typEvent, eventStatus) => {
+              Ok(views.html.matchs.prepare("Prepare Match", m, event, idMatch, idTeam))
 //              models.MatchTeams.findByMatchAndHome(id).map {
 //                case (home, homeTeam) => {
 //                  val homeGoals = models.Goals.findByMatchAndTeam(id,  homeTeam.id.getOrElse(0))

@@ -201,13 +201,13 @@ table .headerSortUp.purple, table .headerSortDown.purple {
     background: rgba(255, 255, 255, .2) !important;
 }
 
-tr:nth-child(odd) td:nth-child(even), tr:nth-child(even) td:nth-child(odd) {
-    background-color: grey;
-}
+/*tr:nth-child(odd) td:nth-child(even), tr:nth-child(even) td:nth-child(odd) {*/
+    /*background-color: grey;*/
+/*}*/
 
-tr:nth-child(odd) td:nth-child(odd), tr:nth-child(even) td:nth-child(even) {
-    background-color: #CCC;
-}
+/*tr:nth-child(odd) td:nth-child(odd), tr:nth-child(even) td:nth-child(even) {*/
+    /*background-color: #CCC;*/
+/*}*/
 
 .item {
     height: 60px;

@@ -22,7 +22,8 @@ case class Event(id: Option[Long],
                  name: String,
                  typEventId: Long,
                  placeId: Option[Long],
-                 eventStatusId: Long)
+                 eventStatusId: Long,
+                 comments:Option[String])
 
 // define tables
 object Events extends Table[Event]("fam_event") {
@@ -41,13 +42,15 @@ object Events extends Table[Event]("fam_event") {
 
   def eventStatusId = column[Long]("id_eventStatus")
 
+  def comments = column[String]("comments")
+
 //  implicit val dateTime: TypeMapper[DateTime] = MappedTypeMapper.base[DateTime, Timestamp](
 //    dt => new Timestamp(dt.getMillis),
 //    ts => new DateTime(ts.getTime))
 
-  def * = id.? ~ dtEvent ~ duration ~ name ~ typEventId ~ placeId.? ~ eventStatusId <>(Event, Event.unapply _)
+  def * = id.? ~ dtEvent ~ duration ~ name ~ typEventId ~ placeId.? ~ eventStatusId ~ comments.? <>(Event, Event.unapply _)
 
-  def autoInc = id.? ~ dtEvent ~ duration ~ name ~ typEventId ~ placeId.? ~ eventStatusId <>(Event, Event.unapply _) returning id
+  def autoInc = id.? ~ dtEvent ~ duration ~ name ~ typEventId ~ placeId.? ~ eventStatusId ~ comments.? <>(Event, Event.unapply _) returning id
 
   // A reified foreign key relation that can be navigated to create a join
   def typEvent = foreignKey("TYP_EVENT_FK", typEventId, TypEvents)(_.id)
