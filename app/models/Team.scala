@@ -60,19 +60,20 @@ object Teams extends Table[Team]("fam_team") {
       implicit session => {
         val teams = (
           for {t <- Teams
-            .sortBy(club => orderField match {
-            case 1 => club.code.asc
-            case -1 => club.code.desc
-            case 2 => club.name.asc
-            case -2 => club.name.desc
-          })
-            .drop(offset)
-            .take(pageSize)
                c <- t.club
+          } yield (t, c)
+          ).sortBy(orderField match {
+          case 1 => _._1.code.asc
+          case -1 => _._1.code.desc
+          case 2 => _._1.name.asc
+          case -2 => _._1.name.desc
+          case 3 => _._2.name.asc
+          case -3 => _._2.name.desc
+        })
+          .drop(offset)
+          .take(pageSize)
 
-          } yield (t, c)).list
-
-        Page(teams, page, offset, count)
+        Page(teams.list, page, offset, count)
       }
     }
   }

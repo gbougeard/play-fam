@@ -30,6 +30,7 @@ if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
     <tr>
         @header(1, "Season")
         @header(2, "TypCompetition")
+        @header(3, "Category")
     </tr>
     </thead>
     <tbody>
@@ -40,6 +41,7 @@ if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
                 <tr>
                 <td><a href="@routes.SeasonCompetitions.view(sc.id.getOrElse(0))">@season.name</a></td>
                 <td>@typCompetition.name</td>
+                <td>@category.name</td>
                 </tr>
             }
 

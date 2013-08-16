@@ -70,14 +70,21 @@ object States extends Table[State]("fam_state") {
 
         val states = (
           for {s <- States
-            .sortBy(_.lower)
-            .drop(offset)
-            .take(pageSize)
                c <- s.country
-          } yield (s, c)).list
+          } yield (s, c))
+          .sortBy(orderField match {
+          case 1 => _._1.code asc
+          case -1 => _._1.code desc
+          case 2 => _._1.name asc
+          case -2 => _._1.name desc
+          case 3 => _._2.name asc
+          case -3 => _._2.name desc
+        })
+          .drop(offset)
+          .take(pageSize)
 
         val totalRows = count
-        Page(states, page, offset, totalRows)
+        Page(states.list, page, offset, totalRows)
       }
     }
   }

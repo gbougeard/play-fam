@@ -23,7 +23,7 @@ case class Event(id: Option[Long],
                  typEventId: Long,
                  placeId: Option[Long],
                  eventStatusId: Long,
-                 comments:Option[String])
+                 comments: Option[String])
 
 // define tables
 object Events extends Table[Event]("fam_event") {
@@ -44,9 +44,9 @@ object Events extends Table[Event]("fam_event") {
 
   def comments = column[String]("comments")
 
-//  implicit val dateTime: TypeMapper[DateTime] = MappedTypeMapper.base[DateTime, Timestamp](
-//    dt => new Timestamp(dt.getMillis),
-//    ts => new DateTime(ts.getTime))
+  //  implicit val dateTime: TypeMapper[DateTime] = MappedTypeMapper.base[DateTime, Timestamp](
+  //    dt => new Timestamp(dt.getMillis),
+  //    ts => new DateTime(ts.getTime))
 
   def * = id.? ~ dtEvent ~ duration ~ name ~ typEventId ~ placeId.? ~ eventStatusId ~ comments.? <>(Event, Event.unapply _)
 
@@ -78,24 +78,29 @@ object Events extends Table[Event]("fam_event") {
     }
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[Event] = {
+  def findPage(page: Int = 0, orderField: Int): Page[(Event, TypEvent, EventStatus)] = {
 
     val offset = pageSize * page
     DB.withSession {
       implicit session => {
-        val events = (
-          for {c <- Events
-            .sortBy(event => orderField match {
-            case 1 => event.dtEvent.asc
-            case -1 => event.dtEvent.desc
-            case 2 => event.name.asc
-            case -2 => event.name.desc
-          })
-            .drop(offset)
-            .take(pageSize)
-          } yield c).list
+        val events = (for {
+          c <- Events
+          t <- c.typEvent
+          e <- c.eventStatus
+        } yield (c, t, e)
+          ).sortBy(orderField match {
+          case 1 => _._1.dtEvent.asc
+          case -1 => _._1.dtEvent.desc
+          case 2 => _._1.name.asc
+          case -2 => _._1.name.desc
+          case 3 => _._2.name.asc
+          case -3 => _._2.name.desc
+          case 4 => _._3.name.asc
+          case -4 => _._3.name.desc
+        }).drop(offset)
+          .take(pageSize)
 
-        Page(events, page, offset, count)
+        Page(events.list, page, offset, count)
       }
     }
   }

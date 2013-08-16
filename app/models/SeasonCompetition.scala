@@ -68,21 +68,23 @@ object SeasonCompetitions extends Table[SeasonCompetition]("fam_season_competiti
       implicit session =>
         val seasonCompetitions = (
           for {sc <- SeasonCompetitions
-            .sortBy(seasonCompetition => orderField match {
-            case 1 => seasonCompetition.categoryId.asc
-            case -1 => seasonCompetition.categoryId.desc
-            case 2 => seasonCompetition.typCompetitionId.asc
-            case -2 => seasonCompetition.typCompetitionId.desc
-          })
-            .drop(offset)
-            .take(pageSize)
                c <- sc.category
                s <- sc.scale
                se <- sc.season
                tc <- sc.typCompetition
-          } yield (sc, c, s, se, tc)).list
+          } yield (sc, c, s, se, tc)
+          ).sortBy(orderField match {
+          case 1 => _._4.name.asc
+          case -1 => _._4.name.desc
+          case 2 => _._5.name.asc
+          case -2 => _._5.name.desc
+          case 3 => _._2.name.asc
+          case -3 => _._2.name.desc
+        })
+          .drop(offset)
+          .take(pageSize)
 
-        Page(seasonCompetitions, page, offset, count)
+        Page(seasonCompetitions.list, page, offset, count)
     }
   }
 

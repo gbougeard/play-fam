@@ -1,4 +1,4 @@
-@(message: String, currentPage: Page[Event], currentOrderBy: Int)(implicit flash: play.api.mvc.Flash)
+@(message: String, currentPage: Page[(Event,TypEvent,EventStatus)], currentOrderBy: Int)(implicit flash: play.api.mvc.Flash)
 
 @****************************************
 * Helper generating navigation links    *
@@ -31,16 +31,22 @@ if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
       @*  @header(0,"Id")    *@
         @header(1,"Nom")
         @header(2,"Date")
+        @header(3,"Type")
+        @header(4,"Status")
     </tr>
     </thead>
     <tbody>
 
-    @events.map { event =>
-    <tr>
-      @*  <td>@event.id</td>   *@
-        <td><a href="@routes.Events.view(event.id.getOrElse(0))">@event.name</a></td>
-        <td>@event.dtEvent.toString("dd/MM/YYYY HH:mm")</td>
-    </tr>
+    @events.map {
+        case (event, typEvent, status) => {
+            <tr>
+              @*  <td>@event.id</td>   *@
+                <td><a href="@routes.Events.view(event.id.getOrElse(0))">@event.name</a></td>
+                <td>@event.dtEvent.toString("dd/MM/YYYY HH:mm")</td>
+                <td>@typEvent.name</td>
+                <td>@status.name</td>
+            </tr>
+        }
     }
 
     </tbody>

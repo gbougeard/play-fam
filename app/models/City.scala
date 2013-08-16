@@ -66,14 +66,22 @@ object Cities extends Table[City]("fam_city") {
       implicit session => {
         val cities = (
           for {c <- Cities
-            .sortBy(_.code)
-            .drop(offset)
-            .take(pageSize)
+
                p <- c.province
-          } yield (c, p)).list
+          } yield (c, p))
+        .sortBy(orderField match {
+          case 1 => _._1.code.asc
+          case -1 => _._1.code.desc
+          case 2 => _._1.name.asc
+          case -2 => _._1.name.desc
+          case 3 => _._2.name.asc
+          case -3 => _._2.name.desc
+        })
+          .drop(offset)
+          .take(pageSize)
 
         val totalRows = count
-        Page(cities, page, offset, totalRows)
+        Page(cities.list, page, offset, totalRows)
       }
     }
   }

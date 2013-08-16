@@ -68,14 +68,22 @@ object Provinces extends Table[Province]("fam_province") {
       implicit session => {
         val provinces = (
           for {p <- Provinces
-            .sortBy(_.code)
-            .drop(offset)
-            .take(pageSize)
+
                s <- p.state
-          } yield (p, s)).list
+          } yield (p, s))
+          .sortBy(orderField match {
+          case 1 => _._1.code asc
+          case -1 => _._1.code desc
+          case 2 => _._1.name asc
+          case -2 => _._1.name desc
+          case 3 => _._2.name asc
+          case -3 => _._2.name desc
+        })
+          .drop(offset)
+          .take(pageSize)
 
         val totalRows = count
-        Page(provinces, page, offset, totalRows)
+        Page(provinces.list, page, offset, totalRows)
       }
     }
   }

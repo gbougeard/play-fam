@@ -4,7 +4,7 @@
 * Helper generating navigation links    *
 ****************************************@
 @link(newPage: Int, newOrderBy: Option[Int] = None) = @{
-    routes.States.list(newPage
+    routes.Provinces.list(newPage
         , newOrderBy.map { orderBy =>
             if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
         }.getOrElse(currentOrderBy))

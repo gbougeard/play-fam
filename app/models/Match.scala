@@ -62,15 +62,23 @@ object Matchs extends Table[Match]("fam_match") {
     DB.withSession {
       implicit session => {
         val matchs = (
-          for {t <- Matchs
-            .drop(offset)
-            .take(pageSize)
-            if t.eventId.isNotNull
-               c <- t.competition
-               e <- t.event
-          } yield (t, c, e)).list
+          for {m <- Matchs
+               if m.eventId.isNotNull
+               c <- m.competition
+               e <- m.event
+          } yield (m, c, e))
+          .sortBy(orderField match {
+          case 1 => _._1.id.asc
+          case -1 => _._1.id.desc
+          case 2 => _._3.name.asc
+          case -2 => _._3.name.desc
+          case 3 => _._3.dtEvent.asc
+          case -3 => _._3.dtEvent.desc
+        })
+          .drop(offset)
+          .take(pageSize)
 
-        Page(matchs, page, offset, count)
+        Page(matchs.list, page, offset, count)
       }
     }
   }
@@ -80,7 +88,8 @@ object Matchs extends Table[Match]("fam_match") {
       Matchs.byId(id).firstOption
     }
   }
- def findByEventId(id: Long): Option[Match] = DB.withSession {
+
+  def findByEventId(id: Long): Option[Match] = DB.withSession {
     implicit session => {
       Matchs.byEventId(id).firstOption
     }
@@ -105,6 +114,7 @@ object Matchs extends Table[Match]("fam_match") {
       Matchs.where(_.id === matchId).delete
     }
   }
+
   implicit val matchFormat = Json.format[Match]
 
 }
