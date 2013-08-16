@@ -1,6 +1,7 @@
 @(message: String, typCardForm: Form[TypCard])
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
@@ -12,8 +13,8 @@
         @inputText(typCardForm("name"), '_label -> "Nom")
 
         <div class="form-actions">
-            <input type="submit" value="Save this typCard" class="btn btn-primary">
-            <a href="@routes.TypCards.list()" class="btn">Cancel</a>
+            @btnSubmit("Save this typCard")
+            @btnCancel(routes.TypCards.list())
         </div>
 
     }

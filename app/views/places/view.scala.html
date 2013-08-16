@@ -1,5 +1,6 @@
 @(message: String, place: Place)(implicit flash: play.api.mvc.Flash)
 
+@import tags._
 
 @main(message) {
 <div class="header">
@@ -16,9 +17,9 @@
 
 <div class="form-actions">
     @**<input type="submit" value="Edit this place" class="btn btn-primary"> **@
-    <a href="@routes.Places.edit(place.id.getOrElse(0))" class="btn btn-primary">Edit</a>
-    <a href="@routes.Places.list()" class="btn">Cancel</a>
-    <a href="@routes.Places.create()" class="btn">New</a>
+    @btnEdit(routes.Places.edit(place.id.getOrElse(0)))
+    @btnCancel(routes.Places.list())
+    @btnNew(routes.Places.create())
 </div>
 
 }

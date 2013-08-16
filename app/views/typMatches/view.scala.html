@@ -1,5 +1,6 @@
 @(message: String, typMatch: TypMatch)(implicit flash: play.api.mvc.Flash)
 
+@import tags._
 
 @main(message) {
 <div class="header">
@@ -16,9 +17,9 @@
 
 <div class="form-actions">
     @**<input type="submit" value="Edit this typMatch" class="btn btn-primary"> **@
-    <a href="@routes.TypMatches.edit(typMatch.id.getOrElse(0))" class="btn btn-primary">Edit</a>
-    <a href="@routes.TypMatches.list()" class="btn">Cancel</a>
-    <a href="@routes.TypMatches.create()" class="btn">New</a>
+    @btnEdit(routes.TypMatches.edit(typMatch.id.getOrElse(0)))
+    @btnCancel(routes.TypMatches.list())
+    @btnNew(routes.TypMatches.create())
 </div>
 
 }

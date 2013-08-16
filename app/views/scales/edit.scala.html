@@ -1,6 +1,7 @@
 @(message: String, id: Long, scaleForm: Form[Scale])(implicit flash: play.api.mvc.Flash)
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
@@ -18,10 +19,10 @@
         @inputText(scaleForm("name"), '_label -> "Nom")
 
         <div class="form-actions">
-            <input type="submit" value="Save this scale" class="btn btn-primary">
-            <a href="@routes.Scales.view(id)" class="btn">View</a>
-            <a href="@routes.Scales.list()" class="btn">Cancel</a>
-            <a href="@routes.Scales.create()" class="btn">New</a>
+            @btnSubmit("Save this scale")
+            @btnView(routes.Scales.view(id))
+            @btnCancel(routes.Scales.list())
+            @btnNew(routes.Scales.create())
         </div>
 
     }

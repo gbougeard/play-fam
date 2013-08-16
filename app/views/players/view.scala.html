@@ -1,5 +1,6 @@
 @(message: String, player: Player)(implicit flash: play.api.mvc.Flash)
 
+@import tags._
 
 @main(message) {
 <div class="header">
@@ -18,9 +19,9 @@
 
 <div class="form-actions">
     @**<input type="submit" value="Edit this player" class="btn btn-primary"> **@
-    <a href="@routes.Players.edit(player.id.getOrElse(0))" class="btn btn-primary">Edit</a>
-    <a href="@routes.Players.list()" class="btn">Cancel</a>
-    <a href="@routes.Players.create()" class="btn">New</a>
+    @btnEdit(routes.Players.edit(player.id.getOrElse(0)))
+    @btnCancel(routes.Players.list())
+    @btnNew(routes.Players.create())
 </div>
 
 }

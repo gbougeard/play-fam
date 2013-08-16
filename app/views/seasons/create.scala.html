@@ -1,6 +1,7 @@
 @(message: String, seasonForm: Form[Season])
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
@@ -12,8 +13,8 @@
         @inputText(seasonForm("name"), '_label -> "Nom")
 
         <div class="form-actions">
-            <input type="submit" value="Save this season" class="btn btn-primary">
-            <a href="@routes.Seasons.list()" class="btn">Cancel</a>
+            @btnSubmit("Save this season")
+            @btnCancel(routes.Seasons.list())
         </div>
 
     }

@@ -1,6 +1,7 @@
 @(message: String, id: Long, teamForm: Form[Team], clubs : Seq[(String, String)])(implicit flash: play.api.mvc.Flash)
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
@@ -26,10 +27,10 @@
         )
 
         <div class="form-actions">
-            <input type="submit" value="Save this team" class="btn btn-primary">
-            <a href="@routes.Teams.view(id)" class="btn">View</a>
-            <a href="@routes.Teams.list()" class="btn">Cancel</a>
-            <a href="@routes.Teams.create()" class="btn">New</a>
+            @btnSubmit("Save this team")
+            @btnView(routes.Teams.view(id))
+            @btnCancel(routes.Teams.list())
+            @btnNew(routes.Teams.create())
         </div>
 
     }

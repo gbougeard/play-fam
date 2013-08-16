@@ -1,6 +1,7 @@
 @(message: String, scaleForm: Form[Scale])
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
@@ -12,8 +13,8 @@
         @inputText(scaleForm("name"), '_label -> "Nom")
 
         <div class="form-actions">
-            <input type="submit" value="Save this scale" class="btn btn-primary">
-            <a href="@routes.Scales.list()" class="btn">Cancel</a>
+            @btnSubmit("Save this scale")
+            @btnCancel(routes.Scales.list())
         </div>
 
     }

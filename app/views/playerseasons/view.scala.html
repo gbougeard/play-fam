@@ -1,5 +1,6 @@
 @(message: String, values: (models.PlayerSeason, models.Player, models.Season, models.Club))(implicit flash: play.api.mvc.Flash)
 
+@import tags._
 
 @main(message) {
     @Option(values).map { case (playerSeason, player, season, club) =>
@@ -58,9 +59,9 @@
 </div>
 
 <div class="form-actions">
-    <a href="@routes.Players.edit(player.id.getOrElse(0))" class="btn btn-primary">Edit</a>
-    <a href="@routes.Players.list()" class="btn">Cancel</a>
-    <a href="@routes.Players.create()" class="btn">New</a>
+    @btnEdit(routes.Players.edit(player.id.getOrElse(0)))
+    @btnCancel(routes.Players.list())
+    @btnNew(routes.Players.create())
 </div>
     }.getOrElse {
 

@@ -1,5 +1,6 @@
 @(message: String, typCompetition: TypCompetition)(implicit flash: play.api.mvc.Flash)
 
+@import tags._
 
 @main(message) {
 <div class="header">
@@ -18,9 +19,9 @@
 
 <div class="form-actions">
     @**<input type="submit" value="Edit this typMatch" class="btn btn-primary"> **@
-    <a href="@routes.TypCompetitions.edit(typCompetition.id.getOrElse(0))" class="btn btn-primary">Edit</a>
-    <a href="@routes.TypCompetitions.list()" class="btn">Cancel</a>
-    <a href="@routes.TypCompetitions.create()" class="btn">New</a>
+    @btnEdit(routes.TypCompetitions.edit(typCompetition.id.getOrElse(0)))
+    @btnCancel(routes.TypCompetitions.list())
+    @btnView(routes.TypCompetitions.create())
 </div>
 
 }

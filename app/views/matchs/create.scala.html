@@ -1,6 +1,7 @@
 @(message: String, matchForm: Form[Match])
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
@@ -14,8 +15,8 @@
         @inputText(matchForm("email"), '_label -> "Email")
 
         <div class="form-actions">
-            <input type="submit" value="Save this match" class="btn btn-primary">
-            <a href="@routes.Matchs.list()" class="btn">Cancel</a>
+            @btnSubmit("Save this match")
+            @btnCancel(routes.Matchs.list())
         </div>
 
     }

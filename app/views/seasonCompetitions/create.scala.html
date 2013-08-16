@@ -1,6 +1,7 @@
 @(message: String, seasonCompetitionForm: Form[SeasonCompetition], categories : Seq[(String, String)], scales : Seq[(String, String)], seasons : Seq[(String, String)], typCompetitions : Seq[(String, String)])
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
@@ -34,8 +35,8 @@
         )
 
         <div class="form-actions">
-            <input type="submit" value="Save this seasonCompetition" class="btn btn-primary">
-            <a href="@routes.SeasonCompetitions.list()" class="btn">Cancel</a>
+            @btnSubmit("Save this seasonCompetition")
+            @btnCancel(routes.SeasonCompetitions.list())
         </div>
 
     }

@@ -1,6 +1,7 @@
 @(message: String, id: Long, typMatchForm: Form[TypCompetition], typMatches : Seq[(String, String)])(implicit flash: play.api.mvc.Flash)
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
@@ -26,10 +27,10 @@
         )
 
         <div class="form-actions">
-            <input type="submit" value="Save this typMatch" class="btn btn-primary">
-            <a href="@routes.TypCompetitions.view(id)" class="btn">View</a>
-            <a href="@routes.TypCompetitions.list()" class="btn">Cancel</a>
-            <a href="@routes.TypCompetitions.create()" class="btn">New</a>
+            @btnSubmit("Save this typMatch")
+            @btnView(routes.TypCompetitions.view(id))
+            @btnCancel(routes.TypCompetitions.list())
+            @btnNew(routes.TypCompetitions.create())
         </div>
 
     }

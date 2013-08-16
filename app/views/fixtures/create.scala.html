@@ -1,6 +1,7 @@
 @(message: String, fixtureForm: Form[Fixture], competitions : Seq[(String, String)])
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
@@ -20,8 +21,8 @@
         )
 
         <div class="form-actions">
-            <input type="submit" value="Save this fixture" class="btn btn-primary">
-            <a href="@routes.Fixtures.list()" class="btn">Cancel</a>
+            @btnSubmit("Save this fixture")
+            @btnCancel(routes.Fixtures.list())
         </div>
 
     }

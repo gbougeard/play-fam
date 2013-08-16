@@ -1,6 +1,7 @@
 @(message: String, typMatchForm: Form[TypMatch])
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
@@ -21,8 +22,8 @@
         @inputText(typMatchForm("nbPenalties"), '_label -> "nbPenalties")
 
         <div class="form-actions">
-            <input type="submit" value="Save this typMatch" class="btn btn-primary">
-            <a href="@routes.TypMatches.list()" class="btn">Cancel</a>
+            @btnSubmit("Save this typMatch")
+            @btnCancel(routes.TypMatches.list())
         </div>
 
     }

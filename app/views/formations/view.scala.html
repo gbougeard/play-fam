@@ -1,5 +1,6 @@
 @(message: String, formation: Formation, items: Seq[FormationItem])(implicit flash: play.api.mvc.Flash)
-@import helper.twitterBootstrap._
+
+@import tags._
 
 @main(message) {
     <div class="header">
@@ -34,9 +35,9 @@
     <div class="form-actions">
 
         @**<input type="submit" value="Edit this formation" class="btn btn-primary"> **@
-        <a href="@routes.Formations.edit(formation.id.getOrElse(0))" class="btn btn-primary"> Edit </a>
-        <a href="@routes.Formations.list()" class="btn"> Cancel </a>
-        <a href="@routes.Formations.create()" class="btn"> New </a>
+        @btnEdit(routes.Formations.edit(formation.id.getOrElse(0)))
+        @btnCancel(routes.Formations.list())
+        @btnNew(routes.Formations.create())
     </div>
 
 }

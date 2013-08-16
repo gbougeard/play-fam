@@ -1,6 +1,7 @@
 @(message: String, countryForm: Form[Country])
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
@@ -13,8 +14,8 @@
         @inputText(countryForm("name"), '_label -> "Nom")
 
         <div class="form-actions">
-            <input type="submit" value="Save this country" class="btn btn-primary">
-            <a href="@routes.Countries.list()" class="btn">Cancel</a>
+            @btnSubmit("Save this country")
+            @btnCancel(routes.Countries.list())
         </div>
 
     }

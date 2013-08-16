@@ -1,6 +1,7 @@
 @(message: String, id: Long, seasonCompetitionForm: Form[SeasonCompetition], categories : Seq[(String, String)], scales : Seq[(String, String)], seasons : Seq[(String, String)], typCompetitions : Seq[(String, String)])(implicit flash: play.api.mvc.Flash)
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
@@ -41,10 +42,10 @@
         )
 
         <div class="form-actions">
-            <input type="submit" value="Save this seasonCompetition" class="btn btn-primary">
-            <a href="@routes.SeasonCompetitions.view(id)" class="btn">View</a>
-            <a href="@routes.SeasonCompetitions.list()" class="btn">Cancel</a>
-            <a href="@routes.SeasonCompetitions.create()" class="btn">New</a>
+            @btnSubmit("Save this seasonCompetition")
+            @btnView(routes.SeasonCompetitions.view(id))
+            @btnCancel(routes.SeasonCompetitions.list())
+            @btnNew(routes.SeasonCompetitions.create())
         </div>
 
     }

@@ -1,6 +1,7 @@
 @(message: String, placeForm: Form[Place])
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
@@ -13,8 +14,8 @@
         @inputText(placeForm("name"), '_label -> "Nom")
 
         <div class="form-actions">
-            <input type="submit" value="Save this place" class="btn btn-primary">
-            <a href="@routes.Places.list()" class="btn">Cancel</a>
+            @btnSubmit("Save this place")
+            @btnCancel(routes.Places.list())
         </div>
 
     }

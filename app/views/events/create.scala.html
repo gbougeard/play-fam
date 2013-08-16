@@ -1,5 +1,7 @@
 @(message: String, typEvents: String, places: String, teams: String)
 
+    @import tags._
+
     @scripts={
         <script type="text/javascript" src='@routes.Assets.at("js/app/controllers/event.js")'></script>
 
@@ -63,8 +65,8 @@
             </div>
 
             <div class="form-actions">
-                <input type="submit" value="Save this event" class="btn btn-primary">
-                <a href="@routes.Events.list()" class="btn">Cancel</a>
+                @btnSubmit("Save this event")
+                @btnCancel(routes.Events.list())
             </div>
 
         </form>

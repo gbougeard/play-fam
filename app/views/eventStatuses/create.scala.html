@@ -1,6 +1,7 @@
 @(message: String, eventStatusForm: Form[EventStatus])
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
@@ -12,8 +13,8 @@
         @inputText(eventStatusForm("name"), '_label -> "Nom")
 
         <div class="form-actions">
-            <input type="submit" value="Save this eventStatus" class="btn btn-primary">
-            <a href="@routes.EventStatuses.list()" class="btn">Cancel</a>
+            @btnSubmit("Save this eventStatus")
+            @btnCancel(routes.EventStatuses.list())
         </div>
 
     }

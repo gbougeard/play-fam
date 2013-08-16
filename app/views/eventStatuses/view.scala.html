@@ -1,5 +1,6 @@
 @(message: String, eventStatus: EventStatus)(implicit flash: play.api.mvc.Flash)
 
+@import tags._
 
 @main(message) {
 <div class="header">
@@ -16,9 +17,9 @@
 
 <div class="form-actions">
     @**<input type="submit" value="Edit this eventStatus" class="btn btn-primary"> **@
-    <a href="@routes.EventStatuses.edit(eventStatus.id.getOrElse(0))" class="btn btn-primary">Edit</a>
-    <a href="@routes.EventStatuses.list()" class="btn">Cancel</a>
-    <a href="@routes.EventStatuses.create()" class="btn">New</a>
+    @btnEdit(routes.EventStatuses.edit(eventStatus.id.getOrElse(0)))
+    @btnCancel(routes.EventStatuses.list())
+    @btnNew(routes.EventStatuses.create())
 </div>
 
 }

@@ -1,5 +1,6 @@
 @(message: String, fixture: Fixture)(implicit flash: play.api.mvc.Flash)
-@import helper.twitterBootstrap._
+
+@import tags._
 
 @main(message) {
 <div class="header">
@@ -18,9 +19,9 @@
 
 <div class="form-actions">
     @**<input type="submit" value="Edit this fixture" class="btn btn-primary"> **@
-    <a href="@routes.Fixtures.edit(fixture.id.getOrElse(0))" class="btn btn-primary">Edit</a>
-    <a href="@routes.Fixtures.list()" class="btn">Cancel</a>
-    <a href="@routes.Fixtures.create()" class="btn">New</a>
+    @btnEdit(routes.Fixtures.edit(fixture.id.getOrElse(0)))
+    @btnCancel(routes.Fixtures.list())
+    @btnNew(routes.Fixtures.create())
 </div>
 
 }

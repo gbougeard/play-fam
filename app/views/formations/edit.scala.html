@@ -1,6 +1,7 @@
 @(message: String, id: Long, formationForm: Form[Formation], items: Seq[FormationItem], jsonItems: String, typMatchs: Seq[(String, String)])(implicit flash: play.api.mvc.Flash)
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{
     FieldConstructor(twitterBootstrapInput.f)
@@ -92,10 +93,10 @@
         )
 
         <div class="form-actions">
-            <input type="submit" value="Save this formation" class="btn btn-primary">
-            <a href="@routes.Formations.view(id)" class="btn"> View </a>
-            <a href="@routes.Formations.list()" class="btn"> Cancel </a>
-            <a href="@routes.Formations.create()" class="btn"> New </a>
+            @btnSubmit("Save this formation")
+            @btnView(routes.Formations.view(id))
+            @btnCancel(routes.Formations.list())
+            @btnNew(routes.Formations.create())
         </div>
 
         <div class="row">
@@ -114,7 +115,7 @@
             </div>
         </div>
         <div class="form-actions">
-            <div class="btn btn-primary" onclick="saveItems()">Save </div>
+            <div class="btn btn-primary" onclick="saveItems()">Save</div>
         </div>
 
     }

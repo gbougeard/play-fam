@@ -1,5 +1,6 @@
 @(message: String, scale: Scale)(implicit flash: play.api.mvc.Flash)
 
+@import tags._
 
 @main(message) {
 <div class="header">
@@ -14,9 +15,9 @@
 
 <div class="form-actions">
     @**<input type="submit" value="Edit this scale" class="btn btn-primary"> **@
-    <a href="@routes.Scales.edit(scale.id.getOrElse(0))" class="btn btn-primary">Edit</a>
-    <a href="@routes.Scales.list()" class="btn">Cancel</a>
-    <a href="@routes.Scales.create()" class="btn">New</a>
+    @btnEdit(routes.Scales.edit(scale.id.getOrElse(0)))
+    @btnCancel(routes.Scales.list())
+    @btnNew(routes.Scales.create())
 </div>
 
 }

@@ -1,6 +1,7 @@
 @(message: String, positionForm: Form[Position])
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
@@ -12,8 +13,8 @@
         @inputText(positionForm("name"), '_label -> "Nom")
 
         <div class="form-actions">
-            <input type="submit" value="Save this position" class="btn btn-primary">
-            <a href="@routes.Positions.list()" class="btn">Cancel</a>
+            @btnSubmit("Save this position")
+            @btnCancel(routes.Positions.list())
         </div>
 
     }

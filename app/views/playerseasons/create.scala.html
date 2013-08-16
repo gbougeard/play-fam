@@ -1,6 +1,7 @@
 @(message: String, playerForm: Form[Player])
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
@@ -14,8 +15,8 @@
         @inputText(playerForm("email"), '_label -> "Email")
 
         <div class="form-actions">
-            <input type="submit" value="Save this player" class="btn btn-primary">
-            <a href="@routes.Players.list()" class="btn">Cancel</a>
+            @btnSubmit("Save this player")
+            @btnCancel(routes.Players.list())
         </div>
 
     }

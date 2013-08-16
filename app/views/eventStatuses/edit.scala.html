@@ -1,6 +1,7 @@
 @(message: String, id: Long, eventStatusForm: Form[EventStatus])(implicit flash: play.api.mvc.Flash)
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
@@ -18,10 +19,10 @@
         @inputText(eventStatusForm("name"), '_label -> "Nom")
 
         <div class="form-actions">
-            <input type="submit" value="Save this eventStatus" class="btn btn-primary">
-            <a href="@routes.EventStatuses.view(id)" class="btn">View</a>
-            <a href="@routes.EventStatuses.list()" class="btn">Cancel</a>
-            <a href="@routes.EventStatuses.create()" class="btn">New</a>
+            @btnSubmit("Save this eventStatus")
+            @btnView(routes.EventStatuses.view(id))
+            @btnCancel(routes.EventStatuses.list())
+            @btnNew(routes.EventStatuses.create())
         </div>
 
     }

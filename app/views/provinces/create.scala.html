@@ -1,6 +1,7 @@
 @(message: String, provinceForm: Form[Province], states : Seq[(String, String)])
 
 @import helper._
+@import tags._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
@@ -20,8 +21,8 @@
         )
 
         <div class="form-actions">
-            <input type="submit" value="Save this province" class="btn btn-primary">
-            <a href="@routes.Provinces.list()" class="btn">Cancel</a>
+            @btnSubmit("Save this province")
+            @btnCancel(routes.Provinces.list())
         </div>
 
     }

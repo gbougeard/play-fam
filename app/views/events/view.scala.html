@@ -1,5 +1,6 @@
 @(message: String, data: (Event, TypEvent, EventStatus), teams: Seq[(EventTeam, Event, Team)])(implicit flash: play.api.mvc.Flash)
 
+@import tags._
 
 @main(message) {
     @Option(data).map { case (event, typEvent, eventStatus) =>
@@ -28,9 +29,9 @@
 
     <div class="form-actions">
         @**<input type="submit" value="Edit this event" class="btn btn-primary"> **@
-        <a href="@routes.Events.edit(event.id.getOrElse(0))" class="btn btn-primary">Edit</a>
-        <a href="@routes.Events.list()" class="btn">Cancel</a>
-        <a href="@routes.Events.create()" class="btn">New</a>
+        @btnEdit(routes.Events.edit(event.id.getOrElse(0)))
+        @btnCancel(routes.Events.list())
+        @btnNew(routes.Events.create())
     </div>
 
     }
