@@ -1,4 +1,9 @@
-@(message: String, events: (Event, TypEvent, EventStatus), answers: Seq[(Answer, Event, Player, TypAnswer)])(implicit flash: play.api.mvc.Flash)
+@(message: String,
+        events: (Event, TypEvent, EventStatus),
+        answers: Seq[(Answer, Event, Player, TypAnswer)],
+        user: securesocial.core.Identity,
+        player: Option[Player])(implicit request: RequestHeader, session: play.api.mvc.Session)
+@import securesocial.core.IdentityProvider
 
 @scripts ={
     <script>
@@ -13,6 +18,28 @@
     <fieldset>
     <legend><span class="badge">@eventStatus.name</span> @event.name - @event.dtEvent.toString("d MMM YYYY HH:mm") </legend>
         <div class="span12 well">@event.placeId @event.comments.map{ c => @Html(c)}</div>
+
+
+        @user match {
+            case u:models.FamUser => {
+                <h2>User Info</h2>
+                <img src="@u.gravatar" alt="@user.firstName" width="40px" height="40px"/>
+                <ul>
+                @u.currentClubId.map { t => <li>CurrentClubId: @t</li> }
+                </ul>
+
+            }
+            case u: securesocial.core.SocialUser  =>{ <h3> User does not exist in Fam DB</h3> <em>TODO create a new FAM user</em>}
+        }
+        @player.map{
+            case p => {
+                <h3>Player</h3>
+                <h4>@p.displayName</h4>
+            }
+        }
+
+
+
         <div class="span4">
             <ul class="unstyled">
             <legend>YES (@answers.count(x => x._4.group.equals("YES")))</legend>

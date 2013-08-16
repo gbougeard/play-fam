@@ -1,4 +1,4 @@
-@(message: String, provinceForm: Form[Province], states : Seq[(String, String)])
+@(message: String, provinceForm: Form[Province], states : Seq[(String, String)])(implicit request: RequestHeader, session: play.api.mvc.Session)
 
 @import helper._
 @import tags._

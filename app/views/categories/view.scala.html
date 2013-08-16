@@ -1,4 +1,4 @@
-@(message: String, category: Category)(implicit flash: play.api.mvc.Flash)
+@(message: String, category: Category)(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
 
     @import tags._
 

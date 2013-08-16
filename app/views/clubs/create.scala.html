@@ -1,4 +1,4 @@
-@(message: String, clubForm: Form[Club])
+@(message: String, clubForm: Form[Club])(implicit request: RequestHeader, session: play.api.mvc.Session)
 
 @import helper._
 @import tags._

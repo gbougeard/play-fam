@@ -1,4 +1,4 @@
-@(message: String, place: Place)(implicit flash: play.api.mvc.Flash)
+@(message: String, place: Place)(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
 
 @import tags._
 

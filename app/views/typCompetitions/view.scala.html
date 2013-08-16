@@ -1,4 +1,4 @@
-@(message: String, typCompetition: TypCompetition)(implicit flash: play.api.mvc.Flash)
+@(message: String, typCompetition: TypCompetition)(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
 
 @import tags._
 

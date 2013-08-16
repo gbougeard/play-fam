@@ -1,4 +1,4 @@
-@(message: String, typMatch: TypMatch)(implicit flash: play.api.mvc.Flash)
+@(message: String, typMatch: TypMatch)(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
 
 @import tags._
 

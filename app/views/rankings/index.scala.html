@@ -1,4 +1,4 @@
-@(message: String, competitions: Seq[SeasonCompetition])
+@(message: String, competitions: Seq[SeasonCompetition])(implicit request: RequestHeader, session: play.api.mvc.Session)
 
 
 @main(message) {

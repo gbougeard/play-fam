@@ -1,4 +1,4 @@
-@(message: String, eventStatusForm: Form[EventStatus])
+@(message: String, eventStatusForm: Form[EventStatus])(implicit request: RequestHeader, session: play.api.mvc.Session)
 
 @import helper._
 @import tags._

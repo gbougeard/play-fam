@@ -1,4 +1,4 @@
-@(message: String, id: Long, seasonCompetitionForm: Form[SeasonCompetition], categories : Seq[(String, String)], scales : Seq[(String, String)], seasons : Seq[(String, String)], typCompetitions : Seq[(String, String)])(implicit flash: play.api.mvc.Flash)
+@(message: String, id: Long, seasonCompetitionForm: Form[SeasonCompetition], categories : Seq[(String, String)], scales : Seq[(String, String)], seasons : Seq[(String, String)], typCompetitions : Seq[(String, String)])(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
 
 @import helper._
 @import tags._

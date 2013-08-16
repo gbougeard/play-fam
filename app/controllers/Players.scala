@@ -21,9 +21,9 @@ object Players extends Controller with securesocial.core.SecureSocial{
       "id" -> optional(longNumber),
       "firstName" -> nonEmptyText,
       "lastName" -> nonEmptyText,
-      "email" -> nonEmptyText
+      "email" -> nonEmptyText,
       //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
+            "userId" -> optional(longNumber)
     )
       (Player.apply)(Player.unapply)
   )

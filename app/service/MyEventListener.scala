@@ -4,7 +4,7 @@ import securesocial.core._
 import play.api.mvc.{Session, RequestHeader}
 import play.api.{Application, Logger}
 
-import models.User
+import models.{FamUser, User}
 import models.Users._
 
 import play.api.libs.json._
@@ -31,7 +31,10 @@ class MyEventListener(app: Application) extends EventListener {
     // if you wanted to change the session then you'd do something like
     // Some(session + ("your_key" -> "your_value"))
     event match {
-      case e: LoginEvent =>  Some(session + ("email" -> event.user.email.getOrElse("")))
+      case e: LoginEvent =>  event.user match {
+        case u:FamUser => Some(session + ("email" -> u.email.getOrElse("")) + ("userId" -> u.pid.get.toString()))
+        case u:Identity =>  Some(session + ("email" -> u.email.getOrElse("")))
+      }
       case e: LogoutEvent => None
       case e: SignUpEvent => None
       case e: PasswordResetEvent => None

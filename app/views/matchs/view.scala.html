@@ -10,7 +10,7 @@ awayPlayers:Seq[(MatchPlayer, Match, Player, Team)],
 homeSubs:Seq[(Substitution, Match, Team, Player, Player)],
 awaySubs:Seq[(Substitution, Match, Team, Player, Player)],
 homeCards:Seq[(Card, Match, Team, Player, TypCard)],
-awayCards:Seq[(Card, Match, Team, Player, TypCard)] )(implicit flash: play.api.mvc.Flash)
+awayCards:Seq[(Card, Match, Team, Player, TypCard)] )(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
 
 
 @main(event.name+" "+event.dtEvent.toString("dd MM yyyy")) {

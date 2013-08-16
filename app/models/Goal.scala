@@ -58,10 +58,10 @@ object Goals extends Table[Goal]("fam_goal") {
         for {(g,s) <- Goals leftJoin Players on (_.strikerId === _.id)
              if g.matchId === idMatch
              if g.teamId === idTeam
-        } yield (g, s.id.?, s.firstName.?, s.lastName.?, s.email.?))
+        } yield (g, s.id.?, s.firstName.?, s.lastName.?, s.email.?, s.userId.?))
 //      query.list
 
-      query.list.map(row => (row._1, row._2.map(value => Player(Option(value) ,row._3.get, row._4.get, row._5.get)))).sortBy(_._1.goalTime)
+      query.list.map(row => (row._1, row._2.map(value => Player(Option(value) ,row._3.get, row._4.get, row._5.get, Option(row._6.get))))).sortBy(_._1.goalTime)
     }
   }
 

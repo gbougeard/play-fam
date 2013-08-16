@@ -13,7 +13,8 @@ import play.api.Logger
 case class Player(id: Option[Long],
                   firstName: String,
                   lastName: String,
-                  email: String){
+                  email: String,
+                  userId:Option[Long]){
   def displayName : String = {
     firstName + " " + lastName
   }
@@ -30,16 +31,19 @@ object Players extends Table[Player]("fam_player") {
 
   def email = column[String]("email")
 
-  def * = id.? ~ firstName ~ lastName ~ email <>(Player, Player.unapply _)
+  def userId = column[Long]("id_user")
 
-  def autoInc = id.? ~ firstName ~ lastName ~ email <>(Player, Player.unapply _) returning id
+  def * = id.? ~ firstName ~ lastName ~ email ~ userId.? <>(Player, Player.unapply _)
+
+  def autoInc = id.? ~ firstName ~ lastName ~ email ~ userId.? <>(Player, Player.unapply _) returning id
 
   // A reified foreign key relation that can be navigated to create a join
-  // def club = foreignKey("CLUB_FK", clubId, Clubs)(_.id)
+  def user = foreignKey("USER_FK", userId, Users)(_.pid)
 
   val byId = createFinderBy(_.id)
   val byFirstName = createFinderBy(_.firstName)
   val byLastName = createFinderBy(_.lastName)
+  val byUserId = createFinderBy(_.userId)
 
   lazy val pageSize = 10
 
@@ -95,6 +99,12 @@ object Players extends Table[Player]("fam_player") {
   def findByLastName(lastName: String): Option[Player] = DB.withSession {
     implicit session => {
       Players.byLastName(lastName).firstOption
+    }
+  }
+
+  def findByUserId(id: Long): Option[Player] = DB.withSession {
+    implicit session => {
+      Players.byUserId(id).firstOption
     }
   }
 

@@ -1,5 +1,8 @@
 package controllers
 
+import _root_.securesocial.core.Authorization
+import _root_.securesocial.core.Identity
+
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
@@ -11,9 +14,8 @@ import play.api.Logger
 
 import metrics.Instrumented
 
-object Answers extends Controller with Instrumented {
+object Answers extends Controller with securesocial.core.SecureSocial with Instrumented {
   private[this] val timer = metrics.timer("count")
-
 
 
   /**
@@ -58,12 +60,18 @@ object Answers extends Controller with Instrumented {
   //      Ok(html)
   //  }
 
-  def byEvent(id: Long) = Action {
+
+
+  def byEvent(id: Long) = SecuredAction {
     implicit request =>
       models.Events.findById(id).map {
         event =>
-        val answers = models.Answers.findByEvent(id)
-        Ok(views.html.answers.view("View Answers", event, answers))
+          val answers = models.Answers.findByEvent(id)
+          play.Logger.info(s"User ${request.user}")
+          val player = session.get("userId").map { uid =>
+            models.Players.findByUserId(uid.toLong)
+          } getOrElse(None)
+          Ok(views.html.answers.view("View Answers", event, answers, request.user, player))
       } getOrElse (NotFound)
 
   }
@@ -72,7 +80,7 @@ object Answers extends Controller with Instrumented {
     implicit request =>
       models.Events.findById(id).map {
         event =>
-        val answers = models.Answers.findByEvent(id)
+          val answers = models.Answers.findByEvent(id)
           Ok(Json.toJson(answers))
       } getOrElse (NotFound)
 

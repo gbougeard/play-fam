@@ -1,4 +1,4 @@
-@(message: String, typMatchForm: Form[TypMatch])
+@(message: String, typMatchForm: Form[TypMatch])(implicit request: RequestHeader, session: play.api.mvc.Session)
 
 @import helper._
 @import tags._

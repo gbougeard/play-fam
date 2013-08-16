@@ -1,4 +1,4 @@
-@(message: String, formationForm: Form[Formation], typMatchs : Seq[(String, String)])
+@(message: String, formationForm: Form[Formation], typMatchs : Seq[(String, String)])(implicit request: RequestHeader, session: play.api.mvc.Session)
 
 @import helper._
 @import tags._

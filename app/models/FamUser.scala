@@ -60,7 +60,7 @@ object FamUser {
 
   def fromUser(user: User) = {
     FamUser(
-      pid = None,
+      pid = user.pid,
       userId = user.userId,
       providerId = user.providerId,
       email = user.email,

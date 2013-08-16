@@ -1,4 +1,9 @@
-@(message: String, id: Long, formationForm: Form[Formation], items: Seq[FormationItem], jsonItems: String, typMatchs: Seq[(String, String)])(implicit flash: play.api.mvc.Flash)
+@(message: String,
+        id: Long,
+        formationForm: Form[Formation],
+        items: Seq[FormationItem],
+        jsonItems: String,
+        typMatchs: Seq[(String, String)])(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
 
 @import helper._
 @import tags._
