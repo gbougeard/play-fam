@@ -3,13 +3,19 @@
 //define(['webjars!angular.js'],
 //    function() {
 
-        /* Filters */
+/* Filters */
 
-        angular.module('fam.filters', []).
-            filter('interpolate', ['version', function(version) {
-                return function(text) {
-                    return String(text).replace(/\%VERSION\%/mg, version);
-                }
-            }]);
+angular.module('fam.filters', []).
+   filter('typAnswer', function () {
+    var STATUS = {
+        "YES": "success",
+        "NO": "important",
+        "MAYBE": "info"
+    };
+
+    return function (status) {
+        return STATUS[status.group];
+    };
+});
 
 //    });

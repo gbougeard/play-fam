@@ -68,6 +68,16 @@ object Answers extends Controller with Instrumented {
 
   }
 
+  def jsonByEvent(id: Long) = Action {
+    implicit request =>
+      models.Events.findById(id).map {
+        event =>
+        val answers = models.Answers.findByEvent(id)
+          Ok(Json.toJson(answers))
+      } getOrElse (NotFound)
+
+  }
+
   //  def view(id: Long) = Action {
   //    implicit request =>
   //      models.Answers.findById(id).map {

@@ -2,88 +2,39 @@
 m: Match,
 event:Event,
 idMatch:Long,
-    idTeam:Long
-        )(implicit flash: play.api.mvc.Flash)
+idTeam:Long)(implicit flash: play.api.mvc.Flash)
 
 @scripts = {
-    <script type="text/javascript" src='@routes.Assets.at("js/app/controllers/debriefing.js")'
+    <script type="text/javascript" src='@routes.Assets.at("js/app/controllers/lineup.js")'
     xmlns="http://www.w3.org/1999/html"></script>
 
 
 }
 
 @main(event.name+" "+event.dtEvent.toString("dd MM yyyy"), scripts) {
-<div class="row-fluid" data-ng-controller="DebriefingCtrl" ng-init="idMatch=@idMatch ; idTeam=@idTeam ; loadMatch()">
+    <h1>Line up</h1>
+<div class="row-fluid" data-ng-controller="LineupCtrl" ng-init="idMatch=@idMatch ; idTeam=@idTeam ; loadMatch()">
     <div class="clearfix" ></div>
-    <div id="preview">
-        @*** HOME ***@
-        <div class="span12">
-            <div class="well">
-                <h2 class="text-center">{{mtHome.team.name}}</h2>
-                <h3 class="text-right muted"> {{mtHome.matchteam.goalScored}}</h3>
-            <hr>
-                <ul class="unstyled">
-                    <li ng-repeat="goals in homeGoals">
-                        <p>
-                        	<span class="span1">{{goals.goal.goalTime}}'</span>
-                            <span class="span11">{{goals.striker.firstName}} {{goals.striker.lastName}}
-        	                    <em>
-                                <span ng-show="{{goals.goal.csc}}">csc</span>
-                                <span ng-show="{{goals.goal.penalty}}">sp</span>
-                        		</em>
-                        	</span>
-                   	   </p>
-                    </li>
-                </ul>
-                &nbsp;
-                <ul class="unstyled">
-                     <li ng-repeat="cards in homeCards">
-                        <p>
-                            <span class="span1">{{cards.card.time}}'</span>
-                            <span class="span11">{{cards.player.firstName}} {{cards.player.lastName}} <em>{{cards.typcard.name}}</em></span>
-                        </p>
-                    </li>
-                </ul>
-                &nbsp;
+        <div id="preview">
+            <div class="well span12">
+                <h2 class="text-center">{{matchTeam.team.name}}</h2>
                 <hr>
-                <ul class="unstyled">
-                     <li ng-repeat="subs in homeSubs">
-                        <p>
-                            <span class="span1">{{subs.substitution.time}}'</span>
-                            <span class="span5 text-error">{{subs.playerout.firstName}} {{subs.playerout.lastName}}</span>
-                            <span class="span1"><i class="icon-exchange"></i></span>
-        	                <span class="span5 text-success">{{subs.playerin.firstName}} {{subs.playerin.lastName}}</span>
-                        </p>
-                    </li>
-                </ul>
-                &nbsp;
-                <hr>
-                <ul class="unstyled">
-                    <li ng-repeat="player in homePlayers">
-
-                        <span class="span1"><span class="badge">{{player.matchplayer.num}}</span></span>
-                        <span class="span7">{{player.player.firstName}} {{player.player.lastName}} </span>
-                        <span ng-hide="player.editing">
-                            <span class="span1"><span class="label">{{player.matchplayer.note}} </span></span>
-                            <span class="span1">{{player.matchplayer.timePlayed}}'</span>
-                            <span class="span2"><button><i class="icon-edit" ng-click="edit(player)"></i></button></span>
-                        </span>
-                        <form class="span4" ng-show="player.editing" ng-submit="player.editing = false">
-                            <div class="input-append">
-                                <input type="numeric" class="input-mini" ng-model="player.matchplayer.note" placeholder="Note"/>
-                                <button class="btn btn-success" type="submit"><i class="icon-save"></i></button>
-                                <button class="btn btn-danger" type="cancel"><i class="icon-remove"></i></button>
-                            </div>
-                        </form>
-                    </li>
-                </ul>
-                &nbsp;
-                <hr>
-                <div ng-bind-html-unsafe="mtHome.matchteam.resume"></div>
-               @* <p><div id="homeResume" data-type="wysihtml5" data-pk="1"><span ng-bind-html-unsafe="mtHome.matchteam.resume"></span></div></p> *@
+                <div class="span12">
+                    <ul class="unstyled span5" title="Answers">
+                        <li ng-repeat="answer in answers | orderBy:'typanswer.id'">
+                            <span class="span10">{{answer.player.firstName}} {{answer.player.lastName}} </span>
+                            <span class="span2"><span class="badge badge-{{answer.typanswer |typAnswer }}">{{answer.typanswer.name}}</span></span>
+                        </li>
+                    </ul>
+                    <ul class="unstyled span6 offset1" title="Lineup">
+                        <li ng-repeat="player in players">
+                            <span class="span1"><span class="badge">{{player.matchplayer.num}}</span></span>
+                            <span class="span11">{{player.player.firstName}} {{player.player.lastName}} </span>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
-        </div>
     </div>
-    </div>
+</div>
 }

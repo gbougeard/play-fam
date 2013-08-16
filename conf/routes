@@ -185,6 +185,7 @@ POST    /formations/items              controllers.Formations.saveItems
 #POST    /answers/new                         controllers.Answers.save
 #GET     /answers/$id<[0-9]+>                 controllers.Answers.view(id : Long)
 GET     /events/$id<[0-9]+>/answers    controllers.Answers.byEvent(id : Long)
+GET     /events/$id<[0-9]+>/answers.json    controllers.Answers.jsonByEvent(id : Long)
 # Rankings
 GET     /rankings                     controllers.Rankings.index
 GET     /rankings/$id<[0-9]+>         controllers.Rankings.list(id:Long, s:Int ?= 1)
