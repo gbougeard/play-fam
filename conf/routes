@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                           controllers.Application.index
+GET     /disconnect                    controllers.Application.logout
 
 GET     /webjars/*file              controllers.WebJarAssets.at(file)
 GET     /fragments/*file            controllers.FragmentAssets.at(file)

@@ -81,7 +81,13 @@
                 <a class="brand" href="@routes.Application.index()">
                     Play 2.0 sample app &mdash; Football Amateur Manager
                 </a>
-                <span class="pull-right">@session.get("email")</span>
+                <span class="pull-right">
+                    @session.get("email").map { email => @email <a class="btn" href="@routes.Application.logout()"><i class="icon-signout" ></i></a>
+                    }.getOrElse{
+                        Guest <a class="btn" href="/login"><i class="icon-signin" ></i></a>
+                    }
+                </span>
+
             </div>
         </div>
 

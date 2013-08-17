@@ -20,6 +20,12 @@ object Application extends Controller with securesocial.core.SecureSocial {
       Ok(views.html.index(request.user))
   }
 
+  def logout = Action {
+    implicit request =>
+      play.Logger.info("logout!")
+      Ok("Bye").withNewSession
+  }
+
   // a sample action using the new authorization hook
   def onlyTwitter = SecuredAction(WithProvider("twitter")) {
     implicit request =>
