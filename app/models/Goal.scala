@@ -46,22 +46,23 @@ object Goals extends Table[Goal]("fam_goal") {
 
   // A reified foreign key relation that can be navigated to create a join
   def matche = foreignKey("MATCH_FK", matchId, Matchs)(_.id)
+
   def team = foreignKey("TEAM_FK", teamId, Teams)(_.id)
+
   def striker = foreignKey("STRIKER_FK", strikerId, Players)(_.id)
+
   def assist = foreignKey("ASSIST_FK", assistId, Players)(_.id)
 
   lazy val pageSize = 10
 
-  def findByMatchAndTeam(idMatch: Long, idTeam:Long): Seq[(Goal, Option[Player])] = DB.withSession {
+  def findByMatchAndTeam(idMatch: Long, idTeam: Long): Seq[(Goal, Option[Player])] = DB.withSession {
     implicit session => {
-      val query = (
-        for {(g,s) <- Goals leftJoin Players on (_.strikerId === _.id)
-             if g.matchId === idMatch
-             if g.teamId === idTeam
-        } yield (g, s.id.?, s.firstName.?, s.lastName.?, s.email.?, s.userId.?))
-//      query.list
+      val query = for {(g, s) <- Goals leftJoin Players on (_.strikerId === _.id)
+                       if g.matchId === idMatch
+                       if g.teamId === idTeam
+      } yield (g, s.id.?, s.firstName.?, s.lastName.?, s.email.?, s.userId.?)
 
-      query.list.map(row => (row._1, row._2.map(value => Player(Option(value) ,row._3.get, row._4.get, row._5.get, Option(row._6.get))))).sortBy(_._1.goalTime)
+      query.list.map(row => (row._1, row._2.map(value => Player(Option(value), row._3.get, row._4.get, row._5.get, row._6)))).sortBy(_._1.goalTime)
     }
   }
 

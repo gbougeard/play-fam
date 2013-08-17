@@ -74,13 +74,13 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
                     val awayCards = models.Cards.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
                       Ok(views.html.matchs.view("View Match", m, event, (home,homeTeam), (away, awayTeam), homeGoals, awayGoals,  homePlayers, awayPlayers, homeSubs, awaySubs, homeCards, awayCards))
                     }
-                  } getOrElse (NotFound)
+                  } getOrElse (NotFound("Away team not found"))
                 }
-              } getOrElse (NotFound)
+              } getOrElse (NotFound("Home team not found"))
             }
-          } getOrElse (NotFound)
+          } getOrElse (NotFound("Event not found"))
         }
-      } getOrElse (NotFound)
+      } getOrElse (NotFound("Match not Found"))
   }
 
   def debrief(idMatch:Long, idTeam: Long) = Action {

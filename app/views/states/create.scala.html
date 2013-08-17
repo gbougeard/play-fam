@@ -1,7 +1,7 @@
 @(message: String, stateForm: Form[State], countries : Seq[(String, String)])(implicit request: RequestHeader, session: play.api.mvc.Session)
 
 @import helper._
-@import tags._
+@import tags.buttons._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
