@@ -20,6 +20,8 @@ object Application extends Controller with securesocial.core.SecureSocial {
       Ok(views.html.index(request.user))
   }
 
+  def me = index
+
   def logout = Action {
     implicit request =>
       play.Logger.info("logout!")
