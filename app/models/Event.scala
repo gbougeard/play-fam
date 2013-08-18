@@ -107,12 +107,11 @@ object Events extends Table[Event]("fam_event") {
 
   def findById(id: Long): Option[(Event, TypEvent, EventStatus)] = DB.withSession {
     implicit session => {
-      val query = (
-        for {e <- Events
-             if e.id === id
-             te <- e.typEvent
-             es <- e.eventStatus
-        } yield (e, te, es))
+      val query = for {e <- Events
+                       if e.id === id
+                       te <- e.typEvent
+                       es <- e.eventStatus
+      } yield (e, te, es)
       query.firstOption
     }
   }
@@ -126,7 +125,7 @@ object Events extends Table[Event]("fam_event") {
   def insert(event: Event): Long = DB.withSession {
     implicit session => {
       Logger.debug("insert %s".format(event))
-      Events.autoInc.insert((event))
+      Events.autoInc.insert(event)
     }
   }
 
@@ -156,7 +155,32 @@ object Events extends Table[Event]("fam_event") {
       query.list.map(row => (row._1.toString, row._2))
   }
 
-  implicit val eventFormat = Json.format[Event]
+
+  //JSON
+  implicit val eventReads: Reads[Event] = (
+    (__ \ "id").readNullable[Long] ~
+      (__ \ "dtEvent").read[DateTime].orElse(Reads.pure(new DateTime())) ~
+      (__ \ "duration").read[Int] ~
+      (__ \ "name").read[String] ~
+      (__ \ "typEventId").read[Long] ~
+      (__ \ "placeId").read[Option[Long]] ~
+      (__ \ "eventStatusId").read[Long] ~
+      (__ \ "comments").read[Option[String]]
+    )(Event)
+
+  // or using the operators inspired by Scala parser combinators for those who know them
+  implicit val eventWrites: Writes[Event] = (
+    (__ \ "id").write[Option[Long]] ~
+      (__ \ "dtEvent").write[DateTime] ~
+      (__ \ "duration").write[Int] ~
+      (__ \ "name").write[String] ~
+      (__ \ "typEventId").write[Long] ~
+      (__ \ "placeId").write[Option[Long]] ~
+      (__ \ "eventStatusId").write[Long] ~
+      (__ \ "comments").write[Option[String]]
+    )(unlift(Event.unapply))
+
+  implicit val eventFormat = Format(eventReads, eventWrites)
 
   implicit val eventCompleteReads: Reads[(Event, TypEvent, EventStatus)] = (
     (__ \ 'event).read[Event] ~

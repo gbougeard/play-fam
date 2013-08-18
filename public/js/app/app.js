@@ -17,7 +17,8 @@ var fam = angular.module('fam',
         'fam.directives',
         'ui',
 //        'ui.bootstrap',
-        '$strap.directives'
+        '$strap.directives',
+        'restangular'
     ]);
 
 fam.config(['$routeProvider', function ($routeProvider) {
@@ -41,6 +42,9 @@ fam.config(['$routeProvider', function ($routeProvider) {
         //when('/new', {controller:CreateCtrl, templateUrl:'detail.html'}).
         otherwise({redirectTo: '/wiz1'});
 }]);
+fam.config(function(RestangularProvider) {
+        RestangularProvider.setBaseUrl("/api/v1");
+    });
 
 fam.value('ui.config', {
     tinymce: {

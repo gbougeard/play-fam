@@ -92,7 +92,7 @@ object Events extends Controller with securesocial.core.SecureSocial with Instru
               }
               models.Events.findById(id).map {
                 case (event, typEvent, eventStatus) =>
-                  Ok(views.html.events.edit("Edit Event", Json.toJson(EventWithTeams(event, teams)).toString(), Json.toJson(models.TypEvents.findAll).toString(), Json.toJson(models.Places.findAll).toString(), Json.toJson(models.Teams.findByClub(idClub)).toString(), Json.toJson(models.EventStatuses.findAll).toString()))
+                  Ok(views.html.events.edit("Edit Event", id, Json.toJson(models.Teams.findByClub(idClub)).toString()))
                 case _ =>
                   NotFound
 
@@ -164,9 +164,12 @@ object Events extends Controller with securesocial.core.SecureSocial with Instru
   def saveTeams = Action(parse.json) {
     implicit request =>
       val json = request.body
-      println(json)
+      play.Logger.debug(s"json to save $json")
 
       val eventTeams = json.as[Seq[EventTeam]]
+
+      play.Logger.debug(s"marshalled $eventTeams")
+
       val id = eventTeams.head.eventId
       models.EventTeams.deleteForEvent(id)
       models.EventTeams.insert(eventTeams) match {

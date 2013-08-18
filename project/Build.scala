@@ -18,6 +18,9 @@ object Library {
   val wjAngularUiBootstrapVersion     = "0.4.0"
   val wjAngularStrapVersion           = "0.7.4"
   val wjBootstrapVersion              = "2.3.2"
+  val wjPNotifyVersion                = "1.2.0"
+  val wjRestangularVersion            = "0.6.3"
+  val wjUnderscorejsVersion           = "1.5.1"
 
   // Libraries
   val akkaActor             = "com.typesafe.akka" %% "akka-actor" % akkaVersion
@@ -34,6 +37,9 @@ object Library {
   val wjAngularUiBootstrap  = "org.webjars" % "angular-ui-bootstrap" % wjAngularUiBootstrapVersion
   val wjAngularStrap        = "org.webjars" % "angular-strap" % wjAngularStrapVersion
   val wjBootstrap           = "org.webjars" % "bootstrap" % wjBootstrapVersion
+  val wjPNtofify            = "org.webjars" % "pnotify" % wjPNotifyVersion
+  val wjRestangular         = "org.webjars" % "restangular" % wjRestangularVersion
+  val wjUnderscorejs        = "org.webjars" % "underscorejs" % wjUnderscorejsVersion
 }
 
 object ApplicationBuild extends Build {
@@ -57,7 +63,10 @@ object ApplicationBuild extends Build {
     wjAngularStrap,
     wjAngularUi,
     wjAngularUiBootstrap,
-    wjBootstrap
+    wjBootstrap,
+    wjPNtofify,
+    wjRestangular,
+    wjUnderscorejs
 
     //      ,anorm
     //    , "com.typesafe" % "slick_2.10" % "1.0.0-RC2"

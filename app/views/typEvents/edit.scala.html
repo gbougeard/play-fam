@@ -1,0 +1,29 @@
+@(message: String, id: Long, typEventForm: Form[TypEvent])(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
+
+@import helper._
+@import tags.buttons._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @flash.get("success").map { message =>
+        <div class="alert alert-success">
+            <strong>Done!</strong> @message
+        </div>
+    }
+
+    @form(routes.TypEvents.update(id), 'class -> "form-horizontal") {
+
+        @inputText(typEventForm("code"), '_label -> "Code")
+        @inputText(typEventForm("name"), '_label -> "Nom")
+
+        <div class="form-actions">
+            @btnSubmit("Save this typEvent")
+            @btnView(routes.TypEvents.view(id))
+            @btnCancel(routes.TypEvents.list())
+            @btnNew(routes.TypEvents.create())
+        </div>
+
+    }
+}

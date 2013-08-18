@@ -1,0 +1,21 @@
+@(message: String, typEventForm: Form[TypEvent])(implicit request: RequestHeader, session: play.api.mvc.Session)
+
+@import helper._
+@import tags.buttons._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @form(routes.TypEvents.save(), 'class -> "form-horizontal") {
+
+        @inputText(typEventForm("code"), '_label -> "Code")
+        @inputText(typEventForm("name"), '_label -> "Nom")
+
+        <div class="form-actions">
+            @btnSubmit("Save this typEvent")
+            @btnCancel(routes.TypEvents.list())
+        </div>
+
+    }
+}

@@ -85,10 +85,11 @@ POST    /events                         controllers.Events.save
 POST    /events/newTeams                controllers.Events.saveTeams
 GET     /events/$id<[0-9]+>             controllers.Events.view(id : Long)
 GET     /events/json                    controllers.Events.eventsData
-GET     /events/$id<[0-9]+>.json        controllers.Events.jsonById(id: Long)
+GET     /api/v1/events/$id<[0-9]+>             controllers.Events.jsonById(id: Long)
 GET     /events/agenda                  controllers.Events.agenda
 # EventStatuses
 GET     /eventStatuses                  controllers.EventStatuses.list(p:Int ?= 0,s:Int ?= 2)
+GET     /api/v1/eventStatuses           controllers.EventStatuses.jsonList
 GET     /eventStatuses/edit/$id<[0-9]+> controllers.EventStatuses.edit(id : Long)
 PUT     /eventStatuses/$id<[0-9]+>      controllers.EventStatuses.update(id : Long)
 GET     /eventStatuses/new              controllers.EventStatuses.create
@@ -97,6 +98,7 @@ GET     /eventStatuses/$id<[0-9]+>      controllers.EventStatuses.view(id : Long
 
 # Places
 GET     /places                         controllers.Places.list(p:Int ?= 0,s:Int ?= 2)
+GET     /api/v1/places                  controllers.Places.jsonList
 GET     /places/edit/$id<[0-9]+>        controllers.Places.edit(id : Long)
 PUT     /places/$id<[0-9]+>             controllers.Places.update(id : Long)
 GET     /places/new                     controllers.Places.create
@@ -164,6 +166,14 @@ PUT     /typCards/edit/$id<[0-9]+>     controllers.TypCards.update(id : Long)
 GET     /typCards/new                  controllers.TypCards.create
 POST    /typCards                      controllers.TypCards.save
 GET     /typCards/$id<[0-9]+>          controllers.TypCards.view(id : Long)
+# TypEvents
+GET     /typEvents                      controllers.TypEvents.list(p:Int ?= 0,s:Int ?= 1)
+GET     /api/v1/typEvents               controllers.TypEvents.jsonList
+GET     /typEvents/edit/$id<[0-9]+>     controllers.TypEvents.edit(id : Long)
+PUT     /typEvents/edit/$id<[0-9]+>     controllers.TypEvents.update(id : Long)
+GET     /typEvents/new                  controllers.TypEvents.create
+POST    /typEvents                      controllers.TypEvents.save
+GET     /typEvents/$id<[0-9]+>          controllers.TypEvents.view(id : Long)
 # Positions
 GET     /positions                     controllers.Positions.list(p:Int ?= 0,s:Int ?= 1)
 GET     /positions/edit/$id<[0-9]+>    controllers.Positions.edit(id : Long)

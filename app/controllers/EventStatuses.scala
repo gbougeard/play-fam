@@ -4,6 +4,9 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.EventStatus
+import models.EventStatuses._
+
+import play.api.libs.json._
 
 import metrics.Instrumented
 
@@ -116,6 +119,11 @@ object EventStatuses extends Controller  with Instrumented {
     implicit request =>
       models.EventStatuses.delete(id)
       Home.flashing("success" -> "EventStatus has been deleted")
+  }
+
+  def jsonList = Action {
+    implicit request =>
+      Ok(Json.toJson(models.EventStatuses.findAll))
   }
 
 }

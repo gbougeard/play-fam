@@ -1,7 +1,7 @@
 'use strict';
 
 
-fam.controller('EventCtrl', function($scope, $http, $location) {
+fam.controller('EventCtrl', function ($scope, $http, $location, Restangular) {
 
 //    var date = new Date();
 //    var d = date.getDate();
@@ -27,9 +27,11 @@ fam.controller('EventCtrl', function($scope, $http, $location) {
     $scope.name = "";
     $scope.duration = 0;
     $scope.datepicker = {date: ""};
-//    $scope.timepicker = { "time": $scope.dateObject || moment(date.getTime())};
+    $scope.timepicker = { "time": ""};
 
     $scope.save = function () {
+
+        console.log($scope.datepicker.date, $scope.timepicker);
         var event = {
             "name": $scope.name,
             "dtEvent": moment($scope.datepicker.date).format("YYYY-MM-DD"),
@@ -39,7 +41,7 @@ fam.controller('EventCtrl', function($scope, $http, $location) {
             "eventStatusId": 25
 
         }
-        console.log("save" , event);
+        console.log("save", event);
 
         jsRoutes.controllers.Events.save().ajax({
             data: JSON.stringify(event),
@@ -113,7 +115,10 @@ fam.controller('EventCtrl', function($scope, $http, $location) {
 //            "eventStatusId": 25
 //
 //        }
-        console.log("update" , $scope.event);
+        console.log($scope.datepicker.date, $scope.timepicker, $scope.datepicker.date + " " + $scope.timepicker.time, moment($scope.datepicker.date + " " + $scope.timepicker.time, "DD/MM/YYYY HH:mm").format("YYYY-MM-DD HH:mm"));
+
+        $scope.event.event.dtEvent = moment($scope.datepicker.date + " " + $scope.timepicker.time, "DD/MM/YYYY HH:mm").format("YYYY-MM-DD HH:mm");
+        console.log("update", $scope.event);
 
         jsRoutes.controllers.Events.update($scope.event.event.id).ajax({
             data: JSON.stringify($scope.event.event),
@@ -147,19 +152,18 @@ fam.controller('EventCtrl', function($scope, $http, $location) {
                         //resetStorage();
                         $.pnotify({
                             title: 'Teams saved',
-                            text: 'The Event teams have been successfully created',
+                            text: 'The Event teams have been successfully updated',
                             type: 'success'
                         });
                         console.log("goto", jsRoutes.controllers.Events.view(id).url);
-//                        $location.path(jsRoutes.controllers.Events.view(id).url).replace();
-                        window.location = jsRoutes.controllers.Events.view(id).url;
+//                        window.location = jsRoutes.controllers.Events.view(id).url;
                     },
                     error: function (data, status) {
                         console.log("Failed!", data, status);
                         //$scope.data = data || "Request failed";
                         $.pnotify({
                             title: 'Oh No!',
-                            text: 'Something terrible happened while creating event.',
+                            text: 'Something terrible happened while updating event.',
                             type: 'error'
                         });
                     }
@@ -170,10 +174,25 @@ fam.controller('EventCtrl', function($scope, $http, $location) {
                 //$scope.data = data || "Request failed";
                 $.pnotify({
                     title: 'Oh No!',
-                    text: 'Something terrible happened while creating the event.',
+                    text: 'Something terrible happened while updating the event.',
                     type: 'error'
                 });
             }
         });
     };
+
+    $scope.load = function () {
+        console.log("load");
+        Restangular.one('events', $scope.idEvent).get().then(function(e){
+               $scope.event = e;
+                $scope.datepicker.date= moment($scope.event.event.dtEvent);
+               $scope.timepicker.time= moment($scope.event.event.dtEvent).format('HH:mm');
+
+            }
+
+        );
+        $scope.statuses = Restangular.all('eventStatuses').getList();
+        $scope.places = Restangular.all('places').getList();
+        $scope.types = Restangular.all('typEvents').getList();
+    }
 });

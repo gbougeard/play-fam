@@ -134,4 +134,9 @@ object Places extends Controller {
       Ok(Json.toJson(places))
   }
 
+  def jsonList = Action {
+    implicit request =>
+      Ok(Json.toJson(models.Places.findAll))
+  }
+
 }

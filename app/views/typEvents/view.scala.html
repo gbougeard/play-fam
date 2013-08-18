@@ -1,0 +1,25 @@
+@(message: String, typEvent: TypEvent)(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
+
+@import tags.buttons._
+
+@main(message) {
+<div class="header">
+
+    <dl class="dl-horizontal">
+        <dt>Id</dt>
+        <dd>@typEvent.id</dd>
+        <dt>Name</dt>
+        <dd>@typEvent.name</dd>
+        <dt>Code</dt>
+        <dd>@typEvent.code</dd>
+    </dl>
+</div>
+
+<div class="form-actions">
+    @**<input type="submit" value="Edit this typEvent" class="btn btn-primary"> **@
+    @btnEdit(routes.TypEvents.edit(typEvent.id.getOrElse(0)))
+    @btnCancel(routes.TypEvents.list())
+    @btnNew(routes.TypEvents.create())
+</div>
+
+}
