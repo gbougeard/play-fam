@@ -89,7 +89,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
               }
               models.Events.findById(id).map {
                 case (event, typEvent, eventStatus) =>
-                  Ok(views.html.events.edit("Edit Event", id, Json.toJson(models.Teams.findByClub(idClub)).toString()))
+                  Ok(views.html.events.edit("Edit Event", Json.toJson(EventWithTeams(event, teams)).toString(), Json.toJson(models.Teams.findByClub(idClub)).toString()))
                 case _ =>
                   NotFound
 
@@ -122,7 +122,6 @@ object Events extends Controller with securesocial.core.SecureSocial {
   def update(id: Long) = Action(parse.json) {
     implicit request =>
       val json = request.body
-      println(json)
       val event = json.as[Event]
       models.Events.update(id, event)
       Ok(Json.toJson(id))
@@ -152,7 +151,6 @@ object Events extends Controller with securesocial.core.SecureSocial {
   def save = Action(parse.json) {
     implicit request =>
       val json = request.body
-      println(json)
       val event = json.as[Event]
       val id = models.Events.insert(event)
       Ok(Json.toJson(id))
@@ -161,17 +159,12 @@ object Events extends Controller with securesocial.core.SecureSocial {
   def saveTeams = Action(parse.json) {
     implicit request =>
       val json = request.body
-      play.Logger.debug(s"json to save $json")
-
       val eventTeams = json.as[Seq[EventTeam]]
-
-      play.Logger.debug(s"marshalled $eventTeams")
 
       val id = eventTeams.head.eventId
       models.EventTeams.deleteForEvent(id)
       models.EventTeams.insert(eventTeams) match {
         case Success(a) => {
-          Logger.info("saveTeams success")
           Ok
         }
         case Failure(e) => {

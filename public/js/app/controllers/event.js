@@ -31,15 +31,17 @@ fam.controller('EventCtrl', function ($scope, $http, $location, Restangular) {
 
     $scope.save = function () {
 
+        $scope.datepicker.date.setHours($scope.timepicker.time.split(':')[0]);
+        $scope.datepicker.date.setMinutes($scope.timepicker.time.split(':')[1]);
         console.log($scope.datepicker.date, $scope.timepicker);
+
         var event = {
             "name": $scope.name,
-            "dtEvent": moment($scope.datepicker.date).format("YYYY-MM-DD"),
+            "dtEvent": $scope.datepicker.date,
             "duration": $scope.duration,
             "placeId": $scope.selectedPlace,
             "typEventId": $scope.selectedType,
             "eventStatusId": 25
-
         }
         console.log("save", event);
 
@@ -115,10 +117,9 @@ fam.controller('EventCtrl', function ($scope, $http, $location, Restangular) {
 //            "eventStatusId": 25
 //
 //        }
-        console.log($scope.datepicker.date, $scope.timepicker, $scope.datepicker.date + " " + $scope.timepicker.time, moment($scope.datepicker.date + " " + $scope.timepicker.time, "DD/MM/YYYY HH:mm").format("YYYY-MM-DD HH:mm"));
-
-        $scope.event.event.dtEvent = moment($scope.datepicker.date + " " + $scope.timepicker.time, "DD/MM/YYYY HH:mm").format("YYYY-MM-DD HH:mm");
-        console.log("update", $scope.event);
+        $scope.datepicker.date.setHours($scope.timepicker.time.split(':')[0]);
+        $scope.datepicker.date.setMinutes($scope.timepicker.time.split(':')[1]);
+        $scope.event.event.dtEvent = $scope.datepicker.date;
 
         jsRoutes.controllers.Events.update($scope.event.event.id).ajax({
             data: JSON.stringify($scope.event.event),
@@ -129,7 +130,7 @@ fam.controller('EventCtrl', function ($scope, $http, $location, Restangular) {
 
                 $.pnotify({
                     title: 'Event created',
-                    text: 'The event have been successfully created',
+                    text: 'The event have been successfully updated',
                     type: 'success',
                     icon: 'picon picon-flag-green'
                 });
@@ -183,14 +184,9 @@ fam.controller('EventCtrl', function ($scope, $http, $location, Restangular) {
 
     $scope.load = function () {
         console.log("load");
-        Restangular.one('events', $scope.idEvent).get().then(function(e){
-               $scope.event = e;
-                $scope.datepicker.date= moment($scope.event.event.dtEvent);
-               $scope.timepicker.time= moment($scope.event.event.dtEvent).format('HH:mm');
+        $scope.datepicker.date = new Date($scope.event.event.dtEvent);
+        $scope.timepicker.time = moment($scope.event.event.dtEvent).format('HH:mm');
 
-            }
-
-        );
         $scope.statuses = Restangular.all('eventStatuses').getList();
         $scope.places = Restangular.all('places').getList();
         $scope.types = Restangular.all('typEvents').getList();

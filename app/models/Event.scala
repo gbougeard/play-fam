@@ -157,9 +157,13 @@ object Events extends Table[Event]("fam_event") {
 
 
   //JSON
+
+  val pattern = "yyyy-MM-dd'T'HH:mm:ss.sssZ"
+  implicit val dateFormat = Format[DateTime](Reads.jodaDateReads(pattern), Writes.jodaDateWrites(pattern))
+
   implicit val eventReads: Reads[Event] = (
     (__ \ "id").readNullable[Long] ~
-      (__ \ "dtEvent").read[DateTime].orElse(Reads.pure(new DateTime())) ~
+      (__ \ "dtEvent").read[DateTime] ~
       (__ \ "duration").read[Int] ~
       (__ \ "name").read[String] ~
       (__ \ "typEventId").read[Long] ~
