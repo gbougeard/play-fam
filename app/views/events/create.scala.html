@@ -1,4 +1,4 @@
-@(message: String, typEvents: String, places: String, teams: String)(implicit request: RequestHeader, session: play.api.mvc.Session)
+@(message: String, teams: String)(implicit request: RequestHeader, session: play.api.mvc.Session)
 
     @import tags.buttons._
 
@@ -11,7 +11,7 @@
 
 
 @main(message, scripts) {
-    <div data-ng-controller="EventCtrl" ng-init="teams=@teams ; places=@places ; types=@typEvents">
+    <div data-ng-controller="EventCtrl" ng-init="teams=@teams ; load();">
         <form id="formEvent" class="form-horizontal" data-ng-submit="save()">
             <div class="control-group" ng-class="{error: formEvent.name.$invalid}">
                 <label class="control-label" for="eventName">Title</label>
@@ -38,7 +38,11 @@
             <div class="control-group" ng-class="{error: formEvent.type.$invalid}">
                 <label class="control-label" for="type">Type</label>
                 <div class="controls">
-                    <select class="span2" name="type" ng-model="selectedType" ng-options="value.id as value.name for (key, value) in types" data-style="btn-primary" bs-select ng-required></select>
+                    @*<select class="span2" name="type" ng-model="selectedType" ng-options="value.id as value.name for (key, value) in types" data-style="btn-primary" bs-select ng-required></select>*@
+                    <select ui-select2  class="span4" name="type" ng-model="selectedType" data-placeholder="Pick a type" required>
+                        <option value=""></option>
+                        <option ng-repeat="type in types" value="{{type.id}}">{{type.name}}</option>
+                    </select>
                 </div>
             </div>
 
@@ -52,7 +56,11 @@
             <div class="control-group" ng-class="{error: formEvent.place.$invalid}">
                 <label class="control-label" for="place">Place</label>
                 <div class="controls">
-                    <select class="span2" name="place" ng-model="selectedPlace" ng-options="value.id as value.name for (key, value) in places" data-style="btn-primary" bs-select></select>
+                    @*<select class="span2" name="place" ng-model="selectedPlace" ng-options="value.id as value.name for (key, value) in places" data-style="btn-primary" bs-select></select>*@
+                    <select ui-select2  class="span8" name="place" ng-model="selectedPlace" data-placeholder="Pick a place">
+                        <option value=""></option>
+                        <option ng-repeat="place in places" value="{{place.id}}">{{place.name}}</option>
+                    </select>
                 </div>
             </div>
 
@@ -71,7 +79,6 @@
 
         </form>
 
-        <pre>@teams</pre>
     </div>
 
 }

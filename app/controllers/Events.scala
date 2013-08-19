@@ -136,7 +136,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
         case user: FamUser => // do whatever you need with your user class
           user.currentClubId.map {
             idClub =>
-              Ok(views.html.events.create("New Event", Json.toJson(models.TypEvents.findAll).toString(), Json.toJson(models.Places.findAll).toString(), Json.toJson(models.Teams.findByClub(idClub)).toString()))
+              Ok(views.html.events.create("New Event", Json.toJson(models.Teams.findByClub(idClub)).toString()))
           } getOrElse Unauthorized("You don't belong to any club")
 
         case _ => // did not get a User instance, should not happen,log error/thow exception

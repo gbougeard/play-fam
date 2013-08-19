@@ -40,7 +40,11 @@
             <div class="control-group" ng-class="{error: formEvent.type.$invalid}">
                 <label class="control-label" for="type">Type</label>
                 <div class="controls">
-                    <select class="span2" name="type" ng-model="event.event.typEventId" ng-options="value.id as value.name for (key, value) in types" data-style="btn-primary" bs-select required></select>
+                    @*<select class="span2" name="type" ng-model="event.event.typEventId" ng-options="value.id as value.name for (key, value) in types" data-style="btn-primary" bs-select required></select>*@
+                    <select ui-select2  class="span4" name="type" ng-model="event.event.typEventId" data-placeholder="Pick a type" required>
+                        <option value=""></option>
+                        <option ng-repeat="type in types" value="{{type.id}}">{{type.name}}</option>
+                    </select>
                 </div>
             </div>
 
@@ -54,14 +58,22 @@
             <div class="control-group" ng-class="{error: formEvent.place.$invalid}">
                 <label class="control-label" for="place">Place</label>
                 <div class="controls">
-                    <select class="span8" name="place" ng-model="event.event.placeId" ng-options="value.id as value.name for (key, value) in places" data-style="btn-primary" bs-select></select>
+                    @*<select class="span4" name="place" ng-model="event.event.placeId" ng-options="value.id as value.name for (key, value) in places" data-style="btn-primary" bs-select></select>*@
+                    <select ui-select2  class="span8" name="place" ng-model="event.event.placeId" data-placeholder="Pick a place">
+                        <option value=""></option>
+                        <option ng-repeat="place in places" value="{{place.id}}">{{place.name}}</option>
+                    </select>
                 </div>
             </div>
 
             <div class="control-group" ng-class="{error: formEvent.status.$invalid}">
                 <label class="control-label" for="status">Status</label>
                 <div class="controls">
-                    <select class="span2" name="status" ng-model="event.event.eventStatusId" ng-options="value.id as value.name for (key, value) in statuses" data-style="btn-primary" bs-select></select>
+                    @*<select class="span2" name="status" ng-model="event.event.eventStatusId" ng-options="value.id as value.name for (key, value) in statuses" data-style="btn-primary" bs-select></select>*@
+                    <select ui-select2  class="span2" name="status" ng-model="event.event.eventStatusId" data-placeholder="Pick a status" required>
+                        <option value=""></option>
+                        <option ng-repeat="status in statuses" value="{{status.id}}">{{status.name}}</option>
+                    </select>
                 </div>
             </div>
 
@@ -80,10 +92,6 @@
 
         </form>
 
-        <pre>{{ datepicker.date }}</pre>
-        <pre>{{ timepicker.time }}</pre>
-        <pre>{{ event.event.dtEvent |date:'dd/MM/yyyy HH:mm'}}</pre>
-        <pre>{{ event |json}}</pre>
     </div>
 
 

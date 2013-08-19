@@ -3,12 +3,8 @@
 
 fam.controller('EventCtrl', function ($scope, $http, $location, Restangular) {
 
-//    var date = new Date();
-//    var d = date.getDate();
-//    var m = date.getMonth();
-//    var y = date.getFullYear();
-
     $scope.event = {};
+    $scope.comments = {};
 
     $scope.teams = [];
 
@@ -16,13 +12,11 @@ fam.controller('EventCtrl', function ($scope, $http, $location, Restangular) {
 
     $scope.statuses = [];
     $scope.places = [];
-
     $scope.selectedPlace = "";
 
     $scope.types = [];
     $scope.selectedType = "";
 
-    $scope.dateObject = "";
 
     $scope.name = "";
     $scope.duration = 0;
@@ -39,9 +33,10 @@ fam.controller('EventCtrl', function ($scope, $http, $location, Restangular) {
             "name": $scope.name,
             "dtEvent": $scope.datepicker.date,
             "duration": $scope.duration,
-            "placeId": $scope.selectedPlace,
-            "typEventId": $scope.selectedType,
-            "eventStatusId": 25
+            "placeId": parseInt($scope.selectedPlace, 10),
+            "typEventId": parseInt($scope.selectedType, 10),
+            "eventStatusId": 25,
+            "comments": $scope.comments
         }
         console.log("save", event);
 
@@ -108,18 +103,13 @@ fam.controller('EventCtrl', function ($scope, $http, $location, Restangular) {
     };
 
     $scope.update = function () {
-//        var event = {
-//            "name": $scope.name,
-//            "dtEvent": moment($scope.datepicker.date).format("YYYY-MM-DD"),
-//            "duration": $scope.duration,
-//            "placeId": $scope.selectedPlace,
-//            "typEventId": $scope.selectedType,
-//            "eventStatusId": 25
-//
-//        }
         $scope.datepicker.date.setHours($scope.timepicker.time.split(':')[0]);
         $scope.datepicker.date.setMinutes($scope.timepicker.time.split(':')[1]);
         $scope.event.event.dtEvent = $scope.datepicker.date;
+        $scope.event.event.placeId = parseInt($scope.event.event.placeId, 10);
+        $scope.event.event.eventStatusId = parseInt($scope.event.event.eventStatusId, 10);
+        $scope.event.event.typEventId = parseInt($scope.event.event.typEventId, 10);
+
 
         jsRoutes.controllers.Events.update($scope.event.event.id).ajax({
             data: JSON.stringify($scope.event.event),
@@ -184,8 +174,10 @@ fam.controller('EventCtrl', function ($scope, $http, $location, Restangular) {
 
     $scope.load = function () {
         console.log("load");
-        $scope.datepicker.date = new Date($scope.event.event.dtEvent);
-        $scope.timepicker.time = moment($scope.event.event.dtEvent).format('HH:mm');
+        if (angular.isDefined($scope.event.event)) {
+            $scope.datepicker.date = new Date($scope.event.event.dtEvent);
+            $scope.timepicker.time = moment($scope.event.event.dtEvent).format('HH:mm');
+        }
 
         $scope.statuses = Restangular.all('eventStatuses').getList();
         $scope.places = Restangular.all('places').getList();
