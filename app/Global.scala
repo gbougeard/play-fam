@@ -9,9 +9,10 @@
 import play.api.Application
 import play.api.mvc._
 import play.api.mvc.Results._
+import com.kenshoo.play.metrics.MetricsFilter
 import play.Logger
 
-object Global extends WithFilters(AccessLog) {
+object Global extends WithFilters(MetricsFilter) {
 
   /** The application wide metrics registry. */
 

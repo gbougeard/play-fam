@@ -4,12 +4,9 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Ranking
-import metrics.Instrumented
 
 
-object Rankings extends Controller with Instrumented{
-
-  private[this] val timer = metrics.timer("RankingLoad")
+object Rankings extends Controller {
 
 
   // -- Actions
@@ -31,7 +28,7 @@ object Rankings extends Controller with Instrumented{
 
   def list(competition: Long, orderBy: Int) = Action {
     implicit request =>
-      val rankings = timer.time(models.Rankings.findByCompetition(competition))
+      val rankings = models.Rankings.findByCompetition(competition)
       val html = views.html.rankings.list("Liste des rankings", rankings, competition, orderBy, models.SeasonCompetitions.optionsChampionship)
       Ok(html)
   }

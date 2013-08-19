@@ -5,11 +5,9 @@ import play.api.data._
 import play.api.data.Forms._
 
 import models.SeasonCompetition
-import metrics.Instrumented
 
 
-object SeasonCompetitions extends Controller  with Instrumented {
-  private[this] val timer = metrics.timer("count")
+object SeasonCompetitions extends Controller  {
 
 
 
@@ -50,7 +48,7 @@ object SeasonCompetitions extends Controller  with Instrumented {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val seasonCompetitions = timer.time(models.SeasonCompetitions.findPage(page, orderBy))
+      val seasonCompetitions = models.SeasonCompetitions.findPage(page, orderBy)
       val html = views.html.seasonCompetitions.list("Liste des seasonCompetitions", seasonCompetitions, orderBy)
       Ok(html)
   }

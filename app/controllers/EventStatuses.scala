@@ -8,11 +8,9 @@ import models.EventStatuses._
 
 import play.api.libs.json._
 
-import metrics.Instrumented
 
 
-object EventStatuses extends Controller  with Instrumented {
-  private[this] val timer = metrics.timer("count")
+object EventStatuses extends Controller   {
 
 
 
@@ -51,7 +49,7 @@ object EventStatuses extends Controller  with Instrumented {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val eventStatuses = timer.time(models.EventStatuses.findPage(page, orderBy))
+      val eventStatuses = models.EventStatuses.findPage(page, orderBy)
       val html = views.html.eventStatuses.list("Liste des eventStatuses", eventStatuses, orderBy)
       Ok(html)
   }

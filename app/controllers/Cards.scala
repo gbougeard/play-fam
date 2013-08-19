@@ -5,7 +5,6 @@ import models.Card
 import models.Cards._
 
 import play.api.libs.json._
-import metrics.Instrumented
 
 object Cards extends Controller {
 

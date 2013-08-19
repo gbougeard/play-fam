@@ -4,13 +4,8 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Category
-import metrics.Instrumented
 
-object Categories extends Controller  with Instrumented {
-  private[this] val timer = metrics.timer("count")
-
-
-
+object Categories extends Controller  {
 
   /**
    * This result directly redirect to the application home.
@@ -47,7 +42,7 @@ object Categories extends Controller  with Instrumented {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val categories = timer.time(models.Categorys.findPage(page, orderBy))
+      val categories = models.Categorys.findPage(page, orderBy)
       val html = views.html.categories.list("List categories", categories, orderBy)
       Ok(html)
   }

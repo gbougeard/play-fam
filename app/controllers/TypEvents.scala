@@ -7,12 +7,9 @@ import models.TypEvent
 import models.TypEvents._
 
 import play.api.libs.json._
-import metrics.Instrumented
 
 
-object TypEvents extends Controller with Instrumented {
-
-  private[this] val timer = metrics.timer("count")
+object TypEvents extends Controller  {
 
   /**
    * This result directly redirect to the application home.
@@ -49,7 +46,7 @@ object TypEvents extends Controller with Instrumented {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val typEvents = timer.time(models.TypEvents.findPage(page, orderBy))
+      val typEvents = models.TypEvents.findPage(page, orderBy)
       val html = views.html.typEvents.list("Liste des typEvents", typEvents, orderBy)
       Ok(html)
   }

@@ -5,7 +5,6 @@ import models.Substitution
 import models.Substitutions._
 
 import play.api.libs.json._
-import metrics.Instrumented
 
 
 object Substitutions extends Controller {

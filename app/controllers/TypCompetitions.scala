@@ -4,12 +4,10 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.{TypCompetition, TypMatch}
-import metrics.Instrumented
 
 
-object TypCompetitions extends Controller with Instrumented{
+object TypCompetitions extends Controller {
 
-  private[this] val timer = metrics.timer("count")
 
   /**
    * This result directly redirect to the application home.
@@ -48,7 +46,7 @@ object TypCompetitions extends Controller with Instrumented{
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val typCompetitions = timer.time(models.TypCompetitions.findPage(page, orderBy))
+      val typCompetitions = models.TypCompetitions.findPage(page, orderBy)
       val html = views.html.typCompetitions.list("Liste des typCompetitions", typCompetitions, orderBy)
       Ok(html)
   }

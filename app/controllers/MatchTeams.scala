@@ -5,15 +5,11 @@ import models.MatchTeams._
 
 import play.api.libs.json._
 
-import metrics.Instrumented
+
+object MatchTeams extends Controller {
 
 
-object MatchTeams extends Controller  with Instrumented {
-  private[this] val timer = metrics.timer("count")
-
-
-
-  def jsonByMatchAndTeam(idMatch: Long, idTeam :Long) = Action {
+  def jsonByMatchAndTeam(idMatch: Long, idTeam: Long) = Action {
     implicit request =>
       Ok(Json.toJson(models.MatchTeams.findByMatchAndTeam(idMatch, idTeam)))
   }

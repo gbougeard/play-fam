@@ -13,17 +13,14 @@ import models.TypEvents._
 import models.EventTeams._
 import models.EventStatuses._
 
-import metrics.Instrumented
-
 import play.api.libs.json._
 import scala.util.{Failure, Success}
 
 case class EventWithTeams(event: Event, teams: Seq[Long])
 
-object Events extends Controller with securesocial.core.SecureSocial with Instrumented{
+object Events extends Controller with securesocial.core.SecureSocial {
   implicit val eventWithTeamsFormat = Json.format[EventWithTeams]
 
-  private[this] val timer = metrics.timer("list")
 
   /**
    * This result directly redirect to the application home.
@@ -69,7 +66,7 @@ object Events extends Controller with securesocial.core.SecureSocial with Instru
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val events = timer.time(models.Events.findPage(page, orderBy))
+      val events = models.Events.findPage(page, orderBy)
       val html = views.html.events.list("Liste des events", events, orderBy)
       Ok(html)
   }

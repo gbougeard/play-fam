@@ -8,8 +8,6 @@ import play.api.db.slick.DB
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-import metrics.Instrumented
-
 
 case class Country(id: Option[Long],
                    code: String,
@@ -18,7 +16,7 @@ case class Country(id: Option[Long],
                    lower: String)
 
 // define tables
-object Countries extends Table[Country]("fam_country") with Instrumented {
+object Countries extends Table[Country]("fam_country") {
 
   def id = column[Long]("id_country", O.PrimaryKey, O.AutoInc)
 
@@ -41,10 +39,6 @@ object Countries extends Table[Country]("fam_country") with Instrumented {
   val byLower = createFinderBy(_.lower)
 
   lazy val pageSize = 10
-
-  private[this] val timerCount = metrics.timer("count")
-  private[this] val timerPage = metrics.timer("page")
-  private[this] val timerById = metrics.timer("byId")
 
   lazy val countryCount = count
 
@@ -72,26 +66,26 @@ object Countries extends Table[Country]("fam_country") with Instrumented {
             .take(pageSize)
           } yield t)
 
-        Page(timerPage.time(countrys.list), page, offset, countryCount)
+        Page(countrys.list, page, offset, countryCount)
       }
     }
   }
 
   def findById(id: Long): Option[Country] = DB.withSession {
     implicit session => {
-      timerById.time(Countries.byId(id).firstOption)
+      Countries.byId(id).firstOption
     }
   }
 
   def findByName(name: String): Option[Country] = DB.withSession {
     implicit session => {
-      timerById.time(Countries.byName(name).firstOption)
+      Countries.byName(name).firstOption
     }
   }
 
   def findByCode(code: String): Option[Country] = DB.withSession {
     implicit session => {
-      timerById.time(Countries.byCode(code).firstOption)
+      Countries.byCode(code).firstOption
     }
   }
 
@@ -137,7 +131,7 @@ object Countries extends Table[Country]("fam_country") with Instrumented {
   /**
    * Construct the Map[String,String] needed to fill a select options set.
    */
-//  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
+  //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
   def options: Seq[(String, String)] = DB.withSession {
     implicit session =>
       val query = (for {

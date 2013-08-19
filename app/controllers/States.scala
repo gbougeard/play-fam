@@ -5,11 +5,8 @@ import play.api.data._
 import play.api.data.Forms._
 import models.State
 import play.api.libs.json.Json
-import metrics.Instrumented
 
-object States extends Controller  with Instrumented {
-  private[this] val timer = metrics.timer("count")
-
+object States extends Controller   {
 
   /**
    * This result directly redirect to the application home.

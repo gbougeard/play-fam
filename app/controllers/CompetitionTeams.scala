@@ -5,13 +5,9 @@ import play.api.data._
 import play.api.data.Forms._
 
 import models.CompetitionTeam
-import metrics.Instrumented
 
 
-object CompetitionTeams extends Controller  with Instrumented {
-  private[this] val timer = metrics.timer("count")
-
-
+object CompetitionTeams extends Controller {
 
   /**
    * This result directly redirect to the application home.
@@ -48,15 +44,15 @@ object CompetitionTeams extends Controller  with Instrumented {
 
   def byCompetition(id: Long) = Action {
     implicit request =>
-      val competitionTeams = timer.time(models.CompetitionTeams.findByCompetition(id))
-      val competition = timer.time(models.SeasonCompetitions.findByIdComplete(id))
+      val competitionTeams = models.CompetitionTeams.findByCompetition(id)
+      val competition = models.SeasonCompetitions.findByIdComplete(id)
       val html = views.html.competitionTeams.listTeam("Liste des competitionTeams", competition, competitionTeams)
       Ok(html)
   }
 
   def byTeam(id: Long) = Action {
     implicit request =>
-      val competitionTeams = timer.time(models.CompetitionTeams.findByTeam(id))
+      val competitionTeams = models.CompetitionTeams.findByTeam(id)
       val html = views.html.competitionTeams.list("Liste des competitionTeams", competitionTeams)
       Ok(html)
   }

@@ -4,12 +4,9 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Position
-import metrics.Instrumented
 
 
-object Positions extends Controller  with Instrumented {
-  private[this] val timer = metrics.timer("count")
-
+object Positions extends Controller   {
 
 
   /**
@@ -47,7 +44,7 @@ object Positions extends Controller  with Instrumented {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val positions = timer.time(models.Positions.findPage(page, orderBy))
+      val positions = models.Positions.findPage(page, orderBy)
       val html = views.html.positions.list("Liste des positions", positions, orderBy)
       Ok(html)
   }

@@ -4,11 +4,9 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Province
-import metrics.Instrumented
 
 
-object Provinces extends Controller  with Instrumented {
-  private[this] val timer = metrics.timer("count")
+object Provinces extends Controller  {
 
   /**
    * This result directly redirect to the application home.

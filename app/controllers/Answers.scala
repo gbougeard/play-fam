@@ -12,11 +12,8 @@ import models.Answers._
 import play.api.libs.json._
 import play.api.Logger
 
-import metrics.Instrumented
 
-object Answers extends Controller with securesocial.core.SecureSocial with Instrumented {
-  private[this] val timer = metrics.timer("count")
-
+object Answers extends Controller with securesocial.core.SecureSocial {
 
   /**
    * This result directly redirect to the application home.
@@ -68,9 +65,10 @@ object Answers extends Controller with securesocial.core.SecureSocial with Instr
         event =>
           val answers = models.Answers.findByEvent(id)
           play.Logger.info(s"User ${request.user}")
-          val player = session.get("userId").map { uid =>
-            models.Players.findByUserId(uid.toLong)
-          } getOrElse(None)
+          val player = session.get("userId").map {
+            uid =>
+              models.Players.findByUserId(uid.toLong)
+          } getOrElse (None)
           Ok(views.html.answers.view("View Answers", event, answers, request.user, player))
       } getOrElse (NotFound)
 

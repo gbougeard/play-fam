@@ -5,10 +5,14 @@ import play.api.data._
 import play.api.data.Forms._
 import models.City
 import play.api.libs.json.Json
-import metrics.Instrumented
+import com.kenshoo.play.metrics.MetricsRegistry
+import com.kenshoo.play.metrics.MetricsRegistry._
+import com.codahale.metrics._
+import com.codahale.metrics.MetricRegistry._
 
-object Cities extends Controller  with Instrumented {
-  private[this] val timer = metrics.timer("count")
+object Cities extends Controller  {
+
+  lazy val timer: Timer = MetricsRegistry.default.timer(name("cities", "requestTimer"))
 
 
   /**
@@ -99,7 +103,9 @@ object Cities extends Controller  with Instrumented {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
+      val context = timer.time()
       val cities = models.Cities.findPage(page, orderBy)
+      context.stop()
       val html = views.html.cities.list("Liste des cities", cities, orderBy)
       Ok(html)
   }

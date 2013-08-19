@@ -4,12 +4,10 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.TypCard
-import metrics.Instrumented
 
 
-object TypCards extends Controller with Instrumented {
+object TypCards extends Controller {
 
-  private[this] val timer = metrics.timer("count")
 
   /**
    * This result directly redirect to the application home.
@@ -46,7 +44,7 @@ object TypCards extends Controller with Instrumented {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val typCards = timer.time(models.TypCards.findPage(page, orderBy))
+      val typCards = models.TypCards.findPage(page, orderBy)
       val html = views.html.typCards.list("Liste des typCards", typCards, orderBy)
       Ok(html)
   }

@@ -4,12 +4,10 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Scale
-import metrics.Instrumented
 
 
-object Scales extends Controller with Instrumented{
+object Scales extends Controller {
 
-  private[this] val timer = metrics.timer("list")
 
   /**
    * This result directly redirect to the application home.
@@ -49,7 +47,7 @@ object Scales extends Controller with Instrumented{
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val scales = timer.time(models.Scales.findPage(page, orderBy))
+      val scales = models.Scales.findPage(page, orderBy)
       val html = views.html.scales.list("Liste des scales", scales, orderBy)
       Ok(html)
   }

@@ -4,12 +4,9 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.TypMatch
-import metrics.Instrumented
 
 
-object TypMatches extends Controller with Instrumented{
-
-  private[this] val timer = metrics.timer("count")
+object TypMatches extends Controller {
 
 
   /**
@@ -56,7 +53,7 @@ object TypMatches extends Controller with Instrumented{
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val typMatches = timer.time(models.TypMatches.findPage(page, orderBy))
+      val typMatches = models.TypMatches.findPage(page, orderBy)
       val html = views.html.typMatches.list("Liste des typMatches", typMatches, orderBy)
       Ok(html)
   }

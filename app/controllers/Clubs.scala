@@ -5,13 +5,9 @@ import play.api.data._
 import play.api.data.Forms._
 import play.Logger
 import models.Club
-import metrics.Instrumented
 
 
-object Clubs extends Controller with securesocial.core.SecureSocial with Instrumented {
-
-
-  private[this] val timer = metrics.timer("page")
+object Clubs extends Controller with securesocial.core.SecureSocial  {
 
   /**
    * This result directly redirect to the application home.
@@ -49,7 +45,7 @@ object Clubs extends Controller with securesocial.core.SecureSocial with Instrum
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val clubs = timer.time(models.Clubs.findPage(page, orderBy))
+      val clubs = models.Clubs.findPage(page, orderBy)
       val html = views.html.clubs.list("Liste des clubs", clubs, orderBy)
       Ok(html)
   }

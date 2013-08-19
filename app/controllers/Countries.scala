@@ -6,13 +6,9 @@ import play.api.data.Forms._
 import models.Country
 import play.api.libs.json.Json
 import slick.session.Session
-import metrics.Instrumented
 
 
-object Countries extends Controller  with Instrumented {
-  private[this] val timerList = metrics.timer("list")
-  private[this] val timerView = metrics.timer("View")
-  private[this] val timerDisplayList = metrics.timer("displayList")
+object Countries extends Controller  {
 
   /**
    * This result directly redirect to the application home.
@@ -45,15 +41,14 @@ object Countries extends Controller  with Instrumented {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val countries = timerList.time(models.Countries.findPage(page, orderBy))
-      val html = views.html.countries.list("Liste des countries", countries, orderBy)
-      timerDisplayList.time(Ok(html))
+      val countries = models.Countries.findPage(page, orderBy)
+     Ok(views.html.countries.list("Liste des countries", countries, orderBy))
   }
 
 
   def view(id: Long) = Action {
     implicit request =>
-      timerView.time(models.Countries.findById(id)).map {
+      models.Countries.findById(id).map {
         country => Ok(views.html.countries.view("View Country", country))
       } getOrElse (NotFound)
   }
