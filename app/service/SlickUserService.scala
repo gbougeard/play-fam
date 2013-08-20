@@ -18,16 +18,23 @@
  */
 package service
 
+import _root_.models.{Tokens, FamUser, User, Users}
 import play.api._
 import securesocial.core._
 import securesocial.core.providers.Token
 import securesocial.core.IdentityId
-import models._
+import play.api.cache.Cache
+import play.api.Play.current
 
 class SlickUserService(application: Application) extends UserServicePlugin(application) {
 
-  def find(id: IdentityId): Option[Identity] = Users.findByUserId(id).map {
-    u => FamUser.fromUser(u)
+  def find(id: IdentityId): Option[Identity] = {
+    val user:User = Cache.getOrElse(s"user.$id") {
+      Users.findByUserId(id).get
+    }
+    play.Logger.debug(s"setCache for user ${user.pid}")
+    Cache.set(s"user.${user.pid.get}", user)
+    Some(FamUser.fromUser(user))
   }
 
   def findByEmailAndProvider(email: String, providerId: String): Option[Identity] = Users.findByEmailAndProvider(email, providerId).map {
@@ -36,7 +43,7 @@ class SlickUserService(application: Application) extends UserServicePlugin(appli
 
   def save(identity: Identity): Identity = {
     val u = User.fromIdentity(identity)
-    Logger.info("sav identity to user %s".format(u))
+    Logger.info("save identity to user %s".format(u))
     FamUser.fromUser(Users.save(u))
   }
 

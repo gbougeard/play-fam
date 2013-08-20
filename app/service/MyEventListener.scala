@@ -3,9 +3,10 @@ package service
 import securesocial.core._
 import play.api.mvc.{Session, RequestHeader}
 import play.api.{Application, Logger}
+import play.api.cache.Cache
+import play.api.Play.current
 
-import models.{FamUser, User}
-import models.Users._
+import models.FamUser
 
 import play.api.libs.json._
 
@@ -31,10 +32,7 @@ class MyEventListener(app: Application) extends EventListener {
     // if you wanted to change the session then you'd do something like
     // Some(session + ("your_key" -> "your_value"))
     event match {
-      case e: LoginEvent =>  event.user match {
-        case u:FamUser => Some(session + ("email" -> u.email.getOrElse("")) + ("userId" -> u.pid.get.toString()))
-        case u:Identity =>  Some(session + ("email" -> u.email.getOrElse("")))
-      }
+      case e: LoginEvent => login(session, event.user)
       case e: LogoutEvent => None
       case e: SignUpEvent => None
       case e: PasswordResetEvent => None
@@ -43,4 +41,27 @@ class MyEventListener(app: Application) extends EventListener {
 
     //    None
   }
+
+  def login(session: Session, user: Identity) = {
+    user match {
+      case u: FamUser => {
+        getRoles(u.pid)
+        Some(session + ("email" -> u.email.getOrElse("")) + ("userId" -> u.pid.get.toString))
+      }
+
+      case u: Identity => Some(session + ("email" -> u.email.getOrElse("")))
+    }
+  }
+
+  def getRoles(id: Option[Long]) = {
+    id.map {
+      u => {
+        val roles = Json.toJson(models.Roles.findByUserId(u))
+        play.Logger.debug(s"getRoles for userId $u : $roles")
+        Cache.set(s"roles.$u", roles)
+        play.Logger.debug(s"Roles setted in cache : roles.$u => $roles -- ${Cache.get(s"roles.$u")}")
+      }
+    }
+  }
+
 }

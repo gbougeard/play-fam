@@ -7,14 +7,19 @@ import play.api._
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
+import play.api.Play.current
+import play.api.cache.Cache
 
 import views._
+import models.Role
+import play.api.libs.json.Json
 
 
 object Application extends Controller with securesocial.core.SecureSocial {
 
   def index = SecuredAction {
     implicit request =>
+      play.Logger.debug(s"test index ${Cache.get("roles.1258")}")
       Ok(views.html.index(request.user))
   }
 
@@ -97,6 +102,27 @@ case class WithRightClub(id: Long) extends Authorization {
        u.currentClubId.map {
           clubId => clubId == id
         } getOrElse(false)
+      case _ => false
+    }
+    res
+  }
+}
+
+case class WithRole(role : String) extends Authorization {
+  def isAuthorized(user: Identity) = {
+    val res = user match {
+      case u: models.FamUser =>
+        u.pid.map {
+          userId => {
+//            play.Logger.debug(s"WithRole getting roles from cache for roles.${userId}")
+            val roles = Cache.get(s"roles.${userId}")
+//            play.Logger.debug(s"WithRole $role : $roles")
+            roles match {
+              case Some(r)=> r.toString.contains(role)
+              case None => false
+            }
+          }
+        } getOrElse (false)
       case _ => false
     }
     res
