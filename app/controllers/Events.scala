@@ -130,7 +130,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
   /**
    * Display the 'new computer form'.
    */
-  def create = SecuredAction {
+  def create = SecuredAction(WithRole("COACH")) {
     implicit request =>
       request.user match {
         case user: FamUser => // do whatever you need with your user class

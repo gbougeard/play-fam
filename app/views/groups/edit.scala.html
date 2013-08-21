@@ -1,0 +1,28 @@
+@(message: String, id: Long, groupForm: Form[Group])(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
+
+@import helper._
+@import tags.buttons._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @flash.get("success").map { message =>
+        <div class="alert alert-success">
+            <strong>Done!</strong> @message
+        </div>
+    }
+
+    @form(routes.Groups.update(id), 'class -> "form-horizontal") {
+
+        @inputText(groupForm("name"), '_label -> "Nom")
+
+        <div class="form-actions">
+            @btnSubmit("Save this group")
+            @btnView(routes.Groups.view(id))
+            @btnCancel(routes.Groups.list())
+            @btnNew(routes.Groups.create())
+        </div>
+
+    }
+}

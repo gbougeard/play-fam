@@ -1,0 +1,20 @@
+@(message: String, groupForm: Form[Group])(implicit request: RequestHeader, session: play.api.mvc.Session)
+
+@import helper._
+@import tags.buttons._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@main(message) {
+
+    @form(routes.Groups.save(), 'class -> "form-horizontal") {
+
+        @inputText(groupForm("name"), '_label -> "Nom")
+
+        <div class="form-actions">
+            @btnSubmit("Save this group")
+            @btnCancel(routes.Groups.list())
+        </div>
+
+    }
+}

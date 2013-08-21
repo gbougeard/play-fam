@@ -168,6 +168,13 @@ PUT         /typCards/edit/$id<[0-9]+>                                          
 GET         /typCards/new                                                                          controllers.TypCards.create
 POST        /typCards                                                                              controllers.TypCards.save
 GET         /typCards/$id<[0-9]+>                                                                  controllers.TypCards.view(id : Long)
+# Groups
+GET         /groups                                                                              controllers.Groups.list(p:Int ?= 0,s:Int ?= 1)
+GET         /groups/edit/$id<[0-9]+>                                                             controllers.Groups.edit(id : Long)
+PUT         /groups/edit/$id<[0-9]+>                                                             controllers.Groups.update(id : Long)
+GET         /groups/new                                                                          controllers.Groups.create
+POST        /groups                                                                              controllers.Groups.save
+GET         /groups/$id<[0-9]+>                                                                  controllers.Groups.view(id : Long)
 # TypEvents
 GET         /typEvents                                                                             controllers.TypEvents.list(p:Int ?= 0,s:Int ?= 1)
 GET         /api/v1/typEvents                                                                      controllers.TypEvents.jsonList

@@ -114,13 +114,7 @@ case class WithRole(role : String) extends Authorization {
       case u: models.FamUser =>
         u.pid.map {
           userId => {
-//            play.Logger.debug(s"WithRole getting roles from cache for roles.${userId}")
-            val roles = Cache.get(s"roles.${userId}")
-//            play.Logger.debug(s"WithRole $role : $roles")
-            roles match {
-              case Some(r)=> r.toString.contains(role)
-              case None => false
-            }
+           models.Roles.isUserInRole(userId, role)
           }
         } getOrElse (false)
       case _ => false

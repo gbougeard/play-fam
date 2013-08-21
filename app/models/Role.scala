@@ -4,6 +4,9 @@ import play.api.Play.current
 
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
+import play.Logger
+import scala.util.Try
+import play.api.cache.Cache
 
 
 case class Role(userId: Long,
@@ -77,15 +80,32 @@ object Roles extends Table[Role]("fam_user_group") {
   }
 
 
-  def insert(role: Role) = DB.withSession {
+  def insert(role: Role): Role = DB.withSession {
     implicit session => {
-//      Roles.insert(role)
+      Logger.debug("insert %s".format(role))
+      Roles.insert(role)
+    }
+  }
+
+  def insert(roles: Seq[Role]): Try[Option[Int]] = DB.withSession {
+    implicit session => {
+      Try(Roles.insertAll(roles: _*))
     }
   }
 
   def delete(id: Long) = DB.withSession {
     implicit session => {
       Roles.where(_.userId === id).delete
+    }
+  }
+
+  def isUserInRole(userId: Long, role: String): Boolean = {
+    play.Logger.debug(s"WithRole getting roles from cache for roles.$userId")
+    val roles = Cache.get(s"roles.$userId")
+    play.Logger.debug(s"WithRole $role : $roles")
+    roles match {
+      case Some(r) => r.toString.contains(role)
+      case None => false
     }
   }
 

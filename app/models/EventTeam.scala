@@ -32,26 +32,24 @@ object EventTeams extends Table[EventTeam]("fam_event_team") {
 
   def findByEvent(id: Long): Seq[(EventTeam, Event, Team)] = DB.withSession {
     implicit session => {
-      val query = (
-        for {et <- EventTeams
-             if et.eventId === id
-             t <- et.team
-             e <- et.event
+      val query = for {et <- EventTeams
+                       if et.eventId === id
+                       t <- et.team
+                       e <- et.event
 
-        } yield (et, e, t))
+      } yield (et, e, t)
       query.list
     }
   }
 
   def findByTeam(id: Long): Seq[(EventTeam, Event, Team)] = DB.withSession {
     implicit session => {
-      val query = (
-        for {et <- EventTeams
-             if et.teamId === id
-             t <- et.team
-             e <- et.event
+      val query = for {et <- EventTeams
+                       if et.teamId === id
+                       t <- et.team
+                       e <- et.event
 
-        } yield (et, e, t))
+      } yield (et, e, t)
       query.list
     }
   }
@@ -59,7 +57,7 @@ object EventTeams extends Table[EventTeam]("fam_event_team") {
   def insert(event: EventTeam):EventTeam = DB.withSession {
     implicit session => {
       Logger.debug("insert %s".format(event))
-        EventTeams.insert((event))
+        EventTeams.insert(event)
     }
   }
   def insert(events: Seq[EventTeam]):Try[Option[Int]] = DB.withSession {
