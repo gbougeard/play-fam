@@ -12,6 +12,7 @@ import models.Places._
 import models.TypEvents._
 import models.EventTeams._
 import models.EventStatuses._
+import service.Coach
 
 import play.api.libs.json._
 import scala.util.{Failure, Success}
@@ -78,7 +79,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
       } getOrElse NotFound
   }
 
-  def edit(id: Long) = SecuredAction(WithRole("COACH")) {
+  def edit(id: Long) = SecuredAction(WithRole(List(Coach))) {
     implicit request =>
       request.user match {
         case user: FamUser => // do whatever you need with your user class
@@ -130,7 +131,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
   /**
    * Display the 'new computer form'.
    */
-  def create = SecuredAction(WithRole("COACH")) {
+  def create = SecuredAction(WithRole(List(Coach))) {
     implicit request =>
       request.user match {
         case user: FamUser => // do whatever you need with your user class

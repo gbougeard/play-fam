@@ -12,6 +12,7 @@ import play.api.cache.Cache
 
 import views._
 import models.Role
+import service.Permission
 import play.api.libs.json.Json
 
 
@@ -108,13 +109,13 @@ case class WithRightClub(id: Long) extends Authorization {
   }
 }
 
-case class WithRole(role : String) extends Authorization {
+case class WithRole(permissions : Seq[Permission]) extends Authorization {
   def isAuthorized(user: Identity) = {
     val res = user match {
       case u: models.FamUser =>
         u.pid.map {
           userId => {
-           models.Roles.isUserInRole(userId, role)
+           models.Roles.isUserInRole(userId, permissions)
           }
         } getOrElse (false)
       case _ => false

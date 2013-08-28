@@ -8,6 +8,10 @@ import play.Logger
 import scala.util.Try
 import play.api.cache.Cache
 
+import service.{Administrator, Permission}
+
+import play.api.libs.json._
+
 
 case class Role(userId: Long,
                 groupId: Long)
@@ -99,12 +103,15 @@ object Roles extends Table[Role]("fam_user_group") {
     }
   }
 
-  def isUserInRole(userId: Long, role: String): Boolean = {
+  def isUserInRole(userId: Long, permissions: Seq[Permission]): Boolean = {
     play.Logger.debug(s"WithRole getting roles from cache for roles.$userId")
-    val roles = Cache.get(s"roles.$userId")
-    play.Logger.debug(s"WithRole $role : $roles")
-    roles match {
-      case Some(r) => r.toString.contains(role)
+    val rolesCached = Cache.get(s"roles.$userId")
+    play.Logger.debug(s"WithRole $permissions : $rolesCached")
+    rolesCached match {
+      case Some(r) => {
+        val roles = Json.parse(r.toString).as[Seq[String]].map(Permission.valueOf)
+        !roles.intersect(permissions).isEmpty || roles.contains(Administrator)
+      }
       case None => false
     }
   }
