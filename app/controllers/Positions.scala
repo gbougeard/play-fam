@@ -4,9 +4,10 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Position
+import service.{Administrator, Coach}
 
 
-object Positions extends Controller   {
+object Positions extends Controller  with securesocial.core.SecureSocial {
 
 
   /**
@@ -22,25 +23,11 @@ object Positions extends Controller   {
       "id" -> optional(longNumber),
       "code" -> nonEmptyText,
       "name" -> nonEmptyText
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
     )
       (Position.apply)(Position.unapply)
   )
 
   // -- Actions
-  /**
-   * Handle default path requests, redirect to computers list
-   */
-  def index = Action {
-    Home
-  }
-
-  //  def list = Action {
-  //    val positions = models.Positions.findAll
-  //    val html = views.html.positions("Liste des positions", positions)
-  //    Ok(html)
-  //  }
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
@@ -56,7 +43,7 @@ object Positions extends Controller   {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = Action {
+  def edit(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       models.Positions.findById(id).map {
         position => Ok(views.html.positions.edit("Edit Position", id, positionForm.fill(position)))
@@ -68,7 +55,7 @@ object Positions extends Controller   {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = Action {
+  def update(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       positionForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.positions.edit("Edit Position - errors", id, formWithErrors)),
@@ -85,7 +72,7 @@ object Positions extends Controller   {
   /**
    * Display the 'new computer form'.
    */
-  def create = Action {
+  def create =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       Ok(views.html.positions.create("New Position", positionForm))
   }
@@ -93,7 +80,7 @@ object Positions extends Controller   {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = Action {
+  def save =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       positionForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.positions.create("New Position - errors", formWithErrors)),
@@ -108,7 +95,7 @@ object Positions extends Controller   {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = Action {
+  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.Positions.delete(id)
       Home.flashing("success" -> "Position has been deleted")

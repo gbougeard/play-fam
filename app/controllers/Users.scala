@@ -4,8 +4,9 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.User
+import service.{Administrator, Coach}
 
-object Users extends Controller {
+object Users extends Controller with securesocial.core.SecureSocial {
 
   /**
    * This result directly redirect to the application home.
@@ -14,14 +15,8 @@ object Users extends Controller {
 
 
   // -- Actions
-  /**
-   * Handle default path requests, redirect to computers list
-   */
-  def index = Action {
-    Home
-  }
 
-  def list(page: Int, orderBy: Int) = Action {
+  def list(page: Int, orderBy: Int) = SecuredAction(WithRoles(List(Administrator))) {
     implicit request =>
       val users = models.Users.findPage(page, orderBy)
       val html = views.html.users.list("Liste des users", users, orderBy)

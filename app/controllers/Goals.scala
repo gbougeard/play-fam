@@ -7,7 +7,7 @@ import models.Goals._
 import play.api.libs.json._
 
 
-object Goals extends Controller {
+object Goals extends Controller with securesocial.core.SecureSocial {
 
 
   def jsonByMatchAndTeam(idMatch: Long, idTeam: Long) = Action {

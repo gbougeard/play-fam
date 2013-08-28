@@ -5,6 +5,8 @@ import play.api.data._
 import play.api.data.Forms._
 import play.Logger
 import models.Club
+import service.Coach
+import service.Administrator
 
 
 object Clubs extends Controller with securesocial.core.SecureSocial  {
@@ -22,7 +24,6 @@ object Clubs extends Controller with securesocial.core.SecureSocial  {
       "id" -> optional(longNumber),
       "code" -> number,
       "name" -> nonEmptyText,
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
             "country" -> optional(longNumber),
             "city" -> optional(longNumber)
     )
@@ -30,18 +31,6 @@ object Clubs extends Controller with securesocial.core.SecureSocial  {
   )
 
   // -- Actions
-  /**
-   * Handle default path requests, redirect to computers list
-   */
-  def index = Action {
-    Home
-  }
-
-  //  def list = Action {
-  //    val clubs = models.Clubs.findAll
-  //    val html = views.html.clubs("Liste des clubs", clubs)
-  //    Ok(html)
-  //  }
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
@@ -57,7 +46,7 @@ object Clubs extends Controller with securesocial.core.SecureSocial  {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = SecuredAction (WithRightClub(id)) {
+  def edit(id: Long) = SecuredAction(WithRightClub(id)) {
     implicit request =>
       models.Clubs.findById(id).map {
         club => Ok(views.html.clubs.edit("Edit Club", id, clubForm.fill(club)))
@@ -69,7 +58,7 @@ object Clubs extends Controller with securesocial.core.SecureSocial  {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = SecuredAction (WithRightClub(id)) {
+  def update(id: Long) = SecuredAction(WithRightClub(id)) {
     implicit request =>
       clubForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.clubs.edit("Edit Club - errors", id, formWithErrors)),
@@ -105,7 +94,7 @@ object Clubs extends Controller with securesocial.core.SecureSocial  {
   /**
    * Display the 'new computer form'.
    */
-  def create = Action {
+  def create = SecuredAction(WithRoles(List(Coach))) {
     implicit request =>
       Ok(views.html.clubs.create("New Club", clubForm))
   }
@@ -113,7 +102,7 @@ object Clubs extends Controller with securesocial.core.SecureSocial  {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = Action {
+  def save = SecuredAction(WithRoles(List(Coach))) {
     implicit request =>
       clubForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.clubs.create("New Club - errors", formWithErrors)),
@@ -128,7 +117,7 @@ object Clubs extends Controller with securesocial.core.SecureSocial  {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = Action {
+  def delete(id: Long) = SecuredAction(WithRoles(List(Administrator))) {
     implicit request =>
       models.Clubs.delete(id)
       Home.flashing("success" -> "Club has been deleted")

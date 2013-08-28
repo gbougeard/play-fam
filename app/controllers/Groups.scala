@@ -4,9 +4,10 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Group
+import service.Administrator
 
 
-object Groups extends Controller {
+object Groups extends Controller with securesocial.core.SecureSocial{
 
 
   /**
@@ -21,25 +22,11 @@ object Groups extends Controller {
     mapping(
       "id" -> optional(longNumber),
       "name" -> nonEmptyText
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
     )
       (Group.apply)(Group.unapply)
   )
 
   // -- Actions
-  /**
-   * Handle default path requests, redirect to computers list
-   */
-  def index = Action {
-    Home
-  }
-
-  //  def list = Action {
-  //    val groups = models.Groups.findAll
-  //    val html = views.html.groups("Liste des groups", groups)
-  //    Ok(html)
-  //  }
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
@@ -55,7 +42,7 @@ object Groups extends Controller {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = Action {
+  def edit(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.Groups.findById(id).map {
         group => Ok(views.html.groups.edit("Edit Group", id, groupForm.fill(group)))
@@ -67,7 +54,7 @@ object Groups extends Controller {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = Action {
+  def update(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       groupForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.groups.edit("Edit Group - errors", id, formWithErrors)),
@@ -84,7 +71,7 @@ object Groups extends Controller {
   /**
    * Display the 'new computer form'.
    */
-  def create = Action {
+  def create =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       Ok(views.html.groups.create("New Group", groupForm))
   }
@@ -92,7 +79,7 @@ object Groups extends Controller {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = Action {
+  def save =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       groupForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.groups.create("New Group - errors", formWithErrors)),
@@ -107,7 +94,7 @@ object Groups extends Controller {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = Action {
+  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.Groups.delete(id)
       Home.flashing("success" -> "Group has been deleted")

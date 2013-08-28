@@ -6,7 +6,7 @@ import models.MatchTeams._
 import play.api.libs.json._
 
 
-object MatchTeams extends Controller {
+object MatchTeams extends Controller with securesocial.core.SecureSocial {
 
 
   def jsonByMatchAndTeam(idMatch: Long, idTeam: Long) = Action {
@@ -24,7 +24,7 @@ object MatchTeams extends Controller {
     implicit request =>
       models.MatchTeams.findByMatchAndAway(idMatch).map {
         goals => Ok(Json.toJson(goals))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
 }

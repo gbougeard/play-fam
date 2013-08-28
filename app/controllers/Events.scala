@@ -12,7 +12,7 @@ import models.Places._
 import models.TypEvents._
 import models.EventTeams._
 import models.EventStatuses._
-import service.Coach
+import service.{Administrator, Coach}
 
 import play.api.libs.json._
 import scala.util.{Failure, Success}
@@ -45,25 +45,11 @@ object Events extends Controller with securesocial.core.SecureSocial {
         "comments" -> optional(text)
       )(Event.apply)(Event.unapply),
       "teams" -> seq(longNumber)
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
     )
       (EventWithTeams.apply)(EventWithTeams.unapply)
   )
 
   // -- Actions
-  /**
-   * Handle default path requests, redirect to computers list
-   */
-  def index = Action {
-    Home
-  }
-
-  //  def list = Action {
-  //    val events = models.Events.findAll
-  //    val html = views.html.events("Liste des events", events)
-  //    Ok(html)
-  //  }
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
@@ -79,7 +65,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
       } getOrElse NotFound
   }
 
-  def edit(id: Long) = SecuredAction(WithRole(List(Coach))) {
+  def edit(id: Long) = SecuredAction(WithRoles(List(Coach))) {
     implicit request =>
       request.user match {
         case user: FamUser => // do whatever you need with your user class
@@ -131,7 +117,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
   /**
    * Display the 'new computer form'.
    */
-  def create = SecuredAction(WithRole(List(Coach))) {
+  def create = SecuredAction(WithRoles(List(Coach))) {
     implicit request =>
       request.user match {
         case user: FamUser => // do whatever you need with your user class
@@ -170,7 +156,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
         }
         case Failure(e) => {
           Logger.error("update error:", e)
-          BadRequest(Json.toJson(Map("error" -> e.getMessage())))
+          BadRequest(Json.toJson(Map("error" -> e.getMessage)))
         }
       }
   }
@@ -178,7 +164,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = Action {
+  def delete(id: Long) = SecuredAction(WithRoles(List(Administrator))) {
     implicit request =>
       models.Events.delete(id)
       Home.flashing("success" -> "Event has been deleted")
@@ -202,7 +188,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
     implicit request =>
       models.Events.findById(id).map {
         m => Ok(Json.toJson(m))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
 
   }
 

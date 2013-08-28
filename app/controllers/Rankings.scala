@@ -6,7 +6,7 @@ import play.api.data.Forms._
 import models.Ranking
 
 
-object Rankings extends Controller {
+object Rankings extends Controller with securesocial.core.SecureSocial {
 
 
   // -- Actions

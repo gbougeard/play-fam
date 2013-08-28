@@ -104,9 +104,9 @@ object Roles extends Table[Role]("fam_user_group") {
   }
 
   def isUserInRole(userId: Long, permissions: Seq[Permission]): Boolean = {
-    play.Logger.debug(s"WithRole getting roles from cache for roles.$userId")
+    play.Logger.debug(s"WithRoles getting roles from cache for roles.$userId")
     val rolesCached = Cache.get(s"roles.$userId")
-    play.Logger.debug(s"WithRole $permissions : $rolesCached")
+    play.Logger.debug(s"WithRoles $permissions : $rolesCached")
     rolesCached match {
       case Some(r) => {
         val roles = Json.parse(r.toString).as[Seq[String]].map(Permission.valueOf)

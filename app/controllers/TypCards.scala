@@ -4,9 +4,10 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.TypCard
+import service.Administrator
 
 
-object TypCards extends Controller {
+object TypCards extends Controller with securesocial.core.SecureSocial{
 
 
   /**
@@ -22,25 +23,11 @@ object TypCards extends Controller {
       "id" -> optional(longNumber),
       "code" -> nonEmptyText,
       "name" -> nonEmptyText
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
     )
       (TypCard.apply)(TypCard.unapply)
   )
 
   // -- Actions
-  /**
-   * Handle default path requests, redirect to computers list
-   */
-  def index = Action {
-    Home
-  }
-
-  //  def list = Action {
-  //    val typCards = models.TypCards.findAll
-  //    val html = views.html.typCards("Liste des typCards", typCards)
-  //    Ok(html)
-  //  }
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
@@ -56,7 +43,7 @@ object TypCards extends Controller {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = Action {
+  def edit(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.TypCards.findById(id).map {
         typCard => Ok(views.html.typCards.edit("Edit TypCard", id, typCardForm.fill(typCard)))
@@ -68,7 +55,7 @@ object TypCards extends Controller {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = Action {
+  def update(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       typCardForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.typCards.edit("Edit TypCard - errors", id, formWithErrors)),
@@ -85,7 +72,7 @@ object TypCards extends Controller {
   /**
    * Display the 'new computer form'.
    */
-  def create = Action {
+  def create =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       Ok(views.html.typCards.create("New TypCard", typCardForm))
   }
@@ -93,7 +80,7 @@ object TypCards extends Controller {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = Action {
+  def save =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       typCardForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.typCards.create("New TypCard - errors", formWithErrors)),
@@ -108,7 +95,7 @@ object TypCards extends Controller {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = Action {
+  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.TypCards.delete(id)
       Home.flashing("success" -> "TypCard has been deleted")

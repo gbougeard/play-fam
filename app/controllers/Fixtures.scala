@@ -4,9 +4,10 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Fixture
+import service.Coach
 
 
-object Fixtures extends Controller {
+object Fixtures extends Controller with securesocial.core.SecureSocial{
 
   /**
    * This result directly redirect to the application home.
@@ -22,25 +23,11 @@ object Fixtures extends Controller {
       "date" -> date("yyyy-MM-dd"),
       "name" -> nonEmptyText,
       "competitionId" -> longNumber
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
     )
       (Fixture.apply)(Fixture.unapply)
   )
 
   // -- Actions
-  /**
-   * Handle default path requests, redirect to computers list
-   */
-  def index = Action {
-    Home
-  }
-
-  //  def list = Action {
-  //    val fixtures = models.Fixtures.findAll
-  //    val html = views.html.fixtures("Liste des fixtures", fixtures)
-  //    Ok(html)
-  //  }
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
@@ -56,7 +43,7 @@ object Fixtures extends Controller {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = Action {
+  def edit(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       models.Fixtures.findById(id).map {
         fixture => Ok(views.html.fixtures.edit("Edit Fixture", id, fixtureForm.fill(fixture), models.SeasonCompetitions.options))
@@ -68,7 +55,7 @@ object Fixtures extends Controller {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = Action {
+  def update(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       fixtureForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.fixtures.edit("Edit Fixture - errors", id, formWithErrors, models.SeasonCompetitions.options)),
@@ -83,7 +70,7 @@ object Fixtures extends Controller {
   /**
    * Display the 'new computer form'.
    */
-  def create = Action {
+  def create =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       Ok(views.html.fixtures.create("New Fixture", fixtureForm, models.Clubs.options))
   }
@@ -91,7 +78,7 @@ object Fixtures extends Controller {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = Action {
+  def save =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       fixtureForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.fixtures.create("New Fixture - errors", formWithErrors, models.SeasonCompetitions.options)),
@@ -106,7 +93,7 @@ object Fixtures extends Controller {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = Action {
+  def delete(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       models.Fixtures.delete(id)
       Home.flashing("success" -> "Fixture has been deleted")

@@ -6,9 +6,10 @@ import play.api.data.Forms._
 import models.Country
 import play.api.libs.json.Json
 import slick.session.Session
+import service.Administrator
 
 
-object Countries extends Controller  {
+object Countries extends Controller with securesocial.core.SecureSocial {
 
   /**
    * This result directly redirect to the application home.
@@ -25,19 +26,11 @@ object Countries extends Controller  {
       "name" -> nonEmptyText,
       "upper" -> nonEmptyText,
       "lower" -> nonEmptyText
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
     )
       (Country.apply)(Country.unapply)
   )
 
   // -- Actions
-  /**
-   * Handle default path requests, redirect to computers list
-   */
-  def index = Action {
-    Home
-  }
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
@@ -53,7 +46,7 @@ object Countries extends Controller  {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = Action {
+  def edit(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.Countries.findById(id).map {
         country => Ok(views.html.countries.edit("Edit Country", id, countryForm.fill(country)))
@@ -65,7 +58,7 @@ object Countries extends Controller  {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = Action {
+  def update(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       countryForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.countries.edit("Edit Country - errors", id, formWithErrors)),
@@ -80,7 +73,7 @@ object Countries extends Controller  {
   /**
    * Display the 'new computer form'.
    */
-  def create = Action {
+  def create =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       Ok(views.html.countries.create("New Country", countryForm))
   }
@@ -88,7 +81,7 @@ object Countries extends Controller  {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = Action {
+  def save =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
 
       countryForm.bindFromRequest.fold(
@@ -104,7 +97,7 @@ object Countries extends Controller  {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = Action {
+  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.Countries.delete(id)
       Home.flashing("success" -> "Country has been deleted")

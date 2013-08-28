@@ -4,10 +4,10 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.{TypCompetition, TypMatch}
+import service.Administrator
 
 
-object TypCompetitions extends Controller {
-
+object TypCompetitions extends Controller with securesocial.core.SecureSocial{
 
   /**
    * This result directly redirect to the application home.
@@ -31,18 +31,6 @@ object TypCompetitions extends Controller {
   )
 
   // -- Actions
-  /**
-   * Handle default path requests, redirect to computers list
-   */
-  def index = Action {
-    Home
-  }
-
-  //  def list = Action {
-  //    val typCompetitions = models.TypCompetitions.findAll
-  //    val html = views.html.typCompetitions("Liste des typCompetitions", typCompetitions)
-  //    Ok(html)
-  //  }
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
@@ -58,7 +46,7 @@ object TypCompetitions extends Controller {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = Action {
+  def edit(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.TypCompetitions.findById(id).map {
         typMatch => Ok(views.html.typCompetitions.edit("Edit TypMatch", id, typMatchForm.fill(typMatch), models.TypMatches.options))
@@ -70,7 +58,7 @@ object TypCompetitions extends Controller {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = Action {
+  def update(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       typMatchForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.typCompetitions.edit("Edit TypMatch - errors", id, formWithErrors, models.TypMatches.options)),
@@ -87,7 +75,7 @@ object TypCompetitions extends Controller {
   /**
    * Display the 'new computer form'.
    */
-  def create = Action {
+  def create =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       Ok(views.html.typCompetitions.create("New TypMatch", typMatchForm, models.TypMatches.options))
   }
@@ -95,7 +83,7 @@ object TypCompetitions extends Controller {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = Action {
+  def save =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       typMatchForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.typCompetitions.create("New TypMatch - errors", formWithErrors, models.TypMatches.options)),
@@ -110,7 +98,7 @@ object TypCompetitions extends Controller {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = Action {
+  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.TypCompetitions.delete(id)
       Home.flashing("success" -> "TypMatch has been deleted")

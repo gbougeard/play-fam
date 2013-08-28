@@ -12,6 +12,7 @@ import play.api.libs.json._
 
 import play.api.Logger
 import models.Match
+import service.{Coach,Administrator}
 
 object Matchs extends Controller with securesocial.core.SecureSocial {
 
@@ -25,19 +26,11 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
       "fixtureId" -> optional(longNumber),
       "competitionId" -> longNumber,
       "eventId" -> optional(longNumber)
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
     )
       (Match.apply)(Match.unapply)
   )
 
   // -- Actions
-
-  //  def list = Action {
-  //    val matchs = models.Matchs.findAll
-  //    val html = views.html.matchs("Liste des matchs", matchs)
-  //    Ok(html)
-  //  }
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
@@ -83,7 +76,7 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
       } getOrElse (NotFound("Match not Found"))
   }
 
-  def debrief(idMatch:Long, idTeam: Long) = Action {
+  def debrief(idMatch:Long, idTeam: Long) =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       models.Matchs.findById(idMatch).map {
         m => {
@@ -114,7 +107,7 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
       } getOrElse (NotFound)
   }
 
-def prepare(idMatch:Long, idTeam: Long) = Action {
+  def prepare(idMatch:Long, idTeam: Long) =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       models.Matchs.findById(idMatch).map {
         m => {
@@ -181,7 +174,7 @@ def prepare(idMatch:Long, idTeam: Long) = Action {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = SecuredAction {
+  def save =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       matchForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.matchs.create("New Match - errors", formWithErrors)),
@@ -196,7 +189,7 @@ def prepare(idMatch:Long, idTeam: Long) = Action {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = SecuredAction {
+  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.Matchs.delete(id)
       Redirect(routes.Matchs.list(0, 0)).flashing("success" -> "Match has been deleted")

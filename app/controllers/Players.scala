@@ -9,6 +9,7 @@ import play.api.data.Forms._
 import models.Player
 
 import play.api.Logger
+import service.Administrator
 
 object Players extends Controller with securesocial.core.SecureSocial{
 
@@ -22,19 +23,12 @@ object Players extends Controller with securesocial.core.SecureSocial{
       "firstName" -> nonEmptyText,
       "lastName" -> nonEmptyText,
       "email" -> nonEmptyText,
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
             "userId" -> optional(longNumber)
     )
       (Player.apply)(Player.unapply)
   )
 
   // -- Actions
-
-  //  def list = Action {
-  //    val players = models.Players.findAll
-  //    val html = views.html.players("Liste des players", players)
-  //    Ok(html)
-  //  }
 
   def list(page: Int, orderBy: Int) = SecuredAction {
     implicit request =>
@@ -62,7 +56,7 @@ object Players extends Controller with securesocial.core.SecureSocial{
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = Action {
+  def update(id: Long) =  SecuredAction  {
     implicit request =>
       Logger.info("update player "+id)
       playerForm.bindFromRequest.fold(
@@ -102,7 +96,7 @@ object Players extends Controller with securesocial.core.SecureSocial{
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = SecuredAction {
+  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.Players.delete(id)
       Redirect(routes.Players.list(0,0)).flashing("success" -> "Player has been deleted")

@@ -8,9 +8,10 @@ import models.Places._
 import slick.session.Session
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import service.{Coach,Administrator}
 
 
-object Places extends Controller {
+object Places extends Controller  with securesocial.core.SecureSocial{
 
   /**
    * This result directly redirect to the application home.
@@ -29,25 +30,11 @@ object Places extends Controller {
       "zipcode" -> number,
       "latitude" -> optional(ignored(0.0f)),
       "longitude" -> optional(ignored(0.0f))
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
     )
       (Place.apply)(Place.unapply)
   )
 
   // -- Actions
-  /**
-   * Handle default path requests, redirect to computers list
-   */
-  def index = Action {
-    Home
-  }
-
-  //  def list = Action {
-  //    val places = models.Places.findAll
-  //    val html = views.html.places("Liste des places", places)
-  //    Ok(html)
-  //  }
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
@@ -63,7 +50,7 @@ object Places extends Controller {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = Action {
+  def edit(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       models.Places.findById(id).map {
         place => Ok(views.html.places.edit("Edit Place", id, placeForm.fill(place)))
@@ -75,7 +62,7 @@ object Places extends Controller {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = Action {
+  def update(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       placeForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.places.edit("Edit Place - errors", id, formWithErrors)),
@@ -90,7 +77,7 @@ object Places extends Controller {
   /**
    * Display the 'new computer form'.
    */
-  def create = Action {
+  def create =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       Ok(views.html.places.create("New Place", placeForm))
   }
@@ -98,7 +85,7 @@ object Places extends Controller {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = Action {
+  def save =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       placeForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.places.create("New Place - errors", formWithErrors)),
@@ -113,7 +100,7 @@ object Places extends Controller {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = Action {
+  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.Places.delete(id)
       Home.flashing("success" -> "Place has been deleted")

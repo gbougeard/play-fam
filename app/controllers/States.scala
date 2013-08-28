@@ -5,8 +5,9 @@ import play.api.data._
 import play.api.data.Forms._
 import models.State
 import play.api.libs.json.Json
+import service.Administrator
 
-object States extends Controller   {
+object States extends Controller with securesocial.core.SecureSocial  {
 
   /**
    * This result directly redirect to the application home.
@@ -24,19 +25,11 @@ object States extends Controller   {
       "upper" -> nonEmptyText,
       "lower" -> nonEmptyText,
       "countryId" -> longNumber
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
     )
       (State.apply)(State.unapply)
   )
 
   // -- Actions
-  /**
-   * Handle default path requests, redirect to computers list
-   */
-  def index = Action {
-    Home
-  }
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
@@ -52,7 +45,7 @@ object States extends Controller   {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = Action {
+  def edit(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.States.findById(id).map {
         state => Ok(views.html.states.edit("Edit State", id, stateForm.fill(state), models.Countries.options))
@@ -64,7 +57,7 @@ object States extends Controller   {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = Action {
+  def update(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       stateForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.states.edit("Edit State - errors", id, formWithErrors, models.Countries.options)),
@@ -79,7 +72,7 @@ object States extends Controller   {
   /**
    * Display the 'new computer form'.
    */
-  def create = Action {
+  def create =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       Ok(views.html.states.create("New State", stateForm, models.Countries.options))
   }
@@ -87,7 +80,7 @@ object States extends Controller   {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = Action {
+  def save =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       stateForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.states.create("New State - errors", formWithErrors, models.Countries.options)),
@@ -102,7 +95,7 @@ object States extends Controller   {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = Action {
+  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.States.delete(id)
       Home.flashing("success" -> "State has been deleted")

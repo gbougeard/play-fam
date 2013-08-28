@@ -5,11 +5,10 @@ import play.api.data._
 import play.api.data.Forms._
 
 import models.SeasonCompetition
+import service.Coach
 
 
-object SeasonCompetitions extends Controller  {
-
-
+object SeasonCompetitions extends Controller with securesocial.core.SecureSocial {
 
   /**
    * This result directly redirect to the application home.
@@ -26,26 +25,11 @@ object SeasonCompetitions extends Controller  {
       "scaleId" -> longNumber ,
       "seasonId" -> longNumber,
       "typCompetitionId" -> longNumber
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
     )
       (SeasonCompetition.apply)(SeasonCompetition.unapply)
   )
 
   // -- Actions
-  /**
-   * Handle default path requests, redirect to computers list
-   */
-  def index = Action {
-    Home
-  }
-
-  //  def list = Action {
-  //    val seasonCompetitions = models.SeasonCompetitions.findAll
-  //    val html = views.html.seasonCompetitions("Liste des seasonCompetitions", seasonCompetitions)
-  //    Ok(html)
-  //  }
-
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
       val seasonCompetitions = models.SeasonCompetitions.findPage(page, orderBy)
@@ -60,7 +44,7 @@ object SeasonCompetitions extends Controller  {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = Action {
+  def edit(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       models.SeasonCompetitions.findById(id).map {
         seasonCompetition => {
@@ -75,7 +59,7 @@ object SeasonCompetitions extends Controller  {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = Action {
+  def update(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       seasonCompetitionForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.seasonCompetitions.edit("Edit SeasonMatch - errors", id, formWithErrors, models.Categorys.options, models.Scales.options, models.Seasons.options, models.TypCompetitions.options)),
@@ -92,7 +76,7 @@ object SeasonCompetitions extends Controller  {
   /**
    * Display the 'new computer form'.
    */
-  def create = Action {
+  def create =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       Ok(views.html.seasonCompetitions.create("New SeasonMatch", seasonCompetitionForm, models.Categorys.options, models.Scales.options, models.Seasons.options, models.TypCompetitions.options))
   }
@@ -100,7 +84,7 @@ object SeasonCompetitions extends Controller  {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = Action {
+  def save =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       seasonCompetitionForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.seasonCompetitions.create("New SeasonMatch - errors", formWithErrors, models.Categorys.options, models.Scales.options, models.Seasons.options, models.TypCompetitions.options)),
@@ -115,7 +99,7 @@ object SeasonCompetitions extends Controller  {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = Action {
+  def delete(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       models.SeasonCompetitions.delete(id)
       Home.flashing("success" -> "SeasonMatch has been deleted")

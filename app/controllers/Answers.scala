@@ -1,7 +1,5 @@
 package controllers
 
-import _root_.securesocial.core.Authorization
-import _root_.securesocial.core.Identity
 
 import play.api.mvc._
 import play.api.data._
@@ -30,8 +28,6 @@ object Answers extends Controller with securesocial.core.SecureSocial {
       "playerId" -> longNumber,
       "typAnswerId" -> longNumber,
       "comments" -> optional(text)
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
     )
       (Answer.apply)(Answer.unapply)
   )
@@ -64,13 +60,13 @@ object Answers extends Controller with securesocial.core.SecureSocial {
       models.Events.findById(id).map {
         event =>
           val answers = models.Answers.findByEvent(id)
-          play.Logger.info(s"User ${request.user}")
+          play.Logger.debug(s"User ${request.user}")
           val player = session.get("userId").map {
             uid =>
               models.Players.findByUserId(uid.toLong)
-          } getOrElse (None)
+          } getOrElse None
           Ok(views.html.answers.view("View Answers", event, answers, request.user, player))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
 
   }
 
@@ -80,7 +76,7 @@ object Answers extends Controller with securesocial.core.SecureSocial {
         event =>
           val answers = models.Answers.findByEvent(id)
           Ok(Json.toJson(answers))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
 
   }
 

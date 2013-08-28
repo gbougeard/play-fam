@@ -5,9 +5,10 @@ import play.api.data._
 import play.api.data.Forms._
 import models.Season
 import models.Seasons._
+import service.{Administrator, Coach}
 
 
-object Seasons extends Controller {
+object Seasons extends Controller with securesocial.core.SecureSocial{
 
   /**
    * This result directly redirect to the application home.
@@ -22,25 +23,11 @@ object Seasons extends Controller {
       "id" -> optional(longNumber),
       "currentSeason" -> boolean,
       "name" -> nonEmptyText
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
     )
       (Season.apply)(Season.unapply)
   )
 
   // -- Actions
-  /**
-   * Handle default path requests, redirect to computers list
-   */
-  def index = Action {
-    Home
-  }
-
-  //  def list = Action {
-  //    val seasons = models.Seasons.findAll
-  //    val html = views.html.seasons("Liste des seasons", seasons)
-  //    Ok(html)
-  //  }
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
@@ -56,7 +43,7 @@ object Seasons extends Controller {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = Action {
+  def edit(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.Seasons.findById(id).map {
         season => Ok(views.html.seasons.edit("Edit Season", id, seasonForm.fill(season)))
@@ -68,14 +55,13 @@ object Seasons extends Controller {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = Action {
+  def update(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       seasonForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.seasons.edit("Edit Season - errors", id, formWithErrors)),
         season => {
           models.Seasons.update(id, season)
-          Home.flashing("success" -> "Season %s has been updated".format(season.name))
-          //Redirect(routes.Seasons.list(0, 2))
+          Redirect(routes.Seasons.list(0, 2)).flashing("success" -> "Season %s has been updated".format(season.name))
         }
       )
   }
@@ -83,7 +69,7 @@ object Seasons extends Controller {
   /**
    * Display the 'new computer form'.
    */
-  def create = Action {
+  def create =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       Ok(views.html.seasons.create("New Season", seasonForm))
   }
@@ -91,7 +77,7 @@ object Seasons extends Controller {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = Action {
+  def save =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       seasonForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.seasons.create("New Season - errors", formWithErrors)),
@@ -106,10 +92,10 @@ object Seasons extends Controller {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = Action {
+  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.Seasons.delete(id)
-      Home.flashing("success" -> "Season has been deleted")
+      Redirect(routes.Seasons.list(0,2)).flashing("success" -> "Season has been deleted")
   }
 
 }

@@ -4,9 +4,10 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Province
+import service.{Administrator, Coach}
 
 
-object Provinces extends Controller  {
+object Provinces extends Controller with securesocial.core.SecureSocial {
 
   /**
    * This result directly redirect to the application home.
@@ -24,19 +25,11 @@ object Provinces extends Controller  {
       "upper" -> nonEmptyText,
       "lower" -> nonEmptyText,
       "stateId" -> longNumber
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
     )
       (Province.apply)(Province.unapply)
   )
 
   // -- Actions
-  /**
-   * Handle default path requests, redirect to computers list
-   */
-  def index = Action {
-    Home
-  }
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
@@ -52,7 +45,7 @@ object Provinces extends Controller  {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = Action {
+  def edit(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.Provinces.findById(id).map {
         province => Ok(views.html.provinces.edit("Edit Province", id, provinceForm.fill(province), models.States.options))
@@ -64,7 +57,7 @@ object Provinces extends Controller  {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = Action {
+  def update(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       provinceForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.provinces.edit("Edit Province - errors", id, formWithErrors, models.States.options)),
@@ -80,7 +73,7 @@ object Provinces extends Controller  {
   /**
    * Display the 'new computer form'.
    */
-  def create = Action {
+  def create =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       Ok(views.html.provinces.create("New Province", provinceForm, models.States.options))
   }
@@ -88,7 +81,7 @@ object Provinces extends Controller  {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = Action {
+  def save =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       provinceForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.provinces.create("New Province - errors", formWithErrors, models.States.options)),
@@ -103,7 +96,7 @@ object Provinces extends Controller  {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = Action {
+  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.Provinces.delete(id)
       Home.flashing("success" -> "Province has been deleted")

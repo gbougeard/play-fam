@@ -7,10 +7,10 @@ import models.EventStatus
 import models.EventStatuses._
 
 import play.api.libs.json._
+import service.{Administrator, Coach}
 
 
-
-object EventStatuses extends Controller   {
+object EventStatuses extends Controller with securesocial.core.SecureSocial  {
 
 
 
@@ -27,25 +27,9 @@ object EventStatuses extends Controller   {
       "id" -> optional(longNumber),
       "code" -> nonEmptyText,
       "name" -> nonEmptyText
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
     )
       (EventStatus.apply)(EventStatus.unapply)
   )
-
-  // -- Actions
-  /**
-   * Handle default path requests, redirect to computers list
-   */
-  def index = Action {
-    Home
-  }
-
-  //  def list = Action {
-  //    val eventStatuses = models.EventStatuses.findAll
-  //    val html = views.html.eventStatuses("Liste des eventStatuses", eventStatuses)
-  //    Ok(html)
-  //  }
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
@@ -61,7 +45,7 @@ object EventStatuses extends Controller   {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = Action {
+  def edit(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.EventStatuses.findById(id).map {
         eventStatus => Ok(views.html.eventStatuses.edit("Edit EventStatus", id, eventStatusForm.fill(eventStatus)))
@@ -73,7 +57,7 @@ object EventStatuses extends Controller   {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = Action {
+  def update(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       eventStatusForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.eventStatuses.edit("Edit EventStatus - errors", id, formWithErrors)),
@@ -90,7 +74,7 @@ object EventStatuses extends Controller   {
   /**
    * Display the 'new computer form'.
    */
-  def create = Action {
+  def create =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       Ok(views.html.eventStatuses.create("New EventStatus", eventStatusForm))
   }
@@ -98,7 +82,7 @@ object EventStatuses extends Controller   {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = Action {
+  def save =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       eventStatusForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.eventStatuses.create("New EventStatus - errors", formWithErrors)),
@@ -113,7 +97,7 @@ object EventStatuses extends Controller   {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = Action {
+  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.EventStatuses.delete(id)
       Home.flashing("success" -> "EventStatus has been deleted")

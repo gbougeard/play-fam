@@ -4,9 +4,10 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Team
+import service.{Administrator, Coach}
 
 
-object Teams extends Controller {
+object Teams extends Controller with securesocial.core.SecureSocial{
 
   /**
    * This result directly redirect to the application home.
@@ -22,25 +23,11 @@ object Teams extends Controller {
       "code" -> nonEmptyText,
       "name" -> nonEmptyText,
       "clubId" -> longNumber
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
     )
       (Team.apply)(Team.unapply)
   )
 
   // -- Actions
-  /**
-   * Handle default path requests, redirect to computers list
-   */
-  def index = Action {
-    Home
-  }
-
-  //  def list = Action {
-  //    val teams = models.Teams.findAll
-  //    val html = views.html.teams("Liste des teams", teams)
-  //    Ok(html)
-  //  }
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
@@ -56,7 +43,7 @@ object Teams extends Controller {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = Action {
+  def edit(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       models.Teams.findById(id).map {
         team => Ok(views.html.teams.edit("Edit Team", id, teamForm.fill(team), models.Clubs.options))
@@ -68,7 +55,7 @@ object Teams extends Controller {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = Action {
+  def update(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       teamForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.teams.edit("Edit Team - errors", id, formWithErrors, models.Clubs.options)),
@@ -83,7 +70,7 @@ object Teams extends Controller {
   /**
    * Display the 'new computer form'.
    */
-  def create = Action {
+  def create =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       Ok(views.html.teams.create("New Team", teamForm, models.Clubs.options))
   }
@@ -91,7 +78,7 @@ object Teams extends Controller {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = Action {
+  def save =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       teamForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.teams.create("New Team - errors", formWithErrors, models.Clubs.options)),
@@ -106,7 +93,7 @@ object Teams extends Controller {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = Action {
+  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.Teams.delete(id)
       Home.flashing("success" -> "Team has been deleted")

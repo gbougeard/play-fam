@@ -4,9 +4,10 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Scale
+import service.{Administrator, Coach}
 
 
-object Scales extends Controller {
+object Scales extends Controller with securesocial.core.SecureSocial{
 
 
   /**
@@ -25,25 +26,11 @@ object Scales extends Controller {
       "ptsDefeat" -> number,
       "ptsDraw" -> number,
       "ptsVictory" -> number
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
     )
       (Scale.apply)(Scale.unapply)
   )
 
   // -- Actions
-  /**
-   * Handle default path requests, redirect to computers list
-   */
-  def index = Action {
-    Home
-  }
-
-  //  def list = Action {
-  //    val scales = models.Scales.findAll
-  //    val html = views.html.scales("Liste des scales", scales)
-  //    Ok(html)
-  //  }
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
@@ -59,7 +46,7 @@ object Scales extends Controller {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = Action {
+  def edit(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       models.Scales.findById(id).map {
         scale => Ok(views.html.scales.edit("Edit Scale", id, scaleForm.fill(scale)))
@@ -71,7 +58,7 @@ object Scales extends Controller {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = Action {
+  def update(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       scaleForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.scales.edit("Edit Scale - errors", id, formWithErrors)),
@@ -88,7 +75,7 @@ object Scales extends Controller {
   /**
    * Display the 'new computer form'.
    */
-  def create = Action {
+  def create =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       Ok(views.html.scales.create("New Scale", scaleForm))
   }
@@ -96,7 +83,7 @@ object Scales extends Controller {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = Action {
+  def save =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       scaleForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.scales.create("New Scale - errors", formWithErrors)),
@@ -111,7 +98,7 @@ object Scales extends Controller {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = Action {
+  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.Scales.delete(id)
       Home.flashing("success" -> "Scale has been deleted")

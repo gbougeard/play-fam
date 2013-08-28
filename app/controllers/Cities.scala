@@ -9,8 +9,9 @@ import com.kenshoo.play.metrics.MetricsRegistry
 import com.kenshoo.play.metrics.MetricsRegistry._
 import com.codahale.metrics._
 import com.codahale.metrics.MetricRegistry._
+import service.Administrator
 
-object Cities extends Controller  {
+object Cities extends Controller  with securesocial.core.SecureSocial {
 
   lazy val timer: Timer = MetricsRegistry.default.timer(name("cities", "requestTimer"))
 
@@ -52,7 +53,7 @@ object Cities extends Controller  {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = Action {
+  def edit(id: Long) = SecuredAction(WithRoles(List(Administrator))) {
     implicit request =>
       models.Cities.findById(id).map {
         city => Ok(views.html.cities.edit("Edit City", id, cityForm.fill(city), models.Provinces.options))
@@ -64,7 +65,7 @@ object Cities extends Controller  {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = Action {
+  def update(id: Long) = SecuredAction(WithRoles(List(Administrator))) {
     implicit request =>
       cityForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.cities.edit("Edit City - errors", id, formWithErrors, models.Provinces.options)),
@@ -79,7 +80,7 @@ object Cities extends Controller  {
   /**
    * Display the 'new computer form'.
    */
-  def create = Action {
+  def create = SecuredAction(WithRoles(List(Administrator))) {
     implicit request =>
       Ok(views.html.cities.create("New City", cityForm, models.Provinces.options))
   }
@@ -87,7 +88,7 @@ object Cities extends Controller  {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = Action {
+  def save = SecuredAction(WithRoles(List(Administrator))) {
     implicit request =>
       cityForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.cities.create("New City - errors", formWithErrors, models.Provinces.options)),
@@ -113,7 +114,7 @@ object Cities extends Controller  {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = Action {
+  def delete(id: Long) = SecuredAction(WithRoles(List(Administrator))) {
     implicit request =>
       models.Cities.delete(id)
       Home.flashing("success" -> "City has been deleted")

@@ -30,12 +30,6 @@ object PlayerSeasons extends Controller with securesocial.core.SecureSocial {
 
   // -- Actions
 
-  //  def list = Action {
-  //    val players = models.Players.findAll
-  //    val html = views.html.players("Liste des players", players)
-  //    Ok(html)
-  //  }
-
   def bySeason(idSeason: Long) = SecuredAction {
     implicit request =>
       val players = models.PlayerSeasons.findBySeason(idSeason)
@@ -56,7 +50,7 @@ object PlayerSeasons extends Controller with securesocial.core.SecureSocial {
         player =>
           val html = views.html.playerseasons.view("Player by Club and Season", player)
           Ok(html)
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   //  def view(id: Long) = SecuredAction {

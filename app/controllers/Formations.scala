@@ -7,9 +7,10 @@ import play.api.data.Forms._
 import models.{FormationItem, Formation}
 import models.FormationItems._
 import play.api.libs.json.{JsError, Json}
+import service.{Administrator, Coach}
 
 
-object Formations extends Controller {
+object Formations extends Controller  with securesocial.core.SecureSocial{
 
   /**
    * This result directly redirect to the application home.
@@ -26,25 +27,11 @@ object Formations extends Controller {
       "name" -> nonEmptyText,
       "isDefault" -> boolean,
       "typMatchId" -> longNumber
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
     )
       (Formation.apply)(Formation.unapply)
   )
 
   // -- Actions
-  /**
-   * Handle default path requests, redirect to computers list
-   */
-  def index = Action {
-    Home
-  }
-
-  //  def list = Action {
-  //    val formations = models.Formations.findAll
-  //    val html = views.html.formations("Liste des formations", formations)
-  //    Ok(html)
-  //  }
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
@@ -60,9 +47,8 @@ object Formations extends Controller {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = Action {
+  def edit(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
-
       models.Formations.findById(id).map {
         formation =>
           val items = models.FormationItems.findByFormation(id).sortBy(_.numItem)
@@ -75,10 +61,10 @@ object Formations extends Controller {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = Action {
+  def update(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       val items = models.FormationItems.findByFormation(id).sortBy(_.numItem)
-      Logger.warn(items.toString())
+      Logger.debug(items.toString())
       formationForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.formations.edit("Edit Formation - errors", id, formWithErrors, items, Json.toJson(items).toString(), models.TypMatches.options)),
         formation => {
@@ -92,7 +78,7 @@ object Formations extends Controller {
   /**
    * Display the 'new computer form'.
    */
-  def create = Action {
+  def create =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       Ok(views.html.formations.create("New Formation", formationForm, models.Clubs.options))
   }
@@ -100,7 +86,7 @@ object Formations extends Controller {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = Action {
+  def save =  SecuredAction(WithRoles(List(Coach)))  {
     implicit request =>
       formationForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.formations.create("New Formation - errors", formWithErrors, models.Clubs.options)),
@@ -115,8 +101,7 @@ object Formations extends Controller {
   def saveItems = Action(parse.json) {
     implicit request =>
       val itemsJson = request.body
-      Logger.info(itemsJson.toString())
-      //      val items = itemsJson.as[Seq[FormationItem]]
+      Logger.debug(itemsJson.toString())
       itemsJson.validate[Seq[FormationItem]].map {
         case items => models.FormationItems.save(items)
         Ok("Saved")
@@ -128,7 +113,7 @@ object Formations extends Controller {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = Action {
+  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
     implicit request =>
       models.Formations.delete(id)
       Home.flashing("success" -> "Formation has been deleted")

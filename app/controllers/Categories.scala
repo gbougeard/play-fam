@@ -4,8 +4,9 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Category
+import service.{Administrator, Coach}
 
-object Categories extends Controller  {
+object Categories extends Controller with securesocial.core.SecureSocial {
 
   /**
    * This result directly redirect to the application home.
@@ -54,7 +55,7 @@ object Categories extends Controller  {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = Action {
+  def edit(id: Long) = SecuredAction(WithRoles(List(Coach))) {
     implicit request =>
       models.Categorys.findById(id).map {
         category => Ok(views.html.categories.edit("Edit Category", id, categoryForm.fill(category)))
@@ -66,7 +67,7 @@ object Categories extends Controller  {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = Action {
+  def update(id: Long) = SecuredAction(WithRoles(List(Coach))){
     implicit request =>
       categoryForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.categories.edit("Edit Category - errors", id, formWithErrors)),
@@ -83,7 +84,7 @@ object Categories extends Controller  {
   /**
    * Display the 'new computer form'.
    */
-  def create = Action {
+  def create = SecuredAction(WithRoles(List(Coach))) {
     implicit request =>
       Ok(views.html.categories.create("New Category", categoryForm))
   }
@@ -91,7 +92,7 @@ object Categories extends Controller  {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = Action {
+  def save = SecuredAction(WithRoles(List(Coach))) {
     implicit request =>
       categoryForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.categories.create("New Category - errors", formWithErrors)),
@@ -106,7 +107,7 @@ object Categories extends Controller  {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = Action {
+  def delete(id: Long) = SecuredAction(WithRoles(List(Administrator))) {
     implicit request =>
       models.Categorys.delete(id)
       Home.flashing("success" -> "Category has been deleted")

@@ -7,7 +7,7 @@ import play.api.data.Forms._
 import models.CompetitionTeam
 
 
-object CompetitionTeams extends Controller {
+object CompetitionTeams extends Controller with securesocial.core.SecureSocial {
 
   /**
    * This result directly redirect to the application home.
@@ -22,25 +22,11 @@ object CompetitionTeams extends Controller {
       "id" -> optional(longNumber),
       "competitionId" -> longNumber,
       "teamId" -> longNumber
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
     )
       (CompetitionTeam.apply)(CompetitionTeam.unapply)
   )
 
   // -- Actions
-  /**
-   * Handle default path requests, redirect to computers list
-   */
-  //  def index = Action {
-  //    Home
-  //  }
-
-  //  def list = Action {
-  //    val competitionTeams = models.CompetitionTeams.findAll
-  //    val html = views.html.competitionTeams("Liste des competitionTeams", competitionTeams)
-  //    Ok(html)
-  //  }
 
   def byCompetition(id: Long) = Action {
     implicit request =>
