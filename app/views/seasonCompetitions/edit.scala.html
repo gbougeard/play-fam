@@ -15,7 +15,6 @@
 
     @form(routes.SeasonCompetitions.update(id), 'class -> "form-horizontal") {
 
-        @inputText(seasonCompetitionForm("id"), '_label -> "Id")
         @select(
             seasonCompetitionForm("seasonId"),
             seasons,
