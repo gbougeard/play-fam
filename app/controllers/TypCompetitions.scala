@@ -46,7 +46,7 @@ object TypCompetitions extends Controller with securesocial.core.SecureSocial{
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def edit(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       models.TypCompetitions.findById(id).map {
         typMatch => Ok(views.html.typCompetitions.edit("Edit TypMatch", id, typMatchForm.fill(typMatch), models.TypMatches.options))
@@ -58,7 +58,7 @@ object TypCompetitions extends Controller with securesocial.core.SecureSocial{
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def update(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       typMatchForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.typCompetitions.edit("Edit TypMatch - errors", id, formWithErrors, models.TypMatches.options)),
@@ -75,7 +75,7 @@ object TypCompetitions extends Controller with securesocial.core.SecureSocial{
   /**
    * Display the 'new computer form'.
    */
-  def create =  SecuredAction(WithRoles(List(Administrator)))  {
+  def create =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       Ok(views.html.typCompetitions.create("New TypMatch", typMatchForm, models.TypMatches.options))
   }
@@ -83,7 +83,7 @@ object TypCompetitions extends Controller with securesocial.core.SecureSocial{
   /**
    * Handle the 'new computer form' submission.
    */
-  def save =  SecuredAction(WithRoles(List(Administrator)))  {
+  def save =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       typMatchForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.typCompetitions.create("New TypMatch - errors", formWithErrors, models.TypMatches.options)),
@@ -98,7 +98,7 @@ object TypCompetitions extends Controller with securesocial.core.SecureSocial{
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       models.TypCompetitions.delete(id)
       Home.flashing("success" -> "TypMatch has been deleted")

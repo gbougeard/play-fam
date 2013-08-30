@@ -44,7 +44,7 @@ object SeasonCompetitions extends Controller with securesocial.core.SecureSocial
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
+  def edit(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       models.SeasonCompetitions.findById(id).map {
         seasonCompetition => {
@@ -59,7 +59,7 @@ object SeasonCompetitions extends Controller with securesocial.core.SecureSocial
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
+  def update(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       seasonCompetitionForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.seasonCompetitions.edit("Edit SeasonMatch - errors", id, formWithErrors, models.Categorys.options, models.Scales.options, models.Seasons.options, models.TypCompetitions.options)),
@@ -76,7 +76,7 @@ object SeasonCompetitions extends Controller with securesocial.core.SecureSocial
   /**
    * Display the 'new computer form'.
    */
-  def create =  SecuredAction(WithRoles(List(Coach)))  {
+  def create =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       Ok(views.html.seasonCompetitions.create("New SeasonMatch", seasonCompetitionForm, models.Categorys.options, models.Scales.options, models.Seasons.options, models.TypCompetitions.options))
   }
@@ -84,7 +84,7 @@ object SeasonCompetitions extends Controller with securesocial.core.SecureSocial
   /**
    * Handle the 'new computer form' submission.
    */
-  def save =  SecuredAction(WithRoles(List(Coach)))  {
+  def save =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       seasonCompetitionForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.seasonCompetitions.create("New SeasonMatch - errors", formWithErrors, models.Categorys.options, models.Scales.options, models.Seasons.options, models.TypCompetitions.options)),
@@ -99,7 +99,7 @@ object SeasonCompetitions extends Controller with securesocial.core.SecureSocial
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
+  def delete(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       models.SeasonCompetitions.delete(id)
       Home.flashing("success" -> "SeasonMatch has been deleted")

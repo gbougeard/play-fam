@@ -16,7 +16,7 @@ object Users extends Controller with securesocial.core.SecureSocial {
 
   // -- Actions
 
-  def list(page: Int, orderBy: Int) = SecuredAction(WithRoles(List(Administrator))) {
+  def list(page: Int, orderBy: Int) = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
       val users = models.Users.findPage(page, orderBy)
       val html = views.html.users.list("Liste des users", users, orderBy)

@@ -50,7 +50,7 @@ object Places extends Controller  with securesocial.core.SecureSocial{
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
+  def edit(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       models.Places.findById(id).map {
         place => Ok(views.html.places.edit("Edit Place", id, placeForm.fill(place)))
@@ -62,7 +62,7 @@ object Places extends Controller  with securesocial.core.SecureSocial{
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
+  def update(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       placeForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.places.edit("Edit Place - errors", id, formWithErrors)),
@@ -77,7 +77,7 @@ object Places extends Controller  with securesocial.core.SecureSocial{
   /**
    * Display the 'new computer form'.
    */
-  def create =  SecuredAction(WithRoles(List(Coach)))  {
+  def create =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       Ok(views.html.places.create("New Place", placeForm))
   }
@@ -85,7 +85,7 @@ object Places extends Controller  with securesocial.core.SecureSocial{
   /**
    * Handle the 'new computer form' submission.
    */
-  def save =  SecuredAction(WithRoles(List(Coach)))  {
+  def save =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       placeForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.places.create("New Place - errors", formWithErrors)),
@@ -100,7 +100,7 @@ object Places extends Controller  with securesocial.core.SecureSocial{
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       models.Places.delete(id)
       Home.flashing("success" -> "Place has been deleted")

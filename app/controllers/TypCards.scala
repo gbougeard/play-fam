@@ -43,7 +43,7 @@ object TypCards extends Controller with securesocial.core.SecureSocial{
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def edit(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       models.TypCards.findById(id).map {
         typCard => Ok(views.html.typCards.edit("Edit TypCard", id, typCardForm.fill(typCard)))
@@ -55,7 +55,7 @@ object TypCards extends Controller with securesocial.core.SecureSocial{
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def update(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       typCardForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.typCards.edit("Edit TypCard - errors", id, formWithErrors)),
@@ -72,7 +72,7 @@ object TypCards extends Controller with securesocial.core.SecureSocial{
   /**
    * Display the 'new computer form'.
    */
-  def create =  SecuredAction(WithRoles(List(Administrator)))  {
+  def create =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       Ok(views.html.typCards.create("New TypCard", typCardForm))
   }
@@ -80,7 +80,7 @@ object TypCards extends Controller with securesocial.core.SecureSocial{
   /**
    * Handle the 'new computer form' submission.
    */
-  def save =  SecuredAction(WithRoles(List(Administrator)))  {
+  def save =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       typCardForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.typCards.create("New TypCard - errors", formWithErrors)),
@@ -95,7 +95,7 @@ object TypCards extends Controller with securesocial.core.SecureSocial{
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       models.TypCards.delete(id)
       Home.flashing("success" -> "TypCard has been deleted")

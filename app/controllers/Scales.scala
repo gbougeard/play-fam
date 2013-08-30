@@ -46,7 +46,7 @@ object Scales extends Controller with securesocial.core.SecureSocial{
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
+  def edit(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       models.Scales.findById(id).map {
         scale => Ok(views.html.scales.edit("Edit Scale", id, scaleForm.fill(scale)))
@@ -58,7 +58,7 @@ object Scales extends Controller with securesocial.core.SecureSocial{
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
+  def update(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       scaleForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.scales.edit("Edit Scale - errors", id, formWithErrors)),
@@ -75,7 +75,7 @@ object Scales extends Controller with securesocial.core.SecureSocial{
   /**
    * Display the 'new computer form'.
    */
-  def create =  SecuredAction(WithRoles(List(Coach)))  {
+  def create =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       Ok(views.html.scales.create("New Scale", scaleForm))
   }
@@ -83,7 +83,7 @@ object Scales extends Controller with securesocial.core.SecureSocial{
   /**
    * Handle the 'new computer form' submission.
    */
-  def save =  SecuredAction(WithRoles(List(Coach)))  {
+  def save =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       scaleForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.scales.create("New Scale - errors", formWithErrors)),
@@ -98,7 +98,7 @@ object Scales extends Controller with securesocial.core.SecureSocial{
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       models.Scales.delete(id)
       Home.flashing("success" -> "Scale has been deleted")

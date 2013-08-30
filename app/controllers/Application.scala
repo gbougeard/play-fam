@@ -109,7 +109,7 @@ case class WithRightClub(id: Long) extends Authorization {
   }
 }
 
-case class WithRoles(permissions : Seq[Permission]) extends Authorization {
+case class WithRoles(permissions : Set[Permission]) extends Authorization {
   def isAuthorized(user: Identity) = {
     val res = user match {
       case u: models.FamUser =>

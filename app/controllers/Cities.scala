@@ -53,7 +53,7 @@ object Cities extends Controller  with securesocial.core.SecureSocial {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) = SecuredAction(WithRoles(List(Administrator))) {
+  def edit(id: Long) = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
       models.Cities.findById(id).map {
         city => Ok(views.html.cities.edit("Edit City", id, cityForm.fill(city), models.Provinces.options))
@@ -65,7 +65,7 @@ object Cities extends Controller  with securesocial.core.SecureSocial {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = SecuredAction(WithRoles(List(Administrator))) {
+  def update(id: Long) = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
       cityForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.cities.edit("Edit City - errors", id, formWithErrors, models.Provinces.options)),
@@ -80,7 +80,7 @@ object Cities extends Controller  with securesocial.core.SecureSocial {
   /**
    * Display the 'new computer form'.
    */
-  def create = SecuredAction(WithRoles(List(Administrator))) {
+  def create = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
       Ok(views.html.cities.create("New City", cityForm, models.Provinces.options))
   }
@@ -88,7 +88,7 @@ object Cities extends Controller  with securesocial.core.SecureSocial {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = SecuredAction(WithRoles(List(Administrator))) {
+  def save = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
       cityForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.cities.create("New City - errors", formWithErrors, models.Provinces.options)),
@@ -114,7 +114,7 @@ object Cities extends Controller  with securesocial.core.SecureSocial {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = SecuredAction(WithRoles(List(Administrator))) {
+  def delete(id: Long) = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
       models.Cities.delete(id)
       Home.flashing("success" -> "City has been deleted")

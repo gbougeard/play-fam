@@ -65,7 +65,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
       } getOrElse NotFound
   }
 
-  def edit(id: Long) = SecuredAction(WithRoles(List(Coach))) {
+  def edit(id: Long) = SecuredAction(WithRoles(Set(Coach))) {
     implicit request =>
       request.user match {
         case user: FamUser => // do whatever you need with your user class
@@ -117,7 +117,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
   /**
    * Display the 'new computer form'.
    */
-  def create = SecuredAction(WithRoles(List(Coach))) {
+  def create = SecuredAction(WithRoles(Set(Coach))) {
     implicit request =>
       request.user match {
         case user: FamUser => // do whatever you need with your user class
@@ -164,7 +164,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = SecuredAction(WithRoles(List(Administrator))) {
+  def delete(id: Long) = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
       models.Events.delete(id)
       Home.flashing("success" -> "Event has been deleted")

@@ -45,7 +45,7 @@ object TypEvents extends Controller with securesocial.core.SecureSocial {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def edit(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       models.TypEvents.findById(id).map {
         typEvent => Ok(views.html.typEvents.edit("Edit TypEvent", id, typEventForm.fill(typEvent)))
@@ -57,7 +57,7 @@ object TypEvents extends Controller with securesocial.core.SecureSocial {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def update(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       typEventForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.typEvents.edit("Edit TypEvent - errors", id, formWithErrors)),
@@ -74,7 +74,7 @@ object TypEvents extends Controller with securesocial.core.SecureSocial {
   /**
    * Display the 'new computer form'.
    */
-  def create =  SecuredAction(WithRoles(List(Administrator)))  {
+  def create =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       Ok(views.html.typEvents.create("New TypEvent", typEventForm))
   }
@@ -82,7 +82,7 @@ object TypEvents extends Controller with securesocial.core.SecureSocial {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save =  SecuredAction(WithRoles(List(Administrator)))  {
+  def save =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       typEventForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.typEvents.create("New TypEvent - errors", formWithErrors)),
@@ -97,7 +97,7 @@ object TypEvents extends Controller with securesocial.core.SecureSocial {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       models.TypEvents.delete(id)
       Home.flashing("success" -> "TypEvent has been deleted")

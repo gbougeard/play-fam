@@ -94,7 +94,7 @@ object Clubs extends Controller with securesocial.core.SecureSocial  {
   /**
    * Display the 'new computer form'.
    */
-  def create = SecuredAction(WithRoles(List(Coach))) {
+  def create = SecuredAction(WithRoles(Set(Coach))) {
     implicit request =>
       Ok(views.html.clubs.create("New Club", clubForm))
   }
@@ -102,7 +102,7 @@ object Clubs extends Controller with securesocial.core.SecureSocial  {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save = SecuredAction(WithRoles(List(Coach))) {
+  def save = SecuredAction(WithRoles(Set(Coach))) {
     implicit request =>
       clubForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.clubs.create("New Club - errors", formWithErrors)),
@@ -117,7 +117,7 @@ object Clubs extends Controller with securesocial.core.SecureSocial  {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) = SecuredAction(WithRoles(List(Administrator))) {
+  def delete(id: Long) = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
       models.Clubs.delete(id)
       Home.flashing("success" -> "Club has been deleted")

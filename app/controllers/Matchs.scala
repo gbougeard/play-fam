@@ -76,7 +76,7 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
       } getOrElse (NotFound("Match not Found"))
   }
 
-  def debrief(idMatch:Long, idTeam: Long) =  SecuredAction(WithRoles(List(Coach)))  {
+  def debrief(idMatch:Long, idTeam: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       models.Matchs.findById(idMatch).map {
         m => {
@@ -107,7 +107,7 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
       } getOrElse (NotFound)
   }
 
-  def prepare(idMatch:Long, idTeam: Long) =  SecuredAction(WithRoles(List(Coach)))  {
+  def prepare(idMatch:Long, idTeam: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       models.Matchs.findById(idMatch).map {
         m => {
@@ -174,7 +174,7 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save =  SecuredAction(WithRoles(List(Coach)))  {
+  def save =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       matchForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.matchs.create("New Match - errors", formWithErrors)),
@@ -189,7 +189,7 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       models.Matchs.delete(id)
       Redirect(routes.Matchs.list(0, 0)).flashing("success" -> "Match has been deleted")

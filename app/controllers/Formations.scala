@@ -47,7 +47,7 @@ object Formations extends Controller  with securesocial.core.SecureSocial{
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
+  def edit(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       models.Formations.findById(id).map {
         formation =>
@@ -61,7 +61,7 @@ object Formations extends Controller  with securesocial.core.SecureSocial{
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
+  def update(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       val items = models.FormationItems.findByFormation(id).sortBy(_.numItem)
       Logger.debug(items.toString())
@@ -78,7 +78,7 @@ object Formations extends Controller  with securesocial.core.SecureSocial{
   /**
    * Display the 'new computer form'.
    */
-  def create =  SecuredAction(WithRoles(List(Coach)))  {
+  def create =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       Ok(views.html.formations.create("New Formation", formationForm, models.Clubs.options))
   }
@@ -86,7 +86,7 @@ object Formations extends Controller  with securesocial.core.SecureSocial{
   /**
    * Handle the 'new computer form' submission.
    */
-  def save =  SecuredAction(WithRoles(List(Coach)))  {
+  def save =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       formationForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.formations.create("New Formation - errors", formWithErrors, models.Clubs.options)),
@@ -113,7 +113,7 @@ object Formations extends Controller  with securesocial.core.SecureSocial{
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       models.Formations.delete(id)
       Home.flashing("success" -> "Formation has been deleted")

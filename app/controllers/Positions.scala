@@ -43,7 +43,7 @@ object Positions extends Controller  with securesocial.core.SecureSocial {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
+  def edit(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       models.Positions.findById(id).map {
         position => Ok(views.html.positions.edit("Edit Position", id, positionForm.fill(position)))
@@ -55,7 +55,7 @@ object Positions extends Controller  with securesocial.core.SecureSocial {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
+  def update(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       positionForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.positions.edit("Edit Position - errors", id, formWithErrors)),
@@ -72,7 +72,7 @@ object Positions extends Controller  with securesocial.core.SecureSocial {
   /**
    * Display the 'new computer form'.
    */
-  def create =  SecuredAction(WithRoles(List(Coach)))  {
+  def create =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       Ok(views.html.positions.create("New Position", positionForm))
   }
@@ -80,7 +80,7 @@ object Positions extends Controller  with securesocial.core.SecureSocial {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save =  SecuredAction(WithRoles(List(Coach)))  {
+  def save =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       positionForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.positions.create("New Position - errors", formWithErrors)),
@@ -95,7 +95,7 @@ object Positions extends Controller  with securesocial.core.SecureSocial {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       models.Positions.delete(id)
       Home.flashing("success" -> "Position has been deleted")

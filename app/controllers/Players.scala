@@ -96,7 +96,7 @@ object Players extends Controller with securesocial.core.SecureSocial{
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       models.Players.delete(id)
       Redirect(routes.Players.list(0,0)).flashing("success" -> "Player has been deleted")

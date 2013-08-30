@@ -45,7 +45,7 @@ object States extends Controller with securesocial.core.SecureSocial  {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def edit(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       models.States.findById(id).map {
         state => Ok(views.html.states.edit("Edit State", id, stateForm.fill(state), models.Countries.options))
@@ -57,7 +57,7 @@ object States extends Controller with securesocial.core.SecureSocial  {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def update(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       stateForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.states.edit("Edit State - errors", id, formWithErrors, models.Countries.options)),
@@ -72,7 +72,7 @@ object States extends Controller with securesocial.core.SecureSocial  {
   /**
    * Display the 'new computer form'.
    */
-  def create =  SecuredAction(WithRoles(List(Administrator)))  {
+  def create =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       Ok(views.html.states.create("New State", stateForm, models.Countries.options))
   }
@@ -80,7 +80,7 @@ object States extends Controller with securesocial.core.SecureSocial  {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save =  SecuredAction(WithRoles(List(Administrator)))  {
+  def save =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       stateForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.states.create("New State - errors", formWithErrors, models.Countries.options)),
@@ -95,7 +95,7 @@ object States extends Controller with securesocial.core.SecureSocial  {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       models.States.delete(id)
       Home.flashing("success" -> "State has been deleted")

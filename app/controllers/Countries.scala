@@ -46,7 +46,7 @@ object Countries extends Controller with securesocial.core.SecureSocial {
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def edit(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       models.Countries.findById(id).map {
         country => Ok(views.html.countries.edit("Edit Country", id, countryForm.fill(country)))
@@ -58,7 +58,7 @@ object Countries extends Controller with securesocial.core.SecureSocial {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def update(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       countryForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.countries.edit("Edit Country - errors", id, formWithErrors)),
@@ -73,7 +73,7 @@ object Countries extends Controller with securesocial.core.SecureSocial {
   /**
    * Display the 'new computer form'.
    */
-  def create =  SecuredAction(WithRoles(List(Administrator)))  {
+  def create =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       Ok(views.html.countries.create("New Country", countryForm))
   }
@@ -81,7 +81,7 @@ object Countries extends Controller with securesocial.core.SecureSocial {
   /**
    * Handle the 'new computer form' submission.
    */
-  def save =  SecuredAction(WithRoles(List(Administrator)))  {
+  def save =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
 
       countryForm.bindFromRequest.fold(
@@ -97,7 +97,7 @@ object Countries extends Controller with securesocial.core.SecureSocial {
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       models.Countries.delete(id)
       Home.flashing("success" -> "Country has been deleted")

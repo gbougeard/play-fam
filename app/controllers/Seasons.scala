@@ -43,7 +43,7 @@ object Seasons extends Controller with securesocial.core.SecureSocial{
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def edit(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       models.Seasons.findById(id).map {
         season => Ok(views.html.seasons.edit("Edit Season", id, seasonForm.fill(season)))
@@ -55,7 +55,7 @@ object Seasons extends Controller with securesocial.core.SecureSocial{
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def update(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       seasonForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.seasons.edit("Edit Season - errors", id, formWithErrors)),
@@ -69,7 +69,7 @@ object Seasons extends Controller with securesocial.core.SecureSocial{
   /**
    * Display the 'new computer form'.
    */
-  def create =  SecuredAction(WithRoles(List(Administrator)))  {
+  def create =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       Ok(views.html.seasons.create("New Season", seasonForm))
   }
@@ -77,7 +77,7 @@ object Seasons extends Controller with securesocial.core.SecureSocial{
   /**
    * Handle the 'new computer form' submission.
    */
-  def save =  SecuredAction(WithRoles(List(Administrator)))  {
+  def save =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       seasonForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.seasons.create("New Season - errors", formWithErrors)),
@@ -92,7 +92,7 @@ object Seasons extends Controller with securesocial.core.SecureSocial{
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) =  SecuredAction(WithRoles(List(Administrator)))  {
+  def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       models.Seasons.delete(id)
       Redirect(routes.Seasons.list(0,2)).flashing("success" -> "Season has been deleted")

@@ -43,7 +43,7 @@ object Fixtures extends Controller with securesocial.core.SecureSocial{
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
+  def edit(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       models.Fixtures.findById(id).map {
         fixture => Ok(views.html.fixtures.edit("Edit Fixture", id, fixtureForm.fill(fixture), models.SeasonCompetitions.options))
@@ -55,7 +55,7 @@ object Fixtures extends Controller with securesocial.core.SecureSocial{
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
+  def update(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       fixtureForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.fixtures.edit("Edit Fixture - errors", id, formWithErrors, models.SeasonCompetitions.options)),
@@ -70,7 +70,7 @@ object Fixtures extends Controller with securesocial.core.SecureSocial{
   /**
    * Display the 'new computer form'.
    */
-  def create =  SecuredAction(WithRoles(List(Coach)))  {
+  def create =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       Ok(views.html.fixtures.create("New Fixture", fixtureForm, models.Clubs.options))
   }
@@ -78,7 +78,7 @@ object Fixtures extends Controller with securesocial.core.SecureSocial{
   /**
    * Handle the 'new computer form' submission.
    */
-  def save =  SecuredAction(WithRoles(List(Coach)))  {
+  def save =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       fixtureForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.fixtures.create("New Fixture - errors", formWithErrors, models.SeasonCompetitions.options)),
@@ -93,7 +93,7 @@ object Fixtures extends Controller with securesocial.core.SecureSocial{
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) =  SecuredAction(WithRoles(List(Coach)))  {
+  def delete(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       models.Fixtures.delete(id)
       Home.flashing("success" -> "Fixture has been deleted")
