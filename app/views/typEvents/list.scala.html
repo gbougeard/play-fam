@@ -30,8 +30,7 @@
 
 @main(message) {
 
-    @Option(currentPage.items).filterNot(_.isEmpty).map {
-        typEvents =>
+    @Option(currentPage.items).filterNot(_.isEmpty).map { typEvents =>
 
         <table class="table table-striped table-bordered table-hover">
             <thead>
@@ -56,8 +55,7 @@
 
         <div id="pagination" class="pagination">
             <ul>
-                @currentPage.prev.map {
-                    page =>
+                @currentPage.prev.map { page =>
                     <li class="prev">
                         <a href="@link(page)">&larr; Previous</a>
                     </li>
@@ -69,8 +67,7 @@
             <li class="current">
                 <a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + typEvents.size) of @currentPage.total</a>
             </li>
-                @currentPage.next.map {
-                    page =>
+                @currentPage.next.map { page =>
                     <li class="next">
                         <a href="@link(page)">Next &rarr;</a>
                     </li>

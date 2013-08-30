@@ -29,8 +29,7 @@
 
 @main(message) {
 
-    @Option(currentPage.items).filterNot(_.isEmpty).map {
-        matchs =>
+    @Option(currentPage.items).filterNot(_.isEmpty).map { matchs =>
 
         <table class="table table-striped table-bordered table-hover">
             <thead>
@@ -43,8 +42,7 @@
             </thead>
             <tbody>
 
-            @matchs.map {
-                case (m, competition, event) =>
+            @matchs.map { case (m, competition, event) =>
                 <tr>
                     @* <td>@match.firstName</td> *@
                 <td>@m.id</td>
@@ -58,8 +56,7 @@
 
         <div id="pagination" class="pagination">
             <ul>
-                @currentPage.prev.map {
-                    page =>
+                @currentPage.prev.map { page =>
                     <li class="prev">
                         <a href="@link(page)">&larr; Previous</a>
                     </li>
@@ -71,8 +68,7 @@
             <li class="current">
                 <a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + matchs.size) of @currentPage.total</a>
             </li>
-                @currentPage.next.map {
-                    page =>
+                @currentPage.next.map { page =>
                     <li class="next">
                         <a href="@link(page)">Next &rarr;</a>
                     </li>
