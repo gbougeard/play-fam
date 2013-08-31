@@ -12,17 +12,33 @@ fam.controller('EventCtrl', function ($scope, $http, $location, Restangular) {
 
     $scope.statuses = [];
     $scope.places = [];
-    $scope.selectedPlace = "";
+    $scope.selectedPlace = '';
 
     $scope.types = [];
-    $scope.selectedType = "";
+    $scope.selectedType = '';
 
 
-    $scope.name = "";
+    $scope.name = '';
     $scope.duration = 0;
-    $scope.datepicker = {date: ""};
-    $scope.timepicker = { "time": ""};
+    $scope.datepicker = {'date': ''};
+    $scope.timepicker = { 'time': ''};
 
+    $scope.recurrence = [
+        {'id': 'D', 'name': 'Every day'},
+        {'id': 'W', 'name': 'Every week'},
+        {'id': 'M', 'name': 'Every month'},
+        {'id': 'Y', 'name': 'Every year'}
+    ];
+    $scope.selectedEvery = ''; // 1 to 30
+    $scope.days = ['L', 'Ma', 'Me', 'J', 'V', 'S', 'D'];
+    $scope.dtBegin = new Date();
+    $scope.dtEnd = '';
+    $scope.endAfter = ''; // after ? occurrences
+    $scope.recendopts = 'neverEnd';
+
+    /**
+     *
+     */
     $scope.save = function () {
 
         $scope.datepicker.date.setHours($scope.timepicker.time.split(':')[0]);
@@ -101,7 +117,9 @@ fam.controller('EventCtrl', function ($scope, $http, $location, Restangular) {
             }
         });
     };
-
+    /**
+     *
+     */
     $scope.update = function () {
         $scope.datepicker.date.setHours($scope.timepicker.time.split(':')[0]);
         $scope.datepicker.date.setMinutes($scope.timepicker.time.split(':')[1]);
@@ -172,6 +190,9 @@ fam.controller('EventCtrl', function ($scope, $http, $location, Restangular) {
         });
     };
 
+    /**
+     *
+     */
     $scope.load = function () {
         console.log("load");
         if (angular.isDefined($scope.event.event)) {

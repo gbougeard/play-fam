@@ -72,6 +72,45 @@
                 </div>
             </div>
 
+
+            <fieldset >
+                <legend>Recurrence</legend>
+                <div class="control-group input-append" ng-class="{error: formEvent.recdate.$invalid}">
+                    <label class="control-label" for="recDate">Date début</label>
+                    <div class="controls">
+                        <input type="text" id="recDate" name="recdate" ng-model="dtBegin" data-date-format="yyyy-mm-dd" bs-datepicker required>
+                        <button type="button" class="btn" data-toggle="datepicker"><i class="icon-calendar"></i></button>
+                    </div>
+                </div>
+                <div class="control-group" ng-class="{error: formEvent.recevery.$invalid}">
+                    <label class="control-label" for="place">Reccurence</label>
+                    <div class="controls">
+                        <select ui-select2  class="span2" name="recevery" ng-model="selectedEvery" data-placeholder="Recurrence">
+                            <option ng-repeat="rec in recurrence" value="{{rec.id}}">{{rec.name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group" ng-class="{error: formEvent.recrepevery.$invalid}">
+                    <label class="control-label" for="recrep">Repeat every</label>
+                    <div class="controls">
+                        <select ui-select2  class="span1" id="recrep" name="recrepevery" ng-model="selectedRepeat" data-placeholder="Repeat every">
+                            @for(i <- 1 to 30){
+                                <option value="@i">@i</option>
+                            }
+                        </select>   {{ selectedEvery }}
+                    </div>
+                </div>
+                <div class="control-group" ng-class="{error: formEvent.end.$invalid}">
+                    <label class="control-label" for="end">Fin</label>
+                    <div class="controls">
+                        <label class="radio"><input type=radio ng-model="recendopts" value="neverEnd">Never</label>
+                        <label class="radio"><input type=radio ng-model="recendopts" value="afterOcc">After occurrences</label>
+                        <label class="radio"><input type=radio ng-model="recendopts" value="endDate">Date</label>
+                    </div>
+                </div>
+
+            </fieldset>
+
             <div class="form-actions">
                 @btnSubmit("Save this event")
                 @btnCancel(routes.Events.list())
