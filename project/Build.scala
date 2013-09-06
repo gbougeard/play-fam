@@ -77,7 +77,7 @@ object ApplicationBuild extends Build {
     //      ,"org.xerial" % "sqlite-jdbc" % "3.6.20"
     //      ,"org.slf4j" % "slf4j-nop" % "1.6.4" // <- disables logging
 
-
+,"com.typesafe.play" %% "play-slick" % "0.4.0" 
     // Other database drivers
     //    ,  "org.apache.derby" % "derby" % "10.6.1.0"
     //     , "org.hsqldb" % "hsqldb" % "2.0.0"
@@ -102,7 +102,8 @@ object ApplicationBuild extends Build {
     resolvers += Resolver.url("sbt-plugin-snapshots", new URL("http://repo.scala-sbt.org/scalasbt/sbt-plugin-snapshots/"))(Resolver.ivyStylePatterns)
     // Add your own project settings here
     //  ).dependsOn(RootProject( uri("git://github.com/gbougeard/play-slick.git") ))
-  ).dependsOn(RootProject(uri("git://github.com/freekh/play-slick.git")))
+  )
+//.dependsOn(RootProject(uri("git://github.com/freekh/play-slick.git")))
     .dependsOn(RootProject(uri("git://github.com/kenshoo/metrics-play.git")))
 
 }
