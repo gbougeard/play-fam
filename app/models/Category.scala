@@ -34,13 +34,13 @@ object Categorys extends Table[Category]("fam_category") {
   lazy val pageSize = 10
 
   def findAll: Seq[Category] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for (c <- Categorys.sortBy(_.name)) yield c).list
     }
   }
 
   def count: Int = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Query(Categorys.length).first
     }
   }
@@ -50,7 +50,7 @@ object Categorys extends Table[Category]("fam_category") {
     val offset = pageSize * page
 
     DB.withSession {
-      implicit session =>
+      implicit session:Session =>
         val categorys = (
           for {c <- Categorys
             .sortBy(category => orderField match {
@@ -68,38 +68,38 @@ object Categorys extends Table[Category]("fam_category") {
   }
 
   def findById(id: Long): Option[Category] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Categorys.byId(id).firstOption
     }
   }
 
   def findByName(name: String): Option[Category] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Categorys.byName(name).firstOption
     }
   }
 
   def findByCode(code: String): Option[Category] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Categorys.byCode(code).firstOption
     }
   }
 
   def insert(category: Category): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Categorys.autoInc.insert((category))
     }
   }
 
   def update(id: Long, category: Category) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val category2update = category.copy(Some(id), category.code, category.name)
       Categorys.where(_.id === id).update(category2update)
     }
   }
 
   def delete(categoryId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Categorys.where(_.id === categoryId).delete
     }
   }
@@ -111,7 +111,7 @@ object Categorys extends Table[Category]("fam_category") {
 //    c <- findAll
 //  } yield (c.id.toString, c.name)
   def options: Seq[(String, String)] = DB.withSession {
-    implicit session =>
+    implicit session:Session =>
       val query = (for {
         item <- Categorys
       } yield (item.id, item.name)

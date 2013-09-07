@@ -31,7 +31,7 @@ object EventTeams extends Table[EventTeam]("fam_event_team") {
   def event = foreignKey("EVENT_FK", eventId, Events)(_.id)
 
   def findByEvent(id: Long): Seq[(EventTeam, Event, Team)] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val query = for {et <- EventTeams
                        if et.eventId === id
                        t <- et.team
@@ -43,7 +43,7 @@ object EventTeams extends Table[EventTeam]("fam_event_team") {
   }
 
   def findByTeam(id: Long): Seq[(EventTeam, Event, Team)] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val query = for {et <- EventTeams
                        if et.teamId === id
                        t <- et.team
@@ -55,19 +55,19 @@ object EventTeams extends Table[EventTeam]("fam_event_team") {
   }
 
   def insert(event: EventTeam):EventTeam = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Logger.debug("insert %s".format(event))
         EventTeams.insert(event)
     }
   }
   def insert(events: Seq[EventTeam]):Try[Option[Int]] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Try(EventTeams.insertAll(events:_*))
     }
   }
 
   def deleteForEvent(id: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Logger.debug("delete %s".format(id))
       EventTeams.where(_.eventId === id).delete
     }
@@ -75,7 +75,7 @@ object EventTeams extends Table[EventTeam]("fam_event_team") {
 
 
   //  def delete(eId: Long, tId : Long) = DB.withSession {
-  //    implicit session => {
+  //    implicit session:Session => {
   //      EventTeams.where(_.eventId === eId).and( _.teamId === tId).delete
   //    }
   //  }

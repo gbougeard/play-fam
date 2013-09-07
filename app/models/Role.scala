@@ -38,7 +38,7 @@ object Roles extends Table[Role]("fam_user_group") {
   //    val offset = pageSize * page
   //
   //    DB.withSession {
-  //      implicit session => {
+  //      implicit session:Session => {
   //        val players = (
   //          for {t <- Players
   //            .sortBy(player => orderField match {
@@ -60,7 +60,7 @@ object Roles extends Table[Role]("fam_user_group") {
   //  }
 
   def findByUserId(id: Long): Seq[String] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       play.Logger.debug(s"Roles.findByUserId $id")
       val query = for {r <- Roles
                        if r.userId === id
@@ -72,7 +72,7 @@ object Roles extends Table[Role]("fam_user_group") {
   }
 
   def findByGroupId(id: Long): Seq[(Role, User, Group)] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val query = for {r <- Roles
                        if r.groupId === id
                        g <- r.group
@@ -85,20 +85,20 @@ object Roles extends Table[Role]("fam_user_group") {
 
 
   def insert(role: Role): Role = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Logger.debug("insert %s".format(role))
       Roles.insert(role)
     }
   }
 
   def insert(roles: Seq[Role]): Try[Option[Int]] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Try(Roles.insertAll(roles: _*))
     }
   }
 
   def delete(id: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Roles.where(_.userId === id).delete
     }
   }
@@ -122,7 +122,7 @@ object Roles extends Table[Role]("fam_user_group") {
   //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.firstName + " " + c.lastName)
 
   //  def options: Seq[(String, String)] = DB.withSession {
-  //    implicit session =>
+  //    implicit session:Session =>
   //      val query = (for {
   //        item <- Players
   //      } yield (item.id, item.firstName + " " + item.lastName)

@@ -47,13 +47,13 @@ object Fixtures extends Table[Fixture]("fam_fixture") {
   lazy val pageSize = 10
 
   def findAll: Seq[Fixture] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for (c <- Fixtures.sortBy(_.name)) yield c).list
     }
   }
 
   def count: Int = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Query(Fixtures.length).first
     }
   }
@@ -62,7 +62,7 @@ object Fixtures extends Table[Fixture]("fam_fixture") {
 
     val offset = pageSize * page
     DB.withSession {
-      implicit session => {
+      implicit session:Session => {
         val fixtures = (
           for {t <- Fixtures
             .sortBy(club => orderField match {
@@ -83,38 +83,38 @@ object Fixtures extends Table[Fixture]("fam_fixture") {
   }
 
   def findById(id: Long): Option[Fixture] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Fixtures.byId(id).firstOption
     }
   }
 
   def findByName(name: String): Option[Fixture] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Fixtures.byName(name).firstOption
     }
   }
 
   def findByDate(date: Date): Option[Fixture] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Fixtures.byDate(date).firstOption
     }
   }
 
   def insert(fixture: Fixture): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Fixtures.autoInc.insert((fixture))
     }
   }
 
   def update(id: Long, fixture: Fixture) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val fixture2update = fixture.copy(Some(id), fixture.date, fixture.name, fixture.competitionId)
       Fixtures.where(_.id === id).update(fixture2update)
     }
   }
 
   def delete(fixtureId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Fixtures.where(_.id === fixtureId).delete
     }
   }
@@ -124,7 +124,7 @@ object Fixtures extends Table[Fixture]("fam_fixture") {
    */
 //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
   def options: Seq[(String, String)] = DB.withSession {
-    implicit session =>
+    implicit session:Session =>
       val query = (for {
         item <- Fixtures
       } yield (item.id, item.name)

@@ -49,13 +49,13 @@ object Provinces extends Table[Province]("fam_province") {
   lazy val pageSize = 10
 
   def findAll: Seq[Province] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for (c <- Provinces.sortBy(_.code)) yield c).list
     }
   }
 
   def count: Int = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Query(Provinces.length).first
     }
   }
@@ -65,7 +65,7 @@ object Provinces extends Table[Province]("fam_province") {
     val offset = pageSize * page
 
     DB.withSession {
-      implicit session => {
+      implicit session:Session => {
         val provinces = (
           for {p <- Provinces
 
@@ -89,37 +89,37 @@ object Provinces extends Table[Province]("fam_province") {
   }
 
   def findById(id: Long): Option[Province] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Provinces.byId(id).firstOption
     }
   }
 
   def findByName(name: String): Option[Province] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Provinces.byName(name).firstOption
     }
   }
 
   def findByCode(code: String): Option[Province] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Provinces.byCode(code).firstOption
     }
   }
 
   def insert(province: Province): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Provinces.autoInc.insert((province))
     }
   }
 
   def update(id: Long, province: Province) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Provinces.where(_.id === province.id).update(province.copy(Some(id)))
     }
   }
 
   def delete(provinceId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Provinces.where(_.id === provinceId).delete
     }
   }
@@ -129,7 +129,7 @@ object Provinces extends Table[Province]("fam_province") {
    */
 //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.code + " - " + c.name)
   def options: Seq[(String, String)] = DB.withSession {
-    implicit session =>
+    implicit session:Session =>
       val query = (for {
         item <- Provinces
       } yield (item.id, item.name)

@@ -50,13 +50,13 @@ object States extends Table[State]("fam_state") {
   lazy val pageSize = 10
 
   def findAll: Seq[State] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for (c <- States.sortBy(_.name)) yield c).list
     }
   }
 
   def count: Int = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Query(States.length).first
     }
   }
@@ -66,7 +66,7 @@ object States extends Table[State]("fam_state") {
     val offset = pageSize * page
 
     DB.withSession {
-      implicit session => {
+      implicit session:Session => {
 
         val states = (
           for {s <- States
@@ -90,37 +90,37 @@ object States extends Table[State]("fam_state") {
   }
 
   def findById(id: Long): Option[State] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       States.byId(id).firstOption
     }
   }
 
   def findByName(name: String): Option[State] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       States.byName(name).firstOption
     }
   }
 
   def findByCode(code: String): Option[State] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       States.byCode(code).firstOption
     }
   }
 
   def insert(state: State): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       States.autoInc.insert((state))
     }
   }
 
   def update(id: Long, state: State) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       States.where(_.id === state.id).update(state.copy(Some(id)))
     }
   }
 
   def delete(stateId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       States.where(_.id === stateId).delete
     }
   }
@@ -130,7 +130,7 @@ object States extends Table[State]("fam_state") {
    */
 //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
   def options: Seq[(String, String)] = DB.withSession {
-    implicit session =>
+    implicit session:Session =>
       val query = (for {
         item <- States
       } yield (item.id, item.name)

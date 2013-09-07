@@ -32,7 +32,7 @@ object FormationItems extends Table[FormationItem]("fam_formation_item") {
   def formation = foreignKey("FORMATION_FK", formationId, Formations)(_.id)
 
   def findByFormation(id: Long): Seq[FormationItem] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val query = (
         for {fi <- FormationItems
              if fi.formationId === id
@@ -42,13 +42,13 @@ object FormationItems extends Table[FormationItem]("fam_formation_item") {
   }
 
   def insert(formationItem: FormationItem): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       FormationItems.autoInc.insert((formationItem))
     }
   }
 
   def update(id: Long, formationItem: FormationItem) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val formationItem2update = formationItem.copy(Some(id))
       Logger.info("update "+formationItem2update)
       FormationItems.where(_.id === id).update(formationItem2update)
@@ -56,7 +56,7 @@ object FormationItems extends Table[FormationItem]("fam_formation_item") {
   }
 
   def delete(formationItemId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       FormationItems.where(_.id === formationItemId).delete
     }
   }
@@ -67,7 +67,7 @@ object FormationItems extends Table[FormationItem]("fam_formation_item") {
   }
 
   def init(formationId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Formations.findById(formationId).map {
         formation => TypMatches.findById(formation.typMatchId).map {
           typMatch => for (i <- 1 to typMatch.nbPlayer) {
@@ -79,7 +79,7 @@ object FormationItems extends Table[FormationItem]("fam_formation_item") {
   }
 
   def copy(formationIdToCopy: Long, formationId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       findByFormation(formationIdToCopy).map {
         item => insert(new FormationItem(None, item.coord, item.numItem, formationId))
       }

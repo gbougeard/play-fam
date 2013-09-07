@@ -47,19 +47,19 @@ object Places extends Table[Place]("fam_place") {
   lazy val pageSize = 10
 
   def findAll: Seq[Place] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for (c <- Places.sortBy(_.name)) yield c).list
     }
   }
 
   def count: Int = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Query(Places.length).first
     }
   }
 
   def placesWithCoords: Seq[Place] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for {c <- Places sortBy (_.name)
             if (c.latitude isNotNull)
             if (c.longitude isNotNull)
@@ -72,7 +72,7 @@ object Places extends Table[Place]("fam_place") {
     val offset = pageSize * page
 
     DB.withSession {
-      implicit session => {
+      implicit session:Session => {
         val places = (
           for {c <- Places
             .sortBy(place => orderField match {
@@ -91,44 +91,44 @@ object Places extends Table[Place]("fam_place") {
   }
 
   def findById(id: Long): Option[Place] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Places.byId(id).firstOption
     }
   }
 
   def findByName(name: String): Option[Place] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Places.byName(name).firstOption
     }
   }
 
   def findByZipcode(zipcode: Int): Option[Place] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Places.byCode(zipcode).firstOption
     }
   }
 
   def findByCity(city: String): Option[Place] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Places.byCity(city).firstOption
     }
   }
 
   def insert(place: Place): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Places.autoInc.insert((place))
     }
   }
 
   def update(id: Long, place: Place) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val place2update = place.copy(Some(id))
       Places.where(_.id === id).update(place2update)
     }
   }
 
   def delete(placeId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Places.where(_.id === placeId).delete
     }
   }
@@ -138,7 +138,7 @@ object Places extends Table[Place]("fam_place") {
    */
 //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
   def options: Seq[(String, String)] = DB.withSession {
-    implicit session =>
+    implicit session:Session =>
       val query = (for {
         item <- Places
       } yield (item.id, item.name)

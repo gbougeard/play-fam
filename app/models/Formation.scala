@@ -41,13 +41,13 @@ object Formations extends Table[Formation]("fam_formation") {
   lazy val pageSize = 10
 
   def findAll: Seq[Formation] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for (c <- Formations.sortBy(_.name)) yield c).list
     }
   }
 
   def count: Int = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Query(Formations.length).first
     }
   }
@@ -57,7 +57,7 @@ object Formations extends Table[Formation]("fam_formation") {
     val offset = pageSize * page
 
     DB.withSession {
-      implicit session =>
+      implicit session:Session =>
         val formations = (
           for {c <- Formations
             .sortBy(formation => orderField match {
@@ -77,38 +77,38 @@ object Formations extends Table[Formation]("fam_formation") {
   }
 
   def findById(id: Long): Option[Formation] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Formations.byId(id).firstOption
     }
   }
 
   def findByName(name: String): Option[Formation] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Formations.byName(name).firstOption
     }
   }
 
   def findByCode(code: String): Option[Formation] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Formations.byCode(code).firstOption
     }
   }
 
   def insert(formation: Formation): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Formations.autoInc.insert((formation))
     }
   }
 
   def update(id: Long, formation: Formation) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val formation2update = formation.copy(Some(id), formation.code, formation.name)
       Formations.where(_.id === id).update(formation2update)
     }
   }
 
   def delete(formationId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Formations.where(_.id === formationId).delete
     }
   }
@@ -120,7 +120,7 @@ object Formations extends Table[Formation]("fam_formation") {
   //    c <- findAll
   //  } yield (c.id.toString, c.name)
   def options: Seq[(String, String)] = DB.withSession {
-    implicit session =>
+    implicit session:Session =>
       val query = (for {
         item <- Formations
       } yield (item.id, item.name)

@@ -47,7 +47,7 @@ object Answers extends Table[Answer]("fam_answer") {
   lazy val pageSize = 10
 
   def findByEvent(idEvent: Long): Seq[(Answer, Event, Player, TypAnswer)] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val query = (
         for {a <- Answers
              if a.eventId === idEvent
@@ -60,13 +60,13 @@ object Answers extends Table[Answer]("fam_answer") {
   }
 
   def insert(answer: Answer): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Answers.insert((answer))
     }
   }
 
   def update(idMatch: Long, idPlayer: Long, answer: Answer) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       //      val answer2update = answer.copy(Some(id))
       //      Logger.info("playe2update " + answer2update)
       //      Answers.where(_.id === id).update(answer2update)
@@ -74,7 +74,7 @@ object Answers extends Table[Answer]("fam_answer") {
   }
 
   def delete(idMatch: Long, idPlayer: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       //      Answers.where(_.id === answerId).delete
     }
   }

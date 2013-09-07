@@ -43,13 +43,13 @@ object Countries extends Table[Country]("fam_country") {
   lazy val countryCount = count
 
   def findAll: Seq[Country] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for (c <- Countries.sortBy(_.name)) yield c).list
     }
   }
 
   def count: Int = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Query(Countries.length).first
     }
   }
@@ -58,7 +58,7 @@ object Countries extends Table[Country]("fam_country") {
 
     val offset = pageSize * page
     DB.withSession {
-      implicit session => {
+      implicit session:Session => {
         val countrys = (
           for {t <- Countries
             .sortBy(_.id)
@@ -72,44 +72,44 @@ object Countries extends Table[Country]("fam_country") {
   }
 
   def findById(id: Long): Option[Country] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Countries.byId(id).firstOption
     }
   }
 
   def findByName(name: String): Option[Country] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Countries.byName(name).firstOption
     }
   }
 
   def findByCode(code: String): Option[Country] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Countries.byCode(code).firstOption
     }
   }
 
   def insert(country: Country): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Countries.autoInc.insert((country))
     }
   }
 
   def update(id: Long, country: Country) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val country2update = country.copy(Some(id), country.code, country.name, country.upper, country.lower)
       Countries.where(_.id === id).update(country2update)
     }
   }
 
   def delete(countryId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Countries.where(_.id === countryId).delete
     }
   }
 
   def json(page: Int, pageSize: Int, orderField: Int): Seq[Country] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
 
       val countries = for {c <- Countries
         .sortBy(country => orderField match {
@@ -133,7 +133,7 @@ object Countries extends Table[Country]("fam_country") {
    */
   //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
   def options: Seq[(String, String)] = DB.withSession {
-    implicit session =>
+    implicit session:Session =>
       val query = (for {
         item <- Countries
       } yield (item.id, item.name)

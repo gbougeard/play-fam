@@ -32,13 +32,13 @@ object Groups extends Table[Group]("fam_group") {
   lazy val pageSize = 10
 
   def findAll: Seq[Group] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for (c <- Groups.sortBy(_.name)) yield c).list
     }
   }
 
   def count: Int = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Query(Groups.length).first
     }
   }
@@ -48,7 +48,7 @@ object Groups extends Table[Group]("fam_group") {
     val offset = pageSize * page
 
     DB.withSession {
-      implicit session =>
+      implicit session:Session =>
         val typCards = (
           for {c <- Groups
             .sortBy(typCard => orderField match {
@@ -64,33 +64,33 @@ object Groups extends Table[Group]("fam_group") {
   }
 
   def findById(id: Long): Option[Group] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Groups.byId(id).firstOption
     }
   }
 
   def findByName(name: String): Option[Group] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Groups.byName(name).firstOption
     }
   }
 
 
   def insert(typCard: Group): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Groups.autoInc.insert(typCard)
     }
   }
 
   def update(id: Long, typCard: Group) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val typCard2update = typCard.copy(Some(id), typCard.name)
       Groups.where(_.id === id).update(typCard2update)
     }
   }
 
   def delete(typCardId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Groups.where(_.id === typCardId).delete
     }
   }
@@ -102,7 +102,7 @@ object Groups extends Table[Group]("fam_group") {
   //    c <- findAll
   //  } yield (c.id.toString, c.name)
   def options: Seq[(String, String)] = DB.withSession {
-    implicit session =>
+    implicit session:Session =>
       val query = (for {
         item <- Groups
       } yield (item.id, item.name)

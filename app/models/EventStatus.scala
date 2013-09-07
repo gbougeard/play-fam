@@ -35,7 +35,7 @@ object EventStatuses extends Table[EventStatus]("fam_event_status") {
   lazy val pageSize = 10
 
   def findAll: Seq[EventStatus] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for (c <- EventStatuses.sortBy(_.name)) yield c).list
     }
   }
@@ -45,7 +45,7 @@ object EventStatuses extends Table[EventStatus]("fam_event_status") {
     val offset = pageSize * page
 
     DB.withSession {
-      implicit session =>
+      implicit session:Session =>
         val eventStatuss = (
           for {c <- EventStatuses
             .sortBy(eventStatus => orderField match {
@@ -64,38 +64,38 @@ object EventStatuses extends Table[EventStatus]("fam_event_status") {
   }
 
   def findById(id: Long): Option[EventStatus] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       EventStatuses.byId(id).firstOption
     }
   }
 
   def findByName(name: String): Option[EventStatus] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       EventStatuses.byName(name).firstOption
     }
   }
 
   def findByCode(code: String): Option[EventStatus] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       EventStatuses.byCode(code).firstOption
     }
   }
 
   def insert(eventStatus: EventStatus): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       EventStatuses.autoInc.insert((eventStatus))
     }
   }
 
   def update(id: Long, eventStatus: EventStatus) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val eventStatus2update = eventStatus.copy(Some(id), eventStatus.code, eventStatus.name)
       EventStatuses.where(_.id === id).update(eventStatus2update)
     }
   }
 
   def delete(eventStatusId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       EventStatuses.where(_.id === eventStatusId).delete
     }
   }
@@ -107,7 +107,7 @@ object EventStatuses extends Table[EventStatus]("fam_event_status") {
 //    c <- findAll
 //  } yield (c.id.toString, c.name)
   def options: Seq[(String, String)] = DB.withSession {
-    implicit session =>
+    implicit session:Session =>
       val query = (for {
         item <- EventStatuses
       } yield (item.id, item.name)

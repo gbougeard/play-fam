@@ -35,13 +35,13 @@ object TypCards extends Table[TypCard]("fam_typ_card") {
   lazy val pageSize = 10
 
   def findAll: Seq[TypCard] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for (c <- TypCards.sortBy(_.name)) yield c).list
     }
   }
 
   def count: Int = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Query(TypCards.length).first
     }
   }
@@ -51,7 +51,7 @@ object TypCards extends Table[TypCard]("fam_typ_card") {
     val offset = pageSize * page
 
     DB.withSession {
-      implicit session =>
+      implicit session:Session =>
         val typCards = (
           for {c <- TypCards
             .sortBy(typCard => orderField match {
@@ -69,38 +69,38 @@ object TypCards extends Table[TypCard]("fam_typ_card") {
   }
 
   def findById(id: Long): Option[TypCard] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       TypCards.byId(id).firstOption
     }
   }
 
   def findByName(name: String): Option[TypCard] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       TypCards.byName(name).firstOption
     }
   }
 
   def findByCode(code: String): Option[TypCard] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       TypCards.byCode(code).firstOption
     }
   }
 
   def insert(typCard: TypCard): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       TypCards.autoInc.insert((typCard))
     }
   }
 
   def update(id: Long, typCard: TypCard) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val typCard2update = typCard.copy(Some(id), typCard.code, typCard.name)
       TypCards.where(_.id === id).update(typCard2update)
     }
   }
 
   def delete(typCardId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       TypCards.where(_.id === typCardId).delete
     }
   }
@@ -112,7 +112,7 @@ object TypCards extends Table[TypCard]("fam_typ_card") {
 //    c <- findAll
 //  } yield (c.id.toString, c.name)
   def options: Seq[(String, String)] = DB.withSession {
-    implicit session =>
+    implicit session:Session =>
       val query = (for {
         item <- TypCards
       } yield (item.id, item.name)

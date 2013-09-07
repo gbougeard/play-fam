@@ -50,7 +50,7 @@ object Substitutions extends Table[Substitution]("fam_substitution") {
   lazy val pageSize = 10
 
   def findByMatchAndTeam(idMatch: Long, idTeam: Long): Seq[(Substitution, Match, Team, Player, Player)] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val query = (
         for {mp <- Substitutions
              if mp.matchId === idMatch
@@ -66,13 +66,13 @@ object Substitutions extends Table[Substitution]("fam_substitution") {
   }
 
   def insert(substitution: Substitution): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Substitutions.insert((substitution))
     }
   }
 
   def update(id: Long, substitution: Substitution) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val substitution2update = substitution.copy(Some(id))
       Logger.info("playe2update " + substitution2update)
       Substitutions.where(_.id === id).update(substitution2update)
@@ -80,7 +80,7 @@ object Substitutions extends Table[Substitution]("fam_substitution") {
   }
 
   def delete(id: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Substitutions.where(_.id === id).delete
     }
   }

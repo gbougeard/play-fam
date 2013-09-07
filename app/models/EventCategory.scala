@@ -29,7 +29,7 @@ object EventCategorys extends Table[EventCategory]("fam_event_category") {
   def event = foreignKey("EVENT_FK", eventId, Events)(_.id)
 
   def findByEvent(id: Long): Seq[(EventCategory, Event, Category)] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val query = (
         for {et <- EventCategorys
              if et.eventId === id
@@ -42,7 +42,7 @@ object EventCategorys extends Table[EventCategory]("fam_event_category") {
   }
 
   def findByCategory(id: Long): Seq[(EventCategory, Event, Category)] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val query = (
         for {et <- EventCategorys
              if et.categoryId === id
@@ -55,14 +55,14 @@ object EventCategorys extends Table[EventCategory]("fam_event_category") {
   }
 
   def insert(event: EventCategory): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       EventCategorys.insert((event))
     }
   }
 
 
 //  def delete(eId: Long, tId : Long) = DB.withSession {
-//    implicit session => {
+//    implicit session:Session => {
 //      EventCategorys.where(_.eventId === eId).and( _.categoryId === tId).delete
 //    }
 //  }

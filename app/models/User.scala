@@ -90,7 +90,7 @@ object Users extends Table[User]("fam_user") {
 
   // Operations
   def save(user: User): User = DB.withTransaction {
-    implicit session =>
+    implicit session:Session =>
       Logger.info("save %s".format(user))
 //      val u = findByUserId(user.id).match{
 //         x => Query(Users).where(_.pid is user.pid).update(user)
@@ -118,34 +118,34 @@ object Users extends Table[User]("fam_user") {
   }
 
   def delete(pid: Long) = DB.withTransaction {
-    implicit session =>
+    implicit session:Session =>
       Logger.info("delete %s".format(pid))
       this.where(_.pid is pid).mutate(_.delete)
   }
 
   // Queries
   def all: List[User] = DB.withSession {
-    implicit session =>
+    implicit session:Session =>
       Logger.info("all")
       val q = for (user <- Users) yield user
       q.list
   }
 
   def findById(pid: Long): Option[User] = DB.withSession {
-    implicit session =>
+    implicit session:Session =>
       Logger.info("findById %s".format(pid))
       def byId = createFinderBy(_.pid)
       byId(pid).firstOption
   }
 
   //  def findByEmail(email: String): Option[User] = DB.withSession {
-  //    implicit session =>
+  //    implicit session:Session =>
   //      def byEmail = createFinderBy(_.email)
   //      byEmail(email).firstOption
   //  }
 
   def findByUserId(u: IdentityId): Option[User] = DB.withSession {
-    implicit session =>
+    implicit session:Session =>
       Logger.info("findByUserId %s".format(u))
       val q = for {
         user <- Users
@@ -156,7 +156,7 @@ object Users extends Table[User]("fam_user") {
   }
 
   def findByEmailAndProvider(e: String, p: String): Option[User] = DB.withSession {
-    implicit session =>
+    implicit session:Session =>
       Logger.info("findByEmailAndProvider %s %s".format(e, p))
       val q = for {
         user <- Users
@@ -167,7 +167,7 @@ object Users extends Table[User]("fam_user") {
   }
 
   def count: Int = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Query(Users.length).first
     }
   }
@@ -177,7 +177,7 @@ object Users extends Table[User]("fam_user") {
     val offset = pageSize * page
 
     DB.withSession {
-      implicit session => {
+      implicit session:Session => {
 
         val users = (
           for {t <- Users
@@ -199,7 +199,7 @@ object Users extends Table[User]("fam_user") {
   }
 
   //  def options: Seq[(String, String)] = DB.withSession {
-  //    implicit session =>
+  //    implicit session:Session =>
   //      val query = (for {
   //        item <- Users
   //      } yield (item.id, item.email)

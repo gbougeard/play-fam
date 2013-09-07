@@ -57,7 +57,7 @@ object Rankings extends Table[Ranking]("v_rankings") {
   lazy val pageSize = 10
 
   def findAll: Seq[Ranking] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for (c <- Rankings.sortBy(_.points.desc)) yield c).list
     }
   }
@@ -67,7 +67,7 @@ object Rankings extends Table[Ranking]("v_rankings") {
   //    val offset = pageSize * page
   //
   //    DB.withSession {
-  //      implicit session =>
+  //      implicit session:Session =>
   //        val clubs = (
   //          for {c <- Rankings
   //            .sortBy(club => orderField match {
@@ -86,7 +86,7 @@ object Rankings extends Table[Ranking]("v_rankings") {
   //  }
 
   def findByCompetition(id: Long): Seq[Ranking] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for {
         c <- Rankings.sortBy(_.points.desc)
         if c.competitionId === id
@@ -95,7 +95,7 @@ object Rankings extends Table[Ranking]("v_rankings") {
   }
 
   def findByClub(id: Long): Seq[Ranking] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for {
         c <- Rankings.sortBy(_.points.desc)
         if c.clubId === id
@@ -104,7 +104,7 @@ object Rankings extends Table[Ranking]("v_rankings") {
   }
 
   def findByTeam(id: Long): Seq[Ranking] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for {
         c <- Rankings.sortBy(_.points.desc)
         if c.teamId === id

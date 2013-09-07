@@ -39,7 +39,7 @@ object CompetitionTeams extends Table[CompetitionTeam]("fam_competition_team") {
   //    val offset = pageSize * page
   //
   //    DB.withSession {
-  //      implicit session => {
+  //      implicit session:Session => {
   //        val competitions = (
   //          for {t <- Competitions
   //            .sortBy(competition => orderField match {
@@ -61,7 +61,7 @@ object CompetitionTeams extends Table[CompetitionTeam]("fam_competition_team") {
   //  }
 
   def findByTeam(id: Long): Seq[(CompetitionTeam, SeasonCompetition, Team)] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val query = (
         for {ps <- CompetitionTeams
              if ps.teamId === id
@@ -74,7 +74,7 @@ object CompetitionTeams extends Table[CompetitionTeam]("fam_competition_team") {
   }
 
   def findByCompetition(id: Long): Seq[(CompetitionTeam, SeasonCompetition, Team)] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val query = (
         for {ps <- CompetitionTeams
              if ps.competitionId === id
@@ -87,13 +87,13 @@ object CompetitionTeams extends Table[CompetitionTeam]("fam_competition_team") {
   }
 
   def insert(competitionTeam: CompetitionTeam): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       CompetitionTeams.autoInc.insert((competitionTeam))
     }
   }
 
   def update(id: Long, competition: CompetitionTeam) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val competition2update = competition.copy(Some(id))
       //        Logger.info("playe2update " + competition2update)
       CompetitionTeams.where(_.id === id).update(competition2update)
@@ -101,7 +101,7 @@ object CompetitionTeams extends Table[CompetitionTeam]("fam_competition_team") {
   }
 
   def delete(competitionId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       CompetitionTeams.where(_.id === competitionId).delete
     }
   }
@@ -112,7 +112,7 @@ object CompetitionTeams extends Table[CompetitionTeam]("fam_competition_team") {
   //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.firstName + " " + c.lastName)
 
   //  def options: Seq[(String, String)] = DB.withSession {
-  //    implicit session =>
+  //    implicit session:Session =>
   //      val query = (for {
   //        item <- Competitions
   //      } yield (item.id, item.firstName + " " + item.lastName)

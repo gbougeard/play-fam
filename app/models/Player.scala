@@ -48,13 +48,13 @@ object Players extends Table[Player]("fam_player") {
   lazy val pageSize = 10
 
   def findAll: Seq[Player] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for (c <- Players.sortBy(_.lastName)) yield c).list
     }
   }
 
   def count: Int = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Query(Players.length).first
     }
   }
@@ -64,7 +64,7 @@ object Players extends Table[Player]("fam_player") {
     val offset = pageSize * page
 
     DB.withSession {
-      implicit session => {
+      implicit session:Session => {
         val players = (
           for {t <- Players
             .sortBy(player => orderField match {
@@ -85,38 +85,38 @@ object Players extends Table[Player]("fam_player") {
   }
 
   def findById(id: Long): Option[Player] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Players.byId(id).firstOption
     }
   }
 
   def findByFirstName(firstName: String): Option[Player] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Players.byFirstName(firstName).firstOption
     }
   }
 
   def findByLastName(lastName: String): Option[Player] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Players.byLastName(lastName).firstOption
     }
   }
 
   def findByUserId(id: Long): Option[Player] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Players.byUserId(id).firstOption
     }
   }
 
 
   def insert(player: Player): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Players.autoInc.insert((player))
     }
   }
 
   def update(id: Long, player: Player) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val player2update = player.copy(Some(id))
       Logger.info("playe2update " + player2update)
       Players.where(_.id === id).update(player2update)
@@ -124,7 +124,7 @@ object Players extends Table[Player]("fam_player") {
   }
 
   def delete(playerId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Players.where(_.id === playerId).delete
     }
   }
@@ -135,7 +135,7 @@ object Players extends Table[Player]("fam_player") {
 //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.firstName + " " + c.lastName)
 
   def options: Seq[(String, String)] = DB.withSession {
-    implicit session =>
+    implicit session:Session =>
       val query = (for {
         item <- Players
       } yield (item.id, item.firstName + " " + item.lastName)

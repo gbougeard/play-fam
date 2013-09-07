@@ -33,13 +33,13 @@ object Seasons extends Table[Season]("fam_season") {
 
 
   def findAll: Seq[Season] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for (c <- Seasons.sortBy(_.name)) yield c).list
     }
   }
 
   def count: Int = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Query(Seasons.length).first
     }
   }
@@ -49,7 +49,7 @@ object Seasons extends Table[Season]("fam_season") {
     val offset = pageSize * page
 
     DB.withSession {
-      implicit session => {
+      implicit session:Session => {
         val seasons = (
           for {c <- Seasons
             .sortBy(season => orderField match {
@@ -68,26 +68,26 @@ object Seasons extends Table[Season]("fam_season") {
   }
 
   def findById(id: Long): Option[Season] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Seasons.byId(id).firstOption
     }
   }
 
   def insert(season: Season): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Seasons.autoInc.insert((season))
     }
   }
 
   def update(id: Long, season: Season) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val season2update = season.copy(Some(id))
       Seasons.where(_.id === id).update(season2update)
     }
   }
 
   def delete(seasonId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Seasons.where(_.id === seasonId).delete
     }
   }
@@ -97,7 +97,7 @@ object Seasons extends Table[Season]("fam_season") {
    */
 //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString(), c.name)
   def options: Seq[(String, String)] = DB.withSession {
-    implicit session =>
+    implicit session:Session =>
       val query = (for {
         item <- Seasons
       } yield (item.id, item.name)

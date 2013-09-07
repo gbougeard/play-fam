@@ -77,7 +77,7 @@ object MatchTeams extends Table[MatchTeam]("fam_match_team") {
   lazy val pageSize = 10
 
   def findByMatchAndTeam(idMatch: Long, idTeam: Long): Option[(MatchTeam, Team)] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val query = (
         for {mt <- MatchTeams
              if mt.matchId === idMatch
@@ -91,7 +91,7 @@ object MatchTeams extends Table[MatchTeam]("fam_match_team") {
   }
 
   def findByMatchAndHome(idMatch: Long): Option[(MatchTeam, Team)] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val query = (
         for {mt <- MatchTeams
              if mt.matchId === idMatch
@@ -103,7 +103,7 @@ object MatchTeams extends Table[MatchTeam]("fam_match_team") {
   }
 
   def findByMatchAndAway(idMatch: Long): Option[(MatchTeam, Team)] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val query = (
         for {mt <- MatchTeams
              if mt.matchId === idMatch
@@ -115,7 +115,7 @@ object MatchTeams extends Table[MatchTeam]("fam_match_team") {
   }
 
   def findByMatch(idMatch: Long): Seq[(MatchTeam, Match, Team)] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val query = (
         for {mt <- MatchTeams
              if mt.matchId === idMatch
@@ -128,7 +128,7 @@ object MatchTeams extends Table[MatchTeam]("fam_match_team") {
   }
 
   def findByTeam(idTeam: Long): Seq[(MatchTeam, Match, Team)] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val query = (
         for {mt <- MatchTeams
              if mt.teamId === idTeam
@@ -141,13 +141,13 @@ object MatchTeams extends Table[MatchTeam]("fam_match_team") {
   }
 
   def insert(m: MatchTeam): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       MatchTeams.insert((m))
     }
   }
 
   def update(id: Long, m: MatchTeam) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val matchTeam2update = m.copy(Some(id))
       Logger.info("playe2update " + matchTeam2update)
       //      MatchTeams.where(_.id === id).update(matchTeam2update)
@@ -155,7 +155,7 @@ object MatchTeams extends Table[MatchTeam]("fam_match_team") {
   }
 
   def delete(matchTeamId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       //      MatchTeams.where(_.id === matchTeamId).delete
     }
   }

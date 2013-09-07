@@ -47,13 +47,13 @@ object Cities extends Table[City]("fam_city") {
   lazy val pageSize = 10
 
   def findAll: Seq[City] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for (c <- Cities.sortBy(_.name)) yield c).list
     }
   }
 
   def count: Int = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Query(Cities.length).first
     }
   }
@@ -63,7 +63,7 @@ object Cities extends Table[City]("fam_city") {
     val offset = pageSize * page
 
     DB.withSession {
-      implicit session => {
+      implicit session:Session => {
         val cities = (
           for {c <- Cities
 
@@ -87,38 +87,38 @@ object Cities extends Table[City]("fam_city") {
   }
 
   def findById(id: Long): Option[City] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Cities.byId(id).firstOption
     }
   }
 
   def findByName(name: String): Option[City] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Cities.byName(name).firstOption
     }
   }
 
   def findByCode(code: String): Option[City] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Cities.byCode(code).firstOption
     }
   }
 
   def insert(city: City): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Cities.autoInc.insert((city))
     }
   }
 
   def update(id: Long, city: City) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val city2update = city.copy(Some(id), city.code, city.name, city.upper, city.lower, city.provinceId)
       Cities.where(_.id === id).update(city2update)
     }
   }
 
   def delete(cityId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Cities.where(_.id === cityId).delete
     }
   }
@@ -128,7 +128,7 @@ object Cities extends Table[City]("fam_city") {
    */
 //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
   def options: Seq[(String, String)] = DB.withSession {
-    implicit session =>
+    implicit session:Session =>
       val query = (for {
         item <- Cities
       } yield (item.id, item.name)
@@ -138,7 +138,7 @@ object Cities extends Table[City]("fam_city") {
 
 
   def json(page: Int, pageSize: Int, orderField: Int): Seq[(City, Province)] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
 
       println("page " + page)
       println("pageSize " + pageSize)

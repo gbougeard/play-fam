@@ -42,13 +42,13 @@ object Teams extends Table[Team]("fam_team") {
   lazy val pageSize = 10
 
   def findAll: Seq[Team] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for (c <- Teams.sortBy(_.name)) yield c).list
     }
   }
 
   def count: Int = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Query(Teams.length).first
     }
   }
@@ -57,7 +57,7 @@ object Teams extends Table[Team]("fam_team") {
 
     val offset = pageSize * page
     DB.withSession {
-      implicit session => {
+      implicit session:Session => {
         val teams = (
           for {t <- Teams
                c <- t.club
@@ -79,44 +79,44 @@ object Teams extends Table[Team]("fam_team") {
   }
 
   def findById(id: Long): Option[Team] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Teams.byId(id).firstOption
     }
   }
 
   def findByName(name: String): Option[Team] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Teams.byName(name).firstOption
     }
   }
 
   def findByCode(code: String): Option[Team] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Teams.byCode(code).firstOption
     }
   }
 
   def findByClub(id: Long): Seq[Team] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Teams.byClub(id).list
     }
   }
 
   def insert(team: Team): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Teams.autoInc.insert((team))
     }
   }
 
   def update(id: Long, team: Team) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val team2update = team.copy(Some(id), team.code, team.name, team.clubId)
       Teams.where(_.id === id).update(team2update)
     }
   }
 
   def delete(teamId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Teams.where(_.id === teamId).delete
     }
   }
@@ -126,7 +126,7 @@ object Teams extends Table[Team]("fam_team") {
    */
 //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
   def options: Seq[(String, String)] = DB.withSession {
-    implicit session =>
+    implicit session:Session =>
       val query = (for {
         item <- Teams
       } yield (item.id, item.name)
@@ -135,7 +135,7 @@ object Teams extends Table[Team]("fam_team") {
   }
 
   def findByClubOptions(id: Long): Seq[(String, String)] = DB.withSession {
-    implicit session =>
+    implicit session:Session =>
       val query = (for {
         item <- Teams
         if (item.clubId is id)

@@ -44,13 +44,13 @@ object Matchs extends Table[Match]("fam_match") {
   lazy val pageSize = 10
 
   def findAll: Seq[Match] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for (c <- Matchs) yield c).list
     }
   }
 
   def count: Int = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Query(Matchs.length).first
     }
   }
@@ -60,7 +60,7 @@ object Matchs extends Table[Match]("fam_match") {
     val offset = pageSize * page
 
     DB.withSession {
-      implicit session => {
+      implicit session:Session => {
         val matchs = (
           for {m <- Matchs
                if m.eventId.isNotNull
@@ -84,25 +84,25 @@ object Matchs extends Table[Match]("fam_match") {
   }
 
   def findById(id: Long): Option[Match] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Matchs.byId(id).firstOption
     }
   }
 
   def findByEventId(id: Long): Option[Match] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Matchs.byEventId(id).firstOption
     }
   }
 
   def insert(m: Match): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Matchs.autoInc.insert((m))
     }
   }
 
   def update(id: Long, m: Match) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val match2update = m.copy(Some(id))
       Logger.info("playe2update " + match2update)
       Matchs.where(_.id === id).update(match2update)
@@ -110,7 +110,7 @@ object Matchs extends Table[Match]("fam_match") {
   }
 
   def delete(matchId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Matchs.where(_.id === matchId).delete
     }
   }

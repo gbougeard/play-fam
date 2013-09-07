@@ -51,7 +51,7 @@ object Cards extends Table[Card]("fam_card") {
   lazy val pageSize = 10
 
   def findByMatchAndTeam(idMatch: Long, idTeam: Long): Seq[(Card, Match, Team, Player, TypCard)] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val query = (
         for {mp <- Cards
              if mp.matchId === idMatch
@@ -67,13 +67,13 @@ object Cards extends Table[Card]("fam_card") {
   }
 
   def insert(card: Card): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Cards.insert((card))
     }
   }
 
   def update(id: Long, card: Card) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val card2update = card.copy(Some(id))
 //      Logger.info("playe2update " + card2update)
       Cards.where(_.id === id).update(card2update)
@@ -81,7 +81,7 @@ object Cards extends Table[Card]("fam_card") {
   }
 
   def delete(id: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Cards.where(_.id === id).delete
     }
   }

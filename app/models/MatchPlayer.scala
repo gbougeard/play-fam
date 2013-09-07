@@ -54,7 +54,7 @@ object MatchPlayers extends Table[MatchPlayer]("fam_match_player") {
   lazy val pageSize = 10
 
   def findByMatchAndTeam(idMatch: Long, idTeam: Long): Seq[(MatchPlayer, Match, Player, Team)] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Logger.debug("slick MatchPlayers "+idMatch +" "+idTeam)
       val query = (
         for {mp <- MatchPlayers
@@ -70,13 +70,13 @@ object MatchPlayers extends Table[MatchPlayer]("fam_match_player") {
   }
 
   def insert(matchPlayer: MatchPlayer): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       MatchPlayers.insert((matchPlayer))
     }
   }
 
   def update(idMatch: Long, idPlayer:Long, matchPlayer: MatchPlayer) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
 //      val matchPlayer2update = matchPlayer.copy(Some(id))
 //      Logger.info("playe2update " + matchPlayer2update)
 //      MatchPlayers.where(_.id === id).update(matchPlayer2update)
@@ -84,7 +84,7 @@ object MatchPlayers extends Table[MatchPlayer]("fam_match_player") {
   }
 
   def delete(idMatch: Long, idPlayer:Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
 //      MatchPlayers.where(_.id === matchPlayerId).delete
     }
   }

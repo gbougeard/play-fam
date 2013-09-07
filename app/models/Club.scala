@@ -41,13 +41,13 @@ object Clubs extends Table[Club]("fam_club") {
   lazy val pageSize = 10
 
   def findAll: Seq[Club] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for (c <- Clubs.sortBy(_.name)) yield c).list
     }
   }
 
   def count: Int = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Query(Clubs.length).first
     }
   }
@@ -57,7 +57,7 @@ object Clubs extends Table[Club]("fam_club") {
     val offset = pageSize * page
 
     DB.withSession {
-      implicit session =>
+      implicit session:Session =>
         val clubs = (
           for {c <- Clubs
             .sortBy(club => orderField match {
@@ -75,38 +75,38 @@ object Clubs extends Table[Club]("fam_club") {
   }
 
   def findById(id: Long): Option[Club] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Clubs.byId(id).firstOption
     }
   }
 
   def findByName(name: String): Option[Club] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Clubs.byName(name).firstOption
     }
   }
 
   def findByCode(code: Int): Option[Club] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Clubs.byCode(code).firstOption
     }
   }
 
   def insert(club: Club): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Clubs.autoInc.insert((club))
     }
   }
 
   def update(id: Long, club: Club) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val club2update = club.copy(Some(id), club.code, club.name)
       Clubs.where(_.id === id).update(club2update)
     }
   }
 
   def delete(clubId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Clubs.where(_.id === clubId).delete
     }
   }
@@ -118,7 +118,7 @@ object Clubs extends Table[Club]("fam_club") {
   //    c <- findAll
   //  } yield (c.id.toString, c.name)
   def options: Seq[(String, String)] = DB.withSession {
-    implicit session =>
+    implicit session:Session =>
       val query = (for {
         item <- Clubs
       } yield (item.id, item.name)

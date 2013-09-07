@@ -43,13 +43,13 @@ object Scales extends Table[Scale]("fam_scale") {
   lazy val pageSize = 10
 
   def findAll: Seq[Scale] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       (for (c <- Scales.sortBy(_.name)) yield c).list
     }
   }
 
   def count: Int = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Query(Scales.length).first
     }
   }
@@ -59,7 +59,7 @@ object Scales extends Table[Scale]("fam_scale") {
     val offset = pageSize * page
 
     DB.withSession {
-      implicit session =>
+      implicit session:Session =>
         val scales = (
           for {c <- Scales
             .sortBy(scale => orderField match {
@@ -77,38 +77,38 @@ object Scales extends Table[Scale]("fam_scale") {
   }
 
   def findById(id: Long): Option[Scale] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Scales.byId(id).firstOption
     }
   }
 
   def findByName(name: String): Option[Scale] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Scales.byName(name).firstOption
     }
   }
 
   def findByCode(code: String): Option[Scale] = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Scales.byCode(code).firstOption
     }
   }
 
   def insert(scale: Scale): Long = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Scales.autoInc.insert((scale))
     }
   }
 
   def update(id: Long, scale: Scale) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       val scale2update = scale.copy(Some(id), scale.code, scale.name)
       Scales.where(_.id === id).update(scale2update)
     }
   }
 
   def delete(scaleId: Long) = DB.withSession {
-    implicit session => {
+    implicit session:Session => {
       Scales.where(_.id === scaleId).delete
     }
   }
@@ -120,7 +120,7 @@ object Scales extends Table[Scale]("fam_scale") {
 //    c <- findAll
 //  } yield (c.id.toString, c.name)
   def options: Seq[(String, String)] = DB.withSession {
-    implicit session =>
+    implicit session:Session =>
       val query = (for {
         item <- Scales
       } yield (item.id, item.name)
