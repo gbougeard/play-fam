@@ -19,7 +19,7 @@ object Library {
   val wjAngularUiVersion = "0.4.0-1"
   val wjAngularUiBootstrapVersion = "0.4.0"
   val wjAngularStrapVersion = "0.7.4"
-  val wjBootstrapVersion = "2.3.2"
+  val wjBootstrapVersion = "3.0.0"
   val wjPNotifyVersion = "1.2.0"
   val wjRestangularVersion = "0.6.3"
   val wjUnderscorejsVersion = "1.5.1"
@@ -89,7 +89,7 @@ object ApplicationBuild extends Build {
 
 
     //    , "org.webjars" % "requirejs" % "2.1.1"
-    , "org.webjars" % "bootstrap-datepicker" % "1.0.1"
+    , "org.webjars" % "bootstrap-datepicker" % "1.1.3"
     , "org.webjars" % "bootstrap-timepicker" % "0.2.3"
     , "org.webjars" % "bootswatch" % "2.3.1"
     , "org.webjars" % "font-awesome" % "3.2.1"
