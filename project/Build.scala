@@ -10,6 +10,7 @@ object Library {
   val slf4jVersion = "1.7.5"
   val mysqlVersion = "5.1.25"
   val jodaMapperVersion = "0.3.0"
+  val playSlickVersion = "0.4.0"
   //  val metricsVersion                  = "3.0.0"
   val secureSocialVersion = "master-SNAPSHOT"
   val playMetricsVersion = "0.1.1"
@@ -30,8 +31,9 @@ object Library {
   val slf4j = "org.slf4j" % "slf4j-api" % slf4jVersion
   val mysql = "mysql" % "mysql-connector-java" % mysqlVersion
   val jodaMapper = "com.github.tototoshi" %% "slick-joda-mapper" % jodaMapperVersion
+  val playSlick = "com.typesafe.play" %% "play-slick" % playSlickVersion
   //  val metrics               = "nl.grons" % "metrics-scala_2.10" % metricsVersion
-  val playMetrics = "com.kenshoo" %% "com.kenshoo.play.metrics.MetricsPlugin" % playMetricsVersion
+  val playMetrics = "com.kenshoo" %% "metrics-play" % playMetricsVersion
   val secureSocial = "securesocial" %% "securesocial" % secureSocialVersion
   val webjars = "org.webjars" % "webjars-play_2.10" % webjarsVersion
   val wjAngular = "org.webjars" % "angularjs" % wjAngularVersion
@@ -58,7 +60,8 @@ object ApplicationBuild extends Build {
     logbackClassic,
     mysql,
     jodaMapper,
-    //    playMetrics,
+        playSlick,
+        playMetrics,
     secureSocial,
     webjars,
     wjAngular,
@@ -77,7 +80,8 @@ object ApplicationBuild extends Build {
     //      ,"org.xerial" % "sqlite-jdbc" % "3.6.20"
     //      ,"org.slf4j" % "slf4j-nop" % "1.6.4" // <- disables logging
 
-,"com.typesafe.play" %% "play-slick" % "0.4.0" 
+//,"com.typesafe.play" %% "play-slick" % "0.4.0"
+// , "com.kenshoo" %% "metrics-play" % "0.1.1"
     // Other database drivers
     //    ,  "org.apache.derby" % "derby" % "10.6.1.0"
     //     , "org.hsqldb" % "hsqldb" % "2.0.0"
@@ -104,6 +108,6 @@ object ApplicationBuild extends Build {
     //  ).dependsOn(RootProject( uri("git://github.com/gbougeard/play-slick.git") ))
   )
 //.dependsOn(RootProject(uri("git://github.com/freekh/play-slick.git")))
-    .dependsOn(RootProject(uri("git://github.com/kenshoo/metrics-play.git")))
+//    .dependsOn(RootProject(uri("git://github.com/kenshoo/metrics-play.git")))
 
 }
