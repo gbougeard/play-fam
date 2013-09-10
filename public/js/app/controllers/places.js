@@ -38,7 +38,7 @@ fam.controller('PlacesCtrl', function ($scope, $http, $location, Restangular) {
                 $scope.marker = results[0].geometry.location;
                 $scope.place.latitude = $scope.marker.pb;
                 $scope.place.longitude = $scope.marker.qb;
-//                console.log($("myMap"));
+                $scope.myMap.panTo($scope.marker );
 //            .panTo($scope.marker);
 //                $scope.myMarkers.push(marker);
                 $scope.$digest();
