@@ -3,7 +3,7 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.Place
+import models.{Event, Place}
 import models.Places._
 import slick.session.Session
 import play.api.libs.json._
@@ -62,17 +62,18 @@ object Places extends Controller  with securesocial.core.SecureSocial{
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
-    implicit request =>
-      placeForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.places.edit("Edit Place - errors", id, formWithErrors)),
-        place => {
-          models.Places.update(id, place)
-          //        Home.flashing("success" -> "Place %s has been updated".format(place.name))
-          Redirect(routes.Places.list(0, 2))
-        }
-      )
-  }
+//  def update(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
+//    implicit request =>
+//      placeForm.bindFromRequest.fold(
+//        formWithErrors => BadRequest(views.html.places.edit("Edit Place - errors", id, formWithErrors)),
+//        place => {
+//          play.Logger.debug(s"update Place $place")
+//          models.Places.update(id, place)
+//          //        Home.flashing("success" -> "Place %s has been updated".format(place.name))
+//          Redirect(routes.Places.list(0, 2))
+//        }
+//      )
+//  }
 
   /**
    * Display the 'new computer form'.
@@ -95,6 +96,14 @@ object Places extends Controller  with securesocial.core.SecureSocial{
           Redirect(routes.Places.list(0, 2))
         }
       )
+  }
+
+  def update(id: Long) = Action(parse.json) {
+    implicit request =>
+      val json = request.body
+      val place = json.as[Place]
+      models.Places.update(id, place)
+      Ok(Json.toJson(id))
   }
 
   /**
@@ -124,6 +133,13 @@ object Places extends Controller  with securesocial.core.SecureSocial{
   def jsonList = Action {
     implicit request =>
       Ok(Json.toJson(models.Places.findAll))
+  }
+
+  def jsonById(id: Long) = Action {
+    implicit request =>
+      models.Places.findById(id).map {
+        place => Ok(Json.toJson(place))
+      } getOrElse (NotFound)
   }
 
 }

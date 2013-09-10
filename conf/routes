@@ -106,6 +106,7 @@ PUT         /places/$id<[0-9]+>                                                 
 GET         /places/new                                                                            controllers.Places.create
 POST        /places                                                                                controllers.Places.save
 GET         /places/$id<[0-9]+>                                                                    controllers.Places.view(id : Long)
+GET         /api/v1/places/$id<[0-9]+>                                                             controllers.Places.jsonById(id : Long)
 GET         /places/gmap/                                                                          controllers.Places.gmap
 GET         /places/gmap/json                                                                      controllers.Places.gmapData
 

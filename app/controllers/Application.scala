@@ -67,6 +67,8 @@ object Application extends Controller with securesocial.core.SecureSocial {
       Ok(
         Routes.javascriptRouter("jsRoutes")(
           Places.gmapData,
+          Places.jsonById,
+          Places.update,
           Events.eventsData,
           Events.view,
           Events.jsonById,

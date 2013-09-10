@@ -20,35 +20,65 @@
             <strong>Done!</strong> @message
         </div>
     }
-
-    @form(routes.Places.update(id), 'class -> "form-horizontal") {
-
-        @inputText(placeForm("name"), '_label -> "Nom")
-        @inputText(placeForm("address"), '_label -> "Address")
-        @inputText(placeForm("zipcode"), '_label -> "Zipcode")
-        @inputText(placeForm("city"), '_label -> "City")
-        @inputText(placeForm("latitude"), '_label -> "Latitude")
-        @inputText(placeForm("longitude"), '_label -> "Longitude")
-
-
-
+    <div ng-controller="PlacesCtrl"  ng-init="loadPlace(@id)">
+    <form id="formPlace" class="form-horizontal" ng-submit="update()">
+        <div class="control-group " ng-class="{error: formPlace.name.$invalid}">
+            <label class="control-label" for="name">Nom</label>
+            <div class="controls">
+                <input type="text" id="name" name="name" ng-model="place.name" required>
+                <span class="help-inline">Required</span>
+            </div>
+        </div>
+        <div class="control-group " ng-class="{error: formPlace.address.$invalid}">
+            <label class="control-label" for="address">Address</label>
+            <div class="controls">
+                <input type="text" id="address" name="address" ng-model="place.address" required>
+                <span class="help-inline">Required</span>
+            </div>
+        </div>
+        <div class="control-group " ng-class="{error: formPlace.zipcode.$invalid}">
+            <label class="control-label" for="zipcode">Zipcode</label>
+            <div class="controls">
+                <input type="number" id="zipcode" name="zipcode" ng-model="place.zipcode" required>
+                <span class="help-inline">Numeric</span>
+            </div>
+        </div>
+        <div class="control-group " ng-class="{error: formPlace.city.$invalid}">
+            <label class="control-label" for="city">City</label>
+            <div class="controls">
+                <input type="text" id="city" name="city" ng-model="place.city" required>
+                <span class="help-inline">Required</span>
+            </div>
+        </div>
+        <div class="control-group " ng-class="{error: formPlace.latitude.$invalid}">
+            <label class="control-label" for="latitude">Latitude</label>
+            <div class="controls">
+                <input type="text" id="latitude" name="latitude" ng-model="place.latitude" placeholder="Latitude" required>
+            </div>
+        </div>
+        <div class="control-group " ng-class="{error: formPlace.longitude.$invalid}">
+            <label class="control-label" for="longitude">Longitude</label>
+            <div class="controls">
+                <input type="text" id="longitude" name="longitude" ng-model="place.longitude" placeholder="Longitude" required>
+            </div>
+        </div>
         <div class="form-actions">
             @btnSubmit("Save this place")
             @btnView(routes.Places.view(id))
             @btnCancel(routes.Places.list())
             @btnNew(routes.Places.create())
         </div>
+    </form>
 
-    }
-    @placeForm("address").value
-    <section ng-controller="PlacesCtrl" style="height:400px;">
-        <div class="well" ng-init="address='@placeForm("address").value, @placeForm("zipcode").value @placeForm("city").value'">
+    <section  style="height:400px;">
+        <div class="well">
         <div class="row">
-            <div class="span2"><button id="btnGeo" class="btn" ng-click="codeAddress(address)">Geocode</button></div>
+            <div class="span2"><button id="btnGeo" class="btn" ng-click="geocode()">Geocode</button></div>
             <div  ui-map="myMap" class="span8 map" ui-options="mapOptions"  ui-event="{'map-click': 'addMarker($event)'}"> </div>
         </div>
         </div>
-        @*<pre>{{marker}}</pre>*@
 
     </section>
+
+    </div>
 }
