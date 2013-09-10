@@ -1,21 +1,81 @@
-@(message: String, placeForm: Form[Place])(implicit request: RequestHeader, session: play.api.mvc.Session)
+@(message: String, placeForm: Form[Place])(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
 
 @import helper._
 @import tags.buttons._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
 
-@main(message) {
+    @scripts ={
 
-    @form(routes.Places.save(), 'class -> "form-horizontal") {
-
-        @inputText(placeForm("zipcode"), '_label -> "Code")
-        @inputText(placeForm("name"), '_label -> "Nom")
-
-        <div class="form-actions">
-            @btnSubmit("Save this place")
-            @btnCancel(routes.Places.list())
-        </div>
+        <script type="text/javascript" src='@routes.Assets.at("js/app/controllers/places.js")'></script>
 
     }
+
+@main(message, scripts) {
+
+    @flash.get("success").map { message =>
+        <div class="alert alert-success">
+            <strong>Done!</strong> @message
+        </div>
+    }
+    <div ng-controller="PlacesCtrl">
+        <form id="formPlace" class="form-horizontal" ng-submit="save()">
+            <div class="control-group " ng-class="{error: formPlace.name.$invalid}">
+                <label class="control-label" for="name">Nom</label>
+                <div class="controls">
+                    <input type="text" id="name" name="name" ng-model="place.name" required>
+                    <span class="help-inline">Required</span>
+                </div>
+            </div>
+            <div class="control-group " ng-class="{error: formPlace.address.$invalid}">
+                <label class="control-label" for="address">Address</label>
+                <div class="controls">
+                    <input type="text" id="address" name="address" ng-model="place.address" required>
+                    <span class="help-inline">Required</span>
+                </div>
+            </div>
+            <div class="control-group " ng-class="{error: formPlace.zipcode.$invalid}">
+                <label class="control-label" for="zipcode">Zipcode</label>
+                <div class="controls">
+                    <input type="number" id="zipcode" name="zipcode" ng-model="place.zipcode" required>
+                    <span class="help-inline">Numeric</span>
+                </div>
+            </div>
+            <div class="control-group " ng-class="{error: formPlace.city.$invalid}">
+                <label class="control-label" for="city">City</label>
+                <div class="controls">
+                    <input type="text" id="city" name="city" ng-model="place.city" required>
+                    <span class="help-inline">Required</span>
+                </div>
+            </div>
+            <div class="control-group " ng-class="{error: formPlace.latitude.$invalid}">
+                <label class="control-label" for="latitude">Latitude</label>
+                <div class="controls">
+                    <input type="text" id="latitude" name="latitude" ng-model="place.latitude" placeholder="Latitude" required>
+                </div>
+            </div>
+            <div class="control-group " ng-class="{error: formPlace.longitude.$invalid}">
+                <label class="control-label" for="longitude">Longitude</label>
+                <div class="controls">
+                    <input type="text" id="longitude" name="longitude" ng-model="place.longitude" placeholder="Longitude" required>
+                </div>
+            </div>
+            <div class="form-actions">
+                @btnSubmit("Save this place")
+                @btnCancel(routes.Places.list())
+                @btnNew(routes.Places.create())
+            </div>
+        </form>
+
+        <section  style="height:400px;">
+            <div class="well">
+                <div class="row">
+                    <div class="span2"><button id="btnGeo" class="btn" ng-click="geocode()">Geocode</button></div>
+                    <div  ui-map="myMap" class="span8 map" ui-options="mapOptions"  ui-event="{'map-click': 'addMarker($event)'}"> </div>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
 }

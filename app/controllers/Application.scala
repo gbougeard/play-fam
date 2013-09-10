@@ -69,6 +69,7 @@ object Application extends Controller with securesocial.core.SecureSocial {
           Places.gmapData,
           Places.jsonById,
           Places.update,
+          Places.save,
           Events.eventsData,
           Events.view,
           Events.jsonById,

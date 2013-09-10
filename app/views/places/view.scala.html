@@ -2,17 +2,38 @@
 
 @import tags.buttons._
 
-@main(message) {
-<div class="header">
+    @scripts ={
+
+        <script type="text/javascript" src='@routes.Assets.at("js/app/controllers/places.js")'></script>
+
+    }
+
+@main(message, scripts) {
+<div class="header" ng-controller="PlacesCtrl"  ng-init="loadPlace(@place.id);">
 
     <dl class="dl-horizontal">
-        <dt>Id</dt>
-        <dd>@place.id</dd>
         <dt>Name</dt>
-        <dd>@place.name</dd>
-        <dt>Code FFF</dt>
+        <dd>place.name</dd>
+        <dt>Adress</dt>
+        <dd>@place.address</dd>
+        <dt>Zipcode</dt>
         <dd>@place.zipcode</dd>
+        <dt>City</dt>
+        <dd>@place.city</dd>
+        <dt>Longitude</dt>
+        <dd>@place.longitude</dd>
+        <dt>Latitude</dt>
+        <dd>@place.latitude</dd>
     </dl>
+
+    <section  style="height:400px;">
+        <div class="well">
+            <div class="row">
+                <div  ui-map="myMap" class="span12 map" ui-options="mapOptions"  ui-event="{'map-click': 'addMarker($event)'}"> </div>
+            </div>
+        </div>
+
+    </section>
 </div>
 
 <div class="form-actions">

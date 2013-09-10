@@ -2,7 +2,6 @@
 
 
 fam.controller('PlacesCtrl', function ($scope, $http, $location, Restangular) {
-
     $scope.marker = {};
     $scope.mapOptions = {
         //center: new google.maps.LatLng(35.784, -78.670),
@@ -25,7 +24,7 @@ fam.controller('PlacesCtrl', function ($scope, $http, $location, Restangular) {
 //    }
 
     $scope.geocode = function () {
-
+        $scope.address = $scope.place.address + " , " + $scope.place.zipcode + " " + $scope.place.city;
         console.log("geocode",$scope.place, $scope.address);
 //        var address = document.getElementById('address').value;
         geocoder.geocode({ 'address': $scope.address}, function (results, status) {
@@ -39,6 +38,8 @@ fam.controller('PlacesCtrl', function ($scope, $http, $location, Restangular) {
                 $scope.marker = results[0].geometry.location;
                 $scope.place.latitude = $scope.marker.pb;
                 $scope.place.longitude = $scope.marker.qb;
+//                console.log($("myMap"));
+//            .panTo($scope.marker);
 //                $scope.myMarkers.push(marker);
                 $scope.$digest();
             } else {
@@ -62,6 +63,10 @@ fam.controller('PlacesCtrl', function ($scope, $http, $location, Restangular) {
         placeFuture.get().then(function(result){
            $scope.place = result;
            $scope.address = $scope.place.address + " , " + $scope.place.zipcode + " " + $scope.place.city;
+
+            if ($scope.place.city != ""){
+                $scope.geocode();
+            }
         });
 
     };
@@ -87,6 +92,35 @@ fam.controller('PlacesCtrl', function ($scope, $http, $location, Restangular) {
                 $.pnotify({
                     title: 'Oh No!',
                     text: 'Something terrible happened while updating the place.',
+                    type: 'error'
+                });
+            }
+        });
+
+
+    }
+
+    $scope.save = function(){
+        jsRoutes.controllers.Places.save().ajax({
+            data: JSON.stringify($scope.place),
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data, status) {
+                console.log("success!", data, status);
+
+                $.pnotify({
+                    title: 'Place created',
+                    text: 'The place have been successfully created',
+                    type: 'success',
+                    icon: 'picon picon-flag-green'
+                });
+            },
+            error: function (data, status) {
+                console.log("Failed!", data, status);
+                //$scope.data = data || "Request failed";
+                $.pnotify({
+                    title: 'Oh No!',
+                    text: 'Something terrible happened while creating the place.',
                     type: 'error'
                 });
             }

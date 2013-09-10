@@ -86,23 +86,31 @@ object Places extends Controller  with securesocial.core.SecureSocial{
   /**
    * Handle the 'new computer form' submission.
    */
-  def save =  SecuredAction(WithRoles(Set(Coach)))  {
-    implicit request =>
-      placeForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.places.create("New Place - errors", formWithErrors)),
-        place => {
-          models.Places.insert(place)
-          //        Home.flashing("success" -> "Place %s has been created".format(place.name))
-          Redirect(routes.Places.list(0, 2))
-        }
-      )
-  }
+//  def save =  SecuredAction(WithRoles(Set(Coach)))  {
+//    implicit request =>
+//      placeForm.bindFromRequest.fold(
+//        formWithErrors => BadRequest(views.html.places.create("New Place - errors", formWithErrors)),
+//        place => {
+//          models.Places.insert(place)
+//          //        Home.flashing("success" -> "Place %s has been created".format(place.name))
+//          Redirect(routes.Places.list(0, 2))
+//        }
+//      )
+//  }
 
   def update(id: Long) = Action(parse.json) {
     implicit request =>
       val json = request.body
       val place = json.as[Place]
       models.Places.update(id, place)
+      Ok(Json.toJson(id))
+  }
+
+  def save() = Action(parse.json) {
+    implicit request =>
+      val json = request.body
+      val place = json.as[Place]
+      val id = models.Places.insert(place)
       Ok(Json.toJson(id))
   }
 
