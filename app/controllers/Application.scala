@@ -20,7 +20,7 @@ object Application extends Controller with securesocial.core.SecureSocial {
 
   def index = SecuredAction {
     implicit request =>
-      play.Logger.debug(s"test index ${Cache.get("roles.1258")}")
+//      play.Logger.debug(s"test index ${Cache.get("roles.1258")}")
       Ok(views.html.index(request.user))
   }
 
@@ -30,6 +30,21 @@ object Application extends Controller with securesocial.core.SecureSocial {
     implicit request =>
       play.Logger.info("logout!")
       Ok("Bye").withNewSession
+  }
+
+  def deleteCacheById(id :Long ) = Action {
+    implicit request =>
+      play.Logger.info(s"delete cache for user $id")
+      Cache.remove(s"roles.$id")
+      Redirect(routes.Application.index())
+  }
+
+  def deleteCacheCurrentUser = SecuredAction {
+    implicit request =>
+      val id = request.user.identityId.userId
+      play.Logger.info(s"delete cache for user $id")
+      Cache.remove(s"roles.$id")
+      Redirect(routes.Application.index())
   }
 
   // a sample action using the new authorization hook
