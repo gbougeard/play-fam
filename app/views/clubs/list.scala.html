@@ -37,6 +37,7 @@
                     @header(1, "Code FFF")
                     @header(2, "Nom")
                     @header(3, "City")
+                    @header(4, "Zipcode")
                 </tr>
             </thead>
             <tbody>
@@ -47,6 +48,7 @@
                     <td>@club.code</td>
                     <td><a href="@routes.Clubs.view(club.id.getOrElse(0))">@club.name</a></td>
                     <td>@club.city.getOrElse("-")</a></td>
+                    <td>@club.zipcode.getOrElse("-")</a></td>
                 </tr>
             }
 

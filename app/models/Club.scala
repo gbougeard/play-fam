@@ -84,6 +84,10 @@ object Clubs extends Table[Club]("fam_club") {
             case -1 => club.code.desc
             case 2 => club.name.asc
             case -2 => club.name.desc
+            case 3 => club.city.asc
+            case -3 => club.city.desc
+            case 4 => club.zipcode.asc
+            case -4 => club.zipcode.desc
           })
             .drop(offset)
             .take(pageSize)
