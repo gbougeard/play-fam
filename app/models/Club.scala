@@ -56,6 +56,8 @@ object Clubs extends Table[Club]("fam_club") {
   val byId = createFinderBy(_.id)
   val byName = createFinderBy(_.name)
   val byCode = createFinderBy(_.code)
+  val byZipCode = createFinderBy(_.zipcode)
+  val byCity = createFinderBy(_.city)
 
   lazy val pageSize = 10
 
@@ -112,6 +114,24 @@ object Clubs extends Table[Club]("fam_club") {
   def findByCode(code: Int): Option[Club] = DB.withSession {
     implicit session: Session => {
       Clubs.byCode(code).firstOption
+    }
+  }
+
+  def findByZipCode(code: String): Seq[Club] = DB.withSession {
+    implicit session: Session => {
+      Clubs.byZipCode(code).list
+    }
+  }
+
+  def findByCity(city: String): Seq[Club] = DB.withSession {
+    implicit session: Session => {
+      Clubs.byCity(city).list
+    }
+  }
+
+  def findLikeCity(c: String): Seq[Club] = DB.withSession {
+    implicit session: Session => {
+      Query(Clubs).where(_.city like s"%$c%").list
     }
   }
 
