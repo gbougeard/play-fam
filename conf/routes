@@ -25,7 +25,6 @@ PUT         /clubs/$id<[0-9]+>                                                  
 GET         /clubs/new                                                                             controllers.Clubs.create
 POST        /clubs                                                                                 controllers.Clubs.save
 GET         /clubs/$id<[0-9]+>                                                                     controllers.Clubs.view(id : Long)
-GET         /clubs/load                                                                            controllers.Clubs.load
 # Teams
 GET         /teams                                                                                 controllers.Teams.list(p:Int ?= 0,s:Int ?= 2)
 GET         /teams/edit/$id<[0-9]+>                                                                controllers.Teams.edit(id : Long)
