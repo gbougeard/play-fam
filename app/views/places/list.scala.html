@@ -39,7 +39,8 @@
                     @header(2, "Nom")
                     @header(3, "Adresse")
                     @header(4, "Ville")
-                    @header(5, "Type")
+                    @header(5, "Zipcode")
+                    @header(6, "Type")
                     @* @header(5,"Lat")
                     @header(6,"Long") *@
                 </tr>
@@ -53,6 +54,7 @@
                     <td><a href="@routes.Places.view(place.id.getOrElse(0))">@place.name</a></td>
                     <td>@place.address</td>
                     <td>@place.city</td>
+                    <td>@place.zipcode</td>
                     <td>@place.typFff.getOrElse("-")</td>
                     @* <td>@place.latitude.getOrElse(<em>-</em>)</td>
                     <td>@place.longitude.getOrElse(<em>-</em>)</td> *@

@@ -84,6 +84,14 @@ object Places extends Table[Place]("fam_place") {
             case -1 => place.zipcode.desc
             case 2 => place.name.asc
             case -2 => place.name.desc
+            case 3 => place.address.asc
+            case -3 => place.address.desc
+            case 4 => place.city.asc
+            case -4 => place.city.desc
+            case 5 => place.zipcode.asc
+            case -5 => place.zipcode.desc
+            case 6 => place.typFff.asc
+            case -6 => place.typFff.desc
           })
             .drop(offset)
             .take(pageSize)
