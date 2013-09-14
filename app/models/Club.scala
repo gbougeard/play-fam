@@ -9,11 +9,18 @@ import play.api.db.slick.DB
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-case class Club(id: Option[Long],
+case class Club(id: Option[Long] = None,
                 code: Int,
                 name: String,
-                countryId: Option[Long],
-                cityId: Option[Long])
+                countryId: Option[Long] = None,
+                cityId: Option[Long] = None,
+                colours: Option[String] = None,
+                address: Option[String] = None,
+                zipcode: Option[String] = None,
+                city: Option[String] = None,
+                organization: Option[Long] = None,
+                comments: Option[String] = None
+                 )
 
 
 // define tables
@@ -29,9 +36,21 @@ object Clubs extends Table[Club]("fam_club") {
 
   def cityId = column[Long]("id_city")
 
-  def * = id.? ~ code ~ name ~ countryId.? ~ cityId.? <>(Club, Club.unapply _)
+  def colours = column[String]("colours")
 
-  def autoInc = id.? ~ code ~ name ~ countryId.? ~ cityId.? <>(Club, Club.unapply _) returning id
+  def address = column[String]("address")
+
+  def zipcode = column[String]("zipcode")
+
+  def city = column[String]("city")
+
+  def organization = column[Long]("id_organization")
+
+  def comments = column[String]("comments")
+
+  def * = id.? ~ code ~ name ~ countryId.? ~ cityId.? ~ colours.? ~ address.? ~ zipcode.? ~ city.? ~ organization.? ~ comments.? <>(Club, Club.unapply _)
+
+  def autoInc = * returning id
 
 
   val byId = createFinderBy(_.id)
@@ -41,13 +60,13 @@ object Clubs extends Table[Club]("fam_club") {
   lazy val pageSize = 10
 
   def findAll: Seq[Club] = DB.withSession {
-    implicit session:Session => {
+    implicit session: Session => {
       (for (c <- Clubs.sortBy(_.name)) yield c).list
     }
   }
 
   def count: Int = DB.withSession {
-    implicit session:Session => {
+    implicit session: Session => {
       Query(Clubs.length).first
     }
   }
@@ -57,7 +76,7 @@ object Clubs extends Table[Club]("fam_club") {
     val offset = pageSize * page
 
     DB.withSession {
-      implicit session:Session =>
+      implicit session: Session =>
         val clubs = (
           for {c <- Clubs
             .sortBy(club => orderField match {
@@ -75,38 +94,38 @@ object Clubs extends Table[Club]("fam_club") {
   }
 
   def findById(id: Long): Option[Club] = DB.withSession {
-    implicit session:Session => {
+    implicit session: Session => {
       Clubs.byId(id).firstOption
     }
   }
 
   def findByName(name: String): Option[Club] = DB.withSession {
-    implicit session:Session => {
+    implicit session: Session => {
       Clubs.byName(name).firstOption
     }
   }
 
   def findByCode(code: Int): Option[Club] = DB.withSession {
-    implicit session:Session => {
+    implicit session: Session => {
       Clubs.byCode(code).firstOption
     }
   }
 
   def insert(club: Club): Long = DB.withSession {
-    implicit session:Session => {
+    implicit session: Session => {
       Clubs.autoInc.insert((club))
     }
   }
 
   def update(id: Long, club: Club) = DB.withSession {
-    implicit session:Session => {
+    implicit session: Session => {
       val club2update = club.copy(Some(id), club.code, club.name)
       Clubs.where(_.id === id).update(club2update)
     }
   }
 
   def delete(clubId: Long) = DB.withSession {
-    implicit session:Session => {
+    implicit session: Session => {
       Clubs.where(_.id === clubId).delete
     }
   }
@@ -118,7 +137,7 @@ object Clubs extends Table[Club]("fam_club") {
   //    c <- findAll
   //  } yield (c.id.toString, c.name)
   def options: Seq[(String, String)] = DB.withSession {
-    implicit session:Session =>
+    implicit session: Session =>
       val query = (for {
         item <- Clubs
       } yield (item.id, item.name)

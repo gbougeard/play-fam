@@ -6,12 +6,21 @@
 <div class="header">
 
     <dl class="dl-horizontal">
-        <dt>Id</dt>
-        <dd>@club.id</dd>
+
         <dt>Name</dt>
         <dd>@club.name</dd>
         <dt>Code FFF</dt>
         <dd>@club.code</dd>
+        <dt>Colours</dt>
+        <dd>@club.colours.getOrElse("-")</dd>
+        <dt>Address</dt>
+        <dd>@club.address.getOrElse("-")</dd>
+        <dt>Zipcode</dt>
+        <dd>@club.zipcode.getOrElse("-")</dd>
+        <dt>City</dt>
+        <dd>@club.city.getOrElse("-")</dd>
+        <dt>Comments</dt>
+        <dd>@club.comments</dd>
     </dl>
 </div>
 

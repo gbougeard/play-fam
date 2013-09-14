@@ -3,13 +3,18 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import play.Logger
 import models.Club
 import service.Coach
 import service.Administrator
+import play.api.libs.json._
 
 
-object Clubs extends Controller with securesocial.core.SecureSocial  {
+object Clubs extends Controller with securesocial.core.SecureSocial {
+
+  case class FffClub(code: String, name: String, colours: String, address: String, orga1: String, orga2: String)
+
+  implicit val fffClubRead = Json.format[FffClub]
+
 
   /**
    * This result directly redirect to the application home.
@@ -24,8 +29,14 @@ object Clubs extends Controller with securesocial.core.SecureSocial  {
       "id" -> optional(longNumber),
       "code" -> number,
       "name" -> nonEmptyText,
-            "country" -> optional(longNumber),
-            "city" -> optional(longNumber)
+      "country" -> optional(longNumber),
+      "city" -> optional(longNumber),
+      "colours" -> optional(text),
+      "address" -> optional(text),
+      "zipcode" -> optional(text),
+      "city" -> optional(text),
+      "organization" -> optional(longNumber),
+      "comments" -> optional(text)
     )
       (Club.apply)(Club.unapply)
   )
@@ -43,14 +54,14 @@ object Clubs extends Controller with securesocial.core.SecureSocial  {
     implicit request =>
       models.Clubs.findById(id).map {
         club => Ok(views.html.clubs.view("View Club", club))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   def edit(id: Long) = SecuredAction(WithRightClub(id)) {
     implicit request =>
       models.Clubs.findById(id).map {
         club => Ok(views.html.clubs.edit("Edit Club", id, clubForm.fill(club)))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   /**
@@ -74,21 +85,20 @@ object Clubs extends Controller with securesocial.core.SecureSocial  {
 
   def page = UserAwareAction {
     implicit request =>
-    val userName = request.user match {
-      case Some(user) => user.fullName
-      case _ => "guest"
-    }
-    Ok("Hello %s".format(userName))
+      val userName = request.user match {
+        case Some(user) => user.fullName
+        case _ => "guest"
+      }
+      Ok("Hello %s".format(userName))
   }
 
   // you don't want to redirect to the login page for ajax calls so
   // adding a ajaxCall = true will make SecureSocial return a forbidden error
   // instead.
-//  def ajaxCall = SecuredAction(ajaxCall = true) {
-//    implicit request =>
-//    // return some json
-//  }
-
+  //  def ajaxCall = SecuredAction(ajaxCall = true) {
+  //    implicit request =>
+  //    // return some json
+  //  }
 
 
   /**
@@ -121,6 +131,49 @@ object Clubs extends Controller with securesocial.core.SecureSocial  {
     implicit request =>
       models.Clubs.delete(id)
       Home.flashing("success" -> "Club has been deleted")
+  }
+
+  def load = Action {
+    import scala.io.Source
+
+    val is = Application.getClass.getResourceAsStream("/public/data/clubs_light.json")
+    val src = Source.fromInputStream(is)
+    val iter = src.getLines
+    val lines = src.mkString
+    src.close()
+    val fffClubs = Json.parse(lines).as[Seq[FffClub]]
+    fffClubs.map {
+      fffClub =>
+        val adr =  if (fffClub.address.split(" - ").length > 2) fffClub.address.split(" - ").reverse.tail.tail.head else fffClub.address
+        val zipcode = if (fffClub.address.split(" - ").length > 2) fffClub.address.split(" - ").reverse.tail.head  else ""
+        val city = if (fffClub.address.split(" - ").length > 2) fffClub.address.split(" - ").reverse.head  else ""
+
+        val col = fffClub.colours match {
+          case "" => None
+          case s:String  => Some(s.trim)
+        }
+
+        val club = Club(code = fffClub.code.trim.toInt,
+          name = fffClub.name.trim,
+          colours = col,
+          comments = Some(Json.toJson(fffClub).toString),
+          address = adr match {
+          case "" => None
+          case s:String  => Some(s.trim)
+        },
+          zipcode = zipcode match {
+          case "" => None
+          case s:String  => Some(s.trim)
+        },
+          city =city match {
+          case "" => None
+          case s:String  => Some(s.trim)
+        })
+        play.Logger.debug(s"$club")
+              models.Clubs.insert(club)
+    }
+
+    Ok
   }
 
 }
