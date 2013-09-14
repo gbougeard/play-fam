@@ -8,13 +8,15 @@ import play.api.db.slick.DB
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-case class Place(id: Option[Long],
+case class Place(id: Option[Long] = None,
                  name: String,
                  address: String,
                  city: String,
                  zipcode: Int,
-                 latitude: Option[Float],
-                 longitude: Option[Float]
+                 latitude: Option[Float] = None,
+                 longitude: Option[Float] = None,
+comments: Option[String] = None,
+typFff: Option[String] = None
                   )
 
 
@@ -34,10 +36,12 @@ object Places extends Table[Place]("fam_place") {
   def latitude = column[Float]("latitude")
 
   def longitude = column[Float]("longitude")
+  def comments = column[String]("comments")
+  def typFff = column[String]("typ_fff")
 
-  def * = id.? ~ name ~ address ~ city ~ zipcode ~ latitude.? ~ longitude.? <>(Place, Place.unapply _)
+  def * = id.? ~ name ~ address ~ city ~ zipcode ~ latitude.? ~ longitude.? ~ comments.? ~ typFff.? <>(Place, Place.unapply _)
 
-  def autoInc = id.? ~ name ~ address ~ city ~ zipcode ~ latitude.? ~ longitude.? <>(Place, Place.unapply _) returning id
+  def autoInc = * returning id
 
   val byId = createFinderBy(_.id)
   val byName = createFinderBy(_.name)

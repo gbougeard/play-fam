@@ -3,7 +3,7 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.{Event, Place}
+import models.{ Event, Place}
 import models.Places._
 import slick.session.Session
 import play.api.libs.json._
@@ -11,7 +11,12 @@ import play.api.libs.functional.syntax._
 import service.{Coach,Administrator}
 
 
+
 object Places extends Controller  with securesocial.core.SecureSocial{
+
+  case class FffPlace(code: String, typ: String, name: String, address: String)
+
+  implicit val fffPlaceRead = Json.format[FffPlace]
 
   /**
    * This result directly redirect to the application home.
@@ -29,7 +34,9 @@ object Places extends Controller  with securesocial.core.SecureSocial{
       "city" -> nonEmptyText,
       "zipcode" -> number,
       "latitude" -> optional(ignored(0.0f)),
-      "longitude" -> optional(ignored(0.0f))
+      "longitude" -> optional(ignored(0.0f)),
+      "comments" -> optional(text),
+      "typFff" -> optional(text)
     )
       (Place.apply)(Place.unapply)
   )
@@ -148,6 +155,39 @@ object Places extends Controller  with securesocial.core.SecureSocial{
       models.Places.findById(id).map {
         place => Ok(Json.toJson(place))
       } getOrElse (NotFound)
+  }
+
+  def load = Action {
+    import scala.io.Source
+
+    val is = Application.getClass.getResourceAsStream("/public/data/terrains_light.json")
+    val src = Source.fromInputStream(is)
+    val lines = src.mkString
+    src.close()
+    val fffPlaces = Json.parse(lines).as[Seq[FffPlace]]
+    fffPlaces.map {
+      fffPlace =>
+        val adr =  fffPlace.address.split(" - ").head //if (fffPlace.address.split(" - ").length > 1) fffPlace.address.split(" - ").reverse.tail.head else fffPlace.address
+        val zipcode = fffPlace.address.split(" - ").reverse.head.split(' ').head//if (fffPlace.address.split(" - ").length > 1) fffPlace.address.split(" - ").reverse.head.split(' ').head  else ""
+        val city = fffPlace.address.split(" - ").reverse.head.split(' ').reverse.head //if (fffPlace.address.split(" - ").length > 1) fffPlace.address.split(" - ").reverse.head.split(' ').tail  else ""
+
+//      play.Logger.debug(s"adress ${fffPlace.address}")
+//      play.Logger.debug(s"adr ${fffPlace.address.split(" - ").head}")
+//      play.Logger.debug(s"zipcode ${fffPlace.address.split(" - ").reverse.head.split(' ').head}")
+//      play.Logger.debug(s"city ${fffPlace.address.split(" - ").reverse.head.split(' ').reverse.head}")
+
+        val place = Place( typFff = Some(fffPlace.typ.trim),
+          name = fffPlace.name.trim,
+          comments = Some(Json.toJson(fffPlace).toString),
+          address = adr.trim,
+          zipcode = zipcode.trim.toInt,
+          city =city.trim)
+
+        play.Logger.debug(s"$place")
+        models.Places.insert(place)
+    }
+
+    Ok
   }
 
 }

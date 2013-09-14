@@ -21,9 +21,11 @@
         <dt>City</dt>
         <dd>@place.city</dd>
         <dt>Longitude</dt>
-        <dd>@place.longitude</dd>
+        <dd>@place.longitude.getOrElse("-")</dd>
         <dt>Latitude</dt>
-        <dd>@place.latitude</dd>
+        <dd>@place.latitude.getOrElse("-")</dd>
+        <dt>Type</dt>
+        <dd>@place.typFff.getOrElse("-")</dd>
     </dl>
 
     <section  style="height:400px;">

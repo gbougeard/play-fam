@@ -19,7 +19,7 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
   /**
    * This result directly redirect to the application home.
    */
-  val Home = Redirect(routes.Clubs.list(0, 0))
+  val Home = Redirect(routes.Clubs.list(0, 1))
 
   /**
    * Describe the club form (used in both edit and create screens).
@@ -29,8 +29,8 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
       "id" -> optional(longNumber),
       "code" -> number,
       "name" -> nonEmptyText,
-      "country" -> optional(longNumber),
-      "city" -> optional(longNumber),
+      "countryId" -> optional(longNumber),
+      "cityId" -> optional(longNumber),
       "colours" -> optional(text),
       "address" -> optional(text),
       "zipcode" -> optional(text),
@@ -71,13 +71,18 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
    */
   def update(id: Long) = SecuredAction(WithRightClub(id)) {
     implicit request =>
+      play.Logger.debug(s"update club $id")
       clubForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.clubs.edit("Edit Club - errors", id, formWithErrors)),
+        formWithErrors => {
+          play.Logger.debug(s"errors club $id $formWithErrors ")
+          BadRequest(views.html.clubs.edit("Edit Club - errors", id, formWithErrors))
+        },
         club => {
+          play.Logger.debug(s"update club $id $club ")
           models.Clubs.update(id, club)
-          //        Home.flashing("success" -> "Club %s has been updated".format(club.name))
+                  Home.flashing("success" -> "Club %s has been updated".format(club.name))
           //Redirect(routes.Clubs.list(0, 2))
-          Redirect(routes.Clubs.view(id)).flashing("success" -> "Club %s has been updated".format(club.name))
+//          Redirect(routes.Clubs.view(id)).flashing("success" -> "Club %s has been updated".format(club.name))
 
         }
       )
@@ -114,12 +119,13 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
    */
   def save = SecuredAction(WithRoles(Set(Coach))) {
     implicit request =>
+      play.Logger.debug(s"save club")
       clubForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.clubs.create("New Club - errors", formWithErrors)),
         club => {
           models.Clubs.insert(club)
-          //        Home.flashing("success" -> "Club %s has been created".format(club.name))
-          Redirect(routes.Clubs.list(0, 2))
+                  Home.flashing("success" -> "Club %s has been created".format(club.name))
+//          Redirect(routes.Clubs.list(0, 2))
         }
       )
   }

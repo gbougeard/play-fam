@@ -12,7 +12,7 @@ import play.api.cache.Cache
 
 import views._
 import models.Role
-import service.Permission
+import service.{Administrator, Permission}
 import play.api.libs.json.Json
 
 
@@ -118,9 +118,15 @@ case class WithRightClub(id: Long) extends Authorization {
   def isAuthorized(user: Identity) = {
     val res = user match {
       case u: models.FamUser =>
-       u.currentClubId.map {
+       val rightClub = u.currentClubId.map {
           clubId => clubId == id
-        } getOrElse(false)
+        } getOrElse false
+        val admin =   u.pid.map {
+          userId => {
+            models.Roles.isUserInRole(userId, Set(Administrator))
+          }
+        } getOrElse false
+        admin || rightClub
       case _ => false
     }
     res
@@ -129,13 +135,14 @@ case class WithRightClub(id: Long) extends Authorization {
 
 case class WithRoles(permissions : Set[Permission]) extends Authorization {
   def isAuthorized(user: Identity) = {
+    play.Logger.debug(s"isAuthorized $user - $permissions")
     val res = user match {
       case u: models.FamUser =>
         u.pid.map {
           userId => {
            models.Roles.isUserInRole(userId, permissions)
           }
-        } getOrElse (false)
+        } getOrElse false
       case _ => false
     }
     res
