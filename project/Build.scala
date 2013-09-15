@@ -1,6 +1,7 @@
 import sbt._
 import play.Project._
 import sbt.Keys._
+import com.lunatech.play.ubuntupackage.UbuntuPackagePlugin._
 
 object Library {
 
@@ -102,9 +103,13 @@ object ApplicationBuild extends Build {
   )
 
 
-  val main = play.Project(appName, appVersion, appDependencies).settings(
-    resolvers += Resolver.url("sbt-plugin-snapshots", new URL("http://repo.scala-sbt.org/scalasbt/sbt-plugin-snapshots/"))(Resolver.ivyStylePatterns)
-    // Add your own project settings here
+  val main = play.Project(appName, appVersion, appDependencies).settings(ubuntuPackageSettings:_*).settings(
+
+      UbuntuPackageKeys.maintainer := "Gregory Bougeard <gbougeard@gmail.com>",
+
+      resolvers += Resolver.url("sbt-plugin-snapshots", new URL("http://repo.scala-sbt.org/scalasbt/sbt-plugin-snapshots/"))(Resolver.ivyStylePatterns)
+
+  // Add your own project settings here
     //  ).dependsOn(RootProject( uri("git://github.com/gbougeard/play-slick.git") ))
   )
 //.dependsOn(RootProject(uri("git://github.com/freekh/play-slick.git")))
