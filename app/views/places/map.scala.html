@@ -11,6 +11,7 @@
     <div class="span4">
     <h4>Click to add a marker!</h4>
     <p>{{zoomMessage}}</p>
+        <h3>{{ myMarkers.length }} places</h3>
 <ul>
     <li ng-repeat="marker in myMarkers">
         <a ng-click="myMap.panTo(marker.getPosition())">Pan to {{marker.title}}</a>

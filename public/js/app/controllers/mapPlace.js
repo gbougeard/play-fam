@@ -13,7 +13,7 @@ function MapPlaceCtrl($scope, $http) {
     $scope.mapOptions = {
         //center: new google.maps.LatLng(35.784, -78.670),
         center: new google.maps.LatLng(43.602521593464054, 1.441223145229742), // Toulouse
-        zoom: 8,
+        zoom: 6,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     $scope.addMarker = function ($event) {
@@ -24,7 +24,7 @@ function MapPlaceCtrl($scope, $http) {
     };
     $scope.setZoomMessage = function (zoom) {
         $scope.zoomMessage = 'You just zoomed to ' + zoom + '!';
-        console.log(zoom, 'zoomed')
+//        console.log(zoom, 'zoomed')
     };
     $scope.openMarkerInfo = function (marker) {
         $scope.currentMarker = marker;
@@ -47,7 +47,7 @@ function MapPlaceCtrl($scope, $http) {
                 $scope.status = status;
 
                 angular.forEach(data, function (item) {
-                    console.log(item);
+//                    console.log(item);
                     var myLatlng = new google.maps.LatLng(item.latitude, item.longitude);
 
                     $scope.myMarkers.push(new google.maps.Marker({
