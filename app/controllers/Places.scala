@@ -37,7 +37,7 @@ object Places extends Controller  with securesocial.core.SecureSocial{
       "name" -> nonEmptyText,
       "address" -> nonEmptyText,
       "city" -> nonEmptyText,
-      "zipcode" -> number,
+      "zipcode" -> nonEmptyText,
       "latitude" -> optional(ignored(0.0f)),
       "longitude" -> optional(ignored(0.0f)),
       "comments" -> optional(text),
@@ -185,7 +185,7 @@ object Places extends Controller  with securesocial.core.SecureSocial{
           name = fffPlace.name.trim,
           comments = Some(Json.toJson(fffPlace).toString),
           address = adr.trim,
-          zipcode = zipcode.trim.toInt,
+          zipcode = zipcode.trim,
           city =city.trim)
 
         play.Logger.debug(s"$place")
@@ -195,11 +195,47 @@ object Places extends Controller  with securesocial.core.SecureSocial{
     Ok
   }
 
-  def geo = Action {
-    val places = models.Places.findPage(4,1)
-      val results = places.items.map{
+  def geoOSM = Action {
+    val places = models.Places.placesWithoutCoords
+      val results = places.map{
         place =>
-          val latLng = fetchLatitudeAndLongitude(s"${place.address} ${place.zipcode} ${place.city} ")
+          val latLng = fetchLatitudeAndLongitudeOSM(s"${place.address}, ${place.zipcode} ${place.city}")
+          latLng match{
+            case Some(coord) => {
+              val p = place.copy(latitude=Some(coord._1.toFloat), longitude=Some(coord._2.toFloat))
+              play.Logger.debug(s"copie $p")
+              models.Places.update(place.id.get, p)
+            }
+            case _ =>
+          }
+      }
+
+    Ok
+  }
+
+  def geoMQ = Action {
+    val places = models.Places.placesWithoutCoords
+      val results = places.map{
+        place =>
+          val latLng = fetchLatitudeAndLongitudeMQ(s"${place.address}, ${place.zipcode} ${place.city}")
+          latLng match{
+            case Some(coord) => {
+              val p = place.copy(latitude=Some(coord._1.toFloat), longitude=Some(coord._2.toFloat))
+              play.Logger.debug(s"copie $p")
+              models.Places.update(place.id.get, p)
+            }
+            case _ =>
+          }
+      }
+
+    Ok
+  }
+
+  def geo = Action {
+    val places = models.Places.placesWithoutCoords
+      val results = places.map{
+        place =>
+          val latLng = fetchLatitudeAndLongitude(s"${place.address}, ${place.zipcode} ${place.city}")
           latLng match{
             case Some(coord) => {
               val p = place.copy(latitude=Some(coord._1.toFloat), longitude=Some(coord._2.toFloat))
@@ -240,6 +276,73 @@ object Places extends Controller  with securesocial.core.SecureSocial{
         val latitude = (result(0) \\ "lat")(0).toString.toDouble
         val longitude = (result(0) \\ "lng")(0).toString.toDouble
         Option(latitude, longitude)
+      }
+    }
+
+  }
+def fetchLatitudeAndLongitudeMQ(address: String): Option[(Double, Double)] = {
+    implicit val timeout = Timeout(50000 milliseconds)
+
+
+    play.Logger.info(s"fetchLatitudeAndLongitude $address")
+
+    // Encoded the address in order to remove the spaces from the address (spaces will be replaced by '+')
+    //@purpose There should be no spaces in the parameter values for a GET request
+    val addressEncoded = URLEncoder.encode(address, "UTF-8");
+  val url =  "http://www.mapquestapi.com/geocoding/v1/address?key=Fmjtd%7Cluub2hu8n9%2C7l%3Do5-9ut20y&location=" + addressEncoded + "&callback=renderGeocode"
+  play.Logger.debug(s"url $url")
+    val jsonContainingLatitudeAndLongitude = WS.url(url).get()
+
+    val future = jsonContainingLatitudeAndLongitude map {
+      response => (response.json \\ "latLng")
+    }
+
+    // Wait until the future completes (Specified the timeout above)
+
+    val result = Await.result(future, timeout.duration).asInstanceOf[List[play.api.libs.json.JsObject]]
+     play.Logger.debug(s"promise result $result")
+    //Fetch the values for Latitude & Longitude from the result of future
+    result.length match{
+      case 0 => None
+      case _ =>  {
+        val latitude = (result(0) \\ "lat")(0).toString.toDouble
+        val longitude = (result(0) \\ "lng")(0).toString.toDouble
+        Option(latitude, longitude)
+      }
+    }
+
+  }
+
+
+  def fetchLatitudeAndLongitudeOSM(address: String): Option[(Double, Double)] = {
+    implicit val timeout = Timeout(50000 milliseconds)
+
+    play.Logger.info(s"fetchLatitudeAndLongitudeOSM $address")
+
+    // Encoded the address in order to remove the spaces from the address (spaces will be replaced by '+')
+    //@purpose There should be no spaces in the parameter values for a GET request
+    val addressEncoded = URLEncoder.encode(address, "UTF-8");
+    val url = "http://nominatim.openstreetmap.org/search/" + addressEncoded + "?format=json&country=fr"
+    play.Logger.debug(s"url $url")
+    val jsonContainingLatitudeAndLongitude = WS.url(url).get()
+
+    val future = jsonContainingLatitudeAndLongitude map {
+      response => (response.json )
+    }
+
+    // Wait until the future completes (Specified the timeout above)
+
+    //    val result = Await.result(future, timeout.duration).asInstanceOf[List[play.api.libs.json.JsObject]]
+    val result = Await.result(future, timeout.duration).asInstanceOf[JsArray]
+    play.Logger.debug(s"promise result $result")
+    //Fetch the values for Latitude & Longitude from the result of future
+    result.value.length match{
+      case 0 => None
+      case _ =>  {
+        val lat = (result.value(0) \ "lat")
+        val lon = (result.value(0) \ "lon")
+        play.Logger.debug(s"$lat $lon")
+        Option(lat.toString.replace("\"","").toDouble, lon.toString.replace("\"","").toDouble)
       }
     }
 

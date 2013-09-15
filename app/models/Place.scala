@@ -12,7 +12,7 @@ case class Place(id: Option[Long] = None,
                  name: String,
                  address: String,
                  city: String,
-                 zipcode: Int,
+                 zipcode: String,
                  latitude: Option[Float] = None,
                  longitude: Option[Float] = None,
 comments: Option[String] = None,
@@ -31,7 +31,7 @@ object Places extends Table[Place]("fam_place") {
 
   def city = column[String]("city")
 
-  def zipcode = column[Int]("zipcode")
+  def zipcode = column[String]("zipcode")
 
   def latitude = column[Float]("latitude")
 
@@ -64,10 +64,21 @@ object Places extends Table[Place]("fam_place") {
 
   def placesWithCoords: Seq[Place] = DB.withSession {
     implicit session:Session => {
-      (for {c <- Places sortBy (_.name)
+      (for {c <- Places sortBy (_.zipcode)
             if (c.latitude isNotNull)
             if (c.longitude isNotNull)
       } yield c).list
+    }
+  }
+
+  def placesWithoutCoords: Seq[Place] = DB.withSession {
+    implicit session:Session => {
+      (for {c <- Places sortBy (_.zipcode)
+            if (c.latitude isNull)
+            if (c.longitude isNull)
+      } yield c)
+        .take(1000)
+        .list
     }
   }
 
@@ -108,21 +119,21 @@ object Places extends Table[Place]("fam_place") {
     }
   }
 
-  def findByName(name: String): Option[Place] = DB.withSession {
+  def findByName(name: String): Seq[Place] = DB.withSession {
     implicit session:Session => {
-      Places.byName(name).firstOption
+      Places.byName(name).list
     }
   }
 
-  def findByZipcode(zipcode: Int): Option[Place] = DB.withSession {
+  def findByZipcode(zipcode: String): Seq[Place] = DB.withSession {
     implicit session:Session => {
-      Places.byCode(zipcode).firstOption
+      Places.byCode(zipcode).list
     }
   }
 
-  def findByCity(city: String): Option[Place] = DB.withSession {
+  def findByCity(city: String): Seq[Place] = DB.withSession {
     implicit session:Session => {
-      Places.byCity(city).firstOption
+      Places.byCity(city).list
     }
   }
 
