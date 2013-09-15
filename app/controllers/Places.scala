@@ -217,7 +217,7 @@ object Places extends Controller  with securesocial.core.SecureSocial{
     val places = models.Places.placesWithoutCoords
       val results = places.map{
         place =>
-          val latLng = fetchLatitudeAndLongitudeMQ(s"${place.address}, ${place.zipcode} ${place.city}")
+          val latLng = fetchLatitudeAndLongitudeMQ(s"{'street':'${place.address}', 'zipcode':'${place.zipcode}', 'adminArea5':'${place.city}', 'adminArea1':'fr'}")
           latLng match{
             case Some(coord) => {
               val p = place.copy(latitude=Some(coord._1.toFloat), longitude=Some(coord._2.toFloat))
@@ -289,7 +289,7 @@ def fetchLatitudeAndLongitudeMQ(address: String): Option[(Double, Double)] = {
     // Encoded the address in order to remove the spaces from the address (spaces will be replaced by '+')
     //@purpose There should be no spaces in the parameter values for a GET request
     val addressEncoded = URLEncoder.encode(address, "UTF-8");
-  val url =  "http://www.mapquestapi.com/geocoding/v1/address?key=Fmjtd%7Cluub2hu8n9%2C7l%3Do5-9ut20y&location=" + addressEncoded + "&callback=renderGeocode"
+  val url =  "http://www.mapquestapi.com/geocoding/v1/address?key=Fmjtd%7Cluub2hu8n9%2C7l%3Do5-9ut20y&location=" + addressEncoded +"&inFormat=json"
   play.Logger.debug(s"url $url")
     val jsonContainingLatitudeAndLongitude = WS.url(url).get()
 
