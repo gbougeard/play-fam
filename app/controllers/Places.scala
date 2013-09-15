@@ -275,6 +275,7 @@ object Places extends Controller  with securesocial.core.SecureSocial{
       case _ =>  {
         val latitude = (result(0) \\ "lat")(0).toString.toDouble
         val longitude = (result(0) \\ "lng")(0).toString.toDouble
+        play.Logger.info(s"$latitude $longitude")
         Option(latitude, longitude)
       }
     }
@@ -307,6 +308,7 @@ def fetchLatitudeAndLongitudeMQ(address: String): Option[(Double, Double)] = {
       case _ =>  {
         val latitude = (result(0) \\ "lat")(0).toString.toDouble
         val longitude = (result(0) \\ "lng")(0).toString.toDouble
+        play.Logger.info(s"$latitude $longitude")
         Option(latitude, longitude)
       }
     }
@@ -341,7 +343,7 @@ def fetchLatitudeAndLongitudeMQ(address: String): Option[(Double, Double)] = {
       case _ =>  {
         val lat = (result.value(0) \ "lat")
         val lon = (result.value(0) \ "lon")
-        play.Logger.debug(s"$lat $lon")
+        play.Logger.info(s"$lat $lon")
         Option(lat.toString.replace("\"","").toDouble, lon.toString.replace("\"","").toDouble)
       }
     }
