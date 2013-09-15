@@ -13,7 +13,7 @@ function MapPlaceCtrl($scope, $http) {
     $scope.mapOptions = {
         //center: new google.maps.LatLng(35.784, -78.670),
         center: new google.maps.LatLng(43.602521593464054, 1.441223145229742), // Toulouse
-        zoom: 12,
+        zoom: 8,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     $scope.addMarker = function ($event) {
@@ -53,7 +53,7 @@ function MapPlaceCtrl($scope, $http) {
                     $scope.myMarkers.push(new google.maps.Marker({
                         map: $scope.myMap,
                         position: myLatlng,
-                        title: item.name
+                        title: item.name + " - " + item.zipcode + " "+ item.city
                     }));
                 });
 

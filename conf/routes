@@ -109,6 +109,7 @@ GET         /places/$id<[0-9]+>                                                 
 GET         /api/v1/places/$id<[0-9]+>                                                             controllers.Places.jsonById(id : Long)
 GET         /places/gmap/                                                                          controllers.Places.gmap
 GET         /places/gmap/json                                                                      controllers.Places.gmapData
+GET         /places/geo                                                                     controllers.Places.geo
 
 # Categorys
 GET         /categories                                                                            controllers.Categories.list(p:Int ?= 0,s:Int ?= 2)

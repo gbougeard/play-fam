@@ -48,7 +48,7 @@ object Places extends Table[Place]("fam_place") {
   val byCode = createFinderBy(_.zipcode)
   val byCity = createFinderBy(_.city)
 
-  lazy val pageSize = 10
+  lazy val pageSize = 2500
 
   def findAll: Seq[Place] = DB.withSession {
     implicit session:Session => {
