@@ -9,16 +9,31 @@
 @main(message, scripts) {
     <div class="row-fluid" ng-controller="MapPlaceCtrl">
     <div class="span4">
-    <h4>Click to add a marker!</h4>
     <p>{{zoomMessage}}</p>
-        <h3>{{ myMarkers.length }} places</h3>
-<ul>
-    <li ng-repeat="marker in myMarkers">
-        <a ng-click="myMap.panTo(marker.getPosition())">Pan to {{marker.title}}</a>
-    </li>
-</ul>
-</div>
+    <h3>{{ myMarkers.length }} places</h3>
 
+        <form id="formPlace" class="form-horizontal">
+            <div class="control-group " >
+            <div class="input-append">
+                <input type="text" id="zipcode" name="zipcode" ng-model="zipcode" placeholder="ZipCode">
+                <button class="btn"type="button"  ng-click="findByZipcode()"><i class="icon icon-search"></i></span>
+            </div>
+            </div>
+            <div class="control-group " >
+            <div class="input-append">
+                <input type="text" id="city" name="city" ng-model="city" placeholder="City">
+                <button class="btn"type="button" ng-click="findByCity()"><i class="icon icon-search"></i></span>
+            </div>
+            </div>
+        </form>
+
+        <ul>
+            <li ng-repeat="marker in myMarkers">
+                <a ng-click="myMap.panTo(marker.getPosition())">Pan to {{marker.title}}</a>
+            </li>
+        </ul>
+
+    </div>
          <!-- this is the confusing part. we have to point the map marker directive
       at an existing google.maps.Marker object, so it can hook up events -->
             <div ng-repeat="marker in myMarkers" ui-map-marker="myMarkers[$index]" ui-event="{'map-click': 'openMarkerInfo(marker)' }">

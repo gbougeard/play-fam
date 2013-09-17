@@ -109,6 +109,8 @@ GET         /places/$id<[0-9]+>                                                 
 GET         /api/v1/places/$id<[0-9]+>                                                             controllers.Places.jsonById(id : Long)
 GET         /places/gmap/                                                                          controllers.Places.gmap
 GET         /places/gmap/json                                                                      controllers.Places.gmapData
+GET         /api/v1/places/zipcode/$code<[0-9]+>                                                   controllers.Places.jsonLikeZipcode(code : String)
+GET         /api/v1/places/city/$city<[A-Za-z]+>                                                              controllers.Places.jsonLikeCity(city : String)
 GET         /places/geo                                                                            controllers.Places.geo
 GET         /places/geoMQ                                                                          controllers.Places.geoMQ
 GET         /places/geoOSM                                                                         controllers.Places.geoOSM

@@ -131,15 +131,27 @@ object Places extends Table[Place]("fam_place") {
     }
   }
 
-  def findByCity(city: String): Seq[Place] = DB.withSession {
+  def findLikeZipcode(c: String): Seq[Place] = DB.withSession {
+    implicit session: Session => {
+      Query(Places).where(_.zipcode like s"$c%").list
+    }
+  }
+
+  def findByCity(c: String): Seq[Place] = DB.withSession {
     implicit session:Session => {
-      Places.byCity(city).list
+      Places.byCity(c).list
+    }
+  }
+
+  def findLikeCity(c: String): Seq[Place] = DB.withSession {
+    implicit session: Session => {
+      Query(Places).where(_.city like s"$c%").list
     }
   }
 
   def insert(place: Place): Long = DB.withSession {
     implicit session:Session => {
-      Places.autoInc.insert((place))
+      Places.autoInc.insert(place)
     }
   }
 

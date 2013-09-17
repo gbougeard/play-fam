@@ -150,6 +150,18 @@ object Places extends Controller  with securesocial.core.SecureSocial{
       Ok(Json.toJson(places))
   }
 
+  def jsonLikeCity(city:String) = Action {
+    implicit request =>
+      val places = models.Places.findLikeCity(city)
+      Ok(Json.toJson(places))
+  }
+
+  def jsonLikeZipcode(zipcode:String) = Action {
+    implicit request =>
+      val places = models.Places.findLikeZipcode(zipcode)
+      Ok(Json.toJson(places))
+  }
+
   def jsonList = Action {
     implicit request =>
       Ok(Json.toJson(models.Places.findAll))

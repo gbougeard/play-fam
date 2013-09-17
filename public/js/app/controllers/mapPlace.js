@@ -67,5 +67,72 @@ function MapPlaceCtrl($scope, $http) {
         });
     };
 
-    $scope.loadPlaces();
+
+    // The function that will be executed on button click (ng-click="search()")
+    $scope.findByCity = function () {
+        console.log("findLikeCity", $scope.city);
+        $scope.myMarkers = [];
+        // Create the http post request
+        // the data holds the keywords
+        // The request is a JSON request.
+        jsRoutes.controllers.Places.jsonLikeCity($scope.city).ajax({
+            success: function (data, status) {
+                // console.log("loadPlaces success", data, status);
+                $scope.status = status;
+
+                angular.forEach(data, function (item) {
+//                    console.log(item);
+                    var myLatlng = new google.maps.LatLng(item.latitude, item.longitude);
+
+                    $scope.myMarkers.push(new google.maps.Marker({
+                        map: $scope.myMap,
+                        position: myLatlng,
+                        title: item.name + " - " + item.zipcode + " "+ item.city
+                    }));
+                });
+
+                $scope.$digest();
+            },
+            error: function (data, status) {
+                $scope.data = data || "Request failed";
+                $scope.status = status;
+                $scope.$digest();
+            }
+        });
+    };
+
+    // The function that will be executed on button click (ng-click="search()")
+    $scope.findByZipcode = function () {
+        console.log("findLikeZipcode", $scope.zipcode);
+        // Create the http post request
+        // the data holds the keywords
+        // The request is a JSON request.
+        $scope.myMarkers = [];
+        jsRoutes.controllers.Places.jsonLikeZipcode($scope.zipcode).ajax({
+            success: function (data, status) {
+                // console.log("loadPlaces success", data, status);
+                $scope.status = status;
+
+                angular.forEach(data, function (item) {
+//                    console.log(item);
+                    var myLatlng = new google.maps.LatLng(item.latitude, item.longitude);
+
+                    $scope.myMarkers.push(new google.maps.Marker({
+                        map: $scope.myMap,
+                        position: myLatlng,
+                        title: item.name + " - " + item.zipcode + " "+ item.city
+                    }));
+                });
+
+                $scope.$digest();
+            },
+            error: function (data, status) {
+                $scope.data = data || "Request failed";
+                $scope.status = status;
+                $scope.$digest();
+            }
+        });
+    };
+
+   // $scope.loadPlaces();
 }
