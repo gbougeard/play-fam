@@ -1,64 +1,69 @@
 @(message: String)(implicit request: RequestHeader, session: play.api.mvc.Session)
 
-@scripts ={
+    @scripts = {
 
-<script type="text/javascript" src='@routes.Assets.at("js/app/controllers/mapPlace.js")'></script>
+        <script type="text/javascript" src='@routes.Assets.at("js/app/controllers/mapPlace.js")'></script>
 
     }
 
-@main(message, scripts) {
-    <div class="row-fluid" ng-controller="MapPlaceCtrl">
-    <div class="span4">
-    <p>{{zoomMessage}}</p>
-    <h3>{{ myMarkers.length }} places</h3>
+    @main(message, scripts) {
+        <div class="row-fluid" ng-controller="MapPlaceCtrl">
+            <div class="span4">
+                <p>{{zoomMessage}}</p>
+                <h3>{{ myMarkers.length }} places</h3>
 
-        <form id="formPlace" class="form-horizontal">
-            <div class="control-group " >
-            <div class="input-append">
-                <input type="text" id="zipcode" name="zipcode" ng-model="zipcode" placeholder="ZipCode">
-                <button class="btn"type="button"  ng-click="findByZipcode()"><i class="icon icon-search"></i></span>
-            </div>
-            </div>
-            <div class="control-group " >
-            <div class="input-append">
-                <input type="text" id="city" name="city" ng-model="city" placeholder="City">
-                <button class="btn"type="button" ng-click="findByCity()"><i class="icon icon-search"></i></span>
-            </div>
-            </div>
-        </form>
+                <form id="formPlace" class="form-horizontal">
+                    <div class="control-group " >
+                        <div class="input-append">
+                            <input type="text" id="zipcode" name="zipcode" ng-model="zipcode" placeholder="ZipCode">
+                            <button class="btn" type="button" ng-click="findByZipcode()"><i class="icon icon-search"></i></button>
+                        </div>
+                    </div>
+                    <div class="control-group " >
+                        <div class="input-append">
+                            <input type="text" id="city" name="city" ng-model="city" placeholder="City">
+                            <button class="btn" type="button" ng-click="findByCity()"><i class="icon icon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
 
-        <ul>
-            <li ng-repeat="marker in myMarkers">
-                <a ng-click="myMap.panTo(marker.getPosition())">Pan to {{marker.title}}</a>
-            </li>
-        </ul>
+                <table class="table table-striped table-bordered table-hover">
+                    <tbody>
+                        <tr ng-repeat="marker in myMarkers">
+                            <td><a ng-click="myMap.panTo(marker.getPosition())"><i class="icon icon-map-marker"></i></a></td>
+                            <td><a href="/places/{{marker.idPlace}}">{{marker.title}}</a></td>
+                        </tr>
+                    </tbody>
+                </table>
 
-    </div>
-         <!-- this is the confusing part. we have to point the map marker directive
+            </div>
+                <!-- this is the confusing part. we have to point the map marker directive
       at an existing google.maps.Marker object, so it can hook up events -->
             <div ng-repeat="marker in myMarkers" ui-map-marker="myMarkers[$index]" ui-event="{'map-click': 'openMarkerInfo(marker)' }">
             </div>
 
             <div ui-map-info-window="myInfoWindow">
-                <fieldset><legend>{{currentMarker.title}}</legend>
+                <h5>{{currentMarker.title}}</h5>
                     <dl class="dl-horizontal">
                         <dt>Lat</dt>
                         <dd>{{currentMarkerLat}}</dd>
                         <dt>Long</dt>
                         <dd>{{currentMarkerLng}}</dd>
                     </dl>
-                 @*   <input ng-model="currentMarkerLat">
+                    @* <input ng-model="currentMarkerLat">
                     <input ng-model="currentMarkerLng">
-                 <a ng-click="setMarkerPosition(currentMarker, currentMarkerLat, currentMarkerLng)">Set Position</a>  *@
-            </fieldset>
+                    <a ng-click="setMarkerPosition(currentMarker, currentMarkerLat, currentMarkerLng)">Set Position</a> *@
             </div>
 
-            <!-- Giving the div an id="map_canvas" fix problems with twitter bootstrap affecting google maps -->
-            <div id="map_canvas" ui-map="myMap" class="map-big span8"
-                ui-event="{'map-click': 'addMarker($event)', 'map-zoom_changed': 'setZoomMessage(myMap.getZoom())' }"
-                ui-options="mapOptions">
+                <!-- Giving the div an id="map_canvas" fix problems with twitter bootstrap affecting google maps -->
+            <div class="span8">
+            <div id="map_canvas" ui-map="myMap" class="map-big "
+            ui-event="{'map-click': 'addMarker($event)', 'map-zoom_changed': 'setZoomMessage(myMap.getZoom())' }"
+            ui-options="mapOptions">
+            </div>
+                @*<button class="btn"  ng-click="geocodeMQ"><i class="icon icon-compass"></i>MapQuest</button>*@
             </div>
 
-    </div>
+        </div>
 
     }

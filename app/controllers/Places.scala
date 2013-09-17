@@ -3,21 +3,19 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.{ Event, Place}
+import models.Place
 import models.Places._
-import slick.session.Session
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
-import service.{Coach,Administrator}
+import service.{Coach, Administrator}
 import java.net.URLEncoder
 import play.api.libs.ws.WS
 import akka.util.Timeout
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ Await, Future }
+import scala.concurrent.Await
 import scala.concurrent.duration._
 
 
-object Places extends Controller  with securesocial.core.SecureSocial{
+object Places extends Controller with securesocial.core.SecureSocial {
 
   case class FffPlace(code: String, typ: String, name: String, address: String)
 
@@ -62,7 +60,7 @@ object Places extends Controller  with securesocial.core.SecureSocial{
       } getOrElse (NotFound)
   }
 
-  def edit(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
+  def edit(id: Long) = SecuredAction(WithRoles(Set(Coach))) {
     implicit request =>
       models.Places.findById(id).map {
         place => Ok(views.html.places.edit("Edit Place", id, placeForm.fill(place)))
@@ -74,23 +72,23 @@ object Places extends Controller  with securesocial.core.SecureSocial{
    *
    * @param id Id of the computer to edit
    */
-//  def update(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
-//    implicit request =>
-//      placeForm.bindFromRequest.fold(
-//        formWithErrors => BadRequest(views.html.places.edit("Edit Place - errors", id, formWithErrors)),
-//        place => {
-//          play.Logger.debug(s"update Place $place")
-//          models.Places.update(id, place)
-//          //        Home.flashing("success" -> "Place %s has been updated".format(place.name))
-//          Redirect(routes.Places.list(0, 2))
-//        }
-//      )
-//  }
+  //  def update(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
+  //    implicit request =>
+  //      placeForm.bindFromRequest.fold(
+  //        formWithErrors => BadRequest(views.html.places.edit("Edit Place - errors", id, formWithErrors)),
+  //        place => {
+  //          play.Logger.debug(s"update Place $place")
+  //          models.Places.update(id, place)
+  //          //        Home.flashing("success" -> "Place %s has been updated".format(place.name))
+  //          Redirect(routes.Places.list(0, 2))
+  //        }
+  //      )
+  //  }
 
   /**
    * Display the 'new computer form'.
    */
-  def create =  SecuredAction(WithRoles(Set(Coach)))  {
+  def create = SecuredAction(WithRoles(Set(Coach))) {
     implicit request =>
       Ok(views.html.places.create("New Place", placeForm))
   }
@@ -98,17 +96,17 @@ object Places extends Controller  with securesocial.core.SecureSocial{
   /**
    * Handle the 'new computer form' submission.
    */
-//  def save =  SecuredAction(WithRoles(Set(Coach)))  {
-//    implicit request =>
-//      placeForm.bindFromRequest.fold(
-//        formWithErrors => BadRequest(views.html.places.create("New Place - errors", formWithErrors)),
-//        place => {
-//          models.Places.insert(place)
-//          //        Home.flashing("success" -> "Place %s has been created".format(place.name))
-//          Redirect(routes.Places.list(0, 2))
-//        }
-//      )
-//  }
+  //  def save =  SecuredAction(WithRoles(Set(Coach)))  {
+  //    implicit request =>
+  //      placeForm.bindFromRequest.fold(
+  //        formWithErrors => BadRequest(views.html.places.create("New Place - errors", formWithErrors)),
+  //        place => {
+  //          models.Places.insert(place)
+  //          //        Home.flashing("success" -> "Place %s has been created".format(place.name))
+  //          Redirect(routes.Places.list(0, 2))
+  //        }
+  //      )
+  //  }
 
   def update(id: Long) = Action(parse.json) {
     implicit request =>
@@ -129,7 +127,7 @@ object Places extends Controller  with securesocial.core.SecureSocial{
   /**
    * Handle computer deletion.
    */
-  def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
+  def delete(id: Long) = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
       models.Places.delete(id)
       Home.flashing("success" -> "Place has been deleted")
@@ -150,13 +148,13 @@ object Places extends Controller  with securesocial.core.SecureSocial{
       Ok(Json.toJson(places))
   }
 
-  def jsonLikeCity(city:String) = Action {
+  def jsonLikeCity(city: String) = Action {
     implicit request =>
       val places = models.Places.findLikeCity(city)
       Ok(Json.toJson(places))
   }
 
-  def jsonLikeZipcode(zipcode:String) = Action {
+  def jsonLikeZipcode(zipcode: String) = Action {
     implicit request =>
       val places = models.Places.findLikeZipcode(zipcode)
       Ok(Json.toJson(places))
@@ -171,7 +169,7 @@ object Places extends Controller  with securesocial.core.SecureSocial{
     implicit request =>
       models.Places.findById(id).map {
         place => Ok(Json.toJson(place))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   def load = Action {
@@ -184,21 +182,16 @@ object Places extends Controller  with securesocial.core.SecureSocial{
     val fffPlaces = Json.parse(lines).as[Seq[FffPlace]]
     fffPlaces.map {
       fffPlace =>
-        val adr =  fffPlace.address.split(" - ").head //if (fffPlace.address.split(" - ").length > 1) fffPlace.address.split(" - ").reverse.tail.head else fffPlace.address
-        val zipcode = fffPlace.address.split(" - ").reverse.head.split(' ').head//if (fffPlace.address.split(" - ").length > 1) fffPlace.address.split(" - ").reverse.head.split(' ').head  else ""
-        val city = fffPlace.address.split(" - ").reverse.head.split(' ').reverse.head //if (fffPlace.address.split(" - ").length > 1) fffPlace.address.split(" - ").reverse.head.split(' ').tail  else ""
+        val adr = fffPlace.address.split(" - ").head
+        val zipcode = fffPlace.address.split(" - ").reverse.head.split(' ').head
+        val city = fffPlace.address.split(" - ").reverse.head.split(' ').reverse.head
 
-//      play.Logger.debug(s"adress ${fffPlace.address}")
-//      play.Logger.debug(s"adr ${fffPlace.address.split(" - ").head}")
-//      play.Logger.debug(s"zipcode ${fffPlace.address.split(" - ").reverse.head.split(' ').head}")
-//      play.Logger.debug(s"city ${fffPlace.address.split(" - ").reverse.head.split(' ').reverse.head}")
-
-        val place = Place( typFff = Some(fffPlace.typ.trim),
+        val place = Place(typFff = Some(fffPlace.typ.trim),
           name = fffPlace.name.trim,
-          comments = Some(Json.toJson(fffPlace).toString),
+          comments = Some(Json.toJson(fffPlace).toString()),
           address = adr.trim,
           zipcode = zipcode.trim,
-          city =city.trim)
+          city = city.trim)
 
         play.Logger.debug(s"$place")
         models.Places.insert(place)
@@ -209,54 +202,54 @@ object Places extends Controller  with securesocial.core.SecureSocial{
 
   def geoOSM = Action {
     val places = models.Places.placesWithoutCoords
-      val results = places.map{
-        place =>
-          val latLng = fetchLatitudeAndLongitudeOSM(s"${place.address}, ${place.zipcode} ${place.city}")
-          latLng match{
-            case Some(coord) => {
-              val p = place.copy(latitude=Some(coord._1.toFloat), longitude=Some(coord._2.toFloat))
-              play.Logger.debug(s"copie $p")
-              models.Places.update(place.id.get, p)
-            }
-            case _ =>
+    val results = places.map {
+      place =>
+        val latLng = fetchLatitudeAndLongitudeOSM(s"${place.address}, ${place.zipcode} ${place.city}")
+        latLng match {
+          case Some(coord) => {
+            val p = place.copy(latitude = Some(coord._1.toFloat), longitude = Some(coord._2.toFloat))
+            play.Logger.debug(s"copie $p")
+            models.Places.update(place.id.get, p)
           }
-      }
+          case _ =>
+        }
+    }
 
     Ok
   }
 
   def geoMQ = Action {
     val places = models.Places.placesWithoutCoords
-      val results = places.map{
-        place =>
-          val latLng = fetchLatitudeAndLongitudeMQ(s"{'street':'${place.address}', 'zipcode':'${place.zipcode}', 'adminArea5':'${place.city}', 'adminArea1':'fr'}")
-          latLng match{
-            case Some(coord) => {
-              val p = place.copy(latitude=Some(coord._1.toFloat), longitude=Some(coord._2.toFloat))
-              play.Logger.debug(s"copie $p")
-              models.Places.update(place.id.get, p)
-            }
-            case _ =>
+    val results = places.map {
+      place =>
+        val latLng = fetchLatitudeAndLongitudeMQ(s"{'street':'${place.address}', 'zipcode':'${place.zipcode}', 'adminArea5':'${place.city}', 'adminArea1':'fr'}")
+        latLng match {
+          case Some(coord) => {
+            val p = place.copy(latitude = Some(coord._1.toFloat), longitude = Some(coord._2.toFloat))
+            play.Logger.debug(s"copie $p")
+            models.Places.update(place.id.get, p)
           }
-      }
+          case _ =>
+        }
+    }
 
     Ok
   }
 
   def geo = Action {
     val places = models.Places.placesWithoutCoords
-      val results = places.map{
-        place =>
-          val latLng = fetchLatitudeAndLongitude(s"${place.address}, ${place.zipcode} ${place.city}")
-          latLng match{
-            case Some(coord) => {
-              val p = place.copy(latitude=Some(coord._1.toFloat), longitude=Some(coord._2.toFloat))
-              play.Logger.debug(s"copie $p")
-              models.Places.update(place.id.get, p)
-            }
-            case _ =>
+    val results = places.map {
+      place =>
+        val latLng = fetchLatitudeAndLongitude(s"${place.address}, ${place.zipcode} ${place.city}")
+        latLng match {
+          case Some(coord) => {
+            val p = place.copy(latitude = Some(coord._1.toFloat), longitude = Some(coord._2.toFloat))
+            play.Logger.debug(s"copie $p")
+            models.Places.update(place.id.get, p)
           }
-      }
+          case _ =>
+        }
+    }
 
     Ok
   }
@@ -274,26 +267,27 @@ object Places extends Controller  with securesocial.core.SecureSocial{
       addressEncoded + "&sensor=true").get()
 
     val future = jsonContainingLatitudeAndLongitude map {
-      response => (response.json \\ "location")
+      response => response.json \\ "location"
     }
 
     // Wait until the future completes (Specified the timeout above)
 
     val result = Await.result(future, timeout.duration).asInstanceOf[List[play.api.libs.json.JsObject]]
-     play.Logger.debug(s"promise result $result")
+    play.Logger.debug(s"promise result $result")
     //Fetch the values for Latitude & Longitude from the result of future
-    result.length match{
+    result.length match {
       case 0 => None
-      case _ =>  {
-        val latitude = (result(0) \\ "lat")(0).toString.toDouble
-        val longitude = (result(0) \\ "lng")(0).toString.toDouble
+      case _ => {
+        val latitude = (result(0) \\ "lat")(0).toString().toDouble
+        val longitude = (result(0) \\ "lng")(0).toString().toDouble
         play.Logger.info(s"$address => $latitude $longitude")
         Option(latitude, longitude)
       }
     }
 
   }
-def fetchLatitudeAndLongitudeMQ(address: String): Option[(Double, Double)] = {
+
+  def fetchLatitudeAndLongitudeMQ(address: String): Option[(Double, Double)] = {
     implicit val timeout = Timeout(50000 milliseconds)
 
 
@@ -302,24 +296,24 @@ def fetchLatitudeAndLongitudeMQ(address: String): Option[(Double, Double)] = {
     // Encoded the address in order to remove the spaces from the address (spaces will be replaced by '+')
     //@purpose There should be no spaces in the parameter values for a GET request
     val addressEncoded = URLEncoder.encode(address, "UTF-8");
-  val url =  "http://www.mapquestapi.com/geocoding/v1/address?key=Fmjtd%7Cluub2hu8n9%2C7l%3Do5-9ut20y&location=" + addressEncoded +"&inFormat=json"
-  play.Logger.debug(s"url $url")
+    val url = "http://www.mapquestapi.com/geocoding/v1/address?key=Fmjtd%7Cluub2hu8n9%2C7l%3Do5-9ut20y&location=" + addressEncoded + "&inFormat=json"
+    play.Logger.debug(s"url $url")
     val jsonContainingLatitudeAndLongitude = WS.url(url).get()
 
     val future = jsonContainingLatitudeAndLongitude map {
-      response => (response.json \\ "latLng")
+      response => response.json \\ "latLng"
     }
 
     // Wait until the future completes (Specified the timeout above)
 
     val result = Await.result(future, timeout.duration).asInstanceOf[List[play.api.libs.json.JsObject]]
-     play.Logger.debug(s"promise result $result")
+    play.Logger.debug(s"promise result $result")
     //Fetch the values for Latitude & Longitude from the result of future
-    result.length match{
+    result.length match {
       case 0 => None
-      case _ =>  {
-        val latitude = (result(0) \\ "lat")(0).toString.toDouble
-        val longitude = (result(0) \\ "lng")(0).toString.toDouble
+      case _ => {
+        val latitude = (result(0) \\ "lat")(0).toString().toDouble
+        val longitude = (result(0) \\ "lng")(0).toString().toDouble
         play.Logger.info(s"$address => $latitude $longitude")
         Option(latitude, longitude)
       }
@@ -341,7 +335,7 @@ def fetchLatitudeAndLongitudeMQ(address: String): Option[(Double, Double)] = {
     val jsonContainingLatitudeAndLongitude = WS.url(url).get()
 
     val future = jsonContainingLatitudeAndLongitude map {
-      response => (response.json )
+      response => response.json
     }
 
     // Wait until the future completes (Specified the timeout above)
@@ -350,13 +344,13 @@ def fetchLatitudeAndLongitudeMQ(address: String): Option[(Double, Double)] = {
     val result = Await.result(future, timeout.duration).asInstanceOf[JsArray]
     play.Logger.debug(s"promise result $result")
     //Fetch the values for Latitude & Longitude from the result of future
-    result.value.length match{
+    result.value.length match {
       case 0 => None
-      case _ =>  {
-        val lat = (result.value(0) \ "lat")
-        val lon = (result.value(0) \ "lon")
+      case _ => {
+        val lat = result.value(0) \ "lat"
+        val lon = result.value(0) \ "lon"
         play.Logger.info(s"$address => $lat $lon")
-        Option(lat.toString.replace("\"","").toDouble, lon.toString.replace("\"","").toDouble)
+        Option(lat.toString().replace("\"", "").toDouble, lon.toString().replace("\"", "").toDouble)
       }
     }
 

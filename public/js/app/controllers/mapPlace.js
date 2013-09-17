@@ -13,7 +13,7 @@ function MapPlaceCtrl($scope, $http) {
     $scope.mapOptions = {
         //center: new google.maps.LatLng(35.784, -78.670),
         center: new google.maps.LatLng(43.602521593464054, 1.441223145229742), // Toulouse
-        zoom: 6,
+        zoom: 12,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     $scope.addMarker = function ($event) {
@@ -50,11 +50,13 @@ function MapPlaceCtrl($scope, $http) {
 //                    console.log(item);
                     var myLatlng = new google.maps.LatLng(item.latitude, item.longitude);
 
-                    $scope.myMarkers.push(new google.maps.Marker({
+                    var marker = new google.maps.Marker({
                         map: $scope.myMap,
                         position: myLatlng,
-                        title: item.name + " - " + item.zipcode + " "+ item.city
-                    }));
+                        title: item.name + " - " + item.zipcode + " " + item.city
+                    });
+                    console.log(marker);
+                    $scope.myMarkers.push(marker);
                 });
 
                 $scope.$digest();
@@ -84,11 +86,14 @@ function MapPlaceCtrl($scope, $http) {
 //                    console.log(item);
                     var myLatlng = new google.maps.LatLng(item.latitude, item.longitude);
 
-                    $scope.myMarkers.push(new google.maps.Marker({
+                    var marker = new google.maps.Marker({
                         map: $scope.myMap,
                         position: myLatlng,
-                        title: item.name + " - " + item.zipcode + " "+ item.city
-                    }));
+                        title: item.name + " - " + item.zipcode + " " + item.city ,
+                        idPlace:item.id
+                    });
+                    console.log(marker);
+                    $scope.myMarkers.push(marker);
                 });
 
                 $scope.$digest();
@@ -116,12 +121,14 @@ function MapPlaceCtrl($scope, $http) {
                 angular.forEach(data, function (item) {
 //                    console.log(item);
                     var myLatlng = new google.maps.LatLng(item.latitude, item.longitude);
-
-                    $scope.myMarkers.push(new google.maps.Marker({
+                    var marker = new google.maps.Marker({
                         map: $scope.myMap,
                         position: myLatlng,
-                        title: item.name + " - " + item.zipcode + " "+ item.city
-                    }));
+                        title: item.name + " - " + item.zipcode + " " + item.city ,
+                        idPlace:item.id
+                    });
+                    console.log(marker);
+                    $scope.myMarkers.push(marker);
                 });
 
                 $scope.$digest();
@@ -134,5 +141,5 @@ function MapPlaceCtrl($scope, $http) {
         });
     };
 
-   // $scope.loadPlaces();
+    // $scope.loadPlaces();
 }
