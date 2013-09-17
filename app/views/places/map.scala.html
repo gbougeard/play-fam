@@ -1,4 +1,4 @@
-@(message: String)(implicit request: RequestHeader, session: play.api.mvc.Session)
+@(message: String, zipcode:Option[String]=None)(implicit request: RequestHeader, session: play.api.mvc.Session)
 
     @scripts = {
 
@@ -7,7 +7,11 @@
     }
 
     @main(message, scripts) {
-        <div class="row-fluid" ng-controller="MapPlaceCtrl">
+        <div class="row-fluid" ng-controller="MapPlaceCtrl"
+        @zipcode.map{ case code =>
+            ng-init="zipcode=@code; findByZipcode()"
+        }
+        >
             <div class="span4">
                 <p>{{zoomMessage}}</p>
                 <h3>{{ myMarkers.length }} places</h3>
@@ -43,7 +47,7 @@
             </div>
 
             <div ui-map-info-window="myInfoWindow">
-                <h5>{{currentMarker.title}}</h5>
+                <h5><a href="/places/{{currentMarker.idPlace}}">{{currentMarker.title}}</a></h5>
                     <dl class="dl-horizontal">
                         <dt>Lat</dt>
                         <dd>{{currentMarkerLat}}</dd>

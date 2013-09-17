@@ -1,48 +1,49 @@
 @(message: String, place: Place)(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
 
-@import tags.buttons._
+    @import tags.buttons._
 
-    @scripts ={
+    @scripts = {
 
         <script type="text/javascript" src='@routes.Assets.at("js/app/controllers/places.js")'></script>
 
     }
 
-@main(message, scripts) {
-<div class="header" ng-controller="PlacesCtrl"  ng-init="loadPlace(@place.id);">
+    @main(message, scripts) {
+        <div class="header" ng-controller="PlacesCtrl" ng-init="loadPlace(@place.id);">
 
-    <dl class="dl-horizontal">
-        <dt>Name</dt>
-        <dd>@place.name</dd>
-        <dt>Adress</dt>
-        <dd>@place.address</dd>
-        <dt>Zipcode</dt>
-        <dd>@place.zipcode</dd>
-        <dt>City</dt>
-        <dd>@place.city</dd>
-        <dt>Longitude</dt>
-        <dd>@place.longitude.getOrElse("-")</dd>
-        <dt>Latitude</dt>
-        <dd>@place.latitude.getOrElse("-")</dd>
-        <dt>Type</dt>
-        <dd>@place.typFff.getOrElse("-")</dd>
-    </dl>
+            <dl class="dl-horizontal">
+                <dt>Name</dt>
+                <dd>@place.name</dd>
+                <dt>Adress</dt>
+                <dd>@place.address</dd>
+                <dt>Zipcode</dt>
+                <dd>@place.zipcode</dd>
+                <dt>City</dt>
+                <dd>@place.city</dd>
+                <dt>Latitude</dt>
+                <dd>@place.latitude.getOrElse("-")</dd>
+                <dt>Longitude</dt>
+                <dd>@place.longitude.getOrElse("-")</dd>
+                <dt>Type</dt>
+                <dd>@place.typFff.getOrElse("-")</dd>
+            </dl>
+            <pre>{{ place.comments }}</pre>
 
-    <section  style="height:400px;">
-        <div class="well">
-            <div class="row">
-                <div  ui-map="myMap" class="span12 map" ui-options="mapOptions"  ui-event="{'map-click': 'addMarker($event)'}"> </div>
-            </div>
+            <section style="height : 400 px ;">
+                <div class="well">
+                    <div class="row">
+                        <div ui-map="myMap" class="span12 map" ui-options="mapOptions" ui-event="{'map-click': 'addMarker($event)'}"> </div>
+                    </div>
+                </div>
+
+            </section>
         </div>
 
-    </section>
-</div>
+        <div class="form-actions">
+            @**<input type="submit" value="Edit this place" class="btn btn-primary"> **@
+            @btnEdit(routes.Places.edit(place.id.getOrElse(0)))
+            @btnCancel(routes.Places.list())
+            @btnNew(routes.Places.create())
+        </div>
 
-<div class="form-actions">
-    @**<input type="submit" value="Edit this place" class="btn btn-primary"> **@
-    @btnEdit(routes.Places.edit(place.id.getOrElse(0)))
-    @btnCancel(routes.Places.list())
-    @btnNew(routes.Places.create())
-</div>
-
-}
+    }

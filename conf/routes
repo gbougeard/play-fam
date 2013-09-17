@@ -107,13 +107,17 @@ GET         /places/new                                                         
 POST        /places                                                                                controllers.Places.save
 GET         /places/$id<[0-9]+>                                                                    controllers.Places.view(id : Long)
 GET         /api/v1/places/$id<[0-9]+>                                                             controllers.Places.jsonById(id : Long)
-GET         /places/gmap/                                                                          controllers.Places.gmap
-GET         /places/gmap/json                                                                      controllers.Places.gmapData
+GET         /places/map                                                                            controllers.Places.map
+GET         /places/map/$zipcode<[0-9]+>                                                                controllers.Places.mapByZipcode(zipcode : String)
+GET         /places/map/json                                                                       controllers.Places.gmapData
 GET         /api/v1/places/zipcode/$code<[0-9]+>                                                   controllers.Places.jsonLikeZipcode(code : String)
-GET         /api/v1/places/city/$city<[A-Za-z]+>                                                              controllers.Places.jsonLikeCity(city : String)
-GET         /places/geo                                                                            controllers.Places.geo
+GET         /api/v1/places/city/$city<[A-Za-z]+>                                                   controllers.Places.jsonLikeCity(city : String)
+GET         /places/geo                                                                            controllers.Places.geoGM
+GET         /places/geo/$code<[0-9]+>                                                              controllers.Places.geoGMByZipcode(code : String)
 GET         /places/geoMQ                                                                          controllers.Places.geoMQ
+GET         /places/geoMQ/$code<[0-9]+>                                                            controllers.Places.geoMQByZipcode(code : String)
 GET         /places/geoOSM                                                                         controllers.Places.geoOSM
+GET         /places/geoOSM/$code<[0-9]+>                                                           controllers.Places.geoOSMByZipcode(code : String)
 
 # Categorys
 GET         /categories                                                                            controllers.Categories.list(p:Int ?= 0,s:Int ?= 2)

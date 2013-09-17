@@ -27,6 +27,7 @@ function MapPlaceCtrl($scope, $http) {
 //        console.log(zoom, 'zoomed')
     };
     $scope.openMarkerInfo = function (marker) {
+        console.log("openMarkerInfo",marker);
         $scope.currentMarker = marker;
         $scope.currentMarkerLat = marker.getPosition().lat();
         $scope.currentMarkerLng = marker.getPosition().lng();
@@ -53,7 +54,8 @@ function MapPlaceCtrl($scope, $http) {
                     var marker = new google.maps.Marker({
                         map: $scope.myMap,
                         position: myLatlng,
-                        title: item.name + " - " + item.zipcode + " " + item.city
+                        title: item.name + " - " + item.zipcode + " " + item.city,
+                        idPlace:item.id
                     });
                     console.log(marker);
                     $scope.myMarkers.push(marker);
@@ -108,7 +110,7 @@ function MapPlaceCtrl($scope, $http) {
 
     // The function that will be executed on button click (ng-click="search()")
     $scope.findByZipcode = function () {
-        console.log("findLikeZipcode", $scope.zipcode);
+        console.log("findByZipcode", $scope.zipcode);
         // Create the http post request
         // the data holds the keywords
         // The request is a JSON request.

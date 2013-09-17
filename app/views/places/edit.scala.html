@@ -62,6 +62,7 @@
                 <input type="text" id="longitude" name="longitude" ng-model="place.longitude" placeholder="Longitude" required>
             </div>
         </div>
+        <pre>{{ place.comments }}</pre>
         <div class="form-actions">
             @btnSubmit("Save this place")
             @btnView(routes.Places.view(id))

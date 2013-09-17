@@ -137,9 +137,14 @@ object Places extends Controller with securesocial.core.SecureSocial {
   /**
    * Display the 'new computer form'.
    */
-  def gmap = Action {
+  def map = Action {
     implicit request =>
       Ok(views.html.places.map("Map des places"))
+  }
+
+  def mapByZipcode(zipcode : String) = Action {
+    implicit request =>
+      Ok(views.html.places.map("Map des places", Some(zipcode)))
   }
 
   def gmapData = Action {
@@ -202,6 +207,18 @@ object Places extends Controller with securesocial.core.SecureSocial {
 
   def geoOSM = Action {
     val places = models.Places.placesWithoutCoords
+    geocodeOSM(places)
+    Ok
+  }
+
+  def geoOSMByZipcode(zipcode:String) = Action {
+    val places = models.Places.findByZipcode(zipcode)
+    geocodeOSM(places)
+    Redirect(routes.Places.mapByZipcode(zipcode))
+  }
+
+
+  def geocodeOSM(places: Seq[Place]) {
     val results = places.map {
       place =>
         val latLng = fetchLatitudeAndLongitudeOSM(s"${place.address}, ${place.zipcode} ${place.city}")
@@ -214,12 +231,21 @@ object Places extends Controller with securesocial.core.SecureSocial {
           case _ =>
         }
     }
-
-    Ok
   }
 
   def geoMQ = Action {
     val places = models.Places.placesWithoutCoords
+    geocodeMQ(places)
+    Ok
+  }
+
+  def geoMQByZipcode(zipcode:String) = Action {
+    val places = models.Places.findByZipcode(zipcode)
+    geocodeMQ(places)
+    Redirect(routes.Places.mapByZipcode(zipcode))
+  }
+
+  def geocodeMQ(places : Seq[Place]){
     val results = places.map {
       place =>
         val latLng = fetchLatitudeAndLongitudeMQ(s"{'street':'${place.address}', 'zipcode':'${place.zipcode}', 'adminArea5':'${place.city}', 'adminArea1':'fr'}")
@@ -232,12 +258,21 @@ object Places extends Controller with securesocial.core.SecureSocial {
           case _ =>
         }
     }
+  }
 
+  def geoGM = Action {
+    val places = models.Places.placesWithoutCoords
+    geocodeGM(places)
     Ok
   }
 
-  def geo = Action {
-    val places = models.Places.placesWithoutCoords
+  def geoGMByZipcode(zipcode:String) = Action {
+    val places = models.Places.findLikeZipcode(zipcode)
+    geocodeGM(places)
+    Redirect(routes.Places.mapByZipcode(zipcode))
+  }
+
+  def geocodeGM(places:Seq[Place]){
     val results = places.map {
       place =>
         val latLng = fetchLatitudeAndLongitude(s"${place.address}, ${place.zipcode} ${place.city}")
@@ -250,8 +285,6 @@ object Places extends Controller with securesocial.core.SecureSocial {
           case _ =>
         }
     }
-
-    Ok
   }
 
   def fetchLatitudeAndLongitude(address: String): Option[(Double, Double)] = {
