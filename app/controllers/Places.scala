@@ -212,13 +212,15 @@ object Places extends Controller with securesocial.core.SecureSocial {
   }
 
   def geoOSMByZipcode(zipcode:String) = Action {
-    val places = models.Places.findByZipcode(zipcode)
+    play.Logger.debug(s"geoOSMByZipcode $zipcode")
+    val places = models.Places.findLikeZipcode(zipcode)
     geocodeOSM(places)
     Redirect(routes.Places.mapByZipcode(zipcode))
   }
 
 
   def geocodeOSM(places: Seq[Place]) {
+    play.Logger.debug(s"geocodeMQ ${places.length} places")
     val results = places.map {
       place =>
         val latLng = fetchLatitudeAndLongitudeOSM(s"${place.address}, ${place.zipcode} ${place.city}")
@@ -240,12 +242,14 @@ object Places extends Controller with securesocial.core.SecureSocial {
   }
 
   def geoMQByZipcode(zipcode:String) = Action {
-    val places = models.Places.findByZipcode(zipcode)
+    play.Logger.debug(s"geoMQByZipcode $zipcode")
+    val places = models.Places.findLikeZipcode(zipcode)
     geocodeMQ(places)
     Redirect(routes.Places.mapByZipcode(zipcode))
   }
 
   def geocodeMQ(places : Seq[Place]){
+    play.Logger.debug(s"geocodeMQ ${places.length} places")
     val results = places.map {
       place =>
         val latLng = fetchLatitudeAndLongitudeMQ(s"{'street':'${place.address}', 'zipcode':'${place.zipcode}', 'adminArea5':'${place.city}', 'adminArea1':'fr'}")
