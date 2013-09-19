@@ -15,8 +15,8 @@ case class Place(id: Option[Long] = None,
                  zipcode: String,
                  latitude: Option[Float] = None,
                  longitude: Option[Float] = None,
-comments: Option[String] = None,
-typFff: Option[String] = None
+                 comments: Option[String] = None,
+                 typFff: Option[String] = None
                   )
 
 
@@ -36,7 +36,9 @@ object Places extends Table[Place]("fam_place") {
   def latitude = column[Float]("latitude")
 
   def longitude = column[Float]("longitude")
+
   def comments = column[String]("comments")
+
   def typFff = column[String]("typ_fff")
 
   def * = id.? ~ name ~ address ~ city ~ zipcode ~ latitude.? ~ longitude.? ~ comments.? ~ typFff.? <>(Place, Place.unapply _)
@@ -51,19 +53,19 @@ object Places extends Table[Place]("fam_place") {
   lazy val pageSize = 2500
 
   def findAll: Seq[Place] = DB.withSession {
-    implicit session:Session => {
+    implicit session: Session => {
       (for (c <- Places.sortBy(_.name)) yield c).list
     }
   }
 
   def count: Int = DB.withSession {
-    implicit session:Session => {
+    implicit session: Session => {
       Query(Places.length).first
     }
   }
 
   def placesWithCoords: Seq[Place] = DB.withSession {
-    implicit session:Session => {
+    implicit session: Session => {
       (for {c <- Places sortBy (_.zipcode)
             if (c.latitude isNotNull)
             if (c.longitude isNotNull)
@@ -72,7 +74,7 @@ object Places extends Table[Place]("fam_place") {
   }
 
   def placesWithoutCoords: Seq[Place] = DB.withSession {
-    implicit session:Session => {
+    implicit session: Session => {
       (for {c <- Places sortBy (_.zipcode)
             if (c.latitude isNull)
             if (c.longitude isNull)
@@ -87,7 +89,7 @@ object Places extends Table[Place]("fam_place") {
     val offset = pageSize * page
 
     DB.withSession {
-      implicit session:Session => {
+      implicit session: Session => {
         val places = (
           for {c <- Places
             .sortBy(place => orderField match {
@@ -114,19 +116,19 @@ object Places extends Table[Place]("fam_place") {
   }
 
   def findById(id: Long): Option[Place] = DB.withSession {
-    implicit session:Session => {
+    implicit session: Session => {
       Places.byId(id).firstOption
     }
   }
 
   def findByName(name: String): Seq[Place] = DB.withSession {
-    implicit session:Session => {
+    implicit session: Session => {
       Places.byName(name).list
     }
   }
 
   def findByZipcode(zipcode: String): Seq[Place] = DB.withSession {
-    implicit session:Session => {
+    implicit session: Session => {
       Places.byCode(zipcode).list
     }
   }
@@ -138,7 +140,7 @@ object Places extends Table[Place]("fam_place") {
   }
 
   def findByCity(c: String): Seq[Place] = DB.withSession {
-    implicit session:Session => {
+    implicit session: Session => {
       Places.byCity(c).list
     }
   }
@@ -150,20 +152,20 @@ object Places extends Table[Place]("fam_place") {
   }
 
   def insert(place: Place): Long = DB.withSession {
-    implicit session:Session => {
+    implicit session: Session => {
       Places.autoInc.insert(place)
     }
   }
 
   def update(id: Long, place: Place) = DB.withSession {
-    implicit session:Session => {
+    implicit session: Session => {
       val place2update = place.copy(Some(id))
       Places.where(_.id === id).update(place2update)
     }
   }
 
   def delete(placeId: Long) = DB.withSession {
-    implicit session:Session => {
+    implicit session: Session => {
       Places.where(_.id === placeId).delete
     }
   }
@@ -171,9 +173,9 @@ object Places extends Table[Place]("fam_place") {
   /**
    * Construct the Map[String,String] needed to fill a select options set.
    */
-//  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
+  //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
   def options: Seq[(String, String)] = DB.withSession {
-    implicit session:Session =>
+    implicit session: Session =>
       val query = (for {
         item <- Places
       } yield (item.id, item.name)

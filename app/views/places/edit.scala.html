@@ -1,11 +1,6 @@
 @(message: String, id: Long, placeForm: Form[Place])(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
 
-@import helper._
 @import tags.buttons._
-
-    @implicitFieldConstructor = @{
-        FieldConstructor(twitterBootstrapInput.f)
-    }
 
     @scripts ={
 
@@ -62,6 +57,12 @@
                 <input type="text" id="longitude" name="longitude" ng-model="place.longitude" placeholder="Longitude" required>
             </div>
         </div>
+        <div class="control-group " ng-class="{error: formPlace.typFff.$invalid}">
+            <label class="control-label" for="typFff">Type</label>
+            <div class="controls">
+                <input type="text" id="typFff" name="typFff" ng-model="place.typFff" placeholder="Type" required>
+            </div>
+        </div>
         <pre>{{ place.comments }}</pre>
         <div class="form-actions">
             @btnSubmit("Save this place")
@@ -75,7 +76,7 @@
         <div class="well">
         <div class="row">
             <div class="span2"><button id="btnGeo" class="btn" ng-click="geocode()">Geocode</button></div>
-            <div  ui-map="myMap" class="span8 map" ui-options="mapOptions"  ui-event="{'map-click': 'addMarker($event)'}"> </div>
+            <div  ui-map="myMap" class="span8 map" ui-options="mapOptions"> </div>
         </div>
         </div>
 

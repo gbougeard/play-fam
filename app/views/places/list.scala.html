@@ -34,8 +34,6 @@
         <table class="table table-striped table-bordered table-hover">
             <thead>
                 <tr>
-                    @* @header(0,"Id") *@
-                    @* @header(1,"ZipCode")*@
                     @header(2, "Nom")
                     @header(3, "Adresse")
                     @header(4, "Ville")
@@ -49,8 +47,6 @@
 
             @places.map { place =>
                 <tr>
-                    @* <td>@place.id</td>
-                    <td>@place.zipcode</td>*@
                     <td><a href="@routes.Places.view(place.id.getOrElse(0))">@place.name</a></td>
                     <td>@place.address</td>
                     <td>@place.city</td>
@@ -58,7 +54,6 @@
                     <td>@place.typFff.getOrElse("-")</td>
                     @* <td>@place.latitude.getOrElse(<em>-</em>)</td>
                     <td>@place.longitude.getOrElse(<em>-</em>)</td> *@
-
                 </tr>
             }
 
