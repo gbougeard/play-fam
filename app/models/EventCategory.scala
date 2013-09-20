@@ -30,33 +30,31 @@ object EventCategorys extends Table[EventCategory]("fam_event_category") {
 
   def findByEvent(id: Long): Seq[(EventCategory, Event, Category)] = DB.withSession {
     implicit session:Session => {
-      val query = (
-        for {et <- EventCategorys
-             if et.eventId === id
-             t <- et.category
-             e <- et.event
+      val query = for {et <- EventCategorys
+                       if et.eventId === id
+                       t <- et.category
+                       e <- et.event
 
-        } yield (et, e, t))
+      } yield (et, e, t)
       query.list
     }
   }
 
   def findByCategory(id: Long): Seq[(EventCategory, Event, Category)] = DB.withSession {
     implicit session:Session => {
-      val query = (
-        for {et <- EventCategorys
-             if et.categoryId === id
-             t <- et.category
-             e <- et.event
+      val query = for {et <- EventCategorys
+                       if et.categoryId === id
+                       t <- et.category
+                       e <- et.event
 
-        } yield (et, e, t))
+      } yield (et, e, t)
       query.list
     }
   }
 
   def insert(event: EventCategory): Long = DB.withSession {
     implicit session:Session => {
-      EventCategorys.insert((event))
+      EventCategorys.insert(event)
     }
   }
 
