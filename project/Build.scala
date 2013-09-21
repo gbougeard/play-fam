@@ -1,7 +1,7 @@
 import sbt._
 import play.Project._
 import sbt.Keys._
-import com.lunatech.play.ubuntupackage.UbuntuPackagePlugin._
+//import com.lunatech.play.ubuntupackage.UbuntuPackagePlugin._
 
 object Library {
 
@@ -57,6 +57,7 @@ object ApplicationBuild extends Build {
   val appDependencies = Seq(
     // Add your project dependencies here,
     jdbc,
+  cache,
     slf4j,
     logbackClassic,
     mysql,
@@ -103,9 +104,12 @@ object ApplicationBuild extends Build {
   )
 
 
-  val main = play.Project(appName, appVersion, appDependencies).settings(ubuntuPackageSettings:_*).settings(
+  val main = play.Project(appName, appVersion, appDependencies)
+//    .settings(ubuntuPackageSettings:_*)
+    .settings(
 
-      UbuntuPackageKeys.maintainer := "Gregory Bougeard <gbougeard@gmail.com>",
+//      UbuntuPackageKeys.maintainer := "Gregory Bougeard <gbougeard@gmail.com>",
+  scalaVersion := "2.10.2",
 
       resolvers += Resolver.url("sbt-plugin-snapshots", new URL("http://repo.scala-sbt.org/scalasbt/sbt-plugin-snapshots/"))(Resolver.ivyStylePatterns)
 

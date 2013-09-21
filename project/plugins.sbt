@@ -8,7 +8,7 @@ resolvers += Resolver.url("Lunatech SBT Plugins", new URL("http://artifactory.lu
 
 resolvers += Resolver.url("scalasbt", new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases"))(Resolver.ivyStylePatterns)
 
-addSbtPlugin("com.lunatech" % "play2-ubuntu-package" % "0.5")
+//addSbtPlugin("com.lunatech" % "play2-ubuntu-package" % "0.5")
 
 // Use the Play sbt plugin for Play projects
-addSbtPlugin("play" % "sbt-plugin" % "2.1.5")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.2.0")
