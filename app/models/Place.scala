@@ -54,7 +54,8 @@ object Places extends Table[Place]("fam_place") {
 
   def findAll: Seq[Place] = DB.withSession {
     implicit session: Session => {
-      (for (c <- Places.sortBy(_.name)) yield c).list
+      (for (c <- Places.sortBy(_.id)) yield c)
+        .list
     }
   }
 
@@ -79,7 +80,7 @@ object Places extends Table[Place]("fam_place") {
             if (c.latitude isNull)
             if (c.longitude isNull)
       } yield c)
-        .take(1000)
+        .take(20)
         .list
     }
   }
@@ -151,6 +152,20 @@ object Places extends Table[Place]("fam_place") {
     }
   }
 
+  def findDups(place: Place):Seq[Place] = DB.withSession {
+    implicit session: Session => {
+      play.Logger.debug(s"findDups for $place")
+      val q = for{ p <- Places
+        if p.id =!= place.id
+        if p.name === place.name
+        if p.zipcode === place.zipcode
+        if p.city === place.city
+
+      } yield p
+      q.list
+    }
+  }
+
   def insert(place: Place): Long = DB.withSession {
     implicit session: Session => {
       Places.autoInc.insert(place)
@@ -166,6 +181,7 @@ object Places extends Table[Place]("fam_place") {
 
   def delete(placeId: Long) = DB.withSession {
     implicit session: Session => {
+      play.Logger.info(s"delete Place $placeId")
       Places.where(_.id === placeId).delete
     }
   }

@@ -9,6 +9,7 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 import play.api.Logger
+import scala.util.Try
 
 case class PlaceClub(placeId: Long,
                      clubId: Long)
@@ -81,7 +82,14 @@ object PlaceClubs extends Table[PlaceClub]("fam_club_place") {
 
   def insert(placeClub: PlaceClub): Long = DB.withSession {
     implicit session: Session => {
+      play.Logger.debug(s"insert $placeClub")
       PlaceClubs.insert(placeClub)
+    }
+  }
+
+  def insert(pcLst: Seq[PlaceClub]):Try[Option[Int]] = DB.withSession {
+    implicit session:Session => {
+      Try(PlaceClubs.insertAll(pcLst:_*))
     }
   }
 

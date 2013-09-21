@@ -3,7 +3,7 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.Place
+import models.{PlaceClub, Place}
 import models.Places._
 import play.api.libs.json._
 import service.{Coach, Administrator}
@@ -13,7 +13,6 @@ import akka.util.Timeout
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Await
 import scala.concurrent.duration._
-
 
 object Places extends Controller with securesocial.core.SecureSocial {
 
@@ -142,7 +141,7 @@ object Places extends Controller with securesocial.core.SecureSocial {
       Ok(views.html.places.map("Map des places"))
   }
 
-  def mapByZipcode(zipcode : String) = Action {
+  def mapByZipcode(zipcode: String) = Action {
     implicit request =>
       Ok(views.html.places.map("Map des places", Some(zipcode)))
   }
@@ -177,7 +176,8 @@ object Places extends Controller with securesocial.core.SecureSocial {
       } getOrElse NotFound
   }
 
-  def load = Action {
+  def load = SecuredAction(WithRoles(Set(Administrator))) {
+    implicit request =>
     import scala.io.Source
 
     val is = Application.getClass.getResourceAsStream("/public/data/terrains_light.json")
@@ -205,13 +205,15 @@ object Places extends Controller with securesocial.core.SecureSocial {
     Ok
   }
 
-  def geoOSM = Action {
+  def geoOSM = SecuredAction(WithRoles(Set(Administrator))) {
+    implicit request =>
     val places = models.Places.placesWithoutCoords
     geocodeOSM(places)
     Ok
   }
 
-  def geoOSMByZipcode(zipcode:String) = Action {
+  def geoOSMByZipcode(zipcode: String) = SecuredAction(WithRoles(Set(Administrator))) {
+    implicit request =>
     play.Logger.debug(s"geoOSMByZipcode $zipcode")
     val places = models.Places.findLikeZipcode(zipcode)
     geocodeOSM(places)
@@ -235,20 +237,22 @@ object Places extends Controller with securesocial.core.SecureSocial {
     }
   }
 
-  def geoMQ = Action {
+  def geoMQ = SecuredAction(WithRoles(Set(Administrator))) {
+    implicit request =>
     val places = models.Places.placesWithoutCoords
     geocodeMQ(places)
     Ok
   }
 
-  def geoMQByZipcode(zipcode:String) = Action {
+  def geoMQByZipcode(zipcode: String) = SecuredAction(WithRoles(Set(Administrator))) {
+    implicit request =>
     play.Logger.debug(s"geoMQByZipcode $zipcode")
     val places = models.Places.findLikeZipcode(zipcode)
     geocodeMQ(places)
     Redirect(routes.Places.mapByZipcode(zipcode))
   }
 
-  def geocodeMQ(places : Seq[Place]){
+  def geocodeMQ(places: Seq[Place]) {
     play.Logger.debug(s"geocodeMQ ${places.length} places")
     val results = places.map {
       place =>
@@ -264,19 +268,21 @@ object Places extends Controller with securesocial.core.SecureSocial {
     }
   }
 
-  def geoGM = Action {
+  def geoGM = SecuredAction(WithRoles(Set(Administrator))) {
+    implicit request =>
     val places = models.Places.placesWithoutCoords
     geocodeGM(places)
     Ok
   }
 
-  def geoGMByZipcode(zipcode:String) = Action {
+  def geoGMByZipcode(zipcode: String) = SecuredAction(WithRoles(Set(Administrator))) {
+    implicit request =>
     val places = models.Places.findLikeZipcode(zipcode)
     geocodeGM(places)
     Redirect(routes.Places.mapByZipcode(zipcode))
   }
 
-  def geocodeGM(places:Seq[Place]){
+  def geocodeGM(places: Seq[Place]) {
     val results = places.map {
       place =>
         val latLng = fetchLatitudeAndLongitude(s"${place.address}, ${place.zipcode} ${place.city}")
@@ -391,6 +397,66 @@ object Places extends Controller with securesocial.core.SecureSocial {
       }
     }
 
+  }
+
+  def placesByClubs = SecuredAction(WithRoles(Set(Administrator))) {
+    implicit request =>
+      val places = models.Places.findAll
+      var pcSet: Set[PlaceClub] = Set()
+
+      places.map {
+        place =>
+          place.comments match {
+            case Some(comment) => {
+              val clubCode = extractClubCode(comment)
+              val club = models.Clubs.findByCode(clubCode)
+              club match {
+                case Some(c) => {
+                  val pc = new PlaceClub(place.id.get, c.id.get)
+                  play.Logger.debug(s"placeClub to insert $pc")
+                  pcSet ++= List(pc)
+
+                  val dups = models.Places.findDups(place)
+                  play.Logger.info(s"found ${dups.length} dups")
+
+                  dups.map {
+                    dup =>
+                      dup.comments match {
+                        case Some(comment) => {
+                          val code = extractClubCode(comment)
+                          val club = models.Clubs.findByCode(clubCode)
+                          club match {
+                            case Some(c) => {
+                              val pc = new PlaceClub(place.id.get, c.id.get)
+                              play.Logger.debug(s"placeClub to insert $pc")
+                              pcSet ++= List(pc)
+                                                    models.Places.delete(dup.id.get)
+                            }
+                            case None => play.Logger.warn(s"no club found for code $clubCode")
+                          }
+                        }
+                        case None => Ok
+                      }
+                  }
+                }
+                case None => play.Logger.warn(s"no club found for code $clubCode")
+              }
+            }
+            case None => Ok
+          }
+
+      }
+      play.Logger.info(s"to insert : $pcSet")
+      models.PlaceClubs.insert(pcSet.toSeq)
+      Ok
+  }
+
+  def extractClubCode(str: String): Int = {
+//    val pattern = """^{"code": [0-9]+"""".r
+//    val pattern(code) = str
+    val fffPlace = Json.parse(str).as[FffPlace]
+    play.Logger.info(s"$str extracted [${fffPlace.code.trim}]")
+    fffPlace.code.trim.toInt
   }
 
 }

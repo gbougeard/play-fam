@@ -124,8 +124,8 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
         formWithErrors => BadRequest(views.html.clubs.create("New Club - errors", formWithErrors)),
         club => {
           models.Clubs.insert(club)
-                  Home.flashing("success" -> "Club %s has been created".format(club.name))
-//          Redirect(routes.Clubs.list(0, 2))
+          Home.flashing("success" -> "Club %s has been created".format(club.name))
+          //          Redirect(routes.Clubs.list(0, 2))
         }
       )
   }
@@ -139,7 +139,8 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
       Home.flashing("success" -> "Club has been deleted")
   }
 
-  def load = Action {
+  def load = SecuredAction(WithRoles(Set(Administrator))) {
+    implicit request =>
     import scala.io.Source
 
     val is = Application.getClass.getResourceAsStream("/public/data/clubs_light.json")
@@ -150,13 +151,13 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
     val fffClubs = Json.parse(lines).as[Seq[FffClub]]
     fffClubs.map {
       fffClub =>
-        val adr =  if (fffClub.address.split(" - ").length > 2) fffClub.address.split(" - ").reverse.tail.tail.head else fffClub.address
-        val zipcode = if (fffClub.address.split(" - ").length > 2) fffClub.address.split(" - ").reverse.tail.head  else ""
-        val city = if (fffClub.address.split(" - ").length > 2) fffClub.address.split(" - ").reverse.head  else ""
+        val adr = if (fffClub.address.split(" - ").length > 2) fffClub.address.split(" - ").reverse.tail.tail.head else fffClub.address
+        val zipcode = if (fffClub.address.split(" - ").length > 2) fffClub.address.split(" - ").reverse.tail.head else ""
+        val city = if (fffClub.address.split(" - ").length > 2) fffClub.address.split(" - ").reverse.head else ""
 
         val col = fffClub.colours match {
           case "" => None
-          case s:String  => Some(s.trim)
+          case s: String => Some(s.trim)
         }
 
         val club = Club(code = fffClub.code.trim.toInt,
@@ -164,19 +165,19 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
           colours = col,
           comments = Some(Json.toJson(fffClub).toString),
           address = adr match {
-          case "" => None
-          case s:String  => Some(s.trim)
-        },
+            case "" => None
+            case s: String => Some(s.trim)
+          },
           zipcode = zipcode match {
-          case "" => None
-          case s:String  => Some(s.trim)
-        },
-          city =city match {
-          case "" => None
-          case s:String  => Some(s.trim)
-        })
+            case "" => None
+            case s: String => Some(s.trim)
+          },
+          city = city match {
+            case "" => None
+            case s: String => Some(s.trim)
+          })
         play.Logger.debug(s"$club")
-              models.Clubs.insert(club)
+        models.Clubs.insert(club)
     }
 
     Ok

@@ -21,49 +21,49 @@ GET         /assets/*file                                                       
 # Clubs
 GET         /clubs                                                                                 controllers.Clubs.list(p:Int ?= 0,s:Int ?= 2)
 GET         /clubs/edit/$id<[0-9]+>                                                                controllers.Clubs.edit(id : Long)
-POST         /clubs/$id<[0-9]+>                                                                     controllers.Clubs.update(id : Long)
+POST        /clubs/$id<[0-9]+>                                                                     controllers.Clubs.update(id : Long)
 GET         /clubs/new                                                                             controllers.Clubs.create
 POST        /clubs                                                                                 controllers.Clubs.save
 GET         /clubs/$id<[0-9]+>                                                                     controllers.Clubs.view(id : Long)
 # Teams
 GET         /teams                                                                                 controllers.Teams.list(p:Int ?= 0,s:Int ?= 2)
 GET         /teams/edit/$id<[0-9]+>                                                                controllers.Teams.edit(id : Long)
-POST         /teams/$id<[0-9]+>                                                                     controllers.Teams.update(id : Long)
+POST        /teams/$id<[0-9]+>                                                                     controllers.Teams.update(id : Long)
 GET         /teams/new                                                                             controllers.Teams.create
 POST        /teams                                                                                 controllers.Teams.save
 GET         /teams/$id<[0-9]+>                                                                     controllers.Teams.view(id : Long)
 # Cities
 GET         /cities                                                                                controllers.Cities.list(p:Int ?= 0,s:Int ?= 2)
 GET         /cities/edit/$id<[0-9]+>                                                               controllers.Cities.edit(id : Long)
-POST         /cities/$id<[0-9]+>                                                                    controllers.Cities.update(id : Long)
+POST        /cities/$id<[0-9]+>                                                                    controllers.Cities.update(id : Long)
 GET         /cities/new                                                                            controllers.Cities.create
 POST        /cities                                                                                controllers.Cities.save
 GET         /cities/$id<[0-9]+>                                                                    controllers.Cities.view(id : Long)
 # Provinces
 GET         /provinces                                                                             controllers.Provinces.list(p:Int ?= 0,s:Int ?= 2)
 GET         /provinces/edit/$id<[0-9]+>                                                            controllers.Provinces.edit(id : Long)
-POST         /provinces/$id<[0-9]+>                                                                 controllers.Provinces.update(id : Long)
+POST        /provinces/$id<[0-9]+>                                                                 controllers.Provinces.update(id : Long)
 GET         /provinces/new                                                                         controllers.Provinces.create
 POST        /provinces                                                                             controllers.Provinces.save
 GET         /provinces/$id<[0-9]+>                                                                 controllers.Provinces.view(id : Long)
 # States
 GET         /states                                                                                controllers.States.list(p:Int ?= 0,s:Int ?= 2)
 GET         /states/edit/$id<[0-9]+>                                                               controllers.States.edit(id : Long)
-POST         /states/$id<[0-9]+>                                                                    controllers.States.update(id : Long)
+POST        /states/$id<[0-9]+>                                                                    controllers.States.update(id : Long)
 GET         /states/new                                                                            controllers.States.create
 POST        /states                                                                                controllers.States.save
 GET         /states/$id<[0-9]+>                                                                    controllers.States.view(id : Long)
 # Countries
 GET         /countries                                                                             controllers.Countries.list(p:Int ?= 0,s:Int ?= 2)
 GET         /countries/edit/$id<[0-9]+>                                                            controllers.Countries.edit(id : Long)
-POST         /countries/$id<[0-9]+>                                                                 controllers.Countries.update(id : Long)
+POST        /countries/$id<[0-9]+>                                                                 controllers.Countries.update(id : Long)
 GET         /countries/new                                                                         controllers.Countries.create
 POST        /countries                                                                             controllers.Countries.save
 GET         /countries/$id<[0-9]+>                                                                 controllers.Countries.view(id : Long)
 # Players
 GET         /players                                                                               controllers.Players.list(p:Int ?= 0,s:Int ?= 2)
 GET         /players/edit/$id<[0-9]+>                                                              controllers.Players.edit(id : Long)
-POST         /players/$id<[0-9]+>                                                                   controllers.Players.update(id : Long)
+POST        /players/$id<[0-9]+>                                                                   controllers.Players.update(id : Long)
 GET         /players/new                                                                           controllers.Players.create
 POST        /players                                                                               controllers.Players.save
 GET         /players/$id<[0-9]+>                                                                   controllers.Players.view(id : Long)
@@ -74,14 +74,14 @@ GET         /users/$id<[0-9]+>                                                  
 # Seasons
 GET         /seasons                                                                               controllers.Seasons.list(p:Int ?= 0,s:Int ?= 2)
 GET         /seasons/edit/$id<[0-9]+>                                                              controllers.Seasons.edit(id : Long)
-POST         /seasons/$id<[0-9]+>                                                                   controllers.Seasons.update(id : Long)
+POST        /seasons/$id<[0-9]+>                                                                   controllers.Seasons.update(id : Long)
 GET         /seasons/new                                                                           controllers.Seasons.create
 POST        /seasons                                                                               controllers.Seasons.save
 GET         /seasons/$id<[0-9]+>                                                                   controllers.Seasons.view(id : Long)
 # Events
 GET         /events                                                                                controllers.Events.list(p:Int ?= 0,s:Int ?= 2)
 GET         /events/edit/$id<[0-9]+>                                                               controllers.Events.edit(id : Long)
-POST         /events/$id<[0-9]+>                                                                    controllers.Events.update(id : Long)
+POST        /events/$id<[0-9]+>                                                                    controllers.Events.update(id : Long)
 GET         /events/new                                                                            controllers.Events.create
 POST        /events                                                                                controllers.Events.save
 POST        /events/newTeams                                                                       controllers.Events.saveTeams
@@ -93,7 +93,7 @@ GET         /events/agenda                                                      
 GET         /eventStatuses                                                                         controllers.EventStatuses.list(p:Int ?= 0,s:Int ?= 2)
 GET         /api/v1/eventStatuses                                                                  controllers.EventStatuses.jsonList
 GET         /eventStatuses/edit/$id<[0-9]+>                                                        controllers.EventStatuses.edit(id : Long)
-POST         /eventStatuses/$id<[0-9]+>                                                             controllers.EventStatuses.update(id : Long)
+POST        /eventStatuses/$id<[0-9]+>                                                             controllers.EventStatuses.update(id : Long)
 GET         /eventStatuses/new                                                                     controllers.EventStatuses.create
 POST        /eventStatuses                                                                         controllers.EventStatuses.save
 GET         /eventStatuses/$id<[0-9]+>                                                             controllers.EventStatuses.view(id : Long)
@@ -102,7 +102,7 @@ GET         /eventStatuses/$id<[0-9]+>                                          
 GET         /places                                                                                controllers.Places.list(p:Int ?= 0,s:Int ?= 2)
 GET         /api/v1/places                                                                         controllers.Places.jsonList
 GET         /places/edit/$id<[0-9]+>                                                               controllers.Places.edit(id : Long)
-POST         /places/$id<[0-9]+>                                                                    controllers.Places.update(id : Long)
+POST        /places/$id<[0-9]+>                                                                    controllers.Places.update(id : Long)
 GET         /places/new                                                                            controllers.Places.create
 POST        /places                                                                                controllers.Places.save
 GET         /places/$id<[0-9]+>                                                                    controllers.Places.view(id : Long)
@@ -118,46 +118,47 @@ GET         /places/geoMQ                                                       
 GET         /places/geoMQ/$code<[0-9]+>                                                            controllers.Places.geoMQByZipcode(code : String)
 GET         /places/geoOSM                                                                         controllers.Places.geoOSM
 GET         /places/geoOSM/$code<[0-9]+>                                                           controllers.Places.geoOSMByZipcode(code : String)
+GET         /places/clubs                                                                          controllers.Places.placesByClubs
 
 # Categorys
 GET         /categories                                                                            controllers.Categories.list(p:Int ?= 0,s:Int ?= 2)
 GET         /categories/edit/$id<[0-9]+>                                                           controllers.Categories.edit(id : Long)
-POST         /categories/$id<[0-9]+>                                                                controllers.Categories.update(id : Long)
+POST        /categories/$id<[0-9]+>                                                                controllers.Categories.update(id : Long)
 GET         /categories/new                                                                        controllers.Categories.create
 POST        /categories                                                                            controllers.Categories.save
 GET         /categories/$id<[0-9]+>                                                                controllers.Categories.view(id : Long)
 # Scales
 GET         /scales                                                                                controllers.Scales.list(p:Int ?= 0,s:Int ?= 2)
 GET         /scales/edit/$id<[0-9]+>                                                               controllers.Scales.edit(id : Long)
-POST         /scales/$id<[0-9]+>                                                                    controllers.Scales.update(id : Long)
+POST        /scales/$id<[0-9]+>                                                                    controllers.Scales.update(id : Long)
 GET         /scales/new                                                                            controllers.Scales.create
 POST        /scales                                                                                controllers.Scales.save
 GET         /scales/$id<[0-9]+>                                                                    controllers.Scales.view(id : Long)
 # TypMatches
 GET         /typMatches                                                                            controllers.TypMatches.list(p:Int ?= 0,s:Int ?= 2)
 GET         /typMatches/edit/$id<[0-9]+>                                                           controllers.TypMatches.edit(id : Long)
-POST         /typMatches/$id<[0-9]+>                                                                controllers.TypMatches.update(id : Long)
+POST        /typMatches/$id<[0-9]+>                                                                controllers.TypMatches.update(id : Long)
 GET         /typMatches/new                                                                        controllers.TypMatches.create
 POST        /typMatches                                                                            controllers.TypMatches.save
 GET         /typMatches/$id<[0-9]+>                                                                controllers.TypMatches.view(id : Long)
 # TypCompetitions
 GET         /typCompetitions                                                                       controllers.TypCompetitions.list(p:Int ?= 0,s:Int ?= 2)
 GET         /typCompetitions/edit/$id<[0-9]+>                                                      controllers.TypCompetitions.edit(id : Long)
-POST         /typCompetitions/$id<[0-9]+>                                                           controllers.TypCompetitions.update(id : Long)
+POST        /typCompetitions/$id<[0-9]+>                                                           controllers.TypCompetitions.update(id : Long)
 GET         /typCompetitions/new                                                                   controllers.TypCompetitions.create
 POST        /typCompetitions                                                                       controllers.TypCompetitions.save
 GET         /typCompetitions/$id<[0-9]+>                                                           controllers.TypCompetitions.view(id : Long)
 # SeasonCompetitions
 GET         /seasonCompetitions                                                                    controllers.SeasonCompetitions.list(p:Int ?= 0,s:Int ?= 2)
 GET         /seasonCompetitions/edit/$id<[0-9]+>                                                   controllers.SeasonCompetitions.edit(id : Long)
-POST         /seasonCompetitions/$id<[0-9]+>                                                        controllers.SeasonCompetitions.update(id : Long)
+POST        /seasonCompetitions/$id<[0-9]+>                                                        controllers.SeasonCompetitions.update(id : Long)
 GET         /seasonCompetitions/new                                                                controllers.SeasonCompetitions.create
 POST        /seasonCompetitions                                                                    controllers.SeasonCompetitions.save
 GET         /seasonCompetitions/$id<[0-9]+>                                                        controllers.SeasonCompetitions.view(id : Long)
 # Fixtures
 GET         /fixtures                                                                              controllers.Fixtures.list(p:Int ?= 0,s:Int ?= 2)
 GET         /fixtures/edit/$id<[0-9]+>                                                             controllers.Fixtures.edit(id : Long)
-POST         /fixtures/$id<[0-9]+>                                                                  controllers.Fixtures.update(id : Long)
+POST        /fixtures/$id<[0-9]+>                                                                  controllers.Fixtures.update(id : Long)
 GET         /fixtures/new                                                                          controllers.Fixtures.create
 POST        /fixtures                                                                              controllers.Fixtures.save
 GET         /fixtures/$id<[0-9]+>                                                                  controllers.Fixtures.view(id : Long)
@@ -174,36 +175,36 @@ GET         /matchs/event/$id<[0-9]+>                                           
 # TypCards
 GET         /typCards                                                                              controllers.TypCards.list(p:Int ?= 0,s:Int ?= 1)
 GET         /typCards/edit/$id<[0-9]+>                                                             controllers.TypCards.edit(id : Long)
-POST         /typCards/edit/$id<[0-9]+>                                                             controllers.TypCards.update(id : Long)
+POST        /typCards/edit/$id<[0-9]+>                                                             controllers.TypCards.update(id : Long)
 GET         /typCards/new                                                                          controllers.TypCards.create
 POST        /typCards                                                                              controllers.TypCards.save
 GET         /typCards/$id<[0-9]+>                                                                  controllers.TypCards.view(id : Long)
 # Groups
-GET         /groups                                                                              controllers.Groups.list(p:Int ?= 0,s:Int ?= 1)
-GET         /groups/edit/$id<[0-9]+>                                                             controllers.Groups.edit(id : Long)
-POST         /groups/edit/$id<[0-9]+>                                                             controllers.Groups.update(id : Long)
-GET         /groups/new                                                                          controllers.Groups.create
-POST        /groups                                                                              controllers.Groups.save
-GET         /groups/$id<[0-9]+>                                                                  controllers.Groups.view(id : Long)
+GET         /groups                                                                                controllers.Groups.list(p:Int ?= 0,s:Int ?= 1)
+GET         /groups/edit/$id<[0-9]+>                                                               controllers.Groups.edit(id : Long)
+POST        /groups/edit/$id<[0-9]+>                                                               controllers.Groups.update(id : Long)
+GET         /groups/new                                                                            controllers.Groups.create
+POST        /groups                                                                                controllers.Groups.save
+GET         /groups/$id<[0-9]+>                                                                    controllers.Groups.view(id : Long)
 # TypEvents
 GET         /typEvents                                                                             controllers.TypEvents.list(p:Int ?= 0,s:Int ?= 1)
 GET         /api/v1/typEvents                                                                      controllers.TypEvents.jsonList
 GET         /typEvents/edit/$id<[0-9]+>                                                            controllers.TypEvents.edit(id : Long)
-POST         /typEvents/edit/$id<[0-9]+>                                                            controllers.TypEvents.update(id : Long)
+POST        /typEvents/edit/$id<[0-9]+>                                                            controllers.TypEvents.update(id : Long)
 GET         /typEvents/new                                                                         controllers.TypEvents.create
 POST        /typEvents                                                                             controllers.TypEvents.save
 GET         /typEvents/$id<[0-9]+>                                                                 controllers.TypEvents.view(id : Long)
 # Positions
 GET         /positions                                                                             controllers.Positions.list(p:Int ?= 0,s:Int ?= 1)
 GET         /positions/edit/$id<[0-9]+>                                                            controllers.Positions.edit(id : Long)
-POST         /positions/$id<[0-9]+>                                                                 controllers.Positions.update(id : Long)
+POST        /positions/$id<[0-9]+>                                                                 controllers.Positions.update(id : Long)
 GET         /positions/new                                                                         controllers.Positions.create
 POST        /positions                                                                             controllers.Positions.save
 GET         /positions/$id<[0-9]+>                                                                 controllers.Positions.view(id : Long)
 # Formations
 GET         /formations                                                                            controllers.Formations.list(p:Int ?= 0,s:Int ?= 1)
 GET         /formations/edit/$id<[0-9]+>                                                           controllers.Formations.edit(id : Long)
-POST         /formations/$id<[0-9]+>                                                                controllers.Formations.update(id : Long)
+POST        /formations/$id<[0-9]+>                                                                controllers.Formations.update(id : Long)
 GET         /formations/new                                                                        controllers.Formations.create
 POST        /formations                                                                            controllers.Formations.save
 GET         /formations/$id<[0-9]+>                                                                controllers.Formations.view(id : Long)
