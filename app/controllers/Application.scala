@@ -76,7 +76,7 @@ object Application extends Controller with securesocial.core.SecureSocial {
   }
 
   // -- Javascript routing
-  def javascriptRoutes = Action {
+  def jsRoutes = Action {
     implicit request =>
       import routes.javascript._
       Ok(
@@ -88,13 +88,16 @@ object Application extends Controller with securesocial.core.SecureSocial {
           Places.jsonById,
           Places.update,
           Places.save,
+          Places.jsonList,
           Events.eventsData,
           Events.view,
           Events.jsonById,
+          EventStatuses.jsonList,
           Answers.jsonByEvent,
           Events.save,
           Events.saveTeams,
           Events.update,
+          TypEvents.jsonList,
           Matchs.jsonById,
           Cards.jsonByMatchAndTeam,
           Goals.jsonByMatchAndTeam,

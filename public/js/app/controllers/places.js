@@ -1,7 +1,7 @@
 'use strict';
 
 
-fam.controller('PlacesCtrl', function ($scope, $http, $location, Restangular) {
+fam.controller('PlaceCtrl', function ($scope, $http, $location, Restangular) {
     $scope.marker = {};
     $scope.mapOptions = {
         //center: new google.maps.LatLng(35.784, -78.670),

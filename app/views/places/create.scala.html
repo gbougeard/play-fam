@@ -4,7 +4,7 @@
 
     @scripts ={
 
-        <script type="text/javascript" src='@routes.Assets.at("js/app/controllers/places.js")'></script>
+        @*<script type="text/javascript" src='@routes.Assets.at("js/app/controllers/places.js")'></script>*@
 
     }
 
@@ -15,33 +15,33 @@
             <strong>Done!</strong> @message
         </div>
     }
-    <div ng-controller="PlacesCtrl">
+    <div ng-controller="PlaceCtrl">
         <form id="formPlace" class="form-horizontal" ng-submit="save()">
             <div class="control-group " ng-class="{error: formPlace.name.$invalid}">
                 <label class="control-label" for="name">Nom</label>
                 <div class="controls">
-                    <input type="text" id="name" name="name" ng-model="place.name" required>
+                    <input type="text" class="input-xxlarge" id="name" name="name" ng-model="place.name" placeholder="Name" required>
                     <span class="help-inline">Required</span>
                 </div>
             </div>
             <div class="control-group " ng-class="{error: formPlace.address.$invalid}">
                 <label class="control-label" for="address">Address</label>
                 <div class="controls">
-                    <input type="text" id="address" name="address" ng-model="place.address" required>
+                    <input type="text" class="input-xxlarge" id="address" name="address" ng-model="place.address"  placeholder="Address" required>
                     <span class="help-inline">Required</span>
                 </div>
             </div>
             <div class="control-group " ng-class="{error: formPlace.zipcode.$invalid}">
                 <label class="control-label" for="zipcode">Zipcode</label>
                 <div class="controls">
-                    <input type="text" id="zipcode" name="zipcode" ng-model="place.zipcode" required>
+                    <input type="text" class="input-small" id="zipcode" name="zipcode" ng-model="place.zipcode" placeholder="Zipcode" required>
                     <span class="help-inline">Required</span>
                 </div>
             </div>
             <div class="control-group " ng-class="{error: formPlace.city.$invalid}">
                 <label class="control-label" for="city">City</label>
                 <div class="controls">
-                    <input type="text" id="city" name="city" ng-model="place.city" required>
+                    <input type="text" class="input-xlarge" id="city" name="city" ng-model="place.city" placeholder="City" required>
                     <span class="help-inline">Required</span>
                 </div>
             </div>

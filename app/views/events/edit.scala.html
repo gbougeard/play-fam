@@ -3,10 +3,8 @@
     @import tags.buttons._
 
     @scripts={
-        <script type="text/javascript" src='@routes.Assets.at("js/app/controllers/event.js")'></script>
+        @*<script type="text/javascript" src='@routes.Assets.at("js/app/controllers/event.js")'></script>*@
 
-        <script>
-        </script>
     }
 
 
@@ -51,7 +49,7 @@
             <div class="control-group" ng-class="{error: formEvent.duration.$invalid}">
                 <label class="control-label" for="duration">Duration</label>
                 <div class="controls">
-                    <input type="number" id="duration" name="duration" placeholder="Duration" class="input-with-feedback" data-ng-model="event.event.duration" required>
+                    <input type="number" id="duration" name="duration" placeholder="Duration" class="input-small input-with-feedback" data-ng-model="event.event.duration" required>
                 </div>
             </div>
 

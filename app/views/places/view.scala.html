@@ -4,12 +4,12 @@
 
     @scripts = {
 
-        <script type="text/javascript" src='@routes.Assets.at("js/app/controllers/places.js")'></script>
+        @*<script type="text/javascript" src='@routes.Assets.at("js/app/controllers/places.js")'></script>*@
 
     }
 
     @main(message, scripts) {
-        <div class="header" ng-controller="PlacesCtrl" ng-init="loadPlace(@place.id);">
+        <div class="header" data-ng-controller="PlaceCtrl" data-ng-init="loadPlace(@place.id);">
 
             <dl class="dl-horizontal">
                 <dt>Name</dt>

@@ -7,7 +7,7 @@
     }
 
     @main(message, scripts) {
-        <div class="row-fluid" ng-controller="MapPlaceCtrl"
+        <div class="row-fluid" ng-controller="PlaceCtrl"
         @zipcode.map{ case code =>
             ng-init="zipcode=@code; findByZipcode()"
         }

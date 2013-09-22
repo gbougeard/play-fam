@@ -5,7 +5,7 @@
 
 <!DOCTYPE html>
 
-<html lang="en" ng-app="fam">
+<html lang="en">
     <head>
         <meta charset="utf-8">
         <title>@title</title>
@@ -20,35 +20,30 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
         <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-
+        @*<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&callback=onGoogleReady"></script>*@
         @*<script src="https://mgcrea.github.io/angular-strap/vendor/bootstrap-timepicker.js"></script>*@
+        @helper.requireJs(core = routes.WebJarAssets.requirejs.url, module = helper.mainScriptSrc("javascripts/main"))
 
-        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("3.0.0/js/bootstrap.js"))'></script>
-        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("1.1.3/js/bootstrap-datepicker.js"))'></script>
-        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("0.2.3/js/bootstrap-timepicker.js"))'></script>
+        @*<script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("3.0.0/js/bootstrap.js"))'></script>*@
+        @*<script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("1.1.3/js/bootstrap-datepicker.js"))'></script>*@
+        @*<script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("0.2.3/js/bootstrap-timepicker.js"))'></script>*@
         @*<script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("1.0.1/js/locales/bootstrap-datepicker.fr.js"))'></script>*@
-        @*<script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("0.2.1/js/bootstrap-timepicker.js"))'></script>*@
-        @* <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("bootswatch.js"))'></script> *@
-        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("moment.min.js"))'></script>
-        @*<script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("tiny_mce/tiny_mce.js"))'></script>*@
-        @*<script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("tiny_mce/jquery.tinymce.js"))'></script>*@
-        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("angular.js"))'></script>
-        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("angular-resource.js"))'></script>
-        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("angular-ui.js"))'></script>
-        @*<script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("ui-bootstrap.min.js"))'></script>*@
-        @*<script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("ui-bootstrap-tpls.min.js"))'></script>*@
-        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("angular-strap.js"))'></script>
-        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("underscore.min.js"))'></script>
-        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("restangular.min.js"))'></script>
-        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("select2.min.js"))'></script>
-        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.pnotify.min.js"))'></script>
+        @*<script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("moment.min.js"))'></script>*@
+        @*<script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("angular.js"))'></script>*@
+        @*<script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("angular-resource.js"))'></script>*@
+        @*<script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("angular-ui.js"))'></script>*@
+        @*<script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("angular-strap.js"))'></script>*@
+        @*<script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("underscore.min.js"))'></script>*@
+        @*<script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("restangular.min.js"))'></script>*@
+        @*<script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("select2.min.js"))'></script>*@
+        @*<script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.pnotify.min.js"))'></script>*@
         @*<script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap-editable.min.js"))'></script>*@
 
         @*<link rel="stylesheet" media="screen" href='@routes.Assets.at("js/libs/wysihtml5/bootstrap-wysihtml5-0.0.2/bootstrap-wysihtml5-0.0.2.css")'>*@
         @*<script src='@routes.Assets.at("js/libs/wysihtml5/bootstrap-wysihtml5-0.0.2/wysihtml5-0.3.0.min.js")'></script>*@
         @*<script src='@routes.Assets.at("js/libs/wysihtml5/bootstrap-wysihtml5-0.0.2/bootstrap-wysihtml5-0.0.2.min.js")'></script>*@
         @*<script src='@routes.Assets.at("js/libs/wysihtml5/wysihtml5.js")'></script>*@
-        <script src='@routes.Assets.at("js/libs/bootstrap-select.js")'></script>
+        @*<script src='@routes.Assets.at("js/libs/bootstrap-select.js")'></script>*@
         <link rel="stylesheet" href='@routes.WebJarAssets.at(WebJarAssets.locate("angular-ui.min.css"))'>
         <link rel="stylesheet" href='@routes.WebJarAssets.at(WebJarAssets.locate("select2.css"))'>
         <link rel="stylesheet" media="screen" href='@routes.Assets.at("css/bootstrap-select.css")'>
@@ -68,14 +63,14 @@
 
         <link rel="stylesheet" media="screen" href='@routes.Assets.at("css/main.css")'>
 
-        <script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
+        @*<script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>*@
 
         @** Application AngularJS module **@
-        <script type="text/javascript" src='@routes.Assets.at("js/app/app.js")'></script>
-        <script type="text/javascript" src='@routes.Assets.at("js/app/filters.js")'></script>
-        <script type="text/javascript" src='@routes.Assets.at("js/app/services.js")'></script>
-        <script type="text/javascript" src='@routes.Assets.at("js/app/directives.js")'></script>
-        <script type="text/javascript" src='@routes.Assets.at("js/app/controllers.js")'></script>
+        @*<script type="text/javascript" src='@routes.Assets.at("js/app/app.js")'></script>*@
+        @*<script type="text/javascript" src='@routes.Assets.at("js/app/filters.js")'></script>*@
+        @*<script type="text/javascript" src='@routes.Assets.at("js/app/services.js")'></script>*@
+        @*<script type="text/javascript" src='@routes.Assets.at("js/app/directives.js")'></script>*@
+        @*<script type="text/javascript" src='@routes.Assets.at("js/app/controllers.js")'></script>*@
 
         @scripts
 

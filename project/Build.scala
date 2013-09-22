@@ -18,12 +18,12 @@ object Library {
   val webjarsVersion = "2.1.0-3"
   val wjAngularVersion = "1.1.5-1"
   val wjAngularUiVersion = "0.4.0-1"
-  val wjAngularUiBootstrapVersion = "0.4.0"
+  val wjAngularUiBootstrapVersion = "0.5.0"
   val wjAngularStrapVersion = "0.7.4"
   val wjBootstrapVersion = "3.0.0"
   val wjPNotifyVersion = "1.2.0"
   val wjRestangularVersion = "0.6.3"
-  val wjUnderscorejsVersion = "1.5.1"
+  val wjLodashVersion = "1.3.1"
 
   // Libraries
   val akkaActor = "com.typesafe.akka" %% "akka-actor" % akkaVersion
@@ -44,7 +44,7 @@ object Library {
   val wjBootstrap = "org.webjars" % "bootstrap" % wjBootstrapVersion
   val wjPNtofify = "org.webjars" % "pnotify" % wjPNotifyVersion
   val wjRestangular = "org.webjars" % "restangular" % wjRestangularVersion
-  val wjUnderscorejs = "org.webjars" % "underscorejs" % wjUnderscorejsVersion
+  val wjLodash = "org.webjars" % "lodash" % wjLodashVersion
 }
 
 object ApplicationBuild extends Build {
@@ -71,8 +71,8 @@ object ApplicationBuild extends Build {
     wjAngularUiBootstrap,
     wjBootstrap,
     wjPNtofify,
-    wjRestangular,
-    wjUnderscorejs
+    wjLodash,
+    wjRestangular
 
     //      ,anorm
     //    , "com.typesafe" % "slick_2.10" % "1.0.0-RC2"
@@ -89,13 +89,13 @@ object ApplicationBuild extends Build {
     //      ,"postgresql" % "postgresql" % "8.4-701.jdbc4"
 
 
-    //    , "org.webjars" % "requirejs" % "2.1.1"
+    , "org.webjars" % "requirejs" % "2.1.8"
     , "org.webjars" % "bootstrap-datepicker" % "1.1.3"
     , "org.webjars" % "bootstrap-timepicker" % "0.2.3"
     , "org.webjars" % "bootswatch" % "2.3.1"
     , "org.webjars" % "font-awesome" % "3.2.1"
     , "org.webjars" % "jquery-ui" % "1.10.2-1"
-    , "org.webjars" % "momentjs" % "2.0.0-1"
+    , "org.webjars" % "momentjs" % "2.1.0"
     , "org.webjars" % "tinymce-jquery" % "3.4.9"
     , "org.webjars" % "famfamfam-flags" % "0.0"
     , "org.webjars" % "x-editable-bootstrap" % "1.4.5"
@@ -104,6 +104,8 @@ object ApplicationBuild extends Build {
 
 
   val main = play.Project(appName, appVersion, appDependencies).settings(ubuntuPackageSettings:_*).settings(
+    requireJs += "mainProd.js",
+    requireJsShim += "mainProd.js",
 
       UbuntuPackageKeys.maintainer := "Gregory Bougeard <gbougeard@gmail.com>",
 

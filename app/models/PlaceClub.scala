@@ -5,11 +5,6 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-
-import play.api.Logger
-
 case class PlaceClub(placeId: Long,
                      clubId: Long)
 
@@ -27,33 +22,6 @@ object PlaceClubs extends Table[PlaceClub]("fam_club_place") {
 
   def club = foreignKey("CLUB_FK", clubId, Clubs)(_.id)
 
-  lazy val pageSize = 10
-
-  //  def findPage(page: Int = 0, orderField: Int): Page[(Place)] = {
-  //
-  //    val offset = pageSize * page
-  //
-  //    DB.withSession {
-  //      implicit session:Session => {
-  //        val places = (
-  //          for {t <- Places
-  //            .sortBy(place => orderField match {
-  //            case 1 => place.firstName.asc
-  //            case -1 => place.firstName.desc
-  //            case 2 => place.lastName.asc
-  //            case -2 => place.lastName.desc
-  //            case 3 => place.email.asc
-  //            case -3 => place.email.desc
-  //          })
-  //            .drop(offset)
-  //            .take(pageSize)
-  //          } yield (t)).list
-  //
-  //        val totalRows = (for {t <- Places} yield t.id).list.size
-  //        Page(places, page, offset, totalRows)
-  //      }
-  //    }
-  //  }
 
   def findByClub(id: Long): Seq[(PlaceClub, Place, Club)] = DB.withSession {
     implicit session: Session => {
@@ -104,19 +72,4 @@ object PlaceClubs extends Table[PlaceClub]("fam_club_place") {
     }
   }
 
-  /**
-   * Construct the Map[String,String] needed to fill a select options set.
-   */
-  //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.firstName + " " + c.lastName)
-
-  //  def options: Seq[(String, String)] = DB.withSession {
-  //    implicit session:Session =>
-  //      val query = (for {
-  //        item <- Places
-  //      } yield (item.id, item.firstName + " " + item.lastName)
-  //        ).sortBy(_._2)
-  //      query.list.map(row => (row._1.toString, row._2))
-  //  }
-
-  //  implicit val placeClubFormat = Json.format[PlaceClub]
 }
