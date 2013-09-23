@@ -14,5 +14,33 @@ define(["angular"], function(angular) {
             }
         }
     });
+
+    mod.filter('fromNow', function () {
+        return function (dateString) {
+            return moment(new Date(dateString)).fromNow();
+        };
+    });
+
+
+    mod.filter('fromNowTimestamp', function () {
+        return function (timestamp) {
+            var day = moment(timestamp);
+//            console.log(day);
+            return moment(day).fromNow()
+        };
+    });
+
+    mod.filter('typAnswer', function () {
+        var STATUS = {
+            "YES": "success",
+            "NO": "important",
+            "MAYBE": "info"
+        };
+
+        return function (status) {
+            return STATUS[status.group];
+        };
+    });
+
     return mod;
 });

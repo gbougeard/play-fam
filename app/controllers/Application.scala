@@ -81,7 +81,6 @@ object Application extends Controller with securesocial.core.SecureSocial {
       import routes.javascript._
       Ok(
         Routes.javascriptRouter("jsRoutes")(
-          Places.gmapData,
           Places.jsonLikeZipcode,
           Places.jsonLikeCity,
           Places.gmapData,
@@ -89,15 +88,16 @@ object Application extends Controller with securesocial.core.SecureSocial {
           Places.update,
           Places.save,
           Places.jsonList,
-          Events.eventsData,
-          Events.view,
+
           Events.jsonById,
-          EventStatuses.jsonList,
-          Answers.jsonByEvent,
+          Events.jsonList,
           Events.save,
           Events.saveTeams,
           Events.update,
+
           TypEvents.jsonList,
+          EventStatuses.jsonList,
+          Answers.jsonByEvent,
           Matchs.jsonById,
           Cards.jsonByMatchAndTeam,
           Goals.jsonByMatchAndTeam,

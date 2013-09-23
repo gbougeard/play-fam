@@ -2,44 +2,41 @@
  * User service, exposes user model to the rest of the app.
  */
 define(["angular", "common"], function (angular) {
-    var mod = angular.module("event.services", ["fam.common"]);
-    mod.factory("eventService", ["$http", "$q", "playRoutes", function ($http, $q, playRoutes) {
-        var EventService = function () {
+    var mod = angular.module("match.services", ["fam.common"]);
+    mod.factory("matchService", ["$http", "$q", "playRoutes", function ($http, $q, playRoutes) {
+        var PlaceService = function () {
             var self = this;
-
-            self.loadTypEvents = function () {
-                return playRoutes.controllers.TypEvents.jsonList().get();
+            self.loadPlace = function (id) {
+//                console.log("matchService.loadPlace", id);
+                return playRoutes.controllers.Places.jsonById(id).get();
             };
 
-            self.loadEvents = function () {
-                return playRoutes.controllers.Events.jsonList().get();
+            self.findByZipcode = function (zipcode) {
+                console.log("findByZipcode", zipcode);
+                return playRoutes.controllers.Places.jsonLikeZipcode(zipcode).get();
+
             };
 
-            self.loadEventStatuses = function () {
-                return playRoutes.controllers.EventStatuses.jsonList().get();
+            self.findByCity = function (city) {
+                console.log("findByCity", city);
+                return playRoutes.controllers.Places.jsonLikeCity(city).get();
             };
 
-            self.create = function (event) {
-                return playRoutes.controllers.Events.post(JSON.stringify(event));
+            self.loadPlaces = function () {
+                return playRoutes.controllers.Places.jsonList().get();
             };
 
-            self.update = function (event) {
-                console.log("update", event);
-                return playRoutes.controllers.Events.update(event.event.id).post(JSON.stringify(event.event));
+            self.loadMapData = function () {
+                return playRoutes.controllers.Places.gmapData().get();
             };
 
-            self.saveTeams = function (id, event) {
-                var c = [];
-                angular.forEach(event.teams, function (team) {
-                    c.push({
-                        eventId: event.event.id,
-                        teamId: team
-                    });
-                });
+            self.create = function (match) {
+                return playRoutes.controllers.Places.post(JSON.stringify(match));
+            };
 
-                console.log("teams", c);
-                return playRoutes.controllers.Events.saveTeams().post(JSON.stringify(c));
-            }
+            self.update= function (match) {
+                return playRoutes.controllers.Places.update(match.id).post(JSON.stringify(match));
+            };
 
 //            var user;
 //            var token;
@@ -64,10 +61,8 @@ define(["angular", "common"], function (angular) {
 //                return self.user;
 //            };
         };
-        return new EventService();
-    }
-    ])
-    ;
+        return new PlaceService();
+    }]);
     /**
      * Add this object to a route definition to only allow resolving the route if the user is
      * logged in.

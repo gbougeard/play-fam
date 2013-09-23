@@ -84,7 +84,7 @@ GET         /events/new                                                         
 POST        /events                                                                                controllers.Events.save
 POST        /events/newTeams                                                                       controllers.Events.saveTeams
 GET         /events/$id<[0-9]+>                                                                    controllers.Events.view(id : Long)
-GET         /events/json                                                                           controllers.Events.eventsData
+GET         /api/v1/events                                                                         controllers.Events.jsonList
 GET         /api/v1/events/$id<[0-9]+>                                                             controllers.Events.jsonById(id: Long)
 GET         /events/agenda                                                                         controllers.Events.agenda
 # EventStatuses

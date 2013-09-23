@@ -178,7 +178,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
       Ok(views.html.events.agenda("Agenda"))
   }
 
-  def eventsData = Action {
+  def jsonList = Action {
     implicit request =>
       val events = models.Events.findAll
       Ok(Json.toJson(events))

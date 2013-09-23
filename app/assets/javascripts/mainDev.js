@@ -31,7 +31,9 @@
             // You can also define a module here, e.g. a local module that doesn't support RequireJS
             // or map a longer path to a shorter name
             "moment": "//cdnjs.cloudflare.com/ajax/libs/moment.js/2.2.1/moment.min"
-            ,"bootstrap-select": "https://mgcrea.github.io/angular-strap/vendor/bootstrap-select"
+            ,"bootstrap-select": "//mgcrea.github.io/angular-strap/vendor/bootstrap-select"
+            ,"fullCalendar" : "//cdnjs.cloudflare.com/ajax/libs/fullcalendar/1.6.4/fullcalendar.min"
+            ,"gcal" : "./lib/gcal"
 //            "restangular":"//cdnjs.cloudflare.com/ajax/libs/restangular/0.5.1/restangular.min"
         },
         priority: ["angular"]
@@ -52,6 +54,9 @@
     });
     define("jquery", ["webjars!jquery.js"], function () {
         return $;
+    });
+    define("jquery-ui", ["webjars!jquery-ui.js"], function () {
+//        return $;
     });
     define("pnotify", ["webjars!jquery.pnotify.js"], function () {
 //        return $;
@@ -90,6 +95,7 @@
         , "angular-ui"
 //        , "angular-strap"
         , "jquery"
+        , "jquery-ui"
 //        , "pnotify"
         , "bootstrap"
         , "bootstrap-select"
@@ -98,6 +104,8 @@
         , "select2"
 //        , "restangular"
         , "moment"
+        , "fullCalendar"
+//        , "gcal"
         , "app"],
         function (angular, cookies, app) {
             angular.bootstrap(document, ["app"]);
