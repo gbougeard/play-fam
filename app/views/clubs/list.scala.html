@@ -11,7 +11,8 @@
             , newOrderBy.map {
                 orderBy =>
                     if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
-            }.getOrElse(currentOrderBy))
+            }.getOrElse(currentOrderBy)
+            , currentFilter)
     }
 @**, currentFilter)
 **@
