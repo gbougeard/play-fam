@@ -1,4 +1,4 @@
-@(message: String, currentPage: Page[Club], currentOrderBy: Int)(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
+@(message: String, currentPage: Page[Club], currentOrderBy: Int, currentFilter: String)(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
 
 @import service.Administrator
 @import tags.buttons._
@@ -27,6 +27,19 @@
     }
 
 @main(message) {
+
+    <div id="actions" >
+
+        @helper.form(action=routes.Clubs.list()) {
+            <div class="input-append">
+                <input type="search" id="searchbox" name="f" value="@currentFilter" placeholder="Filter by name...">
+                @btnSubmit("Filter by name")
+             </div>
+        }
+
+        @*<a class="btn success" id="add" href="@routes.Application.create()">Add a new computer</a>*@
+
+    </div>
 
     @Option(currentPage.items).filterNot(_.isEmpty).map { clubs =>
 

@@ -19,7 +19,7 @@ GET         /assets/javascripts/routes                                          
 GET         /assets/*file                                                                          controllers.Assets.at(path="/public", file)
 
 # Clubs
-GET         /clubs                                                                                 controllers.Clubs.list(p:Int ?= 0,s:Int ?= 2)
+GET         /clubs                                                                                 controllers.Clubs.list(p:Int ?= 0,s:Int ?= 2, f:String ?= "")
 GET         /clubs/edit/$id<[0-9]+>                                                                controllers.Clubs.edit(id : Long)
 POST        /clubs/$id<[0-9]+>                                                                     controllers.Clubs.update(id : Long)
 GET         /clubs/new                                                                             controllers.Clubs.create

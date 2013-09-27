@@ -67,13 +67,13 @@ object Clubs extends Table[Club]("fam_club") {
     }
   }
 
-  def count: Int = DB.withSession {
+  def count(filter:String): Int = DB.withSession {
     implicit session: Session => {
-      Query(Clubs.length).first
+      Query(Clubs.where(_.name like s"%$filter%").length).first
     }
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[Club] = {
+  def findPage(page: Int = 0, orderField: Int, filter: String): Page[Club] = {
 
     val offset = pageSize * page
 
@@ -81,21 +81,23 @@ object Clubs extends Table[Club]("fam_club") {
       implicit session: Session =>
         val clubs = (
           for {c <- Clubs
-            .sortBy(club => orderField match {
-            case 1 => club.code.asc
-            case -1 => club.code.desc
-            case 2 => club.name.asc
-            case -2 => club.name.desc
-            case 3 => club.city.asc
-            case -3 => club.city.desc
-            case 4 => club.zipcode.asc
-            case -4 => club.zipcode.desc
-          })
-            .drop(offset)
-            .take(pageSize)
-          } yield c).list
+               if  c.name like s"%$filter%"
+          } yield c)
+          .sortBy(club => orderField match {
+          case 1 => club.code.asc
+          case -1 => club.code.desc
+          case 2 => club.name.asc
+          case -2 => club.name.desc
+          case 3 => club.city.asc
+          case -3 => club.city.desc
+          case 4 => club.zipcode.asc
+          case -4 => club.zipcode.desc
+        })
+          .drop(offset)
+          .take(pageSize)
+          .list
 
-        Page(clubs, page, offset, count)
+        Page(clubs, page, offset, count(filter))
     }
   }
 

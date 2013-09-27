@@ -43,10 +43,10 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
 
   // -- Actions
 
-  def list(page: Int, orderBy: Int) = Action {
+  def list(page: Int, orderBy: Int, filter : String) = Action {
     implicit request =>
-      val clubs = models.Clubs.findPage(page, orderBy)
-      val html = views.html.clubs.list("Liste des clubs", clubs, orderBy)
+      val clubs = models.Clubs.findPage(page, orderBy, filter)
+      val html = views.html.clubs.list("Liste des clubs", clubs, orderBy, filter)
       Ok(html)
   }
 
