@@ -28,9 +28,9 @@ if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
 <table class="table table-striped table-bordered table-hover">
     <thead>
     <tr>
-        @header(2,"Email")
-        @header(3,"FullName")
-        @header(4,"AuthMethod")
+        @header(1,"Email")
+        @header(2,"FullName")
+        @header(3,"Provider")
     </tr>
     </thead>
     <tbody>
@@ -39,7 +39,7 @@ if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
     <tr>
         <td>@user.email</td>
         <td>@user.fullName</td>
-        <td>@user.authMethod.method</td>
+        <td>@user.providerId</td>
     </tr>
     }
 

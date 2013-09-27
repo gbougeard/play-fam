@@ -64,16 +64,16 @@ object FamUser {
       userId = user.userId,
       providerId = user.providerId,
       email = user.email,
-      firstName = user.firstName,
-      lastName = user.lastName,
-      fullName = user.firstName + " " + user.lastName,
+      firstName = user.firstName.getOrElse(""),
+      lastName = user.lastName.getOrElse(""),
+      fullName = s"${user.firstName.getOrElse("")} ${user.lastName.getOrElse("")}",
       avatarUrl = user.avatarUrl,
       authMethod = user.authMethod,
       oAuth1Info = None, //Some(OAuth1Info(user.token, user.secret)),
       oAuth2Info = None, //user.oAuth2Info,
       passwordInfo = user.password.map {
         p => Some(PasswordInfo(user.hasher.getOrElse(""), p, user.salt))
-      } getOrElse (None),
+      } getOrElse None,
       currentClubId = user.currentClubId
     )
   }

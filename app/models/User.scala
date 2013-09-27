@@ -13,8 +13,8 @@ case class User(pid: Option[Long],
                 userId: String,
                 providerId: String,
                 email: Option[String],
-                firstName: String,
-                lastName: String,
+                firstName: Option[String],
+                lastName: Option[String],
                 authMethod: AuthenticationMethod,
                 hasher: Option[String],
                 password: Option[String],
@@ -24,7 +24,7 @@ case class User(pid: Option[Long],
                  ) {
   def id: IdentityId = IdentityId(userId, providerId)
 
-  def fullName: String = s"$firstName $lastName"
+  def fullName: String = s"${firstName.getOrElse("")} ${lastName.getOrElse("")}"
 
 //  def avatarUrl: Option[String] = email.map {
 //    e => s"http://www.gravatar.com/avatar/${Codecs.md5(e.getBytes)}.png"
@@ -84,7 +84,7 @@ object Users extends Table[User]("fam_user") {
 
   // Projections
   //  def * =  pid.? ~ userId ~ providerId ~ email.? ~ firstName ~ lastName ~  authMethod ~ passwordInfo.? <>(User.apply _, User.unapply _)
-  def * = pid.? ~ userId ~ providerId ~ email.? ~ firstName ~ lastName ~ authMethod ~ hasher.? ~ password.? ~ salt.? ~ currentClubId.? ~ avatarUrl.? <>(User.apply _, User.unapply _)
+  def * = pid.? ~ userId ~ providerId ~ email.? ~ firstName.? ~ lastName.? ~ authMethod ~ hasher.? ~ password.? ~ salt.? ~ currentClubId.? ~ avatarUrl.? <>(User.apply _, User.unapply _)
 
   def autoInc = * returning pid
 
@@ -182,16 +182,17 @@ object Users extends Table[User]("fam_user") {
         val users = (
           for {t <- Users
             .sortBy(user => orderField match {
-            case 2 => user.email.asc
-            case -2 => user.email.desc
-            case 3 => user.lastName.asc
-            case -3 => user.lastName.desc
-            case 4 => user.authMethod.asc
-            case -4 => user.authMethod.desc
+            case 1 => user.email.asc
+            case -1 => user.email.desc
+            case 2 => user.lastName.asc
+            case -2 => user.lastName.desc
+            case 3 => user.providerId.asc
+            case -3 => user.providerId.desc
+            case _ => user.email.asc
           })
             .drop(offset)
             .take(pageSize)
-          } yield (t)).list
+          } yield t).list
 
         Page(users, page, offset, count)
       }
@@ -223,8 +224,8 @@ object User {
       userId = user.identityId.userId,
       providerId = user.identityId.providerId,
       email = user.email,
-      firstName = if (!user.firstName.isEmpty) user.firstName else user.fullName.split(' ').head,
-      lastName = if (!user.lastName.isEmpty) user.lastName else user.fullName.split(' ').tail.head,
+      firstName = if (!user.firstName.isEmpty) Some(user.firstName) else Some(user.fullName.split(' ').head),
+      lastName = if (!user.lastName.isEmpty) Some(user.lastName) else Some(user.fullName.split(' ').tail.head),
       authMethod = user.authMethod,
       hasher = user.passwordInfo.map {
         p => p.hasher
