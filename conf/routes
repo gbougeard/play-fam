@@ -5,6 +5,8 @@
 # Home page
 GET         /                                                                                      controllers.Application.index
 GET         /me                                                                                    controllers.Application.me
+GET         /myplayer                                                                              controllers.Application.myPlayer(f:String?="")
+GET         /myplayer/create                                                                       controllers.Application.createMyPlayer
 GET         /disconnect                                                                            controllers.Application.logout
 
 GET         /admin/metrics                                                                         com.kenshoo.play.metrics.MetricsController.metrics

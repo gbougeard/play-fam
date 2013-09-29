@@ -1,0 +1,32 @@
+@(player:Option[Player], players:Seq[Player], currentFilter:String)(implicit request: RequestHeader, session: play.api.mvc.Session)
+@import securesocial.core.IdentityProvider
+@import tags._
+@import tags.buttons._
+
+@main("Mon joueur") {
+    @player.map { t =>
+        <h4>Player: @t.firstName @t.lastName</h4>
+    }.getOrElse {
+        <div id="actions" >
+                @helper.form(action=routes.Application.myPlayer()) {
+                    <div class="input-append">
+                        <input type="search" id="searchbox" name="f" value="@currentFilter" placeholder="Filter by name...">
+                        @btnSubmit("Filter by name")
+                            @btnInfo(routes.Application.createMyPlayer,"Create my player")
+                    </div>
+                }
+            @*<a class="btn success" id="add" href="@routes.Application.create()">Add a new computer</a>*@
+
+        </div>
+        <hr/>
+         <div id="results">
+             <select>
+                @players.map { player =>
+                  <option>@player.firstName @player.lastName </option>
+                }
+             </select>
+         </div>
+
+    }
+
+}

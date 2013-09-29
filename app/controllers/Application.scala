@@ -1,5 +1,6 @@
 package controllers
 
+import _root_.models.FamUser
 import _root_.securesocial.core.Authorization
 import _root_.securesocial.core.Identity
 
@@ -12,19 +13,51 @@ import play.api.cache.Cache
 
 import views._
 import models.Role
-import service.{Administrator, Permission}
+import service.{Administrator, Permission, RequestUtil}
 import play.api.libs.json.Json
 
 
 object Application extends Controller with securesocial.core.SecureSocial {
 
-  def index = SecuredAction {
+  def me = SecuredAction {
     implicit request =>
 //      play.Logger.debug(s"test index ${Cache.get("roles.1258")}")
-      Ok(views.html.index(request.user))
+      val famUser:FamUser = RequestUtil.getFamUser(request.user)
+      val currentClub = famUser.currentClubId match {
+          case Some(id) =>  models.Clubs.findById(id)
+          case None => None
+      }
+
+    val player = models.Players.findByUserId(famUser.pid.get)
+      Ok(views.html.me(request.user, currentClub, player))
   }
 
-  def me = index
+  def myPlayer(filter:String) = SecuredAction {
+    implicit request =>
+      val famUser:FamUser= RequestUtil.getFamUser(request.user)
+
+      val player = models.Players.findByUserId(famUser.pid.get)
+      val players = filter match {
+        case "" => List()
+        case _ => models.Players.find(filter)
+      }
+    play.Logger.debug(s"filter : $filter , $players")
+      Ok(views.html.myPlayer(player, players, filter))
+  }
+
+  def createMyPlayer = SecuredAction {
+    implicit request =>
+      val famUser:FamUser= RequestUtil.getFamUser(request.user)
+
+      val player = models.Players.findByUserId(famUser.pid.get)
+      Ok(views.html.myPlayer(player, List(), ""))
+  }
+
+
+  def index = Action {
+    implicit request =>
+      Ok(views.html.index("Football Amateur Manager"))
+  }
 
   def logout = Action {
     implicit request =>

@@ -129,6 +129,16 @@ object Players extends Table[Player]("fam_player") {
     }
   }
 
+  def find(filter: String) = DB.withSession {
+    implicit session:Session => {
+      play.Logger.debug(s"Players.find $filter")
+      val q1 = Query(Players).filter(_.firstName.toUpperCase like s"%${filter.toUpperCase}%")
+      val q2 = Query(Players).filter(_.lastName.toUpperCase like s"%${filter.toUpperCase}%")
+      val unionQuery = q1 union q2
+      unionQuery.list
+    }
+  }
+
   /**
    * Construct the Map[String,String] needed to fill a select options set.
    */
