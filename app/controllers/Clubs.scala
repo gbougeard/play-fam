@@ -4,6 +4,7 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Club
+import models.Clubs._
 import service.Coach
 import service.Administrator
 import play.api.libs.json._
@@ -46,14 +47,20 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
   def list(page: Int, orderBy: Int, filter : String) = Action {
     implicit request =>
       val clubs = models.Clubs.findPage(page, orderBy, filter)
-      val html = views.html.clubs.list("Liste des clubs", clubs, orderBy, filter)
-      Ok(html)
+      render {
+        case Accepts.Html() => Ok(views.html.clubs.list("Liste des clubs", clubs, orderBy, filter))
+        case Accepts.Json() => Ok(Json.toJson(clubs))
+      }
   }
 
   def view(id: Long) = Action {
     implicit request =>
       models.Clubs.findById(id).map {
-        club => Ok(views.html.clubs.view("View Club", club))
+        club =>
+          render {
+            case Accepts.Html() => Ok(views.html.clubs.view("View Club", club))
+            case Accepts.Json() => Ok(Json.toJson(club))
+          }
       } getOrElse NotFound
   }
 
