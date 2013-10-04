@@ -43,7 +43,7 @@ fam.config(['$routeProvider', function ($routeProvider) {
         otherwise({redirectTo: '/wiz1'});
 }]);
 fam.config(function(RestangularProvider) {
-        RestangularProvider.setBaseUrl("/api/v1");
+        RestangularProvider.setBaseUrl("");
     });
 
 fam.value('ui.config', {

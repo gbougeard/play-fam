@@ -100,18 +100,14 @@ GET         /eventStatuses/$id<[0-9]+>                                          
 
 # Places
 GET         /places                                                                                controllers.Places.list(p:Int ?= 0,s:Int ?= 2)
-GET         /api/v1/places                                                                         controllers.Places.jsonList
 GET         /places/edit/$id<[0-9]+>                                                               controllers.Places.edit(id : Long)
 POST        /places/$id<[0-9]+>                                                                    controllers.Places.update(id : Long)
 GET         /places/new                                                                            controllers.Places.create
 POST        /places                                                                                controllers.Places.save
 GET         /places/$id<[0-9]+>                                                                    controllers.Places.view(id : Long)
-GET         /api/v1/places/$id<[0-9]+>                                                             controllers.Places.jsonById(id : Long)
 GET         /places/map                                                                            controllers.Places.map
-GET         /places/map/$zipcode<[0-9]+>                                                           controllers.Places.mapByZipcode(zipcode : String)
+GET         /places/map/zip/$zipcode<[0-9]+>                                                       controllers.Places.mapByZipcode(zipcode : String)
 GET         /places/map/json                                                                       controllers.Places.gmapData
-GET         /api/v1/places/zipcode/$code<[0-9]+>                                                   controllers.Places.jsonLikeZipcode(code : String)
-GET         /api/v1/places/city/$city<[A-Za-z]+>                                                   controllers.Places.jsonLikeCity(city : String)
 GET         /places/geo                                                                            controllers.Places.geoGM
 GET         /places/geo/$code<[0-9]+>                                                              controllers.Places.geoGMByZipcode(code : String)
 GET         /places/geoMQ                                                                          controllers.Places.geoMQ

@@ -162,5 +162,5 @@ function AgendaCtrl($scope, $http, $filter) {
 
     };
 
-    $scope.loadEvents();
+//    $scope.loadEvents();
 }

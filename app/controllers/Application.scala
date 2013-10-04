@@ -109,36 +109,51 @@ object Application extends Controller with securesocial.core.SecureSocial {
   }
 
   // -- Javascript routing
-  def javascriptRoutes = Action {
-    implicit request =>
-      import routes.javascript._
-      Ok(
-        Routes.javascriptRouter("jsRoutes")(
-          Places.gmapData,
-          Places.jsonLikeZipcode,
-          Places.jsonLikeCity,
-          Places.gmapData,
-          Places.jsonById,
-          Places.update,
-          Places.save,
-          Events.view,
-          Answers.jsonByEvent,
-          Events.agenda,
-          Events.save,
-          Events.saveTeams,
-          Events.update,
-          Matchs.jsonById,
-          Cards.jsonByMatchAndTeam,
-          Goals.jsonByMatchAndTeam,
-          Substitutions.jsonByMatchAndTeam,
-          MatchTeams.jsonByMatchAndHome,
-          MatchTeams.jsonByMatchAndAway,
-          MatchTeams.jsonByMatchAndTeam,
-          MatchPlayers.jsonByMatchAndTeam,
-          Formations.saveItems
-        )
-      ).as(JAVASCRIPT)
+  def javascriptRoutes = Action { implicit request =>
+    Ok(Routes.javascriptRouter("jsRoutes")(routeCache:_*)).as(JAVASCRIPT)
   }
+
+  val routeCache = {
+    import routes._
+    val jsRoutesClass = classOf[routes.javascript]
+    val controllers = jsRoutesClass.getFields.map(_.get(null))
+    controllers.flatMap { controller =>
+      controller.getClass.getDeclaredMethods.map { action =>
+        action.invoke(controller).asInstanceOf[play.core.Router.JavascriptReverseRoute]
+      }
+    }
+  }
+//  def javascriptRoutes = Action {
+//    implicit request =>
+//      import routes.javascript._
+//      Ok(
+//        Routes.javascriptRouter("jsRoutes")(
+//          Places.gmapData,
+//          Places.mapByZipcode,
+////          Places.jsonLikeCity,
+//          Places.gmapData,
+//          Places.view,
+//          Places.list,
+//          Places.update,
+//          Places.save,
+//          Events.view,
+//          Answers.jsonByEvent,
+//          Events.agenda,
+//          Events.save,
+//          Events.saveTeams,
+//          Events.update,
+//          Matchs.jsonById,
+//          Cards.jsonByMatchAndTeam,
+//          Goals.jsonByMatchAndTeam,
+//          Substitutions.jsonByMatchAndTeam,
+//          MatchTeams.jsonByMatchAndHome,
+//          MatchTeams.jsonByMatchAndAway,
+//          MatchTeams.jsonByMatchAndTeam,
+//          MatchPlayers.jsonByMatchAndTeam,
+//          Formations.saveItems
+//        )
+//      ).as(JAVASCRIPT)
+//  }
 
 }
 

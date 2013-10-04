@@ -43,6 +43,8 @@ function MapPlaceCtrl($scope, $http) {
         // the data holds the keywords
         // The request is a JSON request.
         jsRoutes.controllers.Places.gmapData().ajax({
+            contentType: "application/json",
+            dataType: "json",
             success: function (data, status) {
                 // console.log("loadPlaces success", data, status);
                 $scope.status = status;
@@ -79,7 +81,9 @@ function MapPlaceCtrl($scope, $http) {
         // Create the http post request
         // the data holds the keywords
         // The request is a JSON request.
-        jsRoutes.controllers.Places.jsonLikeCity($scope.city).ajax({
+        jsRoutes.controllers.Places.mapByCity($scope.city).ajax({
+            contentType: "application/json",
+            dataType: "json",
             success: function (data, status) {
                 // console.log("loadPlaces success", data, status);
                 $scope.status = status;
@@ -115,7 +119,9 @@ function MapPlaceCtrl($scope, $http) {
         // the data holds the keywords
         // The request is a JSON request.
         $scope.myMarkers = [];
-        jsRoutes.controllers.Places.jsonLikeZipcode($scope.zipcode).ajax({
+        jsRoutes.controllers.Places.mapByZipcode($scope.zipcode).ajax({
+            contentType: "application/json",
+            dataType: "json",
             success: function (data, status) {
                 // console.log("loadPlaces success", data, status);
                 $scope.status = status;

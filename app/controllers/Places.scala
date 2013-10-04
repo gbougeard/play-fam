@@ -48,14 +48,20 @@ object Places extends Controller with securesocial.core.SecureSocial {
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
       val places = models.Places.findPage(page, orderBy)
-      val html = views.html.places.list("Liste des places", places, orderBy)
-      Ok(html)
+      render {
+        case Accepts.Html() => Ok( views.html.places.list("Liste des places", places, orderBy))
+        case Accepts.Json() => Ok(Json.toJson(places))
+      }
   }
 
   def view(id: Long) = Action {
     implicit request =>
       models.Places.findById(id).map {
-        place => Ok(views.html.places.view("View Place", place))
+        place =>
+          render {
+            case Accepts.Html() => Ok(views.html.places.view("View Place", place))
+            case Accepts.Json() => Ok(Json.toJson(place))
+          }
       } getOrElse (NotFound)
   }
 
@@ -143,7 +149,18 @@ object Places extends Controller with securesocial.core.SecureSocial {
 
   def mapByZipcode(zipcode: String) = Action {
     implicit request =>
-      Ok(views.html.places.map("Map des places", Some(zipcode)))
+      render {
+        case Accepts.Html() => Ok(views.html.places.map("Map des places", Some(zipcode)))
+        case Accepts.Json() => Ok(Json.toJson(models.Places.findLikeZipcode(zipcode)))
+      }
+  }
+
+  def mapByCity(city: String) = Action {
+    implicit request =>
+      render {
+        case Accepts.Html() => Ok(views.html.places.map("Map des places", Some(city)))
+        case Accepts.Json() => Ok(Json.toJson(models.Places.findLikeCity(city)))
+      }
   }
 
   def gmapData = Action {
@@ -152,28 +169,9 @@ object Places extends Controller with securesocial.core.SecureSocial {
       Ok(Json.toJson(places))
   }
 
-  def jsonLikeCity(city: String) = Action {
-    implicit request =>
-      val places = models.Places.findLikeCity(city)
-      Ok(Json.toJson(places))
-  }
-
-  def jsonLikeZipcode(zipcode: String) = Action {
-    implicit request =>
-      val places = models.Places.findLikeZipcode(zipcode)
-      Ok(Json.toJson(places))
-  }
-
   def jsonList = Action {
     implicit request =>
       Ok(Json.toJson(models.Places.findAll))
-  }
-
-  def jsonById(id: Long) = Action {
-    implicit request =>
-      models.Places.findById(id).map {
-        place => Ok(Json.toJson(place))
-      } getOrElse NotFound
   }
 
   def load = SecuredAction(WithRoles(Set(Administrator))) {
