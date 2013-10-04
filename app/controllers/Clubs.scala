@@ -44,7 +44,7 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
 
   // -- Actions
 
-  def list(page: Int, orderBy: Int, filter : String) = Action {
+  def list(page: Int, orderBy: Int, filter: String) = Action {
     implicit request =>
       val clubs = models.Clubs.findPage(page, orderBy, filter)
       render {
@@ -87,9 +87,9 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
         club => {
           play.Logger.debug(s"update club $id $club ")
           models.Clubs.update(id, club)
-                  Home.flashing("success" -> "Club %s has been updated".format(club.name))
+          Home.flashing("success" -> "Club %s has been updated".format(club.name))
           //Redirect(routes.Clubs.list(0, 2))
-//          Redirect(routes.Clubs.view(id)).flashing("success" -> "Club %s has been updated".format(club.name))
+          //          Redirect(routes.Clubs.view(id)).flashing("success" -> "Club %s has been updated".format(club.name))
 
         }
       )
@@ -148,46 +148,46 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
 
   def load = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
-    import scala.io.Source
+      import scala.io.Source
 
-    val is = Application.getClass.getResourceAsStream("/public/data/clubs_light.json")
-    val src = Source.fromInputStream(is)
-    val iter = src.getLines
-    val lines = src.mkString
-    src.close()
-    val fffClubs = Json.parse(lines).as[Seq[FffClub]]
-    fffClubs.map {
-      fffClub =>
-        val adr = if (fffClub.address.split(" - ").length > 2) fffClub.address.split(" - ").reverse.tail.tail.head else fffClub.address
-        val zipcode = if (fffClub.address.split(" - ").length > 2) fffClub.address.split(" - ").reverse.tail.head else ""
-        val city = if (fffClub.address.split(" - ").length > 2) fffClub.address.split(" - ").reverse.head else ""
+      val is = Application.getClass.getResourceAsStream("/public/data/clubs_light.json")
+      val src = Source.fromInputStream(is)
+      val iter = src.getLines
+      val lines = src.mkString
+      src.close()
+      val fffClubs = Json.parse(lines).as[Seq[FffClub]]
+      fffClubs.map {
+        fffClub =>
+          val adr = if (fffClub.address.split(" - ").length > 2) fffClub.address.split(" - ").reverse.tail.tail.head else fffClub.address
+          val zipcode = if (fffClub.address.split(" - ").length > 2) fffClub.address.split(" - ").reverse.tail.head else ""
+          val city = if (fffClub.address.split(" - ").length > 2) fffClub.address.split(" - ").reverse.head else ""
 
-        val col = fffClub.colours match {
-          case "" => None
-          case s: String => Some(s.trim)
-        }
-
-        val club = Club(code = fffClub.code.trim.toInt,
-          name = fffClub.name.trim,
-          colours = col,
-          comments = Some(Json.toJson(fffClub).toString),
-          address = adr match {
+          val col = fffClub.colours match {
             case "" => None
             case s: String => Some(s.trim)
-          },
-          zipcode = zipcode match {
-            case "" => None
-            case s: String => Some(s.trim)
-          },
-          city = city match {
-            case "" => None
-            case s: String => Some(s.trim)
-          })
-        play.Logger.debug(s"$club")
-        models.Clubs.insert(club)
-    }
+          }
 
-    Ok
+          val club = Club(code = fffClub.code.trim.toInt,
+            name = fffClub.name.trim,
+            colours = col,
+            comments = Some(Json.toJson(fffClub).toString),
+            address = adr match {
+              case "" => None
+              case s: String => Some(s.trim)
+            },
+            zipcode = zipcode match {
+              case "" => None
+              case s: String => Some(s.trim)
+            },
+            city = city match {
+              case "" => None
+              case s: String => Some(s.trim)
+            })
+          play.Logger.debug(s"$club")
+          models.Clubs.insert(club)
+      }
+
+      Ok
   }
 
 }

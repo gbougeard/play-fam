@@ -57,18 +57,18 @@ fam.filter('eventUrl', function () {
     return function (data) {
 //        console.log(data);
         var url = '';
-        switch(data.typEventId){
+        switch (data.typEventId) {
             case  1 : // Workout
                 url += '/workouts/';
                 break;
             case  2 : // Match
-                url += '/matchs/' ;
+                url += '/matchs/';
                 break;
             default:
                 url += '/events/';
                 break;
         }
-        switch(data.eventStatusId){
+        switch (data.eventStatusId) {
             case  27 : // Fini
                 url += 'event/';
                 break;
@@ -89,7 +89,7 @@ function AgendaCtrl($scope, $http, $filter) {
 
     $scope.eventSource = {
         url: "https://www.google.com/calendar/feeds/os5iqgd70elova2if2f8jdffh8%40group.calendar.google.com/public/basic",
-        className: 'gcal-event',           // an option!
+        className: 'gcal-event'           // an option!
 //        currentTimezone: 'France/Paris' // an option!
 
     };
@@ -97,8 +97,8 @@ function AgendaCtrl($scope, $http, $filter) {
     $scope.events = [
         {title: 'All Day Event', start: new Date(y, m, 1)},
         {title: 'Long Event', start: new Date(y, m, d - 5), end: new Date(y, m, d - 2)},
-        {id: 999, title: 'Repeating Event', start: new Date(y, m, d - 3, 16, 0), allDay: false, className:'typEvent1'},
-        {id: 999, title: 'Repeating Event', start: new Date(y, m, d + 4, 16, 0), allDay: false, className:'typEvent2'},
+        {id: 999, title: 'Repeating Event', start: new Date(y, m, d - 3, 16, 0), allDay: false, className: 'typEvent1'},
+        {id: 999, title: 'Repeating Event', start: new Date(y, m, d + 4, 16, 0), allDay: false, className: 'typEvent2'},
         {title: 'Birthday Party', start: new Date(y, m, d + 1, 19, 0), end: new Date(y, m, d + 1, 22, 30), allDay: false},
         {title: 'Click for Google', start: new Date(y, m, 28), end: new Date(y, m, 29), url: 'http://google.com/'}
     ];
@@ -111,18 +111,20 @@ function AgendaCtrl($scope, $http, $filter) {
             start: new Date(y, m, 28),
             end: new Date(y, m, 29)
         });
-    }
+    };
 
     $scope.remove = function (index) {
         $scope.events.splice(index, 1);
-    }
+    };
 
     // The function that will be executed on button click (ng-click="search()")
     $scope.loadEvents = function () {
         // Create the http post request
         // the data holds the keywords
         // The request is a JSON request.
-        jsRoutes.controllers.Events.eventsData().ajax({
+        jsRoutes.controllers.Events.agenda().ajax({
+            contentType: "application/json",
+            dataType: "json",
             success: function (data, status) {
                 // console.log("loadPlaces success", data, status);
                 $scope.status = status;
@@ -137,10 +139,10 @@ function AgendaCtrl($scope, $http, $filter) {
                         title: item.name,
                         start: dtStart,
                         end: dtEnd,
-                        url:   $filter('eventUrl')(item),
+                        url: $filter('eventUrl')(item),
 //                        className: 'typEvent'+item.typEventId ,
-                        editable:false,
-                        color: $filter('eventColor')(item.typEventId),
+                        editable: false,
+                        color: $filter('eventColor')(item.typEventId)
 //                        textColor: $filter('eventTextColor')(item.typEventId)
 
                     };
