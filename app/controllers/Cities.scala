@@ -4,17 +4,12 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.City
+import models.Cities._
+import models.Provinces._
 import play.api.libs.json.Json
-import com.kenshoo.play.metrics.MetricsRegistry
-import com.kenshoo.play.metrics.MetricsRegistry._
-import com.codahale.metrics._
-import com.codahale.metrics.MetricRegistry._
 import service.Administrator
 
 object Cities extends Controller  with securesocial.core.SecureSocial {
-
-  lazy val timer: Timer = MetricsRegistry.default.timer(name("cities", "requestTimer"))
-
 
   /**
    * This result directly redirect to the application home.
@@ -49,7 +44,11 @@ object Cities extends Controller  with securesocial.core.SecureSocial {
   def view(id: Long) = Action {
     implicit request =>
       models.Cities.findById(id).map {
-        city => Ok(views.html.cities.view("View City", city))
+        city =>
+          render {
+            case Accepts.Html() => Ok(views.html.cities.view("View City", city))
+            case Accepts.Json() => Ok(Json.toJson(city))
+          }
       } getOrElse (NotFound)
   }
 
@@ -104,11 +103,11 @@ object Cities extends Controller  with securesocial.core.SecureSocial {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val context = timer.time()
       val cities = models.Cities.findPage(page, orderBy)
-      context.stop()
-      val html = views.html.cities.list("Liste des cities", cities, orderBy)
-      Ok(html)
+      render {
+        case Accepts.Html() => Ok( views.html.cities.list("Liste des cities", cities, orderBy))
+        case Accepts.Json() => Ok(Json.toJson(cities))
+      }
   }
 
   /**

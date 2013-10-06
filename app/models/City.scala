@@ -163,4 +163,19 @@ object Cities extends Table[City]("fam_city") {
     }
   }
 
+  implicit val cityFormat = Json.format[City]
+
+  import Provinces._
+  implicit val cityWithProvinceReads: Reads[(City, Province)] = (
+    (__ \ 'city).read[City] ~
+      (__ \ 'province).read[Province]
+    ) tupled
+
+  // or using the operators inspired by Scala parser combinators for those who know them
+  implicit val cityWithProvinceWrites: Writes[(City, Province)] = (
+      (__ \ 'city).write[City] ~
+        (__ \ 'province).write[Province]
+    ) tupled
+  implicit val cityWithsProvinceFormat = Format(cityWithProvinceReads, cityWithProvinceWrites)
+
 }
