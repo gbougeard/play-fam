@@ -11,7 +11,7 @@ env:
   - PLAY_VERSION=2.1.5
 
 before_script:
-  - wget http://download.playframework.org/releases/play-${PLAY_VERSION}.zip
+  - wget http://downloads.typesafe.com/play/${PLAY_VERSION}/play-${PLAY_VERSION}.zip
   - unzip -q play-${PLAY_VERSION}.zip
 script:
   -  sbt test
