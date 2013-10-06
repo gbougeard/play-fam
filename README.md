@@ -8,3 +8,5 @@ Actually, pre-requisite :
 - MySql DB
 - some datas (dump.sql)
 
+
+[![Build Status](https://travis-ci.org/gbougeard/play-fam.png?branch=master)](https://travis-ci.org/gbougeard/play-fam)
