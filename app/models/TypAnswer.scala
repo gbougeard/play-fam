@@ -6,6 +6,7 @@ import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
 import play.api.libs.json._
+import database.TypAnswers
 
 case class TypAnswer(id: Option[Long],
                      code: String,
@@ -13,29 +14,7 @@ case class TypAnswer(id: Option[Long],
                      group: String)
 
 
-// define tables
-object TypAnswers extends Table[TypAnswer]("fam_typ_answer") {
-
-  def id = column[Long]("id_typ_answer", O.PrimaryKey, O.AutoInc)
-
-  def name = column[String]("lib_typ_answer")
-
-  def code = column[String]("cod_typ_answer")
-
-  def group = column[String]("grp_typ_answer")
-
-  def * = id.? ~ code ~ name ~ group <>(TypAnswer, TypAnswer.unapply _)
-
-  def autoInc = id.? ~ code ~ name ~ group <>(TypAnswer, TypAnswer.unapply _) returning id
-
-  // A reified foreign key relation that can be navigated to create a join
-  //  def typMatch = foreignKey("TYP_MATCH_FK", typMatchId, TypMatches)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-  val byGroup = createFinderBy(_.group)
-
+object TypAnswer{
   lazy val pageSize = 10
 
   def findAll: Seq[TypAnswer] = DB.withSession {
@@ -98,7 +77,7 @@ object TypAnswers extends Table[TypAnswer]("fam_typ_answer") {
 
   def insert(typAnswer: TypAnswer): Long = DB.withSession {
     implicit session:Session => {
-      TypAnswers.autoInc.insert((typAnswer))
+      TypAnswers.autoInc.insert(typAnswer)
     }
   }
 

@@ -4,12 +4,12 @@ import play.api.Play.current
 
 import play.api.db.slick.DB
 import play.api.db.slick.Config.driver.simple._
-import slick.lifted.{Join, MappedTypeMapper}
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 import java.util.Date
+import database.Fixtures
 
 case class Fixture(id: Option[Long],
                 date: Date,
@@ -17,33 +17,7 @@ case class Fixture(id: Option[Long],
                 competitionId: Long) {
 }
 
-// define tables
-object Fixtures extends Table[Fixture]("fam_fixture") {
-
-  implicit val javaUtilDateTypeMapper = MappedTypeMapper.base[java.util.Date, java.sql.Date](
-    x => new java.sql.Date(x.getTime),
-    x => new java.util.Date(x.getTime)
-  )
-
-  def id = column[Long]("id_fixture", O.PrimaryKey, O.AutoInc)
-
-  def name = column[String]("lib_fixture")
-
-  def date = column[Date]("dt_fixture")
-
-  def competitionId = column[Long]("id_season_competition")
-
-  def * = id.? ~ date ~ name ~ competitionId <>(Fixture, Fixture.unapply _)
-
-  def autoInc = id.? ~ date ~ name ~ competitionId <>(Fixture, Fixture.unapply _) returning id
-
-  // A reified foreign key relation that can be navigated to create a join
-  def competition = foreignKey("COMPETTITION_FK", competitionId, SeasonCompetitions)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byDate = createFinderBy(_.date)
-
+object Fixture{
   lazy val pageSize = 10
 
   def findAll: Seq[Fixture] = DB.withSession {
@@ -102,7 +76,7 @@ object Fixtures extends Table[Fixture]("fam_fixture") {
 
   def insert(fixture: Fixture): Long = DB.withSession {
     implicit session:Session => {
-      Fixtures.autoInc.insert((fixture))
+      Fixtures.autoInc.insert(fixture)
     }
   }
 

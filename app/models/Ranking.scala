@@ -7,7 +7,7 @@ import play.api.db.slick.DB
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
-
+import database.Rankings
 
 case class Ranking(competitionId: Long,
                    clubId: Long,
@@ -22,38 +22,7 @@ case class Ranking(competitionId: Long,
                    goalShipped: Int)
 
 
-// define tables
-object Rankings extends Table[Ranking]("v_rankings") {
-
-  def competitionId = column[Long]("id_season_competition")
-
-  def clubId = column[Long]("id_club")
-
-  def teamId = column[Long]("id_team")
-
-  def team = column[String]("lib_team")
-
-  def points = column[Int]("points")
-
-  def victory = column[Int]("victory")
-
-  def defeat = column[Int]("defeat")
-
-  def draw = column[Int]("draw")
-
-  def played = column[Int]("played")
-
-  def goalScored = column[Int]("goal_scored")
-
-  def goalShipped = column[Int]("goal_shipped")
-
-  def * = competitionId ~ clubId ~ teamId ~ team ~ points ~ victory ~ defeat ~ draw ~ played ~ goalScored ~ goalShipped <>(Ranking, Ranking.unapply _)
-
-
-  val byCompetition = createFinderBy(_.competitionId)
-  val byClub = createFinderBy(_.clubId)
-  val byTeam = createFinderBy(_.teamId)
-
+object Ranking{
   lazy val pageSize = 10
 
   def findAll: Seq[Ranking] = DB.withSession {

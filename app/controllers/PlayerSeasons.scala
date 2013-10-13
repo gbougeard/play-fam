@@ -6,7 +6,7 @@ import _root_.securesocial.core.Identity
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.Player
+import models._
 
 import play.api.Logger
 
@@ -32,21 +32,21 @@ object PlayerSeasons extends Controller with securesocial.core.SecureSocial {
 
   def bySeason(idSeason: Long) = SecuredAction {
     implicit request =>
-      val players = models.PlayerSeasons.findBySeason(idSeason)
+      val players = PlayerSeason.findBySeason(idSeason)
       val html = views.html.playerseasons.list("Liste des players by Season", players)
       Ok(html)
   }
 
   def byClubAndSeason(idClub: Long, idSeason: Long) = SecuredAction {
     implicit request =>
-      val players = models.PlayerSeasons.findByClubAndSeason(idClub, idSeason)
+      val players = PlayerSeason.findByClubAndSeason(idClub, idSeason)
       val html = views.html.playerseasons.list("Liste des players by Club and Season", players)
       Ok(html)
   }
 
   def playerByClubAndSeason(idPlayer: Long, idClub: Long, idSeason: Long) = SecuredAction {
     implicit request =>
-      models.PlayerSeasons.findPlayerByClubAndSeason(idPlayer, idClub, idSeason).map {
+      PlayerSeason.findPlayerByClubAndSeason(idPlayer, idClub, idSeason).map {
         player =>
           val html = views.html.playerseasons.view("Player by Club and Season", player)
           Ok(html)

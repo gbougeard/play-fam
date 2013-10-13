@@ -9,6 +9,7 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 import play.api.Logger
+import database.Players
 
 case class Player(id: Option[Long],
                   firstName: String,
@@ -20,31 +21,7 @@ case class Player(id: Option[Long],
   }
 }
 
-// define tables
-object Players extends Table[Player]("fam_player") {
-
-  def id = column[Long]("id_player", O.PrimaryKey, O.AutoInc)
-
-  def firstName = column[String]("first_name")
-
-  def lastName = column[String]("last_name")
-
-  def email = column[String]("email")
-
-  def userId = column[Long]("id_user")
-
-  def * = id.? ~ firstName ~ lastName ~ email ~ userId.? <>(Player, Player.unapply _)
-
-  def autoInc = id.? ~ firstName ~ lastName ~ email ~ userId.? <>(Player, Player.unapply _) returning id
-
-  // A reified foreign key relation that can be navigated to create a join
-  def user = foreignKey("USER_FK", userId, Users)(_.pid)
-
-  val byId = createFinderBy(_.id)
-  val byFirstName = createFinderBy(_.firstName)
-  val byLastName = createFinderBy(_.lastName)
-  val byUserId = createFinderBy(_.userId)
-
+object Player{
   lazy val pageSize = 10
 
   def findAll: Seq[Player] = DB.withSession {
@@ -77,7 +54,7 @@ object Players extends Table[Player]("fam_player") {
           })
             .drop(offset)
             .take(pageSize)
-          } yield (t)).list
+          } yield t).list
 
         Page(players, page, offset, count)
       }
@@ -111,7 +88,7 @@ object Players extends Table[Player]("fam_player") {
 
   def insert(player: Player): Long = DB.withSession {
     implicit session:Session => {
-      Players.autoInc.insert((player))
+      Players.autoInc.insert(player)
     }
   }
 

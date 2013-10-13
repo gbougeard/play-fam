@@ -11,22 +11,12 @@ import play.api.libs.functional.syntax._
 import play.api.Logger
 import scala.util.Try
 
+import database.PlaceClubs
+
 case class PlaceClub(placeId: Long,
                      clubId: Long)
 
-// define tables
-object PlaceClubs extends Table[PlaceClub]("fam_club_place") {
-
-  def placeId = column[Long]("id_place")
-
-  def clubId = column[Long]("id_club")
-
-  def * = placeId ~ clubId <>(PlaceClub, PlaceClub.unapply _)
-
-  // A reified foreign key relation that can be navigated to create a join
-  def place = foreignKey("PLACE_FK", placeId, Places)(_.id)
-
-  def club = foreignKey("CLUB_FK", clubId, Clubs)(_.id)
+object PlaceClub{
 
   lazy val pageSize = 10
 

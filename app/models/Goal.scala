@@ -8,7 +8,9 @@ import play.api.db.slick.DB
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-import models.Players._
+import models.Player._
+import database.Goals
+import database.Players
 
 case class Goal(id: Option[Long],
                 matchId: Long,
@@ -19,40 +21,7 @@ case class Goal(id: Option[Long],
                 penalty: Boolean,
                 csc: Boolean) {
 }
-
-// define tables
-object Goals extends Table[Goal]("fam_goal") {
-
-  def id = column[Long]("id_goal", O.PrimaryKey, O.AutoInc)
-
-  def matchId = column[Long]("id_match")
-
-  def teamId = column[Long]("id_team")
-
-  def strikerId = column[Long]("id_striker")
-
-  def assistId = column[Long]("id_assist")
-
-  def goalTime = column[Long]("goal_time")
-
-  def penalty = column[Boolean]("penalty")
-
-  def csc = column[Boolean]("csc")
-
-  def * = id.? ~ matchId ~ teamId ~ strikerId.? ~ assistId.? ~ goalTime.? ~ penalty ~ csc <>(Goal, Goal.unapply _)
-
-  def autoInc = id.? ~ matchId ~ teamId ~ strikerId.? ~ assistId.? ~ goalTime.? ~ penalty ~ csc <>(Goal, Goal.unapply _) returning id
-
-
-  // A reified foreign key relation that can be navigated to create a join
-  def matche = foreignKey("MATCH_FK", matchId, Matchs)(_.id)
-
-  def team = foreignKey("TEAM_FK", teamId, Teams)(_.id)
-
-  def striker = foreignKey("STRIKER_FK", strikerId, Players)(_.id)
-
-  def assist = foreignKey("ASSIST_FK", assistId, Players)(_.id)
-
+object Goal{
   lazy val pageSize = 10
 
   def findByMatchAndTeam(idMatch: Long, idTeam: Long): Seq[(Goal, Option[Player])] = DB.withSession {
@@ -68,7 +37,7 @@ object Goals extends Table[Goal]("fam_goal") {
 
   def insert(goal: Goal): Long = DB.withSession {
     implicit session:Session => {
-      Goals.autoInc.insert((goal))
+      Goals.autoInc.insert(goal)
     }
   }
 

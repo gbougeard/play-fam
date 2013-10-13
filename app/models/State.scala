@@ -8,7 +8,7 @@ import play.api.db.slick.DB
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-import Countries._
+import database.States
 
 case class State(id: Option[Long],
                  code: String,
@@ -18,35 +18,7 @@ case class State(id: Option[Long],
                  countryId: Long)
 
 
-// define tables
-object States extends Table[State]("fam_state") {
-
-  def id = column[Long]("id_state", O.PrimaryKey, O.AutoInc)
-
-  def code = column[String]("cod_state")
-
-  def name = column[String]("lib_state")
-
-  def upper = column[String]("lib_Upper")
-
-  def lower = column[String]("lib_lower")
-
-  def countryId = column[Long]("id_country")
-
-  def * = id.? ~ code ~ name ~ upper ~ lower ~ countryId <>(State, State.unapply _)
-
-  def autoInc = id.? ~ code ~ name ~ upper ~ lower ~ countryId <>(State, State.unapply _)
-
-  // A reified foreign key relation that can be navigated to create a join
-  def country = foreignKey("COUNTRY_FK", countryId, Countries)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-  val byUpper = createFinderBy(_.upper)
-  val byLower = createFinderBy(_.lower)
-  val byCountry = createFinderBy(_.countryId)
-
+object State{
   lazy val pageSize = 10
 
   def findAll: Seq[State] = DB.withSession {
@@ -109,7 +81,7 @@ object States extends Table[State]("fam_state") {
 
   def insert(state: State): Long = DB.withSession {
     implicit session:Session => {
-      States.autoInc.insert((state))
+      States.autoInc.insert(state)
     }
   }
 

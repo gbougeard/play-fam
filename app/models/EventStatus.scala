@@ -7,31 +7,13 @@ import play.api.db.slick.DB
 
 import play.api.libs.json._
 
+import database.EventStatuses
+
 case class EventStatus(id: Option[Long],
                           code: String,
                           name: String)
 
-
-// define tables
-object EventStatuses extends Table[EventStatus]("fam_event_status") {
-
-  def id = column[Long]("id_event_status", O.PrimaryKey, O.AutoInc)
-
-  def name = column[String]("lib_event_status")
-
-  def code = column[String]("cod_event_status")
-
-  def * = id.? ~ code ~ name <>(EventStatus, EventStatus.unapply _)
-
-  def autoInc = id.? ~ code ~ name <>(EventStatus, EventStatus.unapply _) returning id
-
-  // A reified foreign key relation that can be navigated to create a join
-//  def typMatch = foreignKey("TYP_MATCH_FK", typMatchId, TypMatches)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-
+object EventStatus{
   lazy val pageSize = 10
 
   def findAll: Seq[EventStatus] = DB.withSession {
@@ -83,7 +65,7 @@ object EventStatuses extends Table[EventStatus]("fam_event_status") {
 
   def insert(eventStatus: EventStatus): Long = DB.withSession {
     implicit session:Session => {
-      EventStatuses.autoInc.insert((eventStatus))
+      EventStatuses.autoInc.insert(eventStatus)
     }
   }
 

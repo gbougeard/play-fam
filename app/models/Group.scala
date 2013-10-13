@@ -6,29 +6,12 @@ import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
 import play.api.libs.json._
+import database.Groups
 
 case class Group(id: Option[Long],
                  name: String)
 
-
-// define tables
-object Groups extends Table[Group]("fam_group") {
-
-  def id = column[Long]("id_group", O.PrimaryKey, O.AutoInc)
-
-  def name = column[String]("lib_group")
-
-
-  def * = id.? ~ name <>(Group, Group.unapply _)
-
-  def autoInc = id.? ~ name <>(Group, Group.unapply _) returning id
-
-  // A reified foreign key relation that can be navigated to create a join
-  //  def typMatch = foreignKey("TYP_MATCH_FK", typMatchId, TypMatches)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-
+object Group{
   lazy val pageSize = 10
 
   def findAll: Seq[Group] = DB.withSession {

@@ -8,6 +8,7 @@ import play.api.db.slick.DB
 import securesocial.core._
 
 import play.Logger
+import database.Users
 
 case class User(pid: Option[Long],
                 userId: String,
@@ -32,62 +33,7 @@ case class User(pid: Option[Long],
 }
 
 
-object Users extends Table[User]("fam_user") {
-
-  // Conversions for AuthenticationMethod
-  implicit def string2AuthenticationMethod: TypeMapper[AuthenticationMethod] = MappedTypeMapper.base[AuthenticationMethod, String](
-    authenticationMethod => authenticationMethod.method,
-    string => AuthenticationMethod(string)
-  )
-
-  def pid = column[Long]("id_user", O.PrimaryKey, O.AutoInc)
-
-  def userId = column[String]("userId")
-
-  def providerId = column[String]("providerId")
-
-  def email = column[String]("email")
-
-  def firstName = column[String]("first_name")
-
-  def lastName = column[String]("last_name")
-
-  def authMethod = column[AuthenticationMethod]("authMethod")
-
-  //  def oAuth1Info = {
-  //    def token = column[String]("token")
-  //    def secret = column[String]("secret")
-  //    token ~ secret <> (OAuth1Info.apply _, OAuth1Info.unapply _)
-  //  }
-
-  //  def oAuth2Info = {
-  //    def accessToken = column[String]("accessToken")
-  //    def tokenType = column[Option[String]]("tokenType")
-  //    def expiresIn = column[Option[Int]]("expiresIn")
-  //    def refreshToken = column[Option[String]]("refreshToken")
-  //    accessToken ~ tokenType ~ expiresIn ~ refreshToken <> (OAuth2Info.apply _, OAuth2Info.unapply _)
-  //  }
-
-  //    def passwordInfo = {
-  def hasher = column[String]("hasher")
-
-  def password = column[String]("password")
-
-  def salt = column[String]("salt")
-
-  def currentClubId = column[Long]("id_current_club")
-
-  def avatarUrl = column[String]("avatarUrl")
-
-  //      def apply = hasher ~ password ~ salt.? <> (PasswordInfo.apply _, PasswordInfo.unapply _)
-  //    }
-
-  // Projections
-  //  def * =  pid.? ~ userId ~ providerId ~ email.? ~ firstName ~ lastName ~  authMethod ~ passwordInfo.? <>(User.apply _, User.unapply _)
-  def * = pid.? ~ userId ~ providerId ~ email.? ~ firstName.? ~ lastName.? ~ authMethod ~ hasher.? ~ password.? ~ salt.? ~ currentClubId.? ~ avatarUrl.? <>(User.apply _, User.unapply _)
-
-  def autoInc = * returning pid
-
+object User{
   // Operations
   def save(user: User): User = DB.withTransaction {
     implicit session:Session =>
@@ -106,7 +52,7 @@ object Users extends Table[User]("fam_user") {
       findByUserId(user.id) match {
         case None  => {
           Logger.info("create user")
-          val pid = this.autoInc.insert(user)
+          val pid = Users.autoInc.insert(user)
           user.copy(pid = Some(pid))
         }
         case Some(u) => {
@@ -120,7 +66,7 @@ object Users extends Table[User]("fam_user") {
   def delete(pid: Long) = DB.withTransaction {
     implicit session:Session =>
       Logger.info("delete %s".format(pid))
-      this.where(_.pid is pid).mutate(_.delete)
+      Users.where(_.pid is pid).mutate(_.delete)
   }
 
   // Queries
@@ -134,7 +80,7 @@ object Users extends Table[User]("fam_user") {
   def findById(pid: Long): Option[User] = DB.withSession {
     implicit session:Session =>
       Logger.info("findById %s".format(pid))
-      def byId = createFinderBy(_.pid)
+      def byId = Users.createFinderBy(_.pid)
       byId(pid).firstOption
   }
 
@@ -214,9 +160,7 @@ object Users extends Table[User]("fam_user") {
   //  implicit val passwordInfoFormat = Json.format[PasswordInfo]
   //  implicit val userFormat = Json.format[User]
 
-}
 
-object User {
   def fromIdentity(user: Identity) = {
     Logger.debug("fromIdentity %s".format(user))
     User(

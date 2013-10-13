@@ -3,8 +3,7 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.{PlaceClub, Place}
-import models.Places._
+import models._
 import play.api.libs.json._
 import service.{Coach, Administrator}
 import java.net.URLEncoder
@@ -47,16 +46,16 @@ object Places extends Controller with securesocial.core.SecureSocial {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val places = models.Places.findPage(page, orderBy)
+      val places = Place.findPage(page, orderBy)
       render {
-        case Accepts.Html() => Ok( views.html.places.list("Liste des places", places, orderBy))
+        case Accepts.Html() => Ok(views.html.places.list("Liste des places", places, orderBy))
         case Accepts.Json() => Ok(Json.toJson(places))
       }
   }
 
   def view(id: Long) = Action {
     implicit request =>
-      models.Places.findById(id).map {
+      Place.findById(id).map {
         place =>
           render {
             case Accepts.Html() => Ok(views.html.places.view("View Place", place))
@@ -67,7 +66,7 @@ object Places extends Controller with securesocial.core.SecureSocial {
 
   def edit(id: Long) = SecuredAction(WithRoles(Set(Coach))) {
     implicit request =>
-      models.Places.findById(id).map {
+      Place.findById(id).map {
         place => Ok(views.html.places.edit("Edit Place", id, placeForm.fill(place)))
       } getOrElse (NotFound)
   }
@@ -83,7 +82,7 @@ object Places extends Controller with securesocial.core.SecureSocial {
   //        formWithErrors => BadRequest(views.html.places.edit("Edit Place - errors", id, formWithErrors)),
   //        place => {
   //          play.Logger.debug(s"update Place $place")
-  //          models.Places.update(id, place)
+  //          Place.update(id, place)
   //          //        Home.flashing("success" -> "Place %s has been updated".format(place.name))
   //          Redirect(routes.Places.list(0, 2))
   //        }
@@ -106,7 +105,7 @@ object Places extends Controller with securesocial.core.SecureSocial {
   //      placeForm.bindFromRequest.fold(
   //        formWithErrors => BadRequest(views.html.places.create("New Place - errors", formWithErrors)),
   //        place => {
-  //          models.Places.insert(place)
+  //          Place.insert(place)
   //          //        Home.flashing("success" -> "Place %s has been created".format(place.name))
   //          Redirect(routes.Places.list(0, 2))
   //        }
@@ -117,7 +116,7 @@ object Places extends Controller with securesocial.core.SecureSocial {
     implicit request =>
       val json = request.body
       val place = json.as[Place]
-      models.Places.update(id, place)
+      Place.update(id, place)
       Ok(Json.toJson(id))
   }
 
@@ -125,7 +124,7 @@ object Places extends Controller with securesocial.core.SecureSocial {
     implicit request =>
       val json = request.body
       val place = json.as[Place]
-      val id = models.Places.insert(place)
+      val id = Place.insert(place)
       Ok(Json.toJson(id))
   }
 
@@ -134,7 +133,7 @@ object Places extends Controller with securesocial.core.SecureSocial {
    */
   def delete(id: Long) = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
-      models.Places.delete(id)
+      Place.delete(id)
       Home.flashing("success" -> "Place has been deleted")
   }
 
@@ -151,7 +150,7 @@ object Places extends Controller with securesocial.core.SecureSocial {
     implicit request =>
       render {
         case Accepts.Html() => Ok(views.html.places.map("Map des places", Some(zipcode)))
-        case Accepts.Json() => Ok(Json.toJson(models.Places.findLikeZipcode(zipcode)))
+        case Accepts.Json() => Ok(Json.toJson(Place.findLikeZipcode(zipcode)))
       }
   }
 
@@ -159,63 +158,63 @@ object Places extends Controller with securesocial.core.SecureSocial {
     implicit request =>
       render {
         case Accepts.Html() => Ok(views.html.places.map("Map des places", Some(city)))
-        case Accepts.Json() => Ok(Json.toJson(models.Places.findLikeCity(city)))
+        case Accepts.Json() => Ok(Json.toJson(Place.findLikeCity(city)))
       }
   }
 
   def gmapData = Action {
     implicit request =>
-      val places = models.Places.placesWithCoords
+      val places = Place.placesWithCoords
       Ok(Json.toJson(places))
   }
 
   def jsonList = Action {
     implicit request =>
-      Ok(Json.toJson(models.Places.findAll))
+      Ok(Json.toJson(Place.findAll))
   }
 
   def load = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
-    import scala.io.Source
+      import scala.io.Source
 
-    val is = Application.getClass.getResourceAsStream("/public/data/terrains_light.json")
-    val src = Source.fromInputStream(is)
-    val lines = src.mkString
-    src.close()
-    val fffPlaces = Json.parse(lines).as[Seq[FffPlace]]
-    fffPlaces.map {
-      fffPlace =>
-        val adr = fffPlace.address.split(" - ").head
-        val zipcode = fffPlace.address.split(" - ").reverse.head.split(' ').head
-        val city = fffPlace.address.split(" - ").reverse.head.split(' ').reverse.head
+      val is = Application.getClass.getResourceAsStream("/public/data/terrains_light.json")
+      val src = Source.fromInputStream(is)
+      val lines = src.mkString
+      src.close()
+      val fffPlaces = Json.parse(lines).as[Seq[FffPlace]]
+      fffPlaces.map {
+        fffPlace =>
+          val adr = fffPlace.address.split(" - ").head
+          val zipcode = fffPlace.address.split(" - ").reverse.head.split(' ').head
+          val city = fffPlace.address.split(" - ").reverse.head.split(' ').reverse.head
 
-        val place = Place(typFff = Some(fffPlace.typ.trim),
-          name = fffPlace.name.trim,
-          comments = Some(Json.toJson(fffPlace).toString()),
-          address = adr.trim,
-          zipcode = zipcode.trim,
-          city = city.trim)
+          val place = Place(typFff = Some(fffPlace.typ.trim),
+            name = fffPlace.name.trim,
+            comments = Some(Json.toJson(fffPlace).toString()),
+            address = adr.trim,
+            zipcode = zipcode.trim,
+            city = city.trim)
 
-        play.Logger.debug(s"$place")
-        models.Places.insert(place)
-    }
+          play.Logger.debug(s"$place")
+          Place.insert(place)
+      }
 
-    Ok
+      Ok
   }
 
   def geoOSM = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
-    val places = models.Places.placesWithoutCoords
-    geocodeOSM(places)
-    Ok
+      val places = Place.placesWithoutCoords
+      geocodeOSM(places)
+      Ok
   }
 
   def geoOSMByZipcode(zipcode: String) = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
-    play.Logger.debug(s"geoOSMByZipcode $zipcode")
-    val places = models.Places.findLikeZipcode(zipcode)
-    geocodeOSM(places)
-    Redirect(routes.Places.mapByZipcode(zipcode))
+      play.Logger.debug(s"geoOSMByZipcode $zipcode")
+      val places = Place.findLikeZipcode(zipcode)
+      geocodeOSM(places)
+      Redirect(routes.Places.mapByZipcode(zipcode))
   }
 
 
@@ -228,7 +227,7 @@ object Places extends Controller with securesocial.core.SecureSocial {
           case Some(coord) => {
             val p = place.copy(latitude = Some(coord._1.toFloat), longitude = Some(coord._2.toFloat))
             play.Logger.debug(s"copie $p")
-            models.Places.update(place.id.get, p)
+            Place.update(place.id.get, p)
           }
           case _ =>
         }
@@ -237,17 +236,17 @@ object Places extends Controller with securesocial.core.SecureSocial {
 
   def geoMQ = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
-    val places = models.Places.placesWithoutCoords
-    geocodeMQ(places)
-    Ok
+      val places = Place.placesWithoutCoords
+      geocodeMQ(places)
+      Ok
   }
 
   def geoMQByZipcode(zipcode: String) = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
-    play.Logger.debug(s"geoMQByZipcode $zipcode")
-    val places = models.Places.findLikeZipcode(zipcode)
-    geocodeMQ(places)
-    Redirect(routes.Places.mapByZipcode(zipcode))
+      play.Logger.debug(s"geoMQByZipcode $zipcode")
+      val places = Place.findLikeZipcode(zipcode)
+      geocodeMQ(places)
+      Redirect(routes.Places.mapByZipcode(zipcode))
   }
 
   def geocodeMQ(places: Seq[Place]) {
@@ -259,7 +258,7 @@ object Places extends Controller with securesocial.core.SecureSocial {
           case Some(coord) => {
             val p = place.copy(latitude = Some(coord._1.toFloat), longitude = Some(coord._2.toFloat))
             play.Logger.debug(s"copie $p")
-            models.Places.update(place.id.get, p)
+            Place.update(place.id.get, p)
           }
           case _ =>
         }
@@ -268,16 +267,16 @@ object Places extends Controller with securesocial.core.SecureSocial {
 
   def geoGM = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
-    val places = models.Places.placesWithoutCoords
-    geocodeGM(places)
-    Ok
+      val places = Place.placesWithoutCoords
+      geocodeGM(places)
+      Ok
   }
 
   def geoGMByZipcode(zipcode: String) = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
-    val places = models.Places.findLikeZipcode(zipcode)
-    geocodeGM(places)
-    Redirect(routes.Places.mapByZipcode(zipcode))
+      val places = Place.findLikeZipcode(zipcode)
+      geocodeGM(places)
+      Redirect(routes.Places.mapByZipcode(zipcode))
   }
 
   def geocodeGM(places: Seq[Place]) {
@@ -288,7 +287,7 @@ object Places extends Controller with securesocial.core.SecureSocial {
           case Some(coord) => {
             val p = place.copy(latitude = Some(coord._1.toFloat), longitude = Some(coord._2.toFloat))
             play.Logger.debug(s"copie $p")
-            models.Places.update(place.id.get, p)
+            Place.update(place.id.get, p)
           }
           case _ =>
         }
@@ -399,7 +398,7 @@ object Places extends Controller with securesocial.core.SecureSocial {
 
   def placesByClubs = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
-      val places = models.Places.findAll
+      val places = Place.findAll
       var pcSet: Set[PlaceClub] = Set()
 
       places.map {
@@ -407,14 +406,14 @@ object Places extends Controller with securesocial.core.SecureSocial {
           place.comments match {
             case Some(comment) => {
               val clubCode = extractClubCode(comment)
-              val club = models.Clubs.findByCode(clubCode)
+              val club = Club.findByCode(clubCode)
               club match {
                 case Some(c) => {
                   val pc = new PlaceClub(place.id.get, c.id.get)
                   play.Logger.debug(s"placeClub to insert $pc")
                   pcSet ++= List(pc)
 
-                  val dups = models.Places.findDups(place)
+                  val dups = Place.findDups(place)
                   play.Logger.info(s"found ${dups.length} dups")
 
                   dups.map {
@@ -422,13 +421,13 @@ object Places extends Controller with securesocial.core.SecureSocial {
                       dup.comments match {
                         case Some(comment) => {
                           val code = extractClubCode(comment)
-                          val club = models.Clubs.findByCode(clubCode)
+                          val club = Club.findByCode(clubCode)
                           club match {
                             case Some(c) => {
                               val pc = new PlaceClub(place.id.get, c.id.get)
                               play.Logger.debug(s"placeClub to insert $pc")
                               pcSet ++= List(pc)
-                                                    models.Places.delete(dup.id.get)
+                              Place.delete(dup.id.get)
                             }
                             case None => play.Logger.warn(s"no club found for code $clubCode")
                           }
@@ -445,13 +444,13 @@ object Places extends Controller with securesocial.core.SecureSocial {
 
       }
       play.Logger.info(s"to insert : $pcSet")
-      models.PlaceClubs.insert(pcSet.toSeq)
+      PlaceClub.insert(pcSet.toSeq)
       Ok
   }
 
   def extractClubCode(str: String): Int = {
-//    val pattern = """^{"code": [0-9]+"""".r
-//    val pattern(code) = str
+    //    val pattern = """^{"code": [0-9]+"""".r
+    //    val pattern(code) = str
     val fffPlace = Json.parse(str).as[FffPlace]
     play.Logger.info(s"$str extracted [${fffPlace.code.trim}]")
     fffPlace.code.trim.toInt

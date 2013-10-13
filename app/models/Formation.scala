@@ -6,6 +6,7 @@ import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
 import play.api.libs.json._
+import database.Formations
 
 case class Formation(id: Option[Long],
                      code: String,
@@ -14,30 +15,7 @@ case class Formation(id: Option[Long],
                      typMatchId: Long)
 
 
-// define tables
-object Formations extends Table[Formation]("fam_formation") {
-
-  def id = column[Long]("id_formation", O.PrimaryKey, O.AutoInc)
-
-  def name = column[String]("lib_formation")
-
-  def code = column[String]("cod_formation")
-
-  def isDefault = column[Boolean]("byDefault")
-
-  def typMatchId = column[Long]("id_typ_match")
-
-  def * = id.? ~ code ~ name ~ isDefault ~ typMatchId <>(Formation, Formation.unapply _)
-
-  def autoInc = id.? ~ code ~ name ~ isDefault ~ typMatchId <>(Formation, Formation.unapply _) returning id
-
-  // A reified foreign key relation that can be navigated to create a join
-  def typMatch = foreignKey("TYP_MATCH_FK", typMatchId, TypMatches)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-
+object Formation{
   lazy val pageSize = 10
 
   def findAll: Seq[Formation] = DB.withSession {
@@ -96,7 +74,7 @@ object Formations extends Table[Formation]("fam_formation") {
 
   def insert(formation: Formation): Long = DB.withSession {
     implicit session:Session => {
-      Formations.autoInc.insert((formation))
+      Formations.autoInc.insert(formation)
     }
   }
 

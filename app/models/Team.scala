@@ -8,7 +8,7 @@ import play.api.db.slick.DB
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-import Clubs._
+import database.Teams
 
 case class Team(id: Option[Long],
                 code: String,
@@ -16,29 +16,7 @@ case class Team(id: Option[Long],
                 clubId: Long) {
 }
 
-// define tables
-object Teams extends Table[Team]("fam_team") {
-
-  def id = column[Long]("id_team", O.PrimaryKey, O.AutoInc)
-
-  def name = column[String]("lib_team")
-
-  def code = column[String]("cod_team")
-
-  def clubId = column[Long]("id_club")
-
-  def * = id.? ~ code ~ name ~ clubId <>(Team, Team.unapply _)
-
-  def autoInc = id.? ~ code ~ name ~ clubId <>(Team, Team.unapply _) returning id
-
-  // A reified foreign key relation that can be navigated to create a join
-  def club = foreignKey("CLUB_FK", clubId, Clubs)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-  val byClub = createFinderBy(_.clubId)
-
+object Team{
   lazy val pageSize = 10
 
   def findAll: Seq[Team] = DB.withSession {
@@ -104,7 +82,7 @@ object Teams extends Table[Team]("fam_team") {
 
   def insert(team: Team): Long = DB.withSession {
     implicit session:Session => {
-      Teams.autoInc.insert((team))
+      Teams.autoInc.insert(team)
     }
   }
 
@@ -138,7 +116,7 @@ object Teams extends Table[Team]("fam_team") {
     implicit session:Session =>
       val query = (for {
         item <- Teams
-        if (item.clubId is id)
+        if item.clubId is id
       } yield (item.id, item.name)
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))

@@ -9,29 +9,12 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 import play.api.Logger
+import database.CompetitionTeams
 
 case class CompetitionTeam(id: Option[Long],
                            competitionId: Long,
                            teamId: Long)
-
-// define tables
-object CompetitionTeams extends Table[CompetitionTeam]("fam_competition_team") {
-
-  def id = column[Long]("id_competition_team", O.PrimaryKey, O.AutoInc)
-
-  def competitionId = column[Long]("id_season_competition")
-
-  def teamId = column[Long]("id_team")
-
-  def * = id.? ~ competitionId ~ teamId <>(CompetitionTeam, CompetitionTeam.unapply _)
-
-  def autoInc = id.? ~ competitionId ~ teamId <>(CompetitionTeam, CompetitionTeam.unapply _) returning id
-
-  // A reified foreign key relation that can be navigated to create a join
-  def competition = foreignKey("COMPETITION_FK", competitionId, SeasonCompetitions)(_.id)
-
-  def team = foreignKey("TEAM_FK", teamId, Teams)(_.id)
-
+object CompetitionTeam{
   lazy val pageSize = 10
 
   //  def findPage(page: Int = 0, orderField: Int): Page[(Competition)] = {

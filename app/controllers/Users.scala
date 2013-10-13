@@ -3,7 +3,7 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.User
+import models._
 import service.{Administrator, Coach}
 
 object Users extends Controller with securesocial.core.SecureSocial {
@@ -18,7 +18,7 @@ object Users extends Controller with securesocial.core.SecureSocial {
 
   def list(page: Int, orderBy: Int) = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
-      val users = models.Users.findPage(page, orderBy)
+      val users = User.findPage(page, orderBy)
       val html = views.html.users.list("Liste des users", users, orderBy)
       Ok(html)
   }

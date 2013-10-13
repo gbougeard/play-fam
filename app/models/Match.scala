@@ -9,49 +9,26 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 import play.api.Logger
+import database.Matches
 
 case class Match(id: Option[Long],
                  fixtureId: Option[Long],
                  competitionId: Long,
                  eventId: Option[Long])
 
-// define tables
-object Matchs extends Table[Match]("fam_match") {
-
-  def id = column[Long]("idMatch", O.PrimaryKey, O.AutoInc)
-
-  def fixtureId = column[Long]("id_fixture")
-
-  def competitionId = column[Long]("id_season_competition")
-
-  def eventId = column[Long]("id_event")
-
-  def * = id.? ~ fixtureId.? ~ competitionId ~ eventId.? <>(Match, Match.unapply _)
-
-  def autoInc = id.? ~ fixtureId.? ~ competitionId ~ eventId.? <>(Match, Match.unapply _) returning id
-
-
-  // A reified foreign key relation that can be navigated to create a join
-  def fixture = foreignKey("FIXTURE_FK", fixtureId, Fixtures)(_.id)
-
-  def competition = foreignKey("COMPETITION_FK", competitionId, SeasonCompetitions)(_.id)
-
-  def event = foreignKey("EVENT_FK", eventId, Events)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byEventId = createFinderBy(_.eventId)
+object Match{
 
   lazy val pageSize = 10
 
   def findAll: Seq[Match] = DB.withSession {
     implicit session:Session => {
-      (for (c <- Matchs) yield c).list
+      (for (c <- Matches) yield c).list
     }
   }
 
   def count: Int = DB.withSession {
     implicit session:Session => {
-      Query(Matchs.length).first
+      Query(Matches.length).first
     }
   }
 
@@ -62,7 +39,7 @@ object Matchs extends Table[Match]("fam_match") {
     DB.withSession {
       implicit session:Session => {
         val matchs = (
-          for {m <- Matchs
+          for {m <- Matches
                if m.eventId.isNotNull
                c <- m.competition
                e <- m.event
@@ -85,33 +62,32 @@ object Matchs extends Table[Match]("fam_match") {
 
   def findById(id: Long): Option[Match] = DB.withSession {
     implicit session:Session => {
-      Matchs.byId(id).firstOption
+      Matches.byId(id).firstOption
     }
   }
 
   def findByEventId(id: Long): Option[Match] = DB.withSession {
     implicit session:Session => {
-      Matchs.byEventId(id).firstOption
+      Matches.byEventId(id).firstOption
     }
   }
 
   def insert(m: Match): Long = DB.withSession {
     implicit session:Session => {
-      Matchs.autoInc.insert((m))
+      Matches.autoInc.insert(m)
     }
   }
 
   def update(id: Long, m: Match) = DB.withSession {
     implicit session:Session => {
       val match2update = m.copy(Some(id))
-      Logger.info("playe2update " + match2update)
-      Matchs.where(_.id === id).update(match2update)
+      Matches.where(_.id === id).update(match2update)
     }
   }
 
   def delete(matchId: Long) = DB.withSession {
     implicit session:Session => {
-      Matchs.where(_.id === matchId).delete
+      Matches.where(_.id === matchId).delete
     }
   }
 

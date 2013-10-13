@@ -6,12 +6,10 @@ import _root_.securesocial.core.Identity
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.Match
-import models.Matchs._
+import models._
 import play.api.libs.json._
 
 import play.api.Logger
-import models.Match
 import service.{Coach,Administrator}
 
 object Matchs extends Controller with securesocial.core.SecureSocial {
@@ -34,37 +32,37 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val matchs = models.Matchs.findPage(page, orderBy)
+      val matchs = Match.findPage(page, orderBy)
       val html = views.html.matchs.list("Liste des matchs", matchs, orderBy)
       Ok(html)
   }
 
   def byEventId(id: Long) = Action {
     implicit request =>
-      models.Matchs.findByEventId(id).map{
+      Match.findByEventId(id).map{
         m => Redirect(routes.Matchs.view(m.id.getOrElse(0)))
       } getOrElse (NotFound)
   }
 
   def view(id: Long) = Action {
     implicit request =>
-      models.Matchs.findById(id).map {
+      Match.findById(id).map {
         m => {
-          models.Events.findById(m.eventId.getOrElse(0)).map {
+          Event.findById(m.eventId.getOrElse(0)).map {
             case (event, typEvent, eventStatus) => {
-              models.MatchTeams.findByMatchAndHome(id).map {
+              MatchTeam.findByMatchAndHome(id).map {
                 case (home, homeTeam) => {
-                  val homeGoals = models.Goals.findByMatchAndTeam(id,  homeTeam.id.getOrElse(0))
-                  val homePlayers = models.MatchPlayers.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
-                  val homeSubs = models.Substitutions.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
-                  val homeCards = models.Cards.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
+                  val homeGoals = Goal.findByMatchAndTeam(id,  homeTeam.id.getOrElse(0))
+                  val homePlayers = MatchPlayer.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
+                  val homeSubs = Substitution.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
+                  val homeCards = Card.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
 
-                  models.MatchTeams.findByMatchAndAway(id).map {
+                  MatchTeam.findByMatchAndAway(id).map {
                   case  (away, awayTeam ) => {
-                    val awayGoals = models.Goals.findByMatchAndTeam(id,  awayTeam.id.getOrElse(0))
-                    val awayPlayers = models.MatchPlayers.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
-                    val awaySubs = models.Substitutions.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
-                    val awayCards = models.Cards.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
+                    val awayGoals = Goal.findByMatchAndTeam(id,  awayTeam.id.getOrElse(0))
+                    val awayPlayers = MatchPlayer.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
+                    val awaySubs = Substitution.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
+                    val awayCards = Card.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
                       Ok(views.html.matchs.view("View Match", m, event, (home,homeTeam), (away, awayTeam), homeGoals, awayGoals,  homePlayers, awayPlayers, homeSubs, awaySubs, homeCards, awayCards))
                     }
                   } getOrElse (NotFound("Away team not found"))
@@ -78,24 +76,24 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
 
   def debrief(idMatch:Long, idTeam: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
-      models.Matchs.findById(idMatch).map {
+      Match.findById(idMatch).map {
         m => {
-          models.Events.findById(m.eventId.getOrElse(0)).map {
+          Event.findById(m.eventId.getOrElse(0)).map {
             case (event, typEvent, eventStatus) => {
               Ok(views.html.matchs.debrief("Debrief Match", m, event, idMatch, idTeam))
-//              models.MatchTeams.findByMatchAndHome(id).map {
+//              MatchTeam.findByMatchAndHome(id).map {
 //                case (home, homeTeam) => {
-//                  val homeGoals = models.Goals.findByMatchAndTeam(id,  homeTeam.id.getOrElse(0))
-//                  val homePlayers = models.MatchPlayers.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
-//                  val homeSubs = models.Substitutions.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
-//                  val homeCards = models.Cards.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
+//                  val homeGoals = Goal.findByMatchAndTeam(id,  homeTeam.id.getOrElse(0))
+//                  val homePlayers = MatchPlayer.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
+//                  val homeSubs = Substitution.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
+//                  val homeCards = Card.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
 //
-//                  models.MatchTeams.findByMatchAndAway(id).map {
+//                  MatchTeam.findByMatchAndAway(id).map {
 //                  case  (away, awayTeam ) => {
-//                    val awayGoals = models.Goals.findByMatchAndTeam(id,  awayTeam.id.getOrElse(0))
-//                    val awayPlayers = models.MatchPlayers.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
-//                    val awaySubs = models.Substitutions.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
-//                    val awayCards = models.Cards.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
+//                    val awayGoals = Goal.findByMatchAndTeam(id,  awayTeam.id.getOrElse(0))
+//                    val awayPlayers = MatchPlayer.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
+//                    val awaySubs = Substitution.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
+//                    val awayCards = Card.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
 //                      Ok(views.html.matchs.edit("Debrief Match", m, event, (home,homeTeam), (away, awayTeam), homeGoals, awayGoals,  homePlayers, awayPlayers, homeSubs, awaySubs, homeCards, awayCards))
 //                    }
 //                  } getOrElse (NotFound)
@@ -109,24 +107,24 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
 
   def prepare(idMatch:Long, idTeam: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
-      models.Matchs.findById(idMatch).map {
+      Match.findById(idMatch).map {
         m => {
-          models.Events.findById(m.eventId.getOrElse(0)).map {
+          Event.findById(m.eventId.getOrElse(0)).map {
             case (event, typEvent, eventStatus) => {
               Ok(views.html.matchs.prepare("Prepare Match", m, event, idMatch, idTeam))
-//              models.MatchTeams.findByMatchAndHome(id).map {
+//              MatchTeam.findByMatchAndHome(id).map {
 //                case (home, homeTeam) => {
-//                  val homeGoals = models.Goals.findByMatchAndTeam(id,  homeTeam.id.getOrElse(0))
-//                  val homePlayers = models.MatchPlayers.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
-//                  val homeSubs = models.Substitutions.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
-//                  val homeCards = models.Cards.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
+//                  val homeGoals = Goal.findByMatchAndTeam(id,  homeTeam.id.getOrElse(0))
+//                  val homePlayers = MatchPlayer.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
+//                  val homeSubs = Substitution.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
+//                  val homeCards = Card.findByMatchAndTeam(id, homeTeam.id.getOrElse(0))
 //
-//                  models.MatchTeams.findByMatchAndAway(id).map {
+//                  MatchTeam.findByMatchAndAway(id).map {
 //                  case  (away, awayTeam ) => {
-//                    val awayGoals = models.Goals.findByMatchAndTeam(id,  awayTeam.id.getOrElse(0))
-//                    val awayPlayers = models.MatchPlayers.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
-//                    val awaySubs = models.Substitutions.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
-//                    val awayCards = models.Cards.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
+//                    val awayGoals = Goal.findByMatchAndTeam(id,  awayTeam.id.getOrElse(0))
+//                    val awayPlayers = MatchPlayer.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
+//                    val awaySubs = Substitution.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
+//                    val awayCards = Card.findByMatchAndTeam(id, awayTeam.id.getOrElse(0))
 //                      Ok(views.html.matchs.edit("Debrief Match", m, event, (home,homeTeam), (away, awayTeam), homeGoals, awayGoals,  homePlayers, awayPlayers, homeSubs, awaySubs, homeCards, awayCards))
 //                    }
 //                  } getOrElse (NotFound)
@@ -140,7 +138,7 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
 
 //  def edit(id: Long) = SecuredAction {
 //    implicit request =>
-//      models.Matchs.findById(id).map {
+//      Match.findById(id).map {
 //        m => Ok(views.html.matchs.edit("Edit Match", id, matchForm.fill(m)))
 //      } getOrElse (NotFound)
 //  }
@@ -156,7 +154,7 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
 //      matchForm.bindFromRequest.fold(
 //        formWithErrors => BadRequest(views.html.matchs.edit("Edit Match - errors", id, formWithErrors)),
 //        m => {
-//          models.Matchs.update(id, m)
+//          Match.update(id, m)
 //          Redirect(routes.Matchs.debrief(id)).flashing("success" -> "Match %s has been updated".format(m.id))
 //          //          Redirect(routes.Matchs.list(0, 2))
 //        }
@@ -179,7 +177,7 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
       matchForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.matchs.create("New Match - errors", formWithErrors)),
         m => {
-          models.Matchs.insert(m)
+          Match.insert(m)
           //        Home.flashing("success" -> "Match %s has been created".format(match.name))
           Redirect(routes.Matchs.list(0, 2))
         }
@@ -191,13 +189,13 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
    */
   def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      models.Matchs.delete(id)
+      Match.delete(id)
       Redirect(routes.Matchs.list(0, 0)).flashing("success" -> "Match has been deleted")
   }
 
   def jsonById(id:Long) = Action {
     implicit request =>
-      models.Matchs.findById(id).map {
+      Match.findById(id).map {
        m => Ok(Json.toJson(m))
       } getOrElse(NotFound)
   }

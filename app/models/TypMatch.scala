@@ -6,6 +6,7 @@ import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
 import play.api.libs.json._
+import database.TypMatches
 
 case class TypMatch(id: Option[Long],
                     code: String,
@@ -21,41 +22,7 @@ case class TypMatch(id: Option[Long],
                     nbPenalties: Option[Int])
 
 
-// define tables
-object TypMatches extends Table[TypMatch]("fam_typ_match") {
-
-  def id = column[Long]("id_typ_match", O.PrimaryKey, O.AutoInc)
-
-  def name = column[String]("lib_typ_match")
-
-  def code = column[String]("cod_typ_match")
-
-  def nbSubstitute = column[Int]("nb_substitute")
-
-  def nbPlayer = column[Int]("nb_player")
-
-  def periodDuration = column[Int]("period_duration")
-
-  def hasExtraTime = column[Boolean]("extra_time")
-
-  def extraTimeDuration = column[Int]("extra_time_duration")
-
-  def hasInfiniteSubs = column[Boolean]("infinite_subs")
-
-  def nbSubstitution = column[Int]("nb_substitution")
-
-  def hasPenalties = column[Boolean]("penalties")
-
-  def nbPenalties = column[Int]("nb_penalties")
-
-  def * = id.? ~ code ~ name ~ nbSubstitute ~ nbPlayer ~ periodDuration ~ hasExtraTime ~ extraTimeDuration.? ~ hasInfiniteSubs ~ nbSubstitution.? ~ hasPenalties ~ nbPenalties.? <>(TypMatch, TypMatch.unapply _)
-
-  def autoInc = id.? ~ code ~ name ~ nbSubstitute ~ nbPlayer ~ periodDuration ~ hasExtraTime ~ extraTimeDuration.? ~ hasInfiniteSubs ~ nbSubstitution.? ~ hasPenalties ~ nbPenalties.? <>(TypMatch, TypMatch.unapply _) returning id
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-
+object TypMatch{
   lazy val pageSize = 10
 
   def findAll: Seq[TypMatch] = DB.withSession {
@@ -112,7 +79,7 @@ object TypMatches extends Table[TypMatch]("fam_typ_match") {
 
   def insert(typMatch: TypMatch): Long = DB.withSession {
     implicit session:Session => {
-      TypMatches.autoInc.insert((typMatch))
+      TypMatches.autoInc.insert(typMatch)
     }
   }
 

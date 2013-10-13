@@ -7,28 +7,13 @@ import play.api.db.slick.DB
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import database.Seasons
 
 case class Season(id: Option[Long],
                   currentSeason: Boolean,
                   name: String)
 
-// define tables
-object Seasons extends Table[Season]("fam_season") {
-
-  def id = column[Long]("id_season", O.PrimaryKey, O.AutoInc)
-
-  def name = column[String]("lib_season")
-
-  def currentSeason = column[Boolean]("current_season")
-
-  def * = id.? ~ currentSeason ~ name <>(Season, Season.unapply _)
-
-  def autoInc = id.? ~ currentSeason ~ name <>(Season, Season.unapply _) returning id
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCurrentSeason = createFinderBy(_.currentSeason)
-
+object Season{
   lazy val pageSize = 10
 
 
@@ -75,7 +60,7 @@ object Seasons extends Table[Season]("fam_season") {
 
   def insert(season: Season): Long = DB.withSession {
     implicit session:Session => {
-      Seasons.autoInc.insert((season))
+      Seasons.autoInc.insert(season)
     }
   }
 

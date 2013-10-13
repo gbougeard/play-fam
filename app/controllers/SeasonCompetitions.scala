@@ -4,7 +4,7 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 
-import models.SeasonCompetition
+import models._
 import service.Coach
 
 
@@ -32,24 +32,24 @@ object SeasonCompetitions extends Controller with securesocial.core.SecureSocial
   // -- Actions
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val seasonCompetitions = models.SeasonCompetitions.findPage(page, orderBy)
+      val seasonCompetitions = SeasonCompetition.findPage(page, orderBy)
       val html = views.html.seasonCompetitions.list("Liste des seasonCompetitions", seasonCompetitions, orderBy)
       Ok(html)
   }
 
   def view(id: Long) = Action {
     implicit request =>
-      models.SeasonCompetitions.findById(id).map {
+      SeasonCompetition.findById(id).map {
         seasonCompetition => Ok(views.html.seasonCompetitions.view("View SeasonMatch", seasonCompetition))
       } getOrElse (NotFound)
   }
 
   def edit(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
-      models.SeasonCompetitions.findById(id).map {
+      SeasonCompetition.findById(id).map {
         seasonCompetition => {
           play.Logger.debug("data "+seasonCompetition)
-          Ok(views.html.seasonCompetitions.edit("Edit SeasonMatch", id, seasonCompetitionForm.fill(seasonCompetition), models.Categorys.options, models.Scales.options, models.Seasons.options, models.TypCompetitions.options))
+          Ok(views.html.seasonCompetitions.edit("Edit SeasonMatch", id, seasonCompetitionForm.fill(seasonCompetition), Category.options, Scale.options, Season.options, TypCompetition.options))
         }
       } getOrElse (NotFound)
   }
@@ -62,9 +62,9 @@ object SeasonCompetitions extends Controller with securesocial.core.SecureSocial
   def update(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       seasonCompetitionForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.seasonCompetitions.edit("Edit SeasonMatch - errors", id, formWithErrors, models.Categorys.options, models.Scales.options, models.Seasons.options, models.TypCompetitions.options)),
+        formWithErrors => BadRequest(views.html.seasonCompetitions.edit("Edit SeasonMatch - errors", id, formWithErrors, Category.options, Scale.options, Season.options, TypCompetition.options)),
         seasonCompetition => {
-          models.SeasonCompetitions.update(id, seasonCompetition)
+          SeasonCompetition.update(id, seasonCompetition)
           //        Home.flashing("success" -> "SeasonMatch %s has been updated".format(seasonCompetition.name))
           //Redirect(routes.SeasonCompetitions.list(0, 2))
           Redirect(routes.SeasonCompetitions.view(id)).flashing("success" -> "SeasonMatch %s has been updated".format(seasonCompetition.id))
@@ -78,7 +78,7 @@ object SeasonCompetitions extends Controller with securesocial.core.SecureSocial
    */
   def create =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
-      Ok(views.html.seasonCompetitions.create("New SeasonMatch", seasonCompetitionForm, models.Categorys.options, models.Scales.options, models.Seasons.options, models.TypCompetitions.options))
+      Ok(views.html.seasonCompetitions.create("New SeasonMatch", seasonCompetitionForm, Category.options, Scale.options, Season.options, TypCompetition.options))
   }
 
   /**
@@ -87,9 +87,9 @@ object SeasonCompetitions extends Controller with securesocial.core.SecureSocial
   def save =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       seasonCompetitionForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.seasonCompetitions.create("New SeasonMatch - errors", formWithErrors, models.Categorys.options, models.Scales.options, models.Seasons.options, models.TypCompetitions.options)),
+        formWithErrors => BadRequest(views.html.seasonCompetitions.create("New SeasonMatch - errors", formWithErrors, Category.options, Scale.options, Season.options, TypCompetition.options)),
         seasonCompetition => {
-          models.SeasonCompetitions.insert(seasonCompetition)
+          SeasonCompetition.insert(seasonCompetition)
           //        Home.flashing("success" -> "SeasonMatch %s has been created".format(seasonCompetition.name))
           Redirect(routes.SeasonCompetitions.list(0, 2))
         }
@@ -101,7 +101,7 @@ object SeasonCompetitions extends Controller with securesocial.core.SecureSocial
    */
   def delete(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
-      models.SeasonCompetitions.delete(id)
+      SeasonCompetition.delete(id)
       Home.flashing("success" -> "SeasonMatch has been deleted")
   }
 

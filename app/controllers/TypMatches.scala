@@ -3,7 +3,7 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.TypMatch
+import models._
 import service.Administrator
 
 
@@ -40,21 +40,21 @@ object TypMatches extends Controller with securesocial.core.SecureSocial {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val typMatches = models.TypMatches.findPage(page, orderBy)
+      val typMatches = TypMatch.findPage(page, orderBy)
       val html = views.html.typMatches.list("Liste des typMatches", typMatches, orderBy)
       Ok(html)
   }
 
   def view(id: Long) = Action {
     implicit request =>
-      models.TypMatches.findById(id).map {
+      TypMatch.findById(id).map {
         typMatch => Ok(views.html.typMatches.view("View TypMatch", typMatch))
       } getOrElse (NotFound)
   }
 
   def edit(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      models.TypMatches.findById(id).map {
+      TypMatch.findById(id).map {
         typMatch => Ok(views.html.typMatches.edit("Edit TypMatch", id, typMatchForm.fill(typMatch)))
       } getOrElse (NotFound)
   }
@@ -69,7 +69,7 @@ object TypMatches extends Controller with securesocial.core.SecureSocial {
       typMatchForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.typMatches.edit("Edit TypMatch - errors", id, formWithErrors)),
         typMatch => {
-          models.TypMatches.update(id, typMatch)
+          TypMatch.update(id, typMatch)
           //        Home.flashing("success" -> "TypMatch %s has been updated".format(typMatch.name))
           //Redirect(routes.TypMatches.list(0, 2))
           Redirect(routes.TypMatches.view(id)).flashing("success" -> "TypMatch %s has been updated".format(typMatch.name))
@@ -94,7 +94,7 @@ object TypMatches extends Controller with securesocial.core.SecureSocial {
       typMatchForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.typMatches.create("New TypMatch - errors", formWithErrors)),
         typMatch => {
-          models.TypMatches.insert(typMatch)
+          TypMatch.insert(typMatch)
           //        Home.flashing("success" -> "TypMatch %s has been created".format(typMatch.name))
           Redirect(routes.TypMatches.list(0, 2))
         }
@@ -106,7 +106,7 @@ object TypMatches extends Controller with securesocial.core.SecureSocial {
    */
   def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      models.TypMatches.delete(id)
+      TypMatch.delete(id)
       Home.flashing("success" -> "TypMatch has been deleted")
   }
 

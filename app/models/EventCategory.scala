@@ -8,29 +8,17 @@ import play.api.db.slick.DB
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-import models.Events._
-import models.Categorys._
+import models.Event._
+import models.Category._
+import database.EventCategories
 
 case class EventCategory(eventId: Long,
                      categoryId: Long)
 
-// define tables
-object EventCategorys extends Table[EventCategory]("fam_event_category") {
-
-  def eventId = column[Long]("id_event")
-
-  def categoryId = column[Long]("id_category")
-
-  def * = eventId ~ categoryId <>(EventCategory, EventCategory.unapply _)
-
-  // A reified foreign key relation that can be navigated to create a join
-  def category = foreignKey("TEAM_FK", categoryId, Categorys)(_.id)
-
-  def event = foreignKey("EVENT_FK", eventId, Events)(_.id)
-
+object EventCategory{
   def findByEvent(id: Long): Seq[(EventCategory, Event, Category)] = DB.withSession {
     implicit session:Session => {
-      val query = for {et <- EventCategorys
+      val query = for {et <- EventCategories
                        if et.eventId === id
                        t <- et.category
                        e <- et.event
@@ -42,7 +30,7 @@ object EventCategorys extends Table[EventCategory]("fam_event_category") {
 
   def findByCategory(id: Long): Seq[(EventCategory, Event, Category)] = DB.withSession {
     implicit session:Session => {
-      val query = for {et <- EventCategorys
+      val query = for {et <- EventCategories
                        if et.categoryId === id
                        t <- et.category
                        e <- et.event
@@ -54,14 +42,14 @@ object EventCategorys extends Table[EventCategory]("fam_event_category") {
 
   def insert(event: EventCategory): Long = DB.withSession {
     implicit session:Session => {
-      EventCategorys.insert(event)
+      EventCategories.insert(event)
     }
   }
 
 
 //  def delete(eId: Long, tId : Long) = DB.withSession {
 //    implicit session:Session => {
-//      EventCategorys.where(_.eventId === eId).and( _.categoryId === tId).delete
+//      EventCategories.where(_.eventId === eId).and( _.categoryId === tId).delete
 //    }
 //  }
 

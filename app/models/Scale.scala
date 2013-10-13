@@ -6,6 +6,7 @@ import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
 import play.api.libs.json._
+import database.Scales
 
 case class Scale(id: Option[Long],
                  code: String,
@@ -15,31 +16,7 @@ case class Scale(id: Option[Long],
                  ptsVictory: Int)
 
 
-// define tables
-object Scales extends Table[Scale]("fam_scale") {
-
-  def id = column[Long]("id_scale", O.PrimaryKey, O.AutoInc)
-
-  def name = column[String]("lib_scale")
-
-  def code = column[String]("cod_scale")
-
-  def ptsDefeat = column[Int]("pts_defeat")
-
-  def ptsDraw = column[Int]("pts_draw")
-
-  def ptsVictory = column[Int]("pts_victory")
-
-
-  def * = id.? ~ code ~ name ~ ptsDefeat ~ ptsDraw ~ ptsVictory <>(Scale, Scale.unapply _)
-
-  def autoInc = id.? ~ code ~ name ~ ptsDefeat ~ ptsDraw ~ ptsVictory <>(Scale, Scale.unapply _) returning id
-
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-
+object Scale{
   lazy val pageSize = 10
 
   def findAll: Seq[Scale] = DB.withSession {
@@ -96,7 +73,7 @@ object Scales extends Table[Scale]("fam_scale") {
 
   def insert(scale: Scale): Long = DB.withSession {
     implicit session:Session => {
-      Scales.autoInc.insert((scale))
+      Scales.autoInc.insert(scale)
     }
   }
 

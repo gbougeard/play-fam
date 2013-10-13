@@ -4,8 +4,7 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.Answer
-import models.Answers._
+import models._
 
 import play.api.libs.json._
 import play.api.Logger
@@ -41,14 +40,14 @@ object Answers extends Controller with securesocial.core.SecureSocial {
   //  }
 
   //  def list = Action {
-  //    val answers = models.Answers.findAll
+  //    val answers = Answer.findAll
   //    val html = views.html.answers("Liste des answers", answers)
   //    Ok(html)
   //  }
 
   //  def list(page: Int, orderBy: Int) = Action {
   //    implicit request =>
-  //      val answers = timer.time(models.Answers.findPage(page, orderBy))
+  //      val answers = timer.time(Answer.findPage(page, orderBy))
   //      val html = views.html.answers.list("Liste des answers", answers, orderBy)
   //      Ok(html)
   //  }
@@ -57,13 +56,13 @@ object Answers extends Controller with securesocial.core.SecureSocial {
 
   def byEvent(id: Long) = SecuredAction {
     implicit request =>
-      models.Events.findById(id).map {
+      Event.findById(id).map {
         event =>
-          val answers = models.Answers.findByEvent(id)
+          val answers = Answer.findByEvent(id)
           play.Logger.debug(s"User ${request.user}")
           val player = session.get("userId").map {
             uid =>
-              models.Players.findByUserId(uid.toLong)
+              Player.findByUserId(uid.toLong)
           } getOrElse None
           Ok(views.html.answers.view("View Answers", event, answers, request.user, player))
       } getOrElse NotFound
@@ -72,9 +71,9 @@ object Answers extends Controller with securesocial.core.SecureSocial {
 
   def jsonByEvent(id: Long) = Action {
     implicit request =>
-      models.Events.findById(id).map {
+      Event.findById(id).map {
         event =>
-          val answers = models.Answers.findByEvent(id)
+          val answers = Answer.findByEvent(id)
           Ok(Json.toJson(answers))
       } getOrElse NotFound
 
@@ -82,14 +81,14 @@ object Answers extends Controller with securesocial.core.SecureSocial {
 
   //  def view(id: Long) = Action {
   //    implicit request =>
-  //      models.Answers.findById(id).map {
+  //      Answer.findById(id).map {
   //        answer => Ok(views.html.answers.view("View Answer", answer))
   //      } getOrElse (NotFound)
   //  }
   //
   //  def edit(id: Long) = Action {
   //    implicit request =>
-  //      models.Answers.findById(id).map {
+  //      Answer.findById(id).map {
   //        case (answer, typAnswer, answerStatus) => Ok(views.html.answers.edit("Edit Answer", id, answerForm.fill(answer)))
   //      } getOrElse (NotFound)
   //  }
@@ -104,7 +103,7 @@ object Answers extends Controller with securesocial.core.SecureSocial {
   //      answerForm.bindFromRequest.fold(
   //        formWithErrors => BadRequest(views.html.answers.edit("Edit Answer - errors", id, formWithErrors)),
   //        answer => {
-  //          models.Answers.update(id, answer)
+  //          Answer.update(id, answer)
   //          //        Home.flashing("success" -> "Answer %s has been updated".format(answer.name))
   //          Redirect(routes.Answers.list(0, 2))
   //        }
@@ -127,7 +126,7 @@ object Answers extends Controller with securesocial.core.SecureSocial {
   //      answerForm.bindFromRequest.fold(
   //        formWithErrors => BadRequest(views.html.answers.create("New Answer - errors", formWithErrors)),
   //        answer => {
-  //          models.Answers.insert(answer)
+  //          Answer.insert(answer)
   //          //        Home.flashing("success" -> "Answer %s has been created".format(answer.name))
   //          Redirect(routes.Answers.list(0, 2))
   //        }
@@ -139,7 +138,7 @@ object Answers extends Controller with securesocial.core.SecureSocial {
    */
   //  def delete(id: Long) = Action {
   //    implicit request =>
-  //      models.Answers.delete(id)
+  //      Answer.delete(id)
   //      Home.flashing("success" -> "Answer has been deleted")
   //  }
 

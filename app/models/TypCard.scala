@@ -7,31 +7,14 @@ import play.api.db.slick.DB
 
 import play.api.libs.json._
 
+import database.TypCards
+
 case class TypCard(id: Option[Long],
                           code: String,
                           name: String)
 
 
-// define tables
-object TypCards extends Table[TypCard]("fam_typ_card") {
-
-  def id = column[Long]("id_typ_card", O.PrimaryKey, O.AutoInc)
-
-  def name = column[String]("lib_typ_card")
-
-  def code = column[String]("cod_typ_card")
-
-  def * = id.? ~ code ~ name <>(TypCard, TypCard.unapply _)
-
-  def autoInc = id.? ~ code ~ name <>(TypCard, TypCard.unapply _) returning id
-
-  // A reified foreign key relation that can be navigated to create a join
-//  def typMatch = foreignKey("TYP_MATCH_FK", typMatchId, TypMatches)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-
+object TypCard{
   lazy val pageSize = 10
 
   def findAll: Seq[TypCard] = DB.withSession {
@@ -88,7 +71,7 @@ object TypCards extends Table[TypCard]("fam_typ_card") {
 
   def insert(typCard: TypCard): Long = DB.withSession {
     implicit session:Session => {
-      TypCards.autoInc.insert((typCard))
+      TypCards.autoInc.insert(typCard)
     }
   }
 

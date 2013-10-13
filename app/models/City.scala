@@ -7,6 +7,8 @@ import play.api.db.slick.DB
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
+import database.Cities
+
 case class City(id: Option[Long],
                 code: String,
                 name: String,
@@ -14,36 +16,7 @@ case class City(id: Option[Long],
                 lower: String,
                 provinceId: Long)
 
-// define tables
-object Cities extends Table[City]("fam_city") {
-
-  def id = column[Long]("id_city", O.PrimaryKey, O.AutoInc)
-
-  def code = column[String]("cod_city")
-
-  def name = column[String]("lib_city")
-
-  def upper = column[String]("lib_Upper")
-
-  def lower = column[String]("lib_lower")
-
-  def provinceId = column[Long]("id_province")
-
-  def * = id.? ~ code ~ name ~ upper ~ lower ~ provinceId <>(City, City.unapply _)
-
-  def autoInc = id.? ~ code ~ name ~ upper ~ lower ~ provinceId <>(City, City.unapply _) returning id
-
-
-  // A reified foreign key relation that can be navigated to create a join
-  def province = foreignKey("PROVINCE_FK", provinceId, Provinces)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-  val byUpper = createFinderBy(_.upper)
-  val byLower = createFinderBy(_.lower)
-  val byProvince = createFinderBy(_.provinceId)
-
+object City{
   lazy val pageSize = 10
 
   def findAll: Seq[City] = DB.withSession {
@@ -106,7 +79,7 @@ object Cities extends Table[City]("fam_city") {
 
   def insert(city: City): Long = DB.withSession {
     implicit session:Session => {
-      Cities.autoInc.insert((city))
+      Cities.autoInc.insert(city)
     }
   }
 
@@ -165,7 +138,7 @@ object Cities extends Table[City]("fam_city") {
 
   implicit val cityFormat = Json.format[City]
 
-  import Provinces._
+  import Province._
   implicit val cityWithProvinceReads: Reads[(City, Province)] = (
     (__ \ 'city).read[City] ~
       (__ \ 'province).read[Province]

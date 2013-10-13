@@ -7,31 +7,14 @@ import play.api.db.slick.DB
 
 import play.api.libs.json._
 
+import database.TypEvents
+
 case class TypEvent(id: Option[Long],
                           code: String,
                           name: String)
 
 
-// define tables
-object TypEvents extends Table[TypEvent]("fam_typ_event") {
-
-  def id = column[Long]("id_typ_event", O.PrimaryKey, O.AutoInc)
-
-  def name = column[String]("lib_typ_event")
-
-  def code = column[String]("cod_typ_event")
-
-  def * = id.? ~ code ~ name <>(TypEvent, TypEvent.unapply _)
-
-  def autoInc = id.? ~ code ~ name <>(TypEvent, TypEvent.unapply _) returning id
-
-  // A reified foreign key relation that can be navigated to create a join
-//  def typMatch = foreignKey("TYP_MATCH_FK", typMatchId, TypMatches)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-
+object TypEvent{
   lazy val pageSize = 10
 
   def findAll: Seq[TypEvent] = DB.withSession {
@@ -88,7 +71,7 @@ object TypEvents extends Table[TypEvent]("fam_typ_event") {
 
   def insert(typEvent: TypEvent): Long = DB.withSession {
     implicit session:Session => {
-      TypEvents.autoInc.insert((typEvent))
+      TypEvents.autoInc.insert(typEvent)
     }
   }
 

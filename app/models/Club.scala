@@ -8,6 +8,7 @@ import play.api.db.slick.DB
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import database.Clubs
 
 case class Club(id: Option[Long] = None,
                 code: Int,
@@ -22,42 +23,7 @@ case class Club(id: Option[Long] = None,
                 comments: Option[String] = None
                  )
 
-
-// define tables
-object Clubs extends Table[Club]("fam_club") {
-
-  def id = column[Long]("id_club", O.PrimaryKey, O.AutoInc)
-
-  def name = column[String]("lib_club")
-
-  def code = column[Int]("code_fff")
-
-  def countryId = column[Long]("id_country")
-
-  def cityId = column[Long]("id_city")
-
-  def colours = column[String]("colours")
-
-  def address = column[String]("address")
-
-  def zipcode = column[String]("zipcode")
-
-  def city = column[String]("city")
-
-  def organization = column[Long]("id_organization")
-
-  def comments = column[String]("comments")
-
-  def * = id.? ~ code ~ name ~ countryId.? ~ cityId.? ~ colours.? ~ address.? ~ zipcode.? ~ city.? ~ organization.? ~ comments.? <>(Club, Club.unapply _)
-
-  def autoInc = * returning id
-
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-  val byZipCode = createFinderBy(_.zipcode)
-  val byCity = createFinderBy(_.city)
+object Club{
 
   lazy val pageSize = 10
 
@@ -139,7 +105,7 @@ object Clubs extends Table[Club]("fam_club") {
 
   def insert(club: Club): Long = DB.withSession {
     implicit session: Session => {
-      Clubs.autoInc.insert((club))
+      Clubs.autoInc.insert(club)
     }
   }
 

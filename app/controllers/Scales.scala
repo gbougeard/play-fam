@@ -3,7 +3,7 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.Scale
+import models._
 import service.{Administrator, Coach}
 
 
@@ -34,21 +34,21 @@ object Scales extends Controller with securesocial.core.SecureSocial{
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val scales = models.Scales.findPage(page, orderBy)
+      val scales = Scale.findPage(page, orderBy)
       val html = views.html.scales.list("Liste des scales", scales, orderBy)
       Ok(html)
   }
 
   def view(id: Long) = Action {
     implicit request =>
-      models.Scales.findById(id).map {
+      Scale.findById(id).map {
         scale => Ok(views.html.scales.view("View Scale", scale))
       } getOrElse (NotFound)
   }
 
   def edit(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
-      models.Scales.findById(id).map {
+      Scale.findById(id).map {
         scale => Ok(views.html.scales.edit("Edit Scale", id, scaleForm.fill(scale)))
       } getOrElse (NotFound)
   }
@@ -63,7 +63,7 @@ object Scales extends Controller with securesocial.core.SecureSocial{
       scaleForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.scales.edit("Edit Scale - errors", id, formWithErrors)),
         scale => {
-          models.Scales.update(id, scale)
+          Scale.update(id, scale)
           //        Home.flashing("success" -> "Scale %s has been updated".format(scale.name))
           //Redirect(routes.Scales.list(0, 2))
           Redirect(routes.Scales.view(id)).flashing("success" -> "Scale %s has been updated".format(scale.name))
@@ -88,7 +88,7 @@ object Scales extends Controller with securesocial.core.SecureSocial{
       scaleForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.scales.create("New Scale - errors", formWithErrors)),
         scale => {
-          models.Scales.insert(scale)
+          Scale.insert(scale)
           //        Home.flashing("success" -> "Scale %s has been created".format(scale.name))
           Redirect(routes.Scales.list(0, 2))
         }
@@ -100,7 +100,7 @@ object Scales extends Controller with securesocial.core.SecureSocial{
    */
   def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      models.Scales.delete(id)
+      Scale.delete(id)
       Home.flashing("success" -> "Scale has been deleted")
   }
 

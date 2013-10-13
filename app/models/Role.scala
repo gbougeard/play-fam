@@ -11,26 +11,12 @@ import play.api.cache.Cache
 import service.{Administrator, Permission}
 
 import play.api.libs.json._
-
+import database.Roles
 
 case class Role(userId: Long,
                 groupId: Long)
 
-// define tables
-object Roles extends Table[Role]("fam_user_group") {
-
-  def userId = column[Long]("id_user")
-
-  def groupId = column[Long]("id_group")
-
-
-  def * = userId ~ groupId <>(Role, Role.unapply _)
-
-  // A reified foreign key relation that can be navigated to create a join
-  def user = foreignKey("USER_FK", userId, Users)(_.pid)
-
-  def group = foreignKey("GROUP_FK", groupId, Groups)(_.id)
-
+object Role{
   lazy val pageSize = 10
 
   //  def findPage(page: Int = 0, orderField: Int): Page[(Player)] = {
@@ -84,7 +70,7 @@ object Roles extends Table[Role]("fam_user_group") {
   }
 
 
-  def insert(role: Role): Role = DB.withSession {
+  def insert(role: Role): Int = DB.withSession {
     implicit session:Session => {
       Logger.debug("insert %s".format(role))
       Roles.insert(role)

@@ -3,7 +3,7 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.Position
+import models._
 import service.{Administrator, Coach}
 
 
@@ -31,21 +31,21 @@ object Positions extends Controller  with securesocial.core.SecureSocial {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val positions = models.Positions.findPage(page, orderBy)
+      val positions = Position.findPage(page, orderBy)
       val html = views.html.positions.list("Liste des positions", positions, orderBy)
       Ok(html)
   }
 
   def view(id: Long) = Action {
     implicit request =>
-      models.Positions.findById(id).map {
+      Position.findById(id).map {
         position => Ok(views.html.positions.view("View Position", position))
       } getOrElse (NotFound)
   }
 
   def edit(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
-      models.Positions.findById(id).map {
+      Position.findById(id).map {
         position => Ok(views.html.positions.edit("Edit Position", id, positionForm.fill(position)))
       } getOrElse (NotFound)
   }
@@ -60,7 +60,7 @@ object Positions extends Controller  with securesocial.core.SecureSocial {
       positionForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.positions.edit("Edit Position - errors", id, formWithErrors)),
         position => {
-          models.Positions.update(id, position)
+          Position.update(id, position)
           //        Home.flashing("success" -> "Position %s has been updated".format(position.name))
           //Redirect(routes.Positions.list(0, 2))
           Redirect(routes.Positions.view(id)).flashing("success" -> "Position %s has been updated".format(position.name))
@@ -85,7 +85,7 @@ object Positions extends Controller  with securesocial.core.SecureSocial {
       positionForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.positions.create("New Position - errors", formWithErrors)),
         position => {
-          models.Positions.insert(position)
+          Position.insert(position)
           //        Home.flashing("success" -> "Position %s has been created".format(position.name))
           Redirect(routes.Positions.list(0, 2))
         }
@@ -97,7 +97,7 @@ object Positions extends Controller  with securesocial.core.SecureSocial {
    */
   def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      models.Positions.delete(id)
+      Position.delete(id)
       Home.flashing("success" -> "Position has been deleted")
   }
 

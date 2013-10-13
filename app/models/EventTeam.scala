@@ -9,27 +9,15 @@ import play.api.db.slick.DB
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-import models.Events._
-import models.Teams._
+import models.Event._
+import models.Team._
 import scala.util.Try
+import database.EventTeams
 
 case class EventTeam(eventId: Long,
                      teamId: Long)
 
-// define tables
-object EventTeams extends Table[EventTeam]("fam_event_team") {
-
-  def eventId = column[Long]("id_event")
-
-  def teamId = column[Long]("id_team")
-
-  def * = eventId ~ teamId <>(EventTeam, EventTeam.unapply _)
-
-  // A reified foreign key relation that can be navigated to create a join
-  def team = foreignKey("TEAM_FK", teamId, Teams)(_.id)
-
-  def event = foreignKey("EVENT_FK", eventId, Events)(_.id)
-
+object EventTeam{
   def findByEvent(id: Long): Seq[(EventTeam, Event, Team)] = DB.withSession {
     implicit session:Session => {
       val query = for {et <- EventTeams
@@ -54,7 +42,7 @@ object EventTeams extends Table[EventTeam]("fam_event_team") {
     }
   }
 
-  def insert(event: EventTeam):EventTeam = DB.withSession {
+  def insert(event: EventTeam):Int = DB.withSession {
     implicit session:Session => {
       Logger.debug("insert %s".format(event))
         EventTeams.insert(event)

@@ -3,7 +3,7 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.{TypCompetition, TypMatch}
+import models._
 import service.Administrator
 
 
@@ -34,22 +34,22 @@ object TypCompetitions extends Controller with securesocial.core.SecureSocial{
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val typCompetitions = models.TypCompetitions.findPage(page, orderBy)
+      val typCompetitions = TypCompetition.findPage(page, orderBy)
       val html = views.html.typCompetitions.list("Liste des typCompetitions", typCompetitions, orderBy)
       Ok(html)
   }
 
   def view(id: Long) = Action {
     implicit request =>
-      models.TypCompetitions.findById(id).map {
+      TypCompetition.findById(id).map {
         typMatch => Ok(views.html.typCompetitions.view("View TypMatch", typMatch))
       } getOrElse (NotFound)
   }
 
   def edit(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      models.TypCompetitions.findById(id).map {
-        typMatch => Ok(views.html.typCompetitions.edit("Edit TypMatch", id, typMatchForm.fill(typMatch), models.TypMatches.options))
+      TypCompetition.findById(id).map {
+        typMatch => Ok(views.html.typCompetitions.edit("Edit TypMatch", id, typMatchForm.fill(typMatch), TypMatch.options))
       } getOrElse (NotFound)
   }
 
@@ -61,9 +61,9 @@ object TypCompetitions extends Controller with securesocial.core.SecureSocial{
   def update(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       typMatchForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.typCompetitions.edit("Edit TypMatch - errors", id, formWithErrors, models.TypMatches.options)),
+        formWithErrors => BadRequest(views.html.typCompetitions.edit("Edit TypMatch - errors", id, formWithErrors, TypMatch.options)),
         typMatch => {
-          models.TypCompetitions.update(id, typMatch)
+          TypCompetition.update(id, typMatch)
           //        Home.flashing("success" -> "TypMatch %s has been updated".format(typMatch.name))
           //Redirect(routes.TypCompetitions.list(0, 2))
           Redirect(routes.TypCompetitions.view(id)).flashing("success" -> "TypMatch %s has been updated".format(typMatch.name))
@@ -77,7 +77,7 @@ object TypCompetitions extends Controller with securesocial.core.SecureSocial{
    */
   def create =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      Ok(views.html.typCompetitions.create("New TypMatch", typMatchForm, models.TypMatches.options))
+      Ok(views.html.typCompetitions.create("New TypMatch", typMatchForm, TypMatch.options))
   }
 
   /**
@@ -86,9 +86,9 @@ object TypCompetitions extends Controller with securesocial.core.SecureSocial{
   def save =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       typMatchForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.typCompetitions.create("New TypMatch - errors", formWithErrors, models.TypMatches.options)),
+        formWithErrors => BadRequest(views.html.typCompetitions.create("New TypMatch - errors", formWithErrors, TypMatch.options)),
         typMatch => {
-          models.TypCompetitions.insert(typMatch)
+          TypCompetition.insert(typMatch)
           //        Home.flashing("success" -> "TypMatch %s has been created".format(typMatch.name))
           Redirect(routes.TypCompetitions.list(0, 2))
         }
@@ -100,7 +100,7 @@ object TypCompetitions extends Controller with securesocial.core.SecureSocial{
    */
   def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      models.TypCompetitions.delete(id)
+      TypCompetition.delete(id)
       Home.flashing("success" -> "TypMatch has been deleted")
   }
 

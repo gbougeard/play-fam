@@ -6,6 +6,7 @@ import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
 import play.api.libs.json._
+import database.TypCompetitions
 
 case class TypCompetition(id: Option[Long],
                           code: String,
@@ -14,30 +15,7 @@ case class TypCompetition(id: Option[Long],
                           typMatchId: Long)
 
 
-// define tables
-object TypCompetitions extends Table[TypCompetition]("fam_typ_competition") {
-
-  def id = column[Long]("id_typ_competition", O.PrimaryKey, O.AutoInc)
-
-  def name = column[String]("lib_typ_competition")
-
-  def code = column[String]("cod_typ_competition")
-
-  def isChampionship = column[Boolean]("championship")
-
-  def typMatchId = column[Long]("id_typ_match")
-
-  def * = id.? ~ code ~ name ~ isChampionship ~ typMatchId <>(TypCompetition, TypCompetition.unapply _)
-
-  def autoInc = id.? ~ code ~ name ~ isChampionship ~ typMatchId<>(TypCompetition, TypCompetition.unapply _) returning id
-
-  // A reified foreign key relation that can be navigated to create a join
-  def typMatch = foreignKey("TYP_MATCH_FK", typMatchId, TypMatches)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-
+object TypCompetition{
   lazy val pageSize = 10
 
   def findAll: Seq[TypCompetition] = DB.withSession {
@@ -95,7 +73,7 @@ object TypCompetitions extends Table[TypCompetition]("fam_typ_competition") {
 
   def insert(typCompetition: TypCompetition): Long = DB.withSession {
     implicit session:Session => {
-      TypCompetitions.autoInc.insert((typCompetition))
+      TypCompetitions.autoInc.insert(typCompetition)
     }
   }
 

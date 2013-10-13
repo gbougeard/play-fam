@@ -56,7 +56,7 @@ class MyEventListener(app: Application) extends EventListener {
   def getRoles(id: Option[Long]) = {
     id.map {
       u => {
-        val roles = Json.toJson(models.Roles.findByUserId(u))
+        val roles = Json.toJson(models.Role.findByUserId(u))
         play.Logger.debug(s"getRoles for userId $u : $roles")
         Cache.set(s"roles.$u", roles)
         play.Logger.debug(s"Roles setted in cache : roles.$u => $roles -- ${Cache.get(s"roles.$u")}")

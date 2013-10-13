@@ -1,8 +1,7 @@
 package controllers
 
-import _root_.models.FamUser
-import _root_.securesocial.core.Authorization
-import _root_.securesocial.core.Identity
+import securesocial.core.Authorization
+import securesocial.core.Identity
 
 import play.api._
 import play.api.mvc._
@@ -12,7 +11,7 @@ import play.api.Play.current
 import play.api.cache.Cache
 
 import views._
-import models.Role
+import models._
 import service.{Administrator, Permission, RequestUtil}
 import play.api.libs.json.Json
 
@@ -21,35 +20,35 @@ object Application extends Controller with securesocial.core.SecureSocial {
 
   def me = SecuredAction {
     implicit request =>
-//      play.Logger.debug(s"test index ${Cache.get("roles.1258")}")
-      val famUser:FamUser = RequestUtil.getFamUser(request.user)
+    //      play.Logger.debug(s"test index ${Cache.get("roles.1258")}")
+      val famUser: FamUser = RequestUtil.getFamUser(request.user)
       val currentClub = famUser.currentClubId match {
-          case Some(id) =>  models.Clubs.findById(id)
-          case None => None
+        case Some(id) => Club.findById(id)
+        case None => None
       }
 
-    val player = models.Players.findByUserId(famUser.pid.get)
+      val player = Player.findByUserId(famUser.pid.get)
       Ok(views.html.me(request.user, currentClub, player))
   }
 
-  def myPlayer(filter:String) = SecuredAction {
+  def myPlayer(filter: String) = SecuredAction {
     implicit request =>
-      val famUser:FamUser= RequestUtil.getFamUser(request.user)
+      val famUser: FamUser = RequestUtil.getFamUser(request.user)
 
-      val player = models.Players.findByUserId(famUser.pid.get)
+      val player = Player.findByUserId(famUser.pid.get)
       val players = filter match {
         case "" => List()
-        case _ => models.Players.find(filter)
+        case _ => Player.find(filter)
       }
-    play.Logger.debug(s"filter : $filter , $players")
+      play.Logger.debug(s"filter : $filter , $players")
       Ok(views.html.myPlayer(player, players, filter))
   }
 
   def createMyPlayer = SecuredAction {
     implicit request =>
-      val famUser:FamUser= RequestUtil.getFamUser(request.user)
+      val famUser: FamUser = RequestUtil.getFamUser(request.user)
 
-      val player = models.Players.findByUserId(famUser.pid.get)
+      val player = Player.findByUserId(famUser.pid.get)
       Ok(views.html.myPlayer(player, List(), ""))
   }
 
@@ -65,7 +64,7 @@ object Application extends Controller with securesocial.core.SecureSocial {
       Ok("Bye").withNewSession
   }
 
-  def deleteCacheById(id :Long ) = Action {
+  def deleteCacheById(id: Long) = Action {
     implicit request =>
       play.Logger.info(s"delete cache for user $id")
       Cache.remove(s"roles.$id")
@@ -109,51 +108,54 @@ object Application extends Controller with securesocial.core.SecureSocial {
   }
 
   // -- Javascript routing
-  def javascriptRoutes = Action { implicit request =>
-    Ok(Routes.javascriptRouter("jsRoutes")(routeCache:_*)).as(JAVASCRIPT)
+  def javascriptRoutes = Action {
+    implicit request =>
+      Ok(Routes.javascriptRouter("jsRoutes")(routeCache: _*)).as(JAVASCRIPT)
   }
 
   val routeCache = {
     import routes._
     val jsRoutesClass = classOf[routes.javascript]
     val controllers = jsRoutesClass.getFields.map(_.get(null))
-    controllers.flatMap { controller =>
-      controller.getClass.getDeclaredMethods.map { action =>
-        action.invoke(controller).asInstanceOf[play.core.Router.JavascriptReverseRoute]
-      }
+    controllers.flatMap {
+      controller =>
+        controller.getClass.getDeclaredMethods.map {
+          action =>
+            action.invoke(controller).asInstanceOf[play.core.Router.JavascriptReverseRoute]
+        }
     }
   }
-//  def javascriptRoutes = Action {
-//    implicit request =>
-//      import routes.javascript._
-//      Ok(
-//        Routes.javascriptRouter("jsRoutes")(
-//          Places.gmapData,
-//          Places.mapByZipcode,
-////          Places.jsonLikeCity,
-//          Places.gmapData,
-//          Places.view,
-//          Places.list,
-//          Places.update,
-//          Places.save,
-//          Events.view,
-//          Answers.jsonByEvent,
-//          Events.agenda,
-//          Events.save,
-//          Events.saveTeams,
-//          Events.update,
-//          Matchs.jsonById,
-//          Cards.jsonByMatchAndTeam,
-//          Goals.jsonByMatchAndTeam,
-//          Substitutions.jsonByMatchAndTeam,
-//          MatchTeams.jsonByMatchAndHome,
-//          MatchTeams.jsonByMatchAndAway,
-//          MatchTeams.jsonByMatchAndTeam,
-//          MatchPlayers.jsonByMatchAndTeam,
-//          Formations.saveItems
-//        )
-//      ).as(JAVASCRIPT)
-//  }
+  //  def javascriptRoutes = Action {
+  //    implicit request =>
+  //      import routes.javascript._
+  //      Ok(
+  //        Routes.javascriptRouter("jsRoutes")(
+  //          Places.gmapData,
+  //          Places.mapByZipcode,
+  ////          Places.jsonLikeCity,
+  //          Places.gmapData,
+  //          Places.view,
+  //          Places.list,
+  //          Places.update,
+  //          Places.save,
+  //          Events.view,
+  //          Answers.jsonByEvent,
+  //          Events.agenda,
+  //          Events.save,
+  //          Events.saveTeams,
+  //          Events.update,
+  //          Matchs.jsonById,
+  //          Cards.jsonByMatchAndTeam,
+  //          Goals.jsonByMatchAndTeam,
+  //          Substitutions.jsonByMatchAndTeam,
+  //          MatchTeams.jsonByMatchAndHome,
+  //          MatchTeams.jsonByMatchAndAway,
+  //          MatchTeams.jsonByMatchAndTeam,
+  //          MatchPlayers.jsonByMatchAndTeam,
+  //          Formations.saveItems
+  //        )
+  //      ).as(JAVASCRIPT)
+  //  }
 
 }
 
@@ -167,13 +169,13 @@ case class WithProvider(provider: String) extends Authorization {
 case class WithRightClub(id: Long) extends Authorization {
   def isAuthorized(user: Identity) = {
     val res = user match {
-      case u: models.FamUser =>
-       val rightClub = u.currentClubId.map {
+      case u: FamUser =>
+        val rightClub = u.currentClubId.map {
           clubId => clubId == id
         } getOrElse false
-        val admin =   u.pid.map {
+        val admin = u.pid.map {
           userId => {
-            models.Roles.isUserInRole(userId, Set(Administrator))
+            Role.isUserInRole(userId, Set(Administrator))
           }
         } getOrElse false
         admin || rightClub
@@ -183,14 +185,14 @@ case class WithRightClub(id: Long) extends Authorization {
   }
 }
 
-case class WithRoles(permissions : Set[Permission]) extends Authorization {
+case class WithRoles(permissions: Set[Permission]) extends Authorization {
   def isAuthorized(user: Identity) = {
     play.Logger.debug(s"isAuthorized $user - $permissions")
     val res = user match {
-      case u: models.FamUser =>
+      case u: FamUser =>
         u.pid.map {
           userId => {
-           models.Roles.isUserInRole(userId, permissions)
+            Role.isUserInRole(userId, permissions)
           }
         } getOrElse false
       case _ => false

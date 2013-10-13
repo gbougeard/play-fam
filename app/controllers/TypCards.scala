@@ -3,7 +3,7 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.TypCard
+import models._
 import service.Administrator
 
 
@@ -31,21 +31,21 @@ object TypCards extends Controller with securesocial.core.SecureSocial{
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val typCards = models.TypCards.findPage(page, orderBy)
+      val typCards = TypCard.findPage(page, orderBy)
       val html = views.html.typCards.list("Liste des typCards", typCards, orderBy)
       Ok(html)
   }
 
   def view(id: Long) = Action {
     implicit request =>
-      models.TypCards.findById(id).map {
+      TypCard.findById(id).map {
         typCard => Ok(views.html.typCards.view("View TypCard", typCard))
       } getOrElse (NotFound)
   }
 
   def edit(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      models.TypCards.findById(id).map {
+      TypCard.findById(id).map {
         typCard => Ok(views.html.typCards.edit("Edit TypCard", id, typCardForm.fill(typCard)))
       } getOrElse (NotFound)
   }
@@ -60,7 +60,7 @@ object TypCards extends Controller with securesocial.core.SecureSocial{
       typCardForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.typCards.edit("Edit TypCard - errors", id, formWithErrors)),
         typCard => {
-          models.TypCards.update(id, typCard)
+          TypCard.update(id, typCard)
           //        Home.flashing("success" -> "TypCard %s has been updated".format(typCard.name))
           //Redirect(routes.TypCards.list(0, 2))
           Redirect(routes.TypCards.view(id)).flashing("success" -> "TypCard %s has been updated".format(typCard.name))
@@ -85,7 +85,7 @@ object TypCards extends Controller with securesocial.core.SecureSocial{
       typCardForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.typCards.create("New TypCard - errors", formWithErrors)),
         typCard => {
-          models.TypCards.insert(typCard)
+          TypCard.insert(typCard)
           //        Home.flashing("success" -> "TypCard %s has been created".format(typCard.name))
           Redirect(routes.TypCards.list(0, 2))
         }
@@ -97,7 +97,7 @@ object TypCards extends Controller with securesocial.core.SecureSocial{
    */
   def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      models.TypCards.delete(id)
+      TypCard.delete(id)
       Home.flashing("success" -> "TypCard has been deleted")
   }
 

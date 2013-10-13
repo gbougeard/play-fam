@@ -4,7 +4,7 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 
-import models.CompetitionTeam
+import models._
 
 
 object CompetitionTeams extends Controller with securesocial.core.SecureSocial {
@@ -30,29 +30,29 @@ object CompetitionTeams extends Controller with securesocial.core.SecureSocial {
 
   def byCompetition(id: Long) = Action {
     implicit request =>
-      val competitionTeams = models.CompetitionTeams.findByCompetition(id)
-      val competition = models.SeasonCompetitions.findByIdComplete(id)
+      val competitionTeams = CompetitionTeam.findByCompetition(id)
+      val competition = SeasonCompetition.findByIdComplete(id)
       val html = views.html.competitionTeams.listTeam("Liste des competitionTeams", competition, competitionTeams)
       Ok(html)
   }
 
   def byTeam(id: Long) = Action {
     implicit request =>
-      val competitionTeams = models.CompetitionTeams.findByTeam(id)
+      val competitionTeams = CompetitionTeam.findByTeam(id)
       val html = views.html.competitionTeams.list("Liste des competitionTeams", competitionTeams)
       Ok(html)
   }
 
   //  def view(id: Long) = Action {
   //    implicit request =>
-  //      models.CompetitionTeams.findById(id).map {
+  //      CompetitionTeam.findById(id).map {
   //        competitionTeam => Ok(views.html.competitionTeams.view("View CompetitionMatch", competitionTeam))
   //      } getOrElse (NotFound)
   //  }
   //
   //  def edit(id: Long) = Action {
   //    implicit request =>
-  //      models.CompetitionTeams.findById(id).map {
+  //      CompetitionTeam.findById(id).map {
   //        competitionTeam => {
   //          play.Logger.debug("data "+competitionTeam)
   //          Ok(views.html.competitionTeams.edit("Edit CompetitionMatch", id, competitionTeamForm.fill(competitionTeam), models.Categorys.options, models.Scales.options, models.Competitions.options, models.TypCompetitions.options))
@@ -70,7 +70,7 @@ object CompetitionTeams extends Controller with securesocial.core.SecureSocial {
   //      competitionTeamForm.bindFromRequest.fold(
   //        formWithErrors => BadRequest(views.html.competitionTeams.edit("Edit CompetitionMatch - errors", id, formWithErrors, models.Categorys.options, models.Scales.options, models.Competitions.options, models.TypCompetitions.options)),
   //        competitionTeam => {
-  //          models.CompetitionTeams.update(id, competitionTeam)
+  //          CompetitionTeam.update(id, competitionTeam)
   //          //        Home.flashing("success" -> "CompetitionMatch %s has been updated".format(competitionTeam.name))
   //          //Redirect(routes.CompetitionTeams.list(0, 2))
   //          Redirect(routes.CompetitionTeams.view(id)).flashing("success" -> "CompetitionMatch %s has been updated".format(competitionTeam.id))
@@ -95,7 +95,7 @@ object CompetitionTeams extends Controller with securesocial.core.SecureSocial {
   //      competitionTeamForm.bindFromRequest.fold(
   //        formWithErrors => BadRequest(views.html.competitionTeams.create("New CompetitionMatch - errors", formWithErrors, models.Categorys.options, models.Scales.options, models.Competitions.options, models.TypCompetitions.options)),
   //        competitionTeam => {
-  //          models.CompetitionTeams.insert(competitionTeam)
+  //          CompetitionTeam.insert(competitionTeam)
   //          //        Home.flashing("success" -> "CompetitionMatch %s has been created".format(competitionTeam.name))
   //          Redirect(routes.CompetitionTeams.list(0, 2))
   //        }
@@ -107,7 +107,7 @@ object CompetitionTeams extends Controller with securesocial.core.SecureSocial {
    */
   //  def delete(id: Long) = Action {
   //    implicit request =>
-  //      models.CompetitionTeams.delete(id)
+  //      CompetitionTeam.delete(id)
   //      Home.flashing("success" -> "CompetitionMatch has been deleted")
   //  }
 

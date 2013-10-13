@@ -15,6 +15,7 @@ import play.api.libs.json.Json
 
 import play.Logger
 
+import models.database.{Users, Tokens}
 /*
   Slick Table for securesocial.core.providers.Token
   case class Token(
@@ -27,29 +28,13 @@ import play.Logger
   */
 
 
-object Tokens extends Table[Token]("tokens") {
-
-  def uuid = column[String]("uuid", O.PrimaryKey)
-  def email = column[String]("email")
-  def creationTime = column[DateTime]("creationTime")
-  def expirationTime = column[DateTime]("expirationTime")
-  def isSignUp = column[Boolean]("isSignUp")
-
-  // Projections
-  def * = {
-    uuid ~
-      email ~
-      creationTime ~
-      expirationTime ~
-      isSignUp <> (Token.apply _, Token.unapply _)
-  }
-
+object TokenDao {
   // Operations
   def save(token: Token): Token = DB.withTransaction { implicit session:Session =>
     findByUUID(token.uuid) map { t =>
       Query(Tokens).where(_.uuid is t.uuid).update(token)
     } getOrElse {
-      this.insert(token)
+      Tokens.insert(token)
     }
     Logger.debug("saved token %s".format(token))
     token
@@ -57,7 +42,7 @@ object Tokens extends Table[Token]("tokens") {
 
   def delete(uuid: String) = DB.withTransaction { implicit session:Session =>
     Logger.debug("delete token %s".format(uuid))
-    this.where(_.uuid is uuid).mutate(_.delete)
+    Tokens.where(_.uuid is uuid).mutate(_.delete)
   }
 
   def deleteAll() = DB.withTransaction { implicit session:Session =>
@@ -75,7 +60,7 @@ object Tokens extends Table[Token]("tokens") {
   }
 
   def findByUUID(uuid: String): Option[Token] = DB.withSession { implicit session:Session =>
-    def byUUID = createFinderBy(_.uuid)
+    def byUUID = Tokens.createFinderBy(_.uuid)
     Logger.debug("find token %s".format(uuid))
     byUUID(uuid).firstOption
   }

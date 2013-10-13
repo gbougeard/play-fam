@@ -1,9 +1,7 @@
 package controllers
 
 import play.api.mvc._
-import play.api.data._
-import play.api.data.Forms._
-import models.Ranking
+import models._
 
 
 object Rankings extends Controller with securesocial.core.SecureSocial {
@@ -15,21 +13,21 @@ object Rankings extends Controller with securesocial.core.SecureSocial {
    */
   def index = Action {
     implicit request =>
-      val competitions = models.SeasonCompetitions.findAll
+      val competitions = SeasonCompetition.findAll
       val html = views.html.rankings.index("Rankings", competitions)
       Ok(html)
   }
 
   //  def list = Action {
-  //    val rankings = models.Rankings.findAll
+  //    val rankings = Ranking.findAll
   //    val html = views.html.rankings("Liste des rankings", rankings)
   //    Ok(html)
   //  }
 
   def list(competition: Long, orderBy: Int) = Action {
     implicit request =>
-      val rankings = models.Rankings.findByCompetition(competition)
-      val html = views.html.rankings.list("Liste des rankings", rankings, competition, orderBy, models.SeasonCompetitions.optionsChampionship)
+      val rankings = Ranking.findByCompetition(competition)
+      val html = views.html.rankings.list("Liste des rankings", rankings, competition, orderBy, SeasonCompetition.optionsChampionship)
       Ok(html)
   }
 

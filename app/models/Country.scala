@@ -7,6 +7,7 @@ import play.api.db.slick.DB
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import database.Countries
 
 
 case class Country(id: Option[Long],
@@ -14,30 +15,7 @@ case class Country(id: Option[Long],
                    name: String,
                    upper: String,
                    lower: String)
-
-// define tables
-object Countries extends Table[Country]("fam_country") {
-
-  def id = column[Long]("id_country", O.PrimaryKey, O.AutoInc)
-
-  def code = column[String]("cod_country")
-
-  def name = column[String]("lib_country")
-
-  def upper = column[String]("lib_Upper")
-
-  def lower = column[String]("lib_lower")
-
-  def * = id.? ~ code ~ name ~ upper ~ lower <>(Country, Country.unapply _)
-
-  def autoInc = id.? ~ code ~ name ~ upper ~ lower <>(Country, Country.unapply _) returning id
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-  val byUpper = createFinderBy(_.upper)
-  val byLower = createFinderBy(_.lower)
-
+object Country{
   lazy val pageSize = 10
 
   lazy val countryCount = count
@@ -59,12 +37,11 @@ object Countries extends Table[Country]("fam_country") {
     val offset = pageSize * page
     DB.withSession {
       implicit session:Session => {
-        val countrys = (
-          for {t <- Countries
-            .sortBy(_.id)
-            .drop(offset)
-            .take(pageSize)
-          } yield t)
+        val countrys = for {t <- Countries
+          .sortBy(_.id)
+          .drop(offset)
+          .take(pageSize)
+        } yield t
 
         Page(countrys.list, page, offset, countryCount)
       }
@@ -91,7 +68,7 @@ object Countries extends Table[Country]("fam_country") {
 
   def insert(country: Country): Long = DB.withSession {
     implicit session:Session => {
-      Countries.autoInc.insert((country))
+      Countries.autoInc.insert(country)
     }
   }
 

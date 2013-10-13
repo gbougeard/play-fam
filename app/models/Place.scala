@@ -7,6 +7,7 @@ import play.api.db.slick.DB
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import database.Places
 
 case class Place(id: Option[Long] = None,
                  name: String,
@@ -20,35 +21,7 @@ case class Place(id: Option[Long] = None,
                   )
 
 
-// define tables
-object Places extends Table[Place]("fam_place") {
-
-  def id = column[Long]("id_place", O.PrimaryKey, O.AutoInc)
-
-  def name = column[String]("lib_place")
-
-  def address = column[String]("address")
-
-  def city = column[String]("city")
-
-  def zipcode = column[String]("zipcode")
-
-  def latitude = column[Float]("latitude")
-
-  def longitude = column[Float]("longitude")
-
-  def comments = column[String]("comments")
-
-  def typFff = column[String]("typ_fff")
-
-  def * = id.? ~ name ~ address ~ city ~ zipcode ~ latitude.? ~ longitude.? ~ comments.? ~ typFff.? <>(Place, Place.unapply _)
-
-  def autoInc = * returning id
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.zipcode)
-  val byCity = createFinderBy(_.city)
+object Place{
 
   lazy val pageSize = 2500
 
@@ -77,8 +50,8 @@ object Places extends Table[Place]("fam_place") {
   def placesWithoutCoords: Seq[Place] = DB.withSession {
     implicit session: Session => {
       (for {c <- Places sortBy (_.zipcode)
-            if (c.latitude isNull)
-            if (c.longitude isNull)
+            if (c.latitude isNotNull)
+            if (c.longitude isNotNull)
       } yield c)
         .take(20)
         .list

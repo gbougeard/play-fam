@@ -6,32 +6,13 @@ import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
 import play.api.libs.json._
+import database.Positions
 
 case class Position(id: Option[Long],
                           code: String,
                           name: String)
 
-
-// define tables
-object Positions extends Table[Position]("fam_position") {
-
-  def id = column[Long]("id_position", O.PrimaryKey, O.AutoInc)
-
-  def name = column[String]("lib_position")
-
-  def code = column[String]("cod_position")
-
-  def * = id.? ~ code ~ name <>(Position, Position.unapply _)
-
-  def autoInc = id.? ~ code ~ name <>(Position, Position.unapply _) returning id
-
-  // A reified foreign key relation that can be navigated to create a join
-//  def typMatch = foreignKey("TYP_MATCH_FK", typMatchId, TypMatches)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-
+object Position{
   lazy val pageSize = 10
 
   def findAll: Seq[Position] = DB.withSession {
@@ -88,7 +69,7 @@ object Positions extends Table[Position]("fam_position") {
 
   def insert(position: Position): Long = DB.withSession {
     implicit session:Session => {
-      Positions.autoInc.insert((position))
+      Positions.autoInc.insert(position)
     }
   }
 

@@ -8,11 +8,12 @@ import play.api.db.slick.DB
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-import models.Matchs._
-import models.Players._
-import models.Teams._
+import models.Match._
+import models.Player._
+import models.Team._
 
 import play.api.Logger
+import models.database.MatchPlayers
 
 case class MatchPlayer(matchId: Option[Long],
                        playerId: Option[Long],
@@ -23,55 +24,28 @@ case class MatchPlayer(matchId: Option[Long],
                        timePlayed: Option[Long],
                        comments: Option[String])
 
-// define tables
-object MatchPlayers extends Table[MatchPlayer]("fam_match_player") {
-
-  def matchId = column[Long]("id_match")
-
-  def playerId = column[Long]("id_player")
-
-  def teamId = column[Long]("id_team")
-
-  def num = column[Long]("num")
-
-  def captain = column[Boolean]("captain")
-
-  def note = column[Double]("note")
-
-  def timePlayed = column[Long]("time_played")
-
-  def comments = column[String]("comments")
-
-  def * = matchId.? ~ playerId.? ~ teamId.? ~ num.? ~ captain ~ note.? ~ timePlayed.? ~ comments.? <>(MatchPlayer, MatchPlayer.unapply _)
-
-  // A reified foreign key relation that can be navigated to create a join
-  def matche = foreignKey("MATCH_FK", matchId, Matchs)(_.id)
-
-  def player = foreignKey("PLAYER_FK", playerId, Players)(_.id)
-
-  def team = foreignKey("TEAM_FK", teamId, Teams)(_.id)
+object MatchPlayer{
 
   lazy val pageSize = 10
 
   def findByMatchAndTeam(idMatch: Long, idTeam: Long): Seq[(MatchPlayer, Match, Player, Team)] = DB.withSession {
     implicit session:Session => {
       Logger.debug("slick MatchPlayers "+idMatch +" "+idTeam)
-      val query = (
-        for {mp <- MatchPlayers
-             if mp.matchId === idMatch
-             if mp.teamId === idTeam
-             m <- mp.matche
-             p <- mp.player
-             t <- mp.team
+      val query = for {mp <- MatchPlayers
+                       if mp.matchId === idMatch
+                       if mp.teamId === idTeam
+                       m <- mp.matche
+                       p <- mp.player
+                       t <- mp.team
 
-        } yield (mp, m, p, t))
+      } yield (mp, m, p, t)
       query.list
     }
   }
 
   def insert(matchPlayer: MatchPlayer): Long = DB.withSession {
     implicit session:Session => {
-      MatchPlayers.insert((matchPlayer))
+      MatchPlayers.insert(matchPlayer)
     }
   }
 
