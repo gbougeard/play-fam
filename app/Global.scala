@@ -6,19 +6,19 @@
  * To change this template use File | Settings | File Templates.
  */
 
-import play.api.Application
+import play.api.{GlobalSettings, Application}
 import play.api.mvc._
 import play.api.mvc.Results._
 import com.kenshoo.play.metrics.MetricsFilter
 import play.Logger
 
-object Global extends WithFilters(MetricsFilter) {
+object Global  extends GlobalSettings {
 
   /** The application wide metrics registry. */
 
 
   override def onStart(app: Application) {
-    super.onStart(app)
+//    super.onStart(app)
     Logger.info("Starting app")
   }
 
@@ -45,13 +45,13 @@ object Global extends WithFilters(MetricsFilter) {
 //  }
 }
 
-object AccessLog extends Filter {
-
-  override def apply(next: RequestHeader => Result)(request: RequestHeader): Result = {
-    val result = next(request)
-    //    play.Logger.info(request + "\n\t => " + result)
-    result
-  }
-}
+//object AccessLog extends Filter {
+//
+//  override def apply(next: RequestHeader => Result)(request: RequestHeader): Result = {
+//    val result = next(request)
+//    //    play.Logger.info(request + "\n\t => " + result)
+//    result
+//  }
+//}
 
 
