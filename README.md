@@ -4,7 +4,7 @@ play
 Play2 projects &amp; tries
 
 Actually, pre-requisite :
-- Play2 2.1 (master branch from github)
+- Play2 2.2.0
 - MySql DB
 - some datas (dump.sql)
 
