@@ -1,7 +1,10 @@
 import sbt._
 import play.Project._
 import sbt.Keys._
+
 //import com.lunatech.play.ubuntupackage.UbuntuPackagePlugin._
+
+import com.typesafe.sbt.packager.Keys._
 
 object Library {
 
@@ -10,7 +13,7 @@ object Library {
   val logbackVersion = "1.0.13"
   val slf4jVersion = "1.7.5"
   val mysqlVersion = "5.1.25"
-  val jodaMapperVersion = "0.3.0"
+  val jodaMapperVersion = "0.4.0"
   val playSlickVersion = "0.5.0.8"
   //  val metricsVersion                  = "3.0.0"
   val secureSocialVersion = "master-SNAPSHOT"
@@ -57,13 +60,13 @@ object ApplicationBuild extends Build {
   val appDependencies = Seq(
     // Add your project dependencies here,
     jdbc,
-  cache,
+    cache,
     slf4j,
     logbackClassic,
     mysql,
     jodaMapper,
-        playSlick,
-        playMetrics,
+    playSlick,
+    playMetrics,
     secureSocial,
     webjars,
     wjAngular,
@@ -82,8 +85,8 @@ object ApplicationBuild extends Build {
     //      ,"org.xerial" % "sqlite-jdbc" % "3.6.20"
     //      ,"org.slf4j" % "slf4j-nop" % "1.6.4" // <- disables logging
 
-//,"com.typesafe.play" %% "play-slick" % "0.4.0"
-// , "com.kenshoo" %% "metrics-play" % "0.1.1"
+    //,"com.typesafe.play" %% "play-slick" % "0.4.0"
+    // , "com.kenshoo" %% "metrics-play" % "0.1.1"
     // Other database drivers
     //    ,  "org.apache.derby" % "derby" % "10.6.1.0"
     //     , "org.hsqldb" % "hsqldb" % "2.0.0"
@@ -91,32 +94,39 @@ object ApplicationBuild extends Build {
 
 
     //    , "org.webjars" % "requirejs" % "2.1.1"
-    , "org.webjars" % "bootstrap-datepicker" % "1.1.3"
+    , "org.webjars" % "bootstrap-datepicker" % "1.2.0"
     , "org.webjars" % "bootstrap-timepicker" % "0.2.3"
     , "org.webjars" % "bootswatch" % "2.3.1"
-    , "org.webjars" % "font-awesome" % "3.2.1"
-    , "org.webjars" % "jquery-ui" % "1.10.2-1"
-    , "org.webjars" % "momentjs" % "2.0.0-1"
-    , "org.webjars" % "tinymce-jquery" % "3.4.9"
     , "org.webjars" % "famfamfam-flags" % "0.0"
-    , "org.webjars" % "x-editable-bootstrap" % "1.4.5"
-    , "org.webjars" % "select2" % "3.4.1"
+    , "org.webjars" % "font-awesome" % "3.2.1"
+    , "org.webjars" % "jquery" % "1.10.2-1"
+    , "org.webjars" % "jquery-ui" % "1.10.2-1"
+    , "org.webjars" % "momentjs" % "2.3.1"
+    , "org.webjars" % "tinymce-jquery" % "3.4.9"
+    , "org.webjars" % "select2" % "3.4.3"
+    , "org.webjars" % "x-editable-bootstrap" % "1.4.6"
   )
 
 
   val main = play.Project(appName, appVersion, appDependencies)
-//    .settings(ubuntuPackageSettings:_*)
+    //    .settings(ubuntuPackageSettings:_*)
+    //    .settings(sbtNativePackager:_*)
     .settings(
 
-//      UbuntuPackageKeys.maintainer := "Gregory Bougeard <gbougeard@gmail.com>",
-  scalaVersion := "2.10.2",
+    //      UbuntuPackageKeys.maintainer := "Gregory Bougeard <gbougeard@gmail.com>",
+    maintainer := "Gregory Bougeard <gbougeard@gmail.com>",
+    packageDescription := "FAM",
+    packageSummary := "FAM",
+    description := "The description" ,
 
-      resolvers += Resolver.url("sbt-plugin-snapshots", new URL("http://repo.scala-sbt.org/scalasbt/sbt-plugin-snapshots/"))(Resolver.ivyStylePatterns)
+    scalaVersion := "2.10.2",
 
-  // Add your own project settings here
+    resolvers += Resolver.url("sbt-plugin-snapshots", new URL("http://repo.scala-sbt.org/scalasbt/sbt-plugin-snapshots/"))(Resolver.ivyStylePatterns)
+
+    // Add your own project settings here
     //  ).dependsOn(RootProject( uri("git://github.com/gbougeard/play-slick.git") ))
   )
-//.dependsOn(RootProject(uri("git://github.com/freekh/play-slick.git")))
-//    .dependsOn(RootProject(uri("git://github.com/kenshoo/metrics-play.git")))
+  //.dependsOn(RootProject(uri("git://github.com/freekh/play-slick.git")))
+  //    .dependsOn(RootProject(uri("git://github.com/kenshoo/metrics-play.git")))
 
 }

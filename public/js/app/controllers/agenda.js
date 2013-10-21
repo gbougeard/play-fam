@@ -142,8 +142,8 @@ function AgendaCtrl($scope, $http, $filter) {
                         url: $filter('eventUrl')(item),
 //                        className: 'typEvent'+item.typEventId ,
                         editable: false,
-                        color: $filter('eventColor')(item.typEventId)
-//                        textColor: $filter('eventTextColor')(item.typEventId)
+                        color: $filter('eventColor')(item.typEventId),
+                         backgroundColor: $filter('eventBkgColor')(item.typEventId)
 
                     };
 //                    console.log(item, event);
