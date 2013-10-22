@@ -25,12 +25,7 @@ services.factory('eventService', function ($http) {
     };
 
     var getEvent = function (id) {
-        return $http.get(jsRoutes.controllers.Events.view(id).url, ajax)
-            .then(function (response) {
-                console.log("getEvent", response);
-                return response.data;
-            }
-        );
+        return $http.get(jsRoutes.controllers.Events.view(id).url, ajax);
     };
 
     return {
@@ -41,51 +36,27 @@ services.factory('eventService', function ($http) {
 services.factory('matchService', function ($http) {
 
     var getMatch = function (id) {
-        return $http.get(jsRoutes.controllers.Matchs.jsonById(id).url)
-            .then(function (response) {
-                console.log("getMatch", response);
-                return response.data;
-            });
+        return $http.get(jsRoutes.controllers.Matchs.jsonById(id).url);
     };
 
     var getMatchTeams = function (idMatch, idTeam) {
-        return $http.get(jsRoutes.controllers.MatchTeams.jsonByMatchAndTeam(idMatch, idTeam).url)
-            .then(function (response) {
-                console.log("getMatchTeams", response);
-                return response.data;
-            });
+        return $http.get(jsRoutes.controllers.MatchTeams.jsonByMatchAndTeam(idMatch, idTeam).url);
     };
 
     var getMatchPlayers = function (idMatch, idTeam) {
-        return $http.get(jsRoutes.controllers.MatchPlayers.jsonByMatchAndTeam(idMatch, idTeam).url)
-            .then(function (response) {
-                console.log("getMatchPlayers", response);
-                return response.data;
-            });
+        return $http.get(jsRoutes.controllers.MatchPlayers.jsonByMatchAndTeam(idMatch, idTeam).url);
     };
 
     var getGoals = function (idMatch, idTeam) {
-        return $http.get(jsRoutes.controllers.Goals.jsonByMatchAndTeam(idMatch, idTeam).url)
-            .then(function (response) {
-                console.log("getGoals", response);
-                return response.data;
-            });
+        return $http.get(jsRoutes.controllers.Goals.jsonByMatchAndTeam(idMatch, idTeam).url);
     };
 
     var getCards = function (idMatch, idTeam) {
-        return $http.get(jsRoutes.controllers.Cards.jsonByMatchAndTeam(idMatch, idTeam).url)
-            .then(function (response) {
-                console.log("getCards", response);
-                return response.data;
-            });
+        return $http.get(jsRoutes.controllers.Cards.jsonByMatchAndTeam(idMatch, idTeam).url);
     };
 
     var getSubs = function (idMatch, idTeam) {
-        return $http.get(jsRoutes.controllers.Substitutions.jsonByMatchAndTeam(idMatch, idTeam).url)
-            .then(function (response) {
-                console.log("getSubs", response);
-                return response.data;
-            });
+        return $http.get(jsRoutes.controllers.Substitutions.jsonByMatchAndTeam(idMatch, idTeam).url);
     };
 
     return {
