@@ -74,7 +74,7 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
       } getOrElse (NotFound("Match not Found"))
   }
 
-  def debrief(idMatch:Long, idTeam: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
+  def debrief(idMatch:Long, idTeam: Long) =  Action{ //SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       Match.findById(idMatch).map {
         m => {
