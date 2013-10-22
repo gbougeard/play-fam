@@ -28,27 +28,27 @@ function DebriefingCtrl($scope, eventService, matchService) {
         console.log('loadMatch', $scope.idMatch, $scope.idTeam);
 
         matchService.getMatch($scope.idMatch)
-            .then(function (data, status, headers, config) {
+            .success(function (data, status, headers, config) {
                 // data contains the response
                 // status is the HTTP status
                 // headers is the header getter function
                 // config is the object that was used to create the HTTP request
                 $scope.match = data;
                 $scope.loadEvent($scope.match.eventId);
-            }
-            , function (data, status, headers, config) {
+            })
+            .error(function (data, status, headers, config) {
                 console.error(data, status, headers, config);
             });
 
         matchService.getMatchTeams($scope.idMatch, $scope.idTeam)
-            .then(function (data, status, headers, config) {
+            .success(function (data, status, headers, config) {
                 // data contains the response
                 // status is the HTTP status
                 // headers is the header getter function
                 // config is the object that was used to create the HTTP request
                 $scope.matchTeam = data;
-            }
-            , function (data, status, headers, config) {
+            })
+            .error(function (data, status, headers, config) {
                 console.error(data, status, headers, config);
             });
 
@@ -59,14 +59,14 @@ function DebriefingCtrl($scope, eventService, matchService) {
 
     $scope.loadEvent = function (idEvent) {
         eventService.getEvent(idEvent)
-            .then(function (data, status, headers, config) {
+            .success(function (data, status, headers, config) {
                 // data contains the response
                 // status is the HTTP status
                 // headers is the header getter function
                 // config is the object that was used to create the HTTP request
                 $scope.event = data;
-            }
-            , function (data, status, headers, config) {
+            })
+            .error(function (data, status, headers, config) {
                 console.error(data, status, headers, config);
             });
     };
@@ -81,28 +81,28 @@ function DebriefingCtrl($scope, eventService, matchService) {
 
     $scope.loadPlayers = function (idMatch, idTeam) {
         matchService.getMatchPlayers(idMatch, idTeam)
-            .then(function (data, status, headers, config) {
+            .success(function (data, status, headers, config) {
                 // data contains the response
                 // status is the HTTP status
                 // headers is the header getter function
                 // config is the object that was used to create the HTTP request
                 $scope.players = data;
-            }
-            , function (data, status, headers, config) {
+            })
+            .error(function (data, status, headers, config) {
                 console.error(data, status, headers, config);
             });
     };
 
     $scope.loadGoals = function (idMatch, idTeam) {
         matchService.getGoals(idMatch, idTeam)
-            .then(function (data, status, headers, config) {
+            .success(function (data, status, headers, config) {
                 // data contains the response
                 // status is the HTTP status
                 // headers is the header getter function
                 // config is the object that was used to create the HTTP request
                 $scope.goals = data;
-            }
-            , function (data, status, headers, config) {
+            })
+            .error(function (data, status, headers, config) {
                 console.error(data, status, headers, config);
             });
     };
@@ -110,14 +110,14 @@ function DebriefingCtrl($scope, eventService, matchService) {
     $scope.loadCards = function (idMatch, idTeam) {
 //        console.log(idMatch, idTeam, home);
         matchService.getCards(idMatch, idTeam)
-            .then(function (data, status, headers, config) {
+            .success(function (data, status, headers, config) {
                 // data contains the response
                 // status is the HTTP status
                 // headers is the header getter function
                 // config is the object that was used to create the HTTP request
                 $scope.cards = data;
-            }
-            , function (data, status, headers, config) {
+            })
+            .error(function (data, status, headers, config) {
                 console.error(data, status, headers, config);
             });
     };
@@ -125,14 +125,14 @@ function DebriefingCtrl($scope, eventService, matchService) {
     $scope.loadSubs = function (idMatch, idTeam) {
 //        console.log(idMatch, idTeam, home);
         matchService.getSubs(idMatch, idTeam)
-            .then(function (data, status, headers, config) {
+            .success(function (data, status, headers, config) {
                 // data contains the response
                 // status is the HTTP status
                 // headers is the header getter function
                 // config is the object that was used to create the HTTP request
                 $scope.subs = data;
-            }
-            , function (data, status, headers, config) {
+            })
+            .error(function (data, status, headers, config) {
                 console.error(data, status, headers, config);
             });
     };
