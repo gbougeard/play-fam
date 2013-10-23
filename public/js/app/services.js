@@ -28,8 +28,30 @@ services.factory('eventService', function ($http) {
         return $http.get(jsRoutes.controllers.Events.view(id).url, ajax);
     };
 
+    var getAgenda = function () {
+        return $http.get(jsRoutes.controllers.Events.agenda().url, ajax);
+    };
+
     return {
-        getEvent: getEvent
+        getEvent: getEvent,
+        getAgenda: getAgenda
+    };
+});
+
+services.factory('answerService', function ($http) {
+
+    var ajax = {
+        "headers": [
+            {'Content-Type': 'application/json'}
+        ]
+    };
+
+    var getAnswers = function (id) {
+        return $http.get(jsRoutes.controllers.Answers.jsonByEvent(idEvent).url, ajax);
+    };
+
+    return {
+        getAnswers: getAnswers
     };
 });
 

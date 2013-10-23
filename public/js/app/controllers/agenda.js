@@ -80,7 +80,7 @@ fam.filter('eventUrl', function () {
 });
 
 
-function AgendaCtrl($scope, $http, $filter) {
+function AgendaCtrl($scope, eventService, $filter) {
 
     var date = new Date();
     var d = date.getDate();
@@ -119,16 +119,12 @@ function AgendaCtrl($scope, $http, $filter) {
 
     // The function that will be executed on button click (ng-click="search()")
     $scope.loadEvents = function () {
-        // Create the http post request
-        // the data holds the keywords
-        // The request is a JSON request.
-        jsRoutes.controllers.Events.agenda().ajax({
-            contentType: "application/json",
-            dataType: "json",
-            success: function (data, status) {
-                // console.log("loadPlaces success", data, status);
-                $scope.status = status;
-
+        eventService.getAgenda()
+            .success(function (data, status, headers, config) {
+                // data contains the response
+                // status is the HTTP status
+                // headers is the header getter function
+                // config is the object that was used to create the HTTP request
                 angular.forEach(data, function (item) {
 //                    console.log(item);
                     var dtStart = new Date(item.dtEvent);
@@ -143,24 +139,17 @@ function AgendaCtrl($scope, $http, $filter) {
 //                        className: 'typEvent'+item.typEventId ,
                         editable: false,
                         color: $filter('eventColor')(item.typEventId),
-                         backgroundColor: $filter('eventBkgColor')(item.typEventId)
+                        backgroundColor: $filter('eventBkgColor')(item.typEventId)
 
                     };
 //                    console.log(item, event);
                     $scope.events.push(event);
                 });
-
-                $scope.$digest();
-            },
-            error: function (data, status) {
-                $scope.data = data || "Request failed";
-                $scope.status = status;
-                $scope.$digest();
-            }
-        });
-
+            })
+            .error(function (data, status, headers, config) {
+                console.error(data, status, headers, config);
+            });
 
     };
 
-//    $scope.loadEvents();
 }

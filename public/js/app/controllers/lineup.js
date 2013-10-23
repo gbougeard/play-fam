@@ -1,7 +1,7 @@
 'use strict';
 
 
-function LineupCtrl($scope, $http, $location, $rootScope, $q) {
+function LineupCtrl($scope, eventService, matchService) {
 
     $scope.idMatch = 0;
     $scope.idTeam = 0;
@@ -17,74 +17,89 @@ function LineupCtrl($scope, $http, $location, $rootScope, $q) {
 
     $scope.loadMatch = function () {
         console.log('loadMatch', $scope.idMatch, $scope.idTeam);
-
-        jsRoutes.controllers.Matchs.jsonById($scope.idMatch).ajax().then(function (response) {
-                console.log("match", response);
-                $scope.match = response;
+        matchService.getMatch($scope.idMatch)
+            .success(function (data, status, headers, config) {
+                // data contains the response
+                // status is the HTTP status
+                // headers is the header getter function
+                // config is the object that was used to create the HTTP request
+                $scope.match = data;
                 $scope.loadEvent(response.eventId);
                 $scope.loadAnswers(response.eventId);
                 $scope.loadMatchTeam($scope.idMatch, $scope.idTeam);
                 $scope.loadPlayers($scope.idMatch, $scope.idTeam);
-
-
-            }
-        ).then(function () {
-                $rootScope.$digest();
+            })
+            .error(function (data, status, headers, config) {
+                console.error(data, status, headers, config);
             });
     };
 
     $scope.loadEvent = function (idEvent) {
-        jsRoutes.controllers.Events.jsonById(idEvent).ajax().then(function (response) {
-                console.log("event",response);
-                $scope.event = response;
-                $rootScope.$digest();
-            }
-        );
+        eventService.getEvent(idEvent)
+            .success(function (data, status, headers, config) {
+                // data contains the response
+                // status is the HTTP status
+                // headers is the header getter function
+                // config is the object that was used to create the HTTP request
+                $scope.event = data;
+            })
+            .error(function (data, status, headers, config) {
+                console.error(data, status, headers, config);
+            });
     };
 
     $scope.loadAnswers = function (idEvent) {
-        jsRoutes.controllers.Answers.jsonByEvent(idEvent).ajax().then(function (response) {
-                console.log("answers", response);
-                $scope.answers = response;
-                $rootScope.$digest();
-            }
-        );
+        answerService.getAnswers(idEvent)
+            .success(function (data, status, headers, config) {
+                // data contains the response
+                // status is the HTTP status
+                // headers is the header getter function
+                // config is the object that was used to create the HTTP request
+                $scope.answers = data;
+            })
+            .error(function (data, status, headers, config) {
+                console.error(data, status, headers, config);
+            });
     };
 
     $scope.loadMatchTeam = function (idMatch, idTeam) {
-        jsRoutes.controllers.MatchTeams.jsonByMatchAndTeam(idMatch, idTeam).ajax().then(function (response) {
-                console.log("MatchTeam", response);
-                $scope.matchTeam = response;
-                $rootScope.$digest();
-            }
-        );
+        matchService.getMatchTeams(idMatch, idTeam)
+            .success(function (data, status, headers, config) {
+                // data contains the response
+                // status is the HTTP status
+                // headers is the header getter function
+                // config is the object that was used to create the HTTP request
+                $scope.matchTeam = data;
+            })
+            .error(function (data, status, headers, config) {
+                console.error(data, status, headers, config);
+            });
     };
 
     $scope.loadPlayers = function (idMatch, idTeam) {
-        console.log(idMatch, idTeam);
-        jsRoutes.controllers.MatchPlayers.jsonByMatchAndTeam(idMatch, idTeam).ajax().then(function (response) {
-                console.log("players", response);
-                $scope.players = response;
-//                angular.forEach($scope.homePlayers, function (player) {
-//                   player.editing = false;
-//                });
-                $rootScope.$digest();
-            }
-        );
+        matchService.getMatchPlayers(idMatch, idTeam)
+            .success(function (data, status, headers, config) {
+                // data contains the response
+                // status is the HTTP status
+                // headers is the header getter function
+                // config is the object that was used to create the HTTP request
+                $scope.players = data;
+            })
+            .error(function (data, status, headers, config) {
+                console.error(data, status, headers, config);
+            });
     };
 
 
-
-    $scope.edit = function(matchPlayer){
+    $scope.edit = function (matchPlayer) {
         matchPlayer.editing = true;
         $scope.selectedItem = matchPlayer;
         console.log("edit", $scope.selectedItem);
-    }
+    };
 
-    $scope.save = function(){
+    $scope.save = function () {
         console.log("save", $scope.selectedItem);
-    }
+    };
 
 
-//    $scope.loadMatch($scope.idMatch, $scope.idTeam);
 }
