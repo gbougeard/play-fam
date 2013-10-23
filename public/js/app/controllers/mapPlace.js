@@ -7,7 +7,7 @@
  * Time: 01:22
  * To change this template use File | Settings | File Templates.
  */
-function MapPlaceCtrl($scope, $http) {
+function MapPlaceCtrl($scope, placeService) {
 
     $scope.myMarkers = [];
     $scope.mapOptions = {
@@ -42,74 +42,39 @@ function MapPlaceCtrl($scope, $http) {
         // Create the http post request
         // the data holds the keywords
         // The request is a JSON request.
-        jsRoutes.controllers.Places.gmapData().ajax({
-            contentType: "application/json",
-            dataType: "json",
-            success: function (data, status) {
-                // console.log("loadPlaces success", data, status);
-                $scope.status = status;
-
+        placeService.getMapData()
+            .success(function (data, status, headers, config) {
+                // data contains the response
+                // status is the HTTP status
+                // headers is the header getter function
+                // config is the object that was used to create the HTTP request
                 angular.forEach(data, function (item) {
-//                    console.log(item);
-                    var myLatlng = new google.maps.LatLng(item.latitude, item.longitude);
-
-                    var marker = new google.maps.Marker({
-                        map: $scope.myMap,
-                        position: myLatlng,
-                        title: item.name + " - " + item.zipcode + " " + item.city,
-                        idPlace:item.id
-                    });
-                    console.log(marker);
-                    $scope.myMarkers.push(marker);
+                    $scope.myMarkers.push(createMarker(item));
                 });
-
-                $scope.$digest();
-            },
-            error: function (data, status) {
-                $scope.data = data || "Request failed";
-                $scope.status = status;
-                $scope.$digest();
-            }
-        });
+            })
+            .error(function (data, status, headers, config) {
+                console.error(data, status, headers, config);
+            });
     };
 
 
     // The function that will be executed on button click (ng-click="search()")
     $scope.findByCity = function () {
-        console.log("findLikeCity", $scope.city);
+        console.log("findByCity", $scope.city);
         $scope.myMarkers = [];
-        // Create the http post request
-        // the data holds the keywords
-        // The request is a JSON request.
-        jsRoutes.controllers.Places.mapByCity($scope.city).ajax({
-            contentType: "application/json",
-            dataType: "json",
-            success: function (data, status) {
-                // console.log("loadPlaces success", data, status);
-                $scope.status = status;
-
+        placeService.findByCity($scope.city)
+            .success(function (data, status, headers, config) {
+                // data contains the response
+                // status is the HTTP status
+                // headers is the header getter function
+                // config is the object that was used to create the HTTP request
                 angular.forEach(data, function (item) {
-//                    console.log(item);
-                    var myLatlng = new google.maps.LatLng(item.latitude, item.longitude);
-
-                    var marker = new google.maps.Marker({
-                        map: $scope.myMap,
-                        position: myLatlng,
-                        title: item.name + " - " + item.zipcode + " " + item.city ,
-                        idPlace:item.id
-                    });
-                    console.log(marker);
-                    $scope.myMarkers.push(marker);
+                    $scope.myMarkers.push(createMarker(item));
                 });
-
-                $scope.$digest();
-            },
-            error: function (data, status) {
-                $scope.data = data || "Request failed";
-                $scope.status = status;
-                $scope.$digest();
-            }
-        });
+            })
+            .error(function (data, status, headers, config) {
+                console.error(data, status, headers, config);
+            });
     };
 
     // The function that will be executed on button click (ng-click="search()")
@@ -119,33 +84,29 @@ function MapPlaceCtrl($scope, $http) {
         // the data holds the keywords
         // The request is a JSON request.
         $scope.myMarkers = [];
-        jsRoutes.controllers.Places.mapByZipcode($scope.zipcode).ajax({
-            contentType: "application/json",
-            dataType: "json",
-            success: function (data, status) {
-                // console.log("loadPlaces success", data, status);
-                $scope.status = status;
-
+        placeService.findByZipcode($scope.zipcode)
+            .success(function (data, status, headers, config) {
+                // data contains the response
+                // status is the HTTP status
+                // headers is the header getter function
+                // config is the object that was used to create the HTTP request
                 angular.forEach(data, function (item) {
-//                    console.log(item);
-                    var myLatlng = new google.maps.LatLng(item.latitude, item.longitude);
-                    var marker = new google.maps.Marker({
-                        map: $scope.myMap,
-                        position: myLatlng,
-                        title: item.name + " - " + item.zipcode + " " + item.city ,
-                        idPlace:item.id
-                    });
-                    console.log(marker);
-                    $scope.myMarkers.push(marker);
+                    $scope.myMarkers.push(createMarker(item));
                 });
+            })
+            .error(function (data, status, headers, config) {
+                console.error(data, status, headers, config);
+            });
+    };
 
-                $scope.$digest();
-            },
-            error: function (data, status) {
-                $scope.data = data || "Request failed";
-                $scope.status = status;
-                $scope.$digest();
-            }
+    var createMarker = function(item){
+        var myLatlng = new google.maps.LatLng(item.latitude, item.longitude);
+
+        return new google.maps.Marker({
+            map: $scope.myMap,
+            position: myLatlng,
+            title: item.name + " - " + item.zipcode + " " + item.city ,
+            idPlace:item.id
         });
     };
 

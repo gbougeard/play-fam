@@ -107,6 +107,7 @@ POST        /places                                                             
 GET         /places/$id<[0-9]+>                                                                    controllers.Places.view(id : Long)
 GET         /places/map                                                                            controllers.Places.map
 GET         /places/map/zip/$zipcode<[0-9]+>                                                       controllers.Places.mapByZipcode(zipcode : String)
+GET         /places/map/city/*city                                                        controllers.Places.mapByCity(city : String)
 GET         /places/map/json                                                                       controllers.Places.gmapData
 GET         /places/geo                                                                            controllers.Places.geoGM
 GET         /places/geo/$code<[0-9]+>                                                              controllers.Places.geoGMByZipcode(code : String)

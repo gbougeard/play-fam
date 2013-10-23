@@ -68,3 +68,47 @@ services.factory('matchService', function ($http) {
         getSubs: getSubs
     };
 });
+
+services.factory('placeService', function ($http) {
+
+    var ajax = {
+        "headers": [
+            {'Content-Type': 'application/json'}
+        ]
+    };
+
+    var getPlace = function (id) {
+        return $http.get(jsRoutes.controllers.Places.view(id).url, ajax);
+    };
+
+    var updatePlace = function (place) {
+        return $http.post(jsRoutes.controllers.Places.update(place.id).url, place);
+    };
+
+    var createPlace = function (place) {
+        return $http.post(jsRoutes.controllers.Places.save(place).url);
+    };
+
+    var findByCity = function (city) {
+        return $http.get(jsRoutes.controllers.Places.mapByCity(city).url, ajax);
+    };
+
+    var findByZipcode = function (zipcode) {
+        return $http.get(jsRoutes.controllers.Places.mapByZipcode(zipcode).url, ajax);
+    };
+
+    var getMapData = function () {
+        return $http.get(jsRoutes.controllers.Places.gmapData().url, ajax);
+    };
+
+
+    return {
+        getPlace: getPlace,
+        updatePlace: updatePlace,
+        createPlace: createPlace,
+        findByCity: findByCity,
+        findByZipcode: findByZipcode,
+        getMapData: getMapData
+
+    };
+});

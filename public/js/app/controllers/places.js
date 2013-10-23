@@ -1,7 +1,7 @@
 'use strict';
 
 
-fam.controller('PlacesCtrl', function ($scope, $http, $location, Restangular) {
+fam.controller('PlacesCtrl', function ($scope, placeService) {
     $scope.marker = {};
     $scope.mapOptions = {
         //center: new google.maps.LatLng(35.784, -78.670),
@@ -25,7 +25,7 @@ fam.controller('PlacesCtrl', function ($scope, $http, $location, Restangular) {
 
     $scope.geocode = function () {
         $scope.address = $scope.place.address + " , " + $scope.place.zipcode + " " + $scope.place.city;
-        console.log("geocode",$scope.place, $scope.address);
+        console.log("geocode", $scope.place, $scope.address);
 //        var address = document.getElementById('address').value;
         geocoder.geocode({ 'address': $scope.address}, function (results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
@@ -40,7 +40,7 @@ fam.controller('PlacesCtrl', function ($scope, $http, $location, Restangular) {
                 $scope.place.latitude = marker.getPosition().lat();
                 $scope.place.longitude = marker.getPosition().lng();
                 console.log("after", $scope.place);
-                $scope.myMap.panTo($scope.marker );
+                $scope.myMap.panTo($scope.marker);
 //            .panTo($scope.marker);
 //                $scope.myMarkers.push(marker);
                 $scope.$digest();
@@ -61,25 +61,31 @@ fam.controller('PlacesCtrl', function ($scope, $http, $location, Restangular) {
     };
 
     $scope.loadPlace = function (id) {
-        var placeFuture = Restangular.one('places', id);
-        placeFuture.get().then(function(result){
-           $scope.place = result;
-           $scope.address = $scope.place.address + " , " + $scope.place.zipcode + " " + $scope.place.city;
+        placeService.getPlace(id)
+            .success(function (data, status, headers, config) {
+                // data contains the response
+                // status is the HTTP status
+                // headers is the header getter function
+                // config is the object that was used to create the HTTP request
+                $scope.place = data;
+                $scope.address = $scope.place.address + " , " + $scope.place.zipcode + " " + $scope.place.city;
 
-            if ($scope.place.city != ""){
-                $scope.geocode();
-            }
-        });
-
+                if ($scope.place.city != "") {
+                    $scope.geocode();
+                }
+            })
+            .error(function (data, status, headers, config) {
+                console.error(data, status, headers, config);
+            });
     };
 
-    $scope.update = function(){
-        jsRoutes.controllers.Places.update($scope.place.id).ajax({
-            data: JSON.stringify($scope.place),
-            contentType: "application/json",
-            dataType: "json",
-            success: function (data, status) {
-                console.log("success!", data, status);
+    $scope.update = function (id, place) {
+        placeService.updatePlace(id, place)
+            .success(function (data, status, headers, config) {
+                // data contains the response
+                // status is the HTTP status
+                // headers is the header getter function
+                // config is the object that was used to create the HTTP request
 
                 $.pnotify({
                     title: 'Place updated',
@@ -87,28 +93,24 @@ fam.controller('PlacesCtrl', function ($scope, $http, $location, Restangular) {
                     type: 'success',
                     icon: 'picon picon-flag-green'
                 });
-            },
-            error: function (data, status) {
-                console.log("Failed!", data, status);
-                //$scope.data = data || "Request failed";
+            })
+            .error(function (data, status, headers, config) {
+                console.error(data, status, headers, config);
                 $.pnotify({
                     title: 'Oh No!',
                     text: 'Something terrible happened while updating the place.',
                     type: 'error'
                 });
-            }
-        });
+            });
+    };
 
-
-    }
-
-    $scope.save = function(){
-        jsRoutes.controllers.Places.save().ajax({
-            data: JSON.stringify($scope.place),
-            contentType: "application/json",
-            dataType: "json",
-            success: function (data, status) {
-                console.log("success!", data, status);
+    $scope.create = function (place) {
+        placeService.createPlace(place)
+            .success(function (data, status, headers, config) {
+                // data contains the response
+                // status is the HTTP status
+                // headers is the header getter function
+                // config is the object that was used to create the HTTP request
 
                 $.pnotify({
                     title: 'Place created',
@@ -116,20 +118,16 @@ fam.controller('PlacesCtrl', function ($scope, $http, $location, Restangular) {
                     type: 'success',
                     icon: 'picon picon-flag-green'
                 });
-            },
-            error: function (data, status) {
-                console.log("Failed!", data, status);
-                //$scope.data = data || "Request failed";
+            })
+            .error(function (data, status, headers, config) {
+                console.error(data, status, headers, config);
                 $.pnotify({
                     title: 'Oh No!',
                     text: 'Something terrible happened while creating the place.',
                     type: 'error'
                 });
-            }
-        });
-
-
-    }
+            });
+    };
 
 //    google.maps.event.addDomListener(window, 'load', initialize);
 });
