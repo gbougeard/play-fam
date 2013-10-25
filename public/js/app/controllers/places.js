@@ -1,7 +1,7 @@
 'use strict';
 
 
-fam.controller('PlacesCtrl', function ($scope, placeService) {
+fam.controller('PlacesCtrl', function ($scope, notificationService, placeService ) {
     $scope.marker = {};
     $scope.mapOptions = {
         //center: new google.maps.LatLng(35.784, -78.670),
@@ -86,21 +86,11 @@ fam.controller('PlacesCtrl', function ($scope, placeService) {
                 // status is the HTTP status
                 // headers is the header getter function
                 // config is the object that was used to create the HTTP request
-
-                $.pnotify({
-                    title: 'Place updated',
-                    text: 'The place have been successfully updated',
-                    type: 'success',
-                    icon: 'picon picon-flag-green'
-                });
+                notificationService.success( 'Place updated', 'The place have been successfully updated');
             })
             .error(function (data, status, headers, config) {
                 console.error(data, status, headers, config);
-                $.pnotify({
-                    title: 'Oh No!',
-                    text: 'Something terrible happened while updating the place.',
-                    type: 'error'
-                });
+                notificationService.error( 'Place not updated', 'Something terrible happened while updating the place');
             });
     };
 
@@ -111,21 +101,11 @@ fam.controller('PlacesCtrl', function ($scope, placeService) {
                 // status is the HTTP status
                 // headers is the header getter function
                 // config is the object that was used to create the HTTP request
-
-                $.pnotify({
-                    title: 'Place created',
-                    text: 'The place have been successfully created',
-                    type: 'success',
-                    icon: 'picon picon-flag-green'
-                });
+                notificationService.success( 'Place created', 'The place have been successfully created');
             })
             .error(function (data, status, headers, config) {
                 console.error(data, status, headers, config);
-                $.pnotify({
-                    title: 'Oh No!',
-                    text: 'Something terrible happened while creating the place.',
-                    type: 'error'
-                });
+                notificationService.error( 'Place not created', 'Something terrible happened while creating the place');
             });
     };
 

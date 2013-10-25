@@ -16,6 +16,31 @@ services.factory('famHelper', function () {
     };
 });
 
+services.factory("notificationService", function () {
+    var notify = function (hash) {
+        $.pnotify(hash);
+    };
+    var success = function (title, msg) {
+        $.pnotify({
+            'title': title,
+            'text': msg,
+            'type': 'success'
+        });
+    };
+    var error = function (title, msg) {
+        $.pnotify({
+            'title': title,
+            'text': msg,
+            'type': 'error'
+        });
+    };
+    return {
+        notify: notify,
+        success: success,
+        error: error
+    };
+});
+
 services.factory('eventService', function ($http) {
 
     var ajax = {
@@ -32,9 +57,34 @@ services.factory('eventService', function ($http) {
         return $http.get(jsRoutes.controllers.Events.agenda().url, ajax);
     };
 
+    var update = function (event) {
+        return $http.post(jsRoutes.controllers.Events.update(event.id).url, event);
+    };
+
+    var create = function (event) {
+        return $http.post(jsRoutes.controllers.Events.create().url, event);
+    };
+
+    var saveTeams = function (eventTeams) {
+        return $http.post(jsRoutes.controllers.Events.saveTeams().url, eventTeams);
+    };
+
+    var getEventStatuses = function () {
+        return $http.get(jsRoutes.controllers.EventStatuses.jsonList().url, ajax);
+    };
+
+    var getTypEvents = function () {
+        return $http.get(jsRoutes.controllers.TypEvents.jsonList().url, ajax);
+    };
+
     return {
         getEvent: getEvent,
-        getAgenda: getAgenda
+        getAgenda: getAgenda,
+        getEventStatuses: getEventStatuses,
+        getTypEvents: getTypEvents,
+        update: update,
+        create: create,
+        saveTeams: saveTeams
     };
 });
 
@@ -103,6 +153,10 @@ services.factory('placeService', function ($http) {
         return $http.get(jsRoutes.controllers.Places.view(id).url, ajax);
     };
 
+    var getPage = function (page) {
+        return $http.get(jsRoutes.controllers.Places.list(page, 2).url, ajax);
+    };
+
     var updatePlace = function (place) {
         return $http.post(jsRoutes.controllers.Places.update(place.id).url, place);
     };
@@ -126,6 +180,7 @@ services.factory('placeService', function ($http) {
 
     return {
         getPlace: getPlace,
+        getPage: getPage,
         updatePlace: updatePlace,
         createPlace: createPlace,
         findByCity: findByCity,

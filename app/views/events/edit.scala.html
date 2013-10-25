@@ -51,7 +51,7 @@
             <div class="control-group" ng-class="{error: formEvent.duration.$invalid}">
                 <label class="control-label" for="duration">Duration</label>
                 <div class="controls">
-                    <input type="number" id="duration" name="duration" placeholder="Duration" class="input-with-feedback" data-ng-model="event.event.duration" required>
+                    <input type="number" id="duration" name="duration" placeholder="Duration" class="input-with-feedback input-small" data-ng-model="event.event.duration" required> minutes
                 </div>
             </div>
 
@@ -61,7 +61,7 @@
                     @*<select class="span4" name="place" ng-model="event.event.placeId" ng-options="value.id as value.name for (key, value) in places" data-style="btn-primary" bs-select></select>*@
                     <select ui-select2  class="span8" name="place" ng-model="event.event.placeId" data-placeholder="Pick a place">
                         <option value=""></option>
-                        <option ng-repeat="place in places" value="{{place.id}}">{{place.name}}</option>
+                        <option ng-repeat="place in places" value="{{place.id}}">{{place.name}} - {{place.zipcode}} - {{place.city}}</option>
                     </select>
                 </div>
             </div>

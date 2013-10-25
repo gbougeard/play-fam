@@ -1,7 +1,7 @@
 'use strict';
 
 
-fam.controller('EventCtrl', function ($scope, $http, $location, Restangular) {
+fam.controller('EventCtrl', function ($scope, notificationService, eventService, placeService) {
 
     $scope.event = {};
     $scope.comments = {};
@@ -38,6 +38,30 @@ fam.controller('EventCtrl', function ($scope, $http, $location, Restangular) {
 
     /**
      *
+     * @param id
+     */
+    var saveTeams = function (id, teams) {
+        var c = [];
+
+        angular.forEach(teams, function (team) {
+            c.push({
+                eventId: id,
+                teamId: team
+            });
+        });
+        eventService.saveTeams(c)
+            .success(function (data, status, headers, config) {
+                notificationService.success('Teams saved', 'The Event teams have been successfully created.');
+                window.location = jsRoutes.controllers.Events.view(id).url;
+            })
+            .error(function (data, status, headers, config) {
+                console.error(data, status, headers, config);
+                notificationService.error('Teams not saved', 'Something terrible happened while saving teams.');
+            });
+    };
+
+    /**
+     *
      */
     $scope.save = function () {
 
@@ -53,69 +77,19 @@ fam.controller('EventCtrl', function ($scope, $http, $location, Restangular) {
             "typEventId": parseInt($scope.selectedType, 10),
             "eventStatusId": 25,
             "comments": $scope.comments
-        }
+        };
         console.log("save", event);
 
-        jsRoutes.controllers.Events.save().ajax({
-            data: JSON.stringify(event),
-            contentType: "application/json",
-            dataType: "json",
-            success: function (data, status) {
-                console.log("success!", data, status);
-
-                $.pnotify({
-                    title: 'Event created',
-                    text: 'The event have been successfully created',
-                    type: 'success',
-                    icon: 'picon picon-flag-green'
-                });
-
+        eventService.create(event)
+            .success(function (data, status, headers, config) {
+                notificationService.success('Event created', 'The event have been successfully created');
                 var id = data;
-                var c = [];
-                angular.forEach($scope.selectedTeams, function (team) {
-                    c.push({
-                        eventId: id,
-                        teamId: team
-                    });
-                });
-                console.log(c);
-                jsRoutes.controllers.Events.saveTeams().ajax({
-                    data: JSON.stringify(c),
-                    contentType: "application/json",
-                    dataType: "json",
-                    success: function (data, status) {
-                        console.log("success!", data, status);
-                        //resetStorage();
-                        $.pnotify({
-                            title: 'Teams saved',
-                            text: 'The Event teams have been successfully created',
-                            type: 'success'
-                        });
-                        console.log("goto", jsRoutes.controllers.Events.view(id).url);
-//                        $location.path(jsRoutes.controllers.Events.view(id).url).replace();
-                        window.location = jsRoutes.controllers.Events.view(id).url;
-                    },
-                    error: function (data, status) {
-                        console.log("Failed!", data, status);
-                        //$scope.data = data || "Request failed";
-                        $.pnotify({
-                            title: 'Oh No!',
-                            text: 'Something terrible happened while creating event.',
-                            type: 'error'
-                        });
-                    }
-                });
-            },
-            error: function (data, status) {
-                console.log("Failed!", data, status);
-                //$scope.data = data || "Request failed";
-                $.pnotify({
-                    title: 'Oh No!',
-                    text: 'Something terrible happened while creating the event.',
-                    type: 'error'
-                });
-            }
-        });
+                saveTeams(id, $scope.selectedTeams);
+            })
+            .error(function (data, status, headers, config) {
+                console.error(data, status, headers, config);
+                notificationService.error('Event not created', 'Something terrible happened while creating event.');
+            });
     };
     /**
      *
@@ -128,80 +102,46 @@ fam.controller('EventCtrl', function ($scope, $http, $location, Restangular) {
         $scope.event.event.eventStatusId = parseInt($scope.event.event.eventStatusId, 10);
         $scope.event.event.typEventId = parseInt($scope.event.event.typEventId, 10);
 
-
-        jsRoutes.controllers.Events.update($scope.event.event.id).ajax({
-            data: JSON.stringify($scope.event.event),
-            contentType: "application/json",
-            dataType: "json",
-            success: function (data, status) {
-                console.log("success!", data, status);
-
-                $.pnotify({
-                    title: 'Event created',
-                    text: 'The event have been successfully updated',
-                    type: 'success',
-                    icon: 'picon picon-flag-green'
-                });
-
-                var id = data;
-                var c = [];
-                angular.forEach($scope.event.teams, function (team) {
-                    c.push({
-                        eventId: $scope.event.event.id,
-                        teamId: team
-                    });
-                });
-                console.log(c);
-                jsRoutes.controllers.Events.saveTeams().ajax({
-                    data: JSON.stringify(c),
-                    contentType: "application/json",
-                    dataType: "json",
-                    success: function (data, status) {
-                        console.log("success!", data, status);
-                        //resetStorage();
-                        $.pnotify({
-                            title: 'Teams saved',
-                            text: 'The Event teams have been successfully updated',
-                            type: 'success'
-                        });
-                        console.log("goto", jsRoutes.controllers.Events.view(id).url);
-//                        window.location = jsRoutes.controllers.Events.view(id).url;
-                    },
-                    error: function (data, status) {
-                        console.log("Failed!", data, status);
-                        //$scope.data = data || "Request failed";
-                        $.pnotify({
-                            title: 'Oh No!',
-                            text: 'Something terrible happened while updating event.',
-                            type: 'error'
-                        });
-                    }
-                });
-            },
-            error: function (data, status) {
-                console.log("Failed!", data, status);
-                //$scope.data = data || "Request failed";
-                $.pnotify({
-                    title: 'Oh No!',
-                    text: 'Something terrible happened while updating the event.',
-                    type: 'error'
-                });
-            }
-        });
+        eventService.update($scope.event.event)
+            .success(function (data, status, headers, config) {
+                notificationService.success('Event updated', 'The event have been successfully updated');
+                saveTeams($scope.event.event.id, $scope.event.teams);
+            })
+            .error(function (data, status, headers, config) {
+                console.error(data, status, headers, config);
+                notificationService.error('Event not updated', 'Something terrible happened while updating event.');
+            });
     };
 
     /**
      *
      */
     $scope.load = function () {
-        console.log("load");
         if (angular.isDefined($scope.event.event)) {
             $scope.datepicker.date = new Date($scope.event.event.dtEvent);
             $scope.timepicker.time = moment($scope.event.event.dtEvent).format('HH:mm');
         }
 
-        $scope.statuses = Restangular.all('eventStatuses').getList();
-        $scope.places = Restangular.all('places').getList();
-        $scope.types = Restangular.all('typEvents').getList();
+        eventService.getEventStatuses()
+            .success(function (data, status, headers, config) {
+                $scope.statuses = data;
+            })
+            .error(function (data, status, headers, config) {
+                console.error(data, status, headers, config);
+            });
+        placeService.getPage(0)
+            .success(function (data, status, headers, config) {
+                $scope.places = data.items;
+            })
+            .error(function (data, status, headers, config) {
+                console.error(data, status, headers, config);
+            });
+        eventService.getTypEvents()
+            .success(function (data, status, headers, config) {
+                $scope.types = data;
+            })
+            .error(function (data, status, headers, config) {
+                console.error(data, status, headers, config);
+            });
     }
 });
