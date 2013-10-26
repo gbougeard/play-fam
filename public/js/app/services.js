@@ -35,9 +35,9 @@ services.factory("notificationService", function () {
         });
     };
     return {
-        notify: notify,
-        success: success,
-        error: error
+        notify:     notify,
+        success:    success,
+        error:      error
     };
 });
 
@@ -78,13 +78,13 @@ services.factory('eventService', function ($http) {
     };
 
     return {
-        getEvent: getEvent,
-        getAgenda: getAgenda,
-        getEventStatuses: getEventStatuses,
-        getTypEvents: getTypEvents,
-        update: update,
-        create: create,
-        saveTeams: saveTeams
+        getEvent:           getEvent,
+        getAgenda:          getAgenda,
+        getEventStatuses:   getEventStatuses,
+        getTypEvents:       getTypEvents,
+        update:             update,
+        create:             create,
+        saveTeams:          saveTeams
     };
 });
 
@@ -132,12 +132,12 @@ services.factory('matchService', function ($http) {
     };
 
     return {
-        getMatch: getMatch,
-        getMatchTeams: getMatchTeams,
-        getMatchPlayers: getMatchPlayers,
-        getGoals: getGoals,
-        getCards: getCards,
-        getSubs: getSubs
+        getMatch:           getMatch,
+        getMatchTeams:      getMatchTeams,
+        getMatchPlayers:    getMatchPlayers,
+        getGoals:           getGoals,
+        getCards:           getCards,
+        getSubs:            getSubs
     };
 });
 
@@ -173,19 +173,24 @@ services.factory('placeService', function ($http) {
         return $http.get(jsRoutes.controllers.Places.mapByZipcode(zipcode).url, ajax);
     };
 
+    var findByClub = function (id) {
+        return $http.get(jsRoutes.controllers.Clubs.findPlaces(id).url, ajax);
+    };
+
     var getMapData = function () {
         return $http.get(jsRoutes.controllers.Places.gmapData().url, ajax);
     };
 
 
     return {
-        getPlace: getPlace,
-        getPage: getPage,
-        updatePlace: updatePlace,
-        createPlace: createPlace,
-        findByCity: findByCity,
-        findByZipcode: findByZipcode,
-        getMapData: getMapData
+        getPlace:       getPlace,
+        getPage:        getPage,
+        updatePlace:    updatePlace,
+        createPlace:    createPlace,
+        findByCity:     findByCity,
+        findByZipcode:  findByZipcode,
+        findByClub:     findByClub,
+        getMapData:     getMapData
 
     };
 });

@@ -116,5 +116,17 @@ object PlaceClub{
   //      query.list.map(row => (row._1.toString, row._2))
   //  }
 
-  //  implicit val placeClubFormat = Json.format[PlaceClub]
+  implicit val pcFormat = Json.format[PlaceClub]
+
+  implicit val pcCompleteReads: Reads[(PlaceClub, Place, Club)] = (
+    (__ \ 'placeclub).read[PlaceClub] ~
+      (__ \ 'place).read[Place] ~
+      (__ \ 'club).read[Club]
+    ) tupled
+
+  implicit val mtCompleteWrites: Writes[(PlaceClub, Place, Club)] = (
+    (__ \ 'placeclub).write[PlaceClub] ~
+      (__ \ 'place).write[Place] ~
+      (__ \ 'club).write[Club]
+    ) tupled
 }

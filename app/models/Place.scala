@@ -23,7 +23,7 @@ case class Place(id: Option[Long] = None,
 
 object Place{
 
-  lazy val pageSize = 2500
+  lazy val pageSize = 10
 
   def findAll: Seq[Place] = DB.withSession {
     implicit session: Session => {

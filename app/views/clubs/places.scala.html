@@ -1,0 +1,41 @@
+@(message: String, club: Club, placeClubs: Seq[(PlaceClub, Place, Club)])(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
+
+@import tags.buttons._
+
+@main(message) {
+<div class="header">
+
+    <dl class="dl-horizontal">
+
+        <dt>Name</dt>
+        <dd>@club.name</dd>
+        <dt>Code FFF</dt>
+        <dd>@club.code</dd>
+        <dt>Colours</dt>
+        <dd>@club.colours.getOrElse("-")</dd>
+        <dt>Address</dt>
+        <dd>@club.address.getOrElse("-")</dd>
+        <dt>Zipcode</dt>
+        <dd>@club.zipcode.getOrElse("-")</dd>
+        <dt>City</dt>
+        <dd>@club.city.getOrElse("-")</dd>
+        <dt>Comments</dt>
+        <dd>@club.comments</dd>
+    </dl>
+
+    <fieldset>
+        <legend>Places</legend>
+        <ul>@placeClubs.map { case (placeClub, place, club) =>
+            <li>@place.name - @place.zipcode - @place.city</li>
+        }
+        </ul>
+    </fieldset>
+</div>
+
+<div class="form-actions">
+    @btnEdit(routes.Clubs.edit(club.id.getOrElse(0)))
+    @btnCancel(routes.Clubs.list())
+    @btnNew(routes.Clubs.create())
+</div>
+
+}

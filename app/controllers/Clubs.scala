@@ -189,4 +189,20 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
       Ok
   }
 
+  def findPlaces(id:Long) = Action {
+    implicit request =>
+      val club = Club.findById(id)
+      club match {
+        case None => NotFound
+        case Some(c) =>   {
+          val places = PlaceClub.findByClub(id)
+          render {
+            case Accepts.Html() =>  Ok(views.html.clubs.places("Places", c, places))
+            case Accepts.Json() => Ok(Json.toJson(places))
+          }
+
+        }
+      }
+  }
+
 }

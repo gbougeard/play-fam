@@ -65,28 +65,28 @@ object Events extends Controller with securesocial.core.SecureSocial {
       } getOrElse NotFound
   }
 
-  def edit(id: Long) = SecuredAction(WithRoles(Set(Coach))) {
+  def edit(id: Long) = Action { //SecuredAction(WithRoles(Set(Coach))) {
     implicit request =>
-      request.user match {
-        case user: FamUser => // do whatever you need with your user class
-          user.currentClubId.map {
-            idClub =>
+//      request.user match {
+//        case user: FamUser => // do whatever you need with your user class
+//          user.currentClubId.map {
+//            idClub =>
               val teams = EventTeam.findByEvent(id).map {
                 x => x._3.id.get
               }
               Event.findById(id).map {
                 case (event, typEvent, eventStatus) =>
-                  Ok(views.html.events.edit("Edit Event", Json.toJson(EventWithTeams(event, teams)).toString(), Json.toJson(Team.findByClub(idClub)).toString()))
+                  Ok(views.html.events.edit("Edit Event", 1, Json.toJson(EventWithTeams(event, teams)).toString(), Json.toJson(Team.findByClub(1)).toString()))
                 case _ =>
                   NotFound
 
               } getOrElse NotFound
-
-          } getOrElse Unauthorized //("You don't belong to any club")
-
-        case _ => // did not get a User instance, should not happen,log error/thow exception
-          Unauthorized("Not a valid user")
-      }
+//
+//          } getOrElse Unauthorized //("You don't belong to any club")
+//
+//        case _ => // did not get a User instance, should not happen,log error/thow exception
+//          Unauthorized("Not a valid user")
+//      }
 
   }
 
@@ -117,18 +117,18 @@ object Events extends Controller with securesocial.core.SecureSocial {
   /**
    * Display the 'new computer form'.
    */
-  def create = SecuredAction(WithRoles(Set(Coach))) {
+  def create = Action { //SecuredAction(WithRoles(Set(Coach))) {
     implicit request =>
-      request.user match {
-        case user: FamUser => // do whatever you need with your user class
-          user.currentClubId.map {
-            idClub =>
-              Ok(views.html.events.create("New Event", Json.toJson(Team.findByClub(idClub)).toString()))
-          } getOrElse Unauthorized("You don't belong to any club")
-
-        case _ => // did not get a User instance, should not happen,log error/thow exception
-          Unauthorized("Not a valid user")
-      }
+//      request.user match {
+//        case user: FamUser => // do whatever you need with your user class
+//          user.currentClubId.map {
+//            idClub =>
+              Ok(views.html.events.create("New Event", 1, Json.toJson(Team.findByClub(1)).toString()))
+//          } getOrElse Unauthorized("You don't belong to any club")
+//
+//        case _ => // did not get a User instance, should not happen,log error/thow exception
+//          Unauthorized("Not a valid user")
+//      }
 
   }
 

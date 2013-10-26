@@ -1,4 +1,4 @@
-@(message: String, teams: String)(implicit request: RequestHeader, session: play.api.mvc.Session)
+@(message: String, idClub:Long, teams: String)(implicit request: RequestHeader, session: play.api.mvc.Session)
 
     @import tags.buttons._
 
@@ -11,7 +11,7 @@
 
 
 @main(message, scripts) {
-    <div data-ng-controller="EventCtrl" ng-init="teams=@teams ; load();">
+    <div data-ng-controller="EventCtrl" ng-init="teams=@teams ; idClub=@idClub; load();">
         <form id="formEvent" class="form-horizontal" data-ng-submit="save()">
             <div class="control-group" ng-class="{error: formEvent.name.$invalid}">
                 <label class="control-label" for="eventName">Title</label>
@@ -59,7 +59,7 @@
                     @*<select class="span2" name="place" ng-model="selectedPlace" ng-options="value.id as value.name for (key, value) in places" data-style="btn-primary" bs-select></select>*@
                     <select ui-select2  class="span8" name="place" ng-model="selectedPlace" data-placeholder="Pick a place" >
                         <option value=""></option>
-                        <option ng-repeat="place in places" value="{{place.id}}">{{place.name}} - {{place.zipcode}} - {{place.city}}</option>
+                        <option ng-repeat="place in places" value="{{place.place.id}}">{{place.place.name}} - {{place.place.zipcode}} - {{place.place.city}}</option>
                     </select>
                 </div>
             </div>

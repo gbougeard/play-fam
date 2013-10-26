@@ -129,9 +129,9 @@ fam.controller('EventCtrl', function ($scope, notificationService, eventService,
             .error(function (data, status, headers, config) {
                 console.error(data, status, headers, config);
             });
-        placeService.getPage(0)
+        placeService.findByClub($scope.idClub)
             .success(function (data, status, headers, config) {
-                $scope.places = data.items;
+                $scope.places = data;
             })
             .error(function (data, status, headers, config) {
                 console.error(data, status, headers, config);
