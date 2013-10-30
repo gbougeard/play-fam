@@ -61,6 +61,7 @@ object ApplicationBuild extends Build {
     // Add your project dependencies here,
     jdbc,
     cache,
+    filters,
     slf4j,
     logbackClassic,
     mysql,
