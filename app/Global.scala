@@ -12,7 +12,7 @@ import play.api.mvc.Results._
 import com.kenshoo.play.metrics.MetricsFilter
 import play.Logger
 
-object Global  extends GlobalSettings {
+object Global  extends WithFilters(MetricsFilter){
 
   /** The application wide metrics registry. */
 

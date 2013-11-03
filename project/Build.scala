@@ -12,21 +12,22 @@ object Library {
   val akkaVersion = "2.2.0"
   val logbackVersion = "1.0.13"
   val slf4jVersion = "1.7.5"
-  val mysqlVersion = "5.1.25"
+  val mysqlVersion = "5.1.26"
   val jodaMapperVersion = "0.4.0"
   val playSlickVersion = "0.5.0.8"
   //  val metricsVersion                  = "3.0.0"
-  val secureSocialVersion = "master-SNAPSHOT"
-  val playMetricsVersion = "0.1.1"
+  val secureSocialVersion = "2.1.2"
+  val playMetricsVersion = "0.1.2"
+
   val webjarsVersion = "2.2.0"
   val wjAngularVersion = "1.1.5-1"
   val wjAngularUiVersion = "0.4.0-1"
   val wjAngularUiBootstrapVersion = "0.4.0"
   val wjAngularStrapVersion = "0.7.4"
-  val wjBootstrapVersion = "3.0.0"
+  val wjBootstrapVersion = "3.0.1"
   val wjPNotifyVersion = "1.2.0"
-  val wjRestangularVersion = "0.6.3"
-  val wjUnderscorejsVersion = "1.5.1"
+  val wjRestangularVersion = "1.1.3"
+  val wjUnderscorejsVersion = "1.5.2"
 
   // Libraries
   val akkaActor = "com.typesafe.akka" %% "akka-actor" % akkaVersion
@@ -54,7 +55,7 @@ object ApplicationBuild extends Build {
 
   import Library._
 
-  val appName = "fam"
+  val appName = "play-fam"
   val appVersion = "1.0-SNAPSHOT"
 
   val appDependencies = Seq(
@@ -101,10 +102,10 @@ object ApplicationBuild extends Build {
     , "org.webjars" % "famfamfam-flags" % "0.0"
     , "org.webjars" % "font-awesome" % "3.2.1"
     , "org.webjars" % "jquery" % "1.10.2-1"
-    , "org.webjars" % "jquery-ui" % "1.10.2-1"
+    , "org.webjars" % "jquery-ui" % "1.10.3"
     , "org.webjars" % "momentjs" % "2.3.1"
     , "org.webjars" % "tinymce-jquery" % "3.4.9"
-    , "org.webjars" % "select2" % "3.4.3"
+    , "org.webjars" % "select2" % "3.4.4"
     , "org.webjars" % "x-editable-bootstrap" % "1.4.6"
   )
 
@@ -122,7 +123,9 @@ object ApplicationBuild extends Build {
 
     scalaVersion := "2.10.2",
 
-    resolvers += Resolver.url("sbt-plugin-snapshots", new URL("http://repo.scala-sbt.org/scalasbt/sbt-plugin-snapshots/"))(Resolver.ivyStylePatterns)
+    resolvers += Resolver.url("sbt-plugin-releases", new URL("http://repo.scala-sbt.org/scalasbt/sbt-plugin-releases/"))(Resolver.ivyStylePatterns)
+
+//    resolvers += Resolver.url("sbt-plugin-snapshots", new URL("http://repo.scala-sbt.org/scalasbt/sbt-plugin-snapshots/"))(Resolver.ivyStylePatterns)
 
     // Add your own project settings here
     //  ).dependsOn(RootProject( uri("git://github.com/gbougeard/play-slick.git") ))
