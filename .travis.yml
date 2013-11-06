@@ -2,11 +2,10 @@ language: scala
 scala:
   - 2.10.2
 jdk:
-  - openjdk6
   - openjdk7
   - oraclejdk7
 env:
-  - PLAY_VERSION=2.2.0
+  - PLAY_VERSION=2.2.1
 
 before_script:
   - wget http://downloads.typesafe.com/play/${PLAY_VERSION}/play-${PLAY_VERSION}.zip
