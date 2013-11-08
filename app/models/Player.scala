@@ -10,6 +10,9 @@ import play.api.libs.functional.syntax._
 
 import play.api.Logger
 import database.Players
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Arbitrary._
+import scala.Some
 
 case class Player(id: Option[Long],
                   firstName: String,
@@ -131,4 +134,22 @@ object Player{
   }
 
   implicit val playerFormat = Json.format[Player]
+}
+
+trait PlayerGen {
+
+  lazy val genPlayer: Gen[Player] = for {
+    id <- arbitrary[Long]
+    if id > 0
+    firstname <- arbitrary[String]
+    if !firstname.isEmpty
+    lastname <- arbitrary[String]
+    if !lastname.isEmpty
+    email <- arbitrary[String]
+    if !email.isEmpty
+    userid <- arbitrary[Long]
+    if userid > 0
+  } yield Player(Some(id), firstname, lastname, email, Some(userid))
+
+  implicit lazy val arbPlayer: Arbitrary[Player] = Arbitrary(genPlayer)
 }
