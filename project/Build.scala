@@ -19,6 +19,8 @@ object Library {
   val secureSocialVersion = "2.1.2"
   val playMetricsVersion = "0.1.2"
 
+  val scalaCheckVersion = "1.10.0"
+
   val webjarsVersion = "2.2.0"
   val wjAngularVersion = "1.1.5-1"
   val wjAngularUiVersion = "0.4.0-1"
@@ -40,6 +42,7 @@ object Library {
   //  val metrics               = "nl.grons" % "metrics-scala_2.10" % metricsVersion
   val playMetrics = "com.kenshoo" %% "metrics-play" % playMetricsVersion
   val secureSocial = "securesocial" %% "securesocial" % secureSocialVersion
+  val scalaCheck = "org.scalacheck" %% "scalacheck" % scalaCheckVersion
   val webjars = "org.webjars" % "webjars-play_2.10" % webjarsVersion
   val wjAngular = "org.webjars" % "angularjs" % wjAngularVersion
   val wjAngularUi = "org.webjars" % "angular-ui" % wjAngularUiVersion
@@ -70,6 +73,7 @@ object ApplicationBuild extends Build {
     playSlick,
     playMetrics,
     secureSocial,
+    scalaCheck,
     webjars,
     wjAngular,
     wjAngularStrap,

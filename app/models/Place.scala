@@ -8,6 +8,9 @@ import play.api.db.slick.DB
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import database.Places
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Arbitrary._
+import scala.Some
 
 case class Place(id: Option[Long] = None,
                  name: String,
@@ -21,7 +24,7 @@ case class Place(id: Option[Long] = None,
                   )
 
 
-object Place{
+object Place {
 
   lazy val pageSize = 10
 
@@ -125,14 +128,14 @@ object Place{
     }
   }
 
-  def findDups(place: Place):Seq[Place] = DB.withSession {
+  def findDups(place: Place): Seq[Place] = DB.withSession {
     implicit session: Session => {
       play.Logger.debug(s"findDups for $place")
-      val q = for{ p <- Places
-        if p.id =!= place.id
-        if p.name === place.name
-        if p.zipcode === place.zipcode
-        if p.city === place.city
+      val q = for {p <- Places
+                   if p.id =!= place.id
+                   if p.name === place.name
+                   if p.zipcode === place.zipcode
+                   if p.city === place.city
 
       } yield p
       q.list
@@ -175,5 +178,29 @@ object Place{
   implicit val placeFormat = Json.format[Place]
 
 
+}
+
+trait PlaceGen {
+
+  lazy val genPlace: Gen[Place] = for {
+    id <- arbitrary[Long]
+    if id > 0
+    name <- arbitrary[String]
+    if !name.isEmpty
+    address <- arbitrary[String]
+    if !address.isEmpty
+    city <- arbitrary[String]
+    if !city.isEmpty
+    zipcode <- arbitrary[String]
+    if !zipcode.isEmpty
+    latitude <- arbitrary[Float]
+    longitude <- arbitrary[Float]
+    comments <- arbitrary[String]
+    if !comments.isEmpty
+    typFff <- arbitrary[String]
+    if !typFff.isEmpty
+  } yield Place(Some(id), name, address, city, zipcode, Some(latitude), Some(longitude), Some(comments), Some(typFff))
+
+  implicit lazy val arbPlace: Arbitrary[Place] = Arbitrary(genPlace)
 }
 
