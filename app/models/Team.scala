@@ -9,6 +9,9 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 import database.Teams
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Arbitrary._
+import scala.Some
 
 case class Team(id: Option[Long],
                 code: String,
@@ -125,4 +128,21 @@ object Team{
 
   implicit val teamFormat = Json.format[Team]
 
+}
+
+trait TeamGen {
+
+  lazy val genTeam: Gen[Team] = for {
+    id <- arbitrary[Long]
+    code <- arbitrary[String]
+    name <- arbitrary[String]
+    clubId <- arbitrary[Long]
+  } yield Team(
+      Some(id),
+      code,
+      name,
+      clubId
+    )
+
+  implicit lazy val arbTeam: Arbitrary[Team] = Arbitrary(genTeam)
 }
