@@ -7,8 +7,10 @@ import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
 import database.Clubs
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Arbitrary._
+import scala.Some
 
 case class Club(id: Option[Long] = None,
                 code: Int,
@@ -23,7 +25,7 @@ case class Club(id: Option[Long] = None,
                 comments: Option[String] = None
                  )
 
-object Club{
+object Club {
 
   lazy val pageSize = 10
 
@@ -33,7 +35,7 @@ object Club{
     }
   }
 
-  def count(filter:String): Int = DB.withSession {
+  def count(filter: String): Int = DB.withSession {
     implicit session: Session => {
       Query(Clubs.where(_.name like s"%$filter%").length).first
     }
@@ -47,7 +49,7 @@ object Club{
       implicit session: Session =>
         val clubs = (
           for {c <- Clubs
-               if  c.name like s"%$filter%"
+               if c.name like s"%$filter%"
           } yield c)
           .sortBy(club => orderField match {
           case 1 => club.code.asc
@@ -139,5 +141,36 @@ object Club{
 
   implicit val clubFormat = Json.format[Club]
 
+}
+
+trait ClubGen {
+
+  lazy val genClub: Gen[Club] = for {
+    id <- arbitrary[Long]
+    code <- arbitrary[Int]
+    name <- arbitrary[String]
+    countryId <- arbitrary[Long]
+    cityId <- arbitrary[Long]
+    colours <- arbitrary[String]
+    address <- arbitrary[String]
+    zipcode <- arbitrary[String]
+    city <- arbitrary[String]
+    orgaId <- arbitrary[Long]
+    comments <- arbitrary[String]
+  } yield Club(
+      Some(id),
+      code,
+      name,
+      Some(countryId),
+      Some(cityId),
+      Some(colours),
+      Some(address),
+      Some(zipcode),
+      Some(city),
+      Some(orgaId),
+      Some(comments)
+    )
+
+  implicit lazy val arbClub: Arbitrary[Club] = Arbitrary(genClub)
 }
 

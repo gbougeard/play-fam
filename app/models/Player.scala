@@ -140,16 +140,16 @@ trait PlayerGen {
 
   lazy val genPlayer: Gen[Player] = for {
     id <- arbitrary[Long]
-    if id > 0
     firstname <- arbitrary[String]
-    if !firstname.isEmpty
     lastname <- arbitrary[String]
-    if !lastname.isEmpty
     email <- arbitrary[String]
-    if !email.isEmpty
     userid <- arbitrary[Long]
-    if userid > 0
-  } yield Player(Some(id), firstname, lastname, email, Some(userid))
+  } yield Player(
+      Some(id),
+      firstname,
+      lastname,
+      email,
+      Some(userid))
 
   implicit lazy val arbPlayer: Arbitrary[Player] = Arbitrary(genPlayer)
 }

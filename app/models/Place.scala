@@ -184,22 +184,24 @@ trait PlaceGen {
 
   lazy val genPlace: Gen[Place] = for {
     id <- arbitrary[Long]
-    if id > 0
     name <- arbitrary[String]
-    if !name.isEmpty
     address <- arbitrary[String]
-    if !address.isEmpty
     city <- arbitrary[String]
-    if !city.isEmpty
     zipcode <- arbitrary[String]
-    if !zipcode.isEmpty
     latitude <- arbitrary[Float]
     longitude <- arbitrary[Float]
     comments <- arbitrary[String]
-    if !comments.isEmpty
     typFff <- arbitrary[String]
-    if !typFff.isEmpty
-  } yield Place(Some(id), name, address, city, zipcode, Some(latitude), Some(longitude), Some(comments), Some(typFff))
+  } yield Place(
+      Some(id),
+      name,
+      address,
+      city,
+      zipcode,
+      Some(latitude),
+      Some(longitude),
+      Some(comments),
+      Some(typFff))
 
   implicit lazy val arbPlace: Arbitrary[Place] = Arbitrary(genPlace)
 }
