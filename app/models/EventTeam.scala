@@ -18,7 +18,7 @@ case class EventTeam(eventId: Long,
                      teamId: Long)
 
 object EventTeam{
-  def findByEvent(id: Long): Seq[(EventTeam, Event, Team)] = DB.withSession {
+  def findByEvent(id: Long): Seq[(EventTeam, Event, Team)] =  {
     implicit session:Session => {
       val query = for {et <- EventTeams
                        if et.eventId === id
@@ -30,7 +30,7 @@ object EventTeam{
     }
   }
 
-  def findByTeam(id: Long): Seq[(EventTeam, Event, Team)] = DB.withSession {
+  def findByTeam(id: Long): Seq[(EventTeam, Event, Team)] =  {
     implicit session:Session => {
       val query = for {et <- EventTeams
                        if et.teamId === id
@@ -42,19 +42,19 @@ object EventTeam{
     }
   }
 
-  def insert(event: EventTeam):Int = DB.withSession {
+  def insert(event: EventTeam):Int =  {
     implicit session:Session => {
       Logger.debug("insert %s".format(event))
         EventTeams.insert(event)
     }
   }
-  def insert(events: Seq[EventTeam]):Try[Option[Int]] = DB.withSession {
+  def insert(events: Seq[EventTeam]):Try[Option[Int]] =  {
     implicit session:Session => {
       Try(EventTeams.insertAll(events:_*))
     }
   }
 
-  def deleteForEvent(id: Long) = DB.withSession {
+  def deleteForEvent(id: Long) =  {
     implicit session:Session => {
       Logger.debug("delete %s".format(id))
       EventTeams.where(_.eventId === id).delete
@@ -62,7 +62,7 @@ object EventTeam{
   }
 
 
-  //  def delete(eId: Long, tId : Long) = DB.withSession {
+  //  def delete(eId: Long, tId : Long) =  {
   //    implicit session:Session => {
   //      EventTeams.where(_.eventId === eId).and( _.teamId === tId).delete
   //    }

@@ -70,27 +70,27 @@ object User{
   }
 
   // Queries
-  def all: List[User] = DB.withSession {
+  def all: List[User] =  {
     implicit session:Session =>
       Logger.info("all")
       val q = for (user <- Users) yield user
       q.list
   }
 
-  def findById(pid: Long): Option[User] = DB.withSession {
+  def findById(pid: Long): Option[User] =  {
     implicit session:Session =>
       Logger.info("findById %s".format(pid))
       def byId = Users.createFinderBy(_.pid)
       byId(pid).firstOption
   }
 
-  //  def findByEmail(email: String): Option[User] = DB.withSession {
+  //  def findByEmail(email: String): Option[User] =  {
   //    implicit session:Session =>
   //      def byEmail = createFinderBy(_.email)
   //      byEmail(email).firstOption
   //  }
 
-  def findByUserId(u: IdentityId): Option[User] = DB.withSession {
+  def findByUserId(u: IdentityId): Option[User] =  {
     implicit session:Session =>
       Logger.info("findByUserId %s".format(u))
       val q = for {
@@ -101,7 +101,7 @@ object User{
       q.firstOption
   }
 
-  def findByEmailAndProvider(e: String, p: String): Option[User] = DB.withSession {
+  def findByEmailAndProvider(e: String, p: String): Option[User] =  {
     implicit session:Session =>
       Logger.info("findByEmailAndProvider %s %s".format(e, p))
       val q = for {
@@ -112,7 +112,7 @@ object User{
       q.firstOption
   }
 
-  def count: Int = DB.withSession {
+  def count: Int =  {
     implicit session:Session => {
       Query(Users.length).first
     }
@@ -122,7 +122,7 @@ object User{
     val pageSize = 10
     val offset = pageSize * page
 
-    DB.withSession {
+     {
       implicit session:Session => {
 
         val users = (
@@ -145,7 +145,7 @@ object User{
     }
   }
 
-  //  def options: Seq[(String, String)] = DB.withSession {
+  //  def options: Seq[(String, String)] =  {
   //    implicit session:Session =>
   //      val query = (for {
   //        item <- Users

@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.Team
+import models.{Category, Team}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +12,7 @@ import models.Team
  * To change this template use File | Settings | File Templates.
  */
 // define tables
-private[models] object Teams extends Table[Team]("fam_team") {
+  class Teams(tag:Tag) extends Table[Team](tag, "fam_team") {
 
   def id = column[Long]("id_team", O.PrimaryKey, O.AutoInc)
 
@@ -21,17 +22,9 @@ private[models] object Teams extends Table[Team]("fam_team") {
 
   def clubId = column[Long]("id_club")
 
-  def * = id.? ~ code ~ name ~ clubId <>(Team.apply _, Team.unapply _)
-
-  def autoInc = * returning id
+  def * = (id.? , code , name , clubId )
 
   // A reified foreign key relation that can be navigated to create a join
-  def club = foreignKey("CLUB_FK", clubId, Clubs)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-  val byClub = createFinderBy(_.clubId)
-
+  def club = foreignKey("CLUB_FK", clubId, TableQuery[Clubs])(_.id)
 
 }

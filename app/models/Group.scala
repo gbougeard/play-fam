@@ -14,13 +14,13 @@ case class Group(id: Option[Long],
 object Group{
   lazy val pageSize = 10
 
-  def findAll: Seq[Group] = DB.withSession {
+  def findAll: Seq[Group] =  {
     implicit session:Session => {
       (for (c <- Groups.sortBy(_.name)) yield c).list
     }
   }
 
-  def count: Int = DB.withSession {
+  def count: Int =  {
     implicit session:Session => {
       Query(Groups.length).first
     }
@@ -30,7 +30,7 @@ object Group{
 
     val offset = pageSize * page
 
-    DB.withSession {
+     {
       implicit session:Session =>
         val typCards = (
           for {c <- Groups
@@ -46,33 +46,33 @@ object Group{
     }
   }
 
-  def findById(id: Long): Option[Group] = DB.withSession {
+  def findById(id: Long): Option[Group] =  {
     implicit session:Session => {
       Groups.byId(id).firstOption
     }
   }
 
-  def findByName(name: String): Option[Group] = DB.withSession {
+  def findByName(name: String): Option[Group] =  {
     implicit session:Session => {
       Groups.byName(name).firstOption
     }
   }
 
 
-  def insert(typCard: Group): Long = DB.withSession {
+  def insert(typCard: Group): Long =  {
     implicit session:Session => {
       Groups.autoInc.insert(typCard)
     }
   }
 
-  def update(id: Long, typCard: Group) = DB.withSession {
+  def update(id: Long, typCard: Group) =  {
     implicit session:Session => {
       val typCard2update = typCard.copy(Some(id), typCard.name)
       Groups.where(_.id === id).update(typCard2update)
     }
   }
 
-  def delete(typCardId: Long) = DB.withSession {
+  def delete(typCardId: Long) =  {
     implicit session:Session => {
       Groups.where(_.id === typCardId).delete
     }
@@ -84,7 +84,7 @@ object Group{
   //  def options: Seq[(String, String)] = for {
   //    c <- findAll
   //  } yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] = DB.withSession {
+  def options: Seq[(String, String)] =  {
     implicit session:Session =>
       val query = (for {
         item <- Groups

@@ -28,20 +28,20 @@ object Place {
 
   lazy val pageSize = 10
 
-  def findAll: Seq[Place] = DB.withSession {
+  def findAll: Seq[Place] =  {
     implicit session: Session => {
       (for (c <- Places.sortBy(_.id)) yield c)
         .list
     }
   }
 
-  def count: Int = DB.withSession {
+  def count: Int =  {
     implicit session: Session => {
       Query(Places.length).first
     }
   }
 
-  def placesWithCoords: Seq[Place] = DB.withSession {
+  def placesWithCoords: Seq[Place] =  {
     implicit session: Session => {
       (for {c <- Places sortBy (_.zipcode)
             if (c.latitude isNotNull)
@@ -50,7 +50,7 @@ object Place {
     }
   }
 
-  def placesWithoutCoords: Seq[Place] = DB.withSession {
+  def placesWithoutCoords: Seq[Place] =  {
     implicit session: Session => {
       (for {c <- Places sortBy (_.zipcode)
             if (c.latitude isNotNull)
@@ -65,7 +65,7 @@ object Place {
 
     val offset = pageSize * page
 
-    DB.withSession {
+     {
       implicit session: Session => {
         val places = (
           for {c <- Places
@@ -92,43 +92,43 @@ object Place {
     }
   }
 
-  def findById(id: Long): Option[Place] = DB.withSession {
+  def findById(id: Long): Option[Place] =  {
     implicit session: Session => {
       Places.byId(id).firstOption
     }
   }
 
-  def findByName(name: String): Seq[Place] = DB.withSession {
+  def findByName(name: String): Seq[Place] =  {
     implicit session: Session => {
       Places.byName(name).list
     }
   }
 
-  def findByZipcode(zipcode: String): Seq[Place] = DB.withSession {
+  def findByZipcode(zipcode: String): Seq[Place] =  {
     implicit session: Session => {
       Places.byCode(zipcode).list
     }
   }
 
-  def findLikeZipcode(c: String): Seq[Place] = DB.withSession {
+  def findLikeZipcode(c: String): Seq[Place] =  {
     implicit session: Session => {
       Query(Places).where(_.zipcode like s"$c%").list
     }
   }
 
-  def findByCity(c: String): Seq[Place] = DB.withSession {
+  def findByCity(c: String): Seq[Place] =  {
     implicit session: Session => {
       Places.byCity(c).list
     }
   }
 
-  def findLikeCity(c: String): Seq[Place] = DB.withSession {
+  def findLikeCity(c: String): Seq[Place] =  {
     implicit session: Session => {
       Query(Places).where(_.city like s"$c%").list
     }
   }
 
-  def findDups(place: Place): Seq[Place] = DB.withSession {
+  def findDups(place: Place): Seq[Place] =  {
     implicit session: Session => {
       play.Logger.debug(s"findDups for $place")
       val q = for {p <- Places
@@ -142,20 +142,20 @@ object Place {
     }
   }
 
-  def insert(place: Place): Long = DB.withSession {
+  def insert(place: Place): Long =  {
     implicit session: Session => {
       Places.autoInc.insert(place)
     }
   }
 
-  def update(id: Long, place: Place) = DB.withSession {
+  def update(id: Long, place: Place) =  {
     implicit session: Session => {
       val place2update = place.copy(Some(id))
       Places.where(_.id === id).update(place2update)
     }
   }
 
-  def delete(placeId: Long) = DB.withSession {
+  def delete(placeId: Long) =  {
     implicit session: Session => {
       play.Logger.info(s"delete Place $placeId")
       Places.where(_.id === placeId).delete
@@ -166,7 +166,7 @@ object Place {
    * Construct the Map[String,String] needed to fill a select options set.
    */
   //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] = DB.withSession {
+  def options: Seq[(String, String)] =  {
     implicit session: Session =>
       val query = (for {
         item <- Places

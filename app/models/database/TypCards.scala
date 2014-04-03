@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.TypCard
+import models.{Category, TypCard}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +12,7 @@ import models.TypCard
  * To change this template use File | Settings | File Templates.
  */
 // define tables
-private[models] object TypCards extends Table[TypCard]("fam_typ_card") {
+  class TypCards(tag:Tag) extends Table[TypCard](tag, "fam_typ_card") {
 
   def id = column[Long]("id_typ_card", O.PrimaryKey, O.AutoInc)
 
@@ -19,16 +20,9 @@ private[models] object TypCards extends Table[TypCard]("fam_typ_card") {
 
   def code = column[String]("cod_typ_card")
 
-  def * = id.? ~ code ~ name <>(TypCard.apply _, TypCard.unapply _)
-
-  def autoInc = * returning id
+  def * = (id.? , code , name )
 
   // A reified foreign key relation that can be navigated to create a join
   //  def typMatch = foreignKey("TYP_MATCH_FK", typMatchId, TypMatches)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-
 
 }

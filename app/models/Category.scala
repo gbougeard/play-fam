@@ -13,30 +13,24 @@ case class Category(id: Option[Long],
                           name: String)
 
 
-object Category{
+object Categories extends DAO{
   
   lazy val pageSize = 10
 
-  def findAll: Seq[Category] = DB.withSession {
-    implicit session:Session => {
-      (for (c <- Categories.sortBy(_.name)) yield c).list
-    }
+  def findAll(implicit session: Session): Seq[Category] =  {
+      (for (c <- categories.sortBy(_.name)) yield c).list
   }
 
-  def count: Int = DB.withSession {
-    implicit session:Session => {
-      Query(Categories.length).first
-    }
+  def count(implicit session: Session): Int =  {
+      categories.length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[Category] = {
+  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[Category] = {
 
     val offset = pageSize * page
 
-    DB.withSession {
-      implicit session:Session =>
         val categorys = (
-          for {c <- Categories
+          for {c <- categories
             .sortBy(category => orderField match {
             case 1 => category.code.asc
             case -1 => category.code.desc
@@ -48,44 +42,31 @@ object Category{
           } yield c).list
 
         Page(categorys, page, offset, count)
-    }
   }
 
-  def findById(id: Long): Option[Category] = DB.withSession {
-    implicit session:Session => {
-      Categories.byId(id).firstOption
-    }
+  def findById(id: Long)(implicit session: Session): Option[Category] =  {
+      categories.where(_.id === id).firstOption
   }
 
-  def findByName(name: String): Option[Category] = DB.withSession {
-    implicit session:Session => {
-      Categories.byName(name).firstOption
-    }
+  def findByName(name: String)(implicit session: Session): Option[Category] =  {
+      categories.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String): Option[Category] = DB.withSession {
-    implicit session:Session => {
-      Categories.byCode(code).firstOption
-    }
+  def findByCode(code: String)(implicit session: Session): Option[Category] =  {
+      categories.where(_.code === code).firstOption
   }
 
-  def insert(category: Category): Long = DB.withSession {
-    implicit session:Session => {
-      Categories.autoInc.insert(category)
-    }
+  def insert(category: Category)(implicit session: Session): Long =  {
+      categories.insert(category)
   }
 
-  def update(id: Long, category: Category) = DB.withSession {
-    implicit session:Session => {
+  def update(id: Long, category: Category)(implicit session: Session) =  {
       val category2update = category.copy(Some(id), category.code, category.name)
-      Categories.where(_.id === id).update(category2update)
-    }
+      categories.where(_.id === id).update(category2update)
   }
 
-  def delete(categoryId: Long) = DB.withSession {
-    implicit session:Session => {
-      Categories.where(_.id === categoryId).delete
-    }
+  def delete(categoryId: Long)(implicit session: Session) =  {
+      categories.where(_.id === categoryId).delete
   }
 
   /**
@@ -94,10 +75,9 @@ object Category{
 //  def options: Seq[(String, String)] = for {
 //    c <- findAll
 //  } yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] = DB.withSession {
-    implicit session:Session =>
+  def options(implicit session: Session): Seq[(String, String)] =  {
       val query = (for {
-        item <- Categories
+        item <- categories
       } yield (item.id, item.name)
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))

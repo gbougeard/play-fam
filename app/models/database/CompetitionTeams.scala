@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.CompetitionTeam
+import models.{Category, CompetitionTeam}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,7 +13,7 @@ import models.CompetitionTeam
  */
 
 // define tables
-private[models] object CompetitionTeams extends Table[CompetitionTeam]("fam_competition_team") {
+  class CompetitionTeams(tag:Tag) extends Table[CompetitionTeam](tag, "fam_competition_team") {
 
   def id = column[Long]("id_competition_team", O.PrimaryKey, O.AutoInc)
 
@@ -20,14 +21,13 @@ private[models] object CompetitionTeams extends Table[CompetitionTeam]("fam_comp
 
   def teamId = column[Long]("id_team")
 
-  def * = id.? ~ competitionId ~ teamId <>(CompetitionTeam.apply _, CompetitionTeam.unapply _)
+  def * = (id.? , competitionId , teamId )
 
-  def autoInc = * returning id
 
   // A reified foreign key relation that can be navigated to create a join
-  def competition = foreignKey("COMPETITION_FK", competitionId, SeasonCompetitions)(_.id)
+  def competition = foreignKey("COMPETITION_FK", competitionId, TableQuery[SeasonCompetitions])(_.id)
 
-  def team = foreignKey("TEAM_FK", teamId, Teams)(_.id)
+  def team = foreignKey("TEAM_FK", teamId, TableQuery[Teams])(_.id)
 
 
 }

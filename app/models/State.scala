@@ -21,13 +21,13 @@ case class State(id: Option[Long],
 object State{
   lazy val pageSize = 10
 
-  def findAll: Seq[State] = DB.withSession {
+  def findAll: Seq[State] =  {
     implicit session:Session => {
       (for (c <- States.sortBy(_.name)) yield c).list
     }
   }
 
-  def count: Int = DB.withSession {
+  def count: Int =  {
     implicit session:Session => {
       Query(States.length).first
     }
@@ -37,7 +37,7 @@ object State{
 
     val offset = pageSize * page
 
-    DB.withSession {
+     {
       implicit session:Session => {
 
         val states = (
@@ -61,37 +61,37 @@ object State{
     }
   }
 
-  def findById(id: Long): Option[State] = DB.withSession {
+  def findById(id: Long): Option[State] =  {
     implicit session:Session => {
       States.byId(id).firstOption
     }
   }
 
-  def findByName(name: String): Option[State] = DB.withSession {
+  def findByName(name: String): Option[State] =  {
     implicit session:Session => {
       States.byName(name).firstOption
     }
   }
 
-  def findByCode(code: String): Option[State] = DB.withSession {
+  def findByCode(code: String): Option[State] =  {
     implicit session:Session => {
       States.byCode(code).firstOption
     }
   }
 
-  def insert(state: State): Long = DB.withSession {
+  def insert(state: State): Long =  {
     implicit session:Session => {
       States.autoInc.insert(state)
     }
   }
 
-  def update(id: Long, state: State) = DB.withSession {
+  def update(id: Long, state: State) =  {
     implicit session:Session => {
       States.where(_.id === state.id).update(state.copy(Some(id)))
     }
   }
 
-  def delete(stateId: Long) = DB.withSession {
+  def delete(stateId: Long) =  {
     implicit session:Session => {
       States.where(_.id === stateId).delete
     }
@@ -101,7 +101,7 @@ object State{
    * Construct the Map[String,String] needed to fill a select options set.
    */
 //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] = DB.withSession {
+  def options: Seq[(String, String)] =  {
     implicit session:Session =>
       val query = (for {
         item <- States

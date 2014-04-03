@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.MatchTeam
+import models.{Category, MatchTeam}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +12,7 @@ import models.MatchTeam
  * To change this template use File | Settings | File Templates.
  */
 // define tables
-private[models] object MatchTeams extends Table[MatchTeam]("fam_match_team") {
+  class MatchTeams(tag:Tag) extends Table[MatchTeam](tag, "fam_match_team") {
 
   def matchId = column[Long]("id_match")
 
@@ -37,24 +38,24 @@ private[models] object MatchTeams extends Table[MatchTeam]("fam_match_team") {
 
   def draft = column[Boolean]("draft")
 
-  def * = matchId.? ~
-    teamId.? ~
-    formationId.? ~
-    home ~
-    defeat.? ~
-    draw.? ~
-    victory.? ~
-    goalScored.? ~
-    goalShipped.? ~
-    points.? ~
-    resume.? ~
-    draft.? <>(MatchTeam.apply _, MatchTeam.unapply _)
+  def * = (matchId.? ,
+    teamId.? ,
+    formationId.? ,
+    home ,
+    defeat.? ,
+    draw.? ,
+    victory.? ,
+    goalScored.? ,
+    goalShipped.? ,
+    points.? ,
+    resume.? ,
+    draft.? )
 
 
   // A reified foreign key relation that can be navigated to create a join
-  def matche = foreignKey("MATCH_FK", matchId, Matches)(_.id)
+  def matche = foreignKey("MATCH_FK", matchId, TableQuery[Matches])(_.id)
 
-  def team = foreignKey("TEAM_FK", teamId, Teams)(_.id)
+  def team = foreignKey("TEAM_FK", teamId, TableQuery[Teams])(_.id)
 
   //  def formation = foreignKey("FORMATION_FK", formationId, Events)(_.id)
 

@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.Match
+import models.{Category, Match}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +12,7 @@ import models.Match
  * To change this template use File | Settings | File Templates.
  */
 // define tables
-private[models] object Matches extends Table[Match]("fam_match") {
+  class Matches(tag:Tag) extends Table[Match](tag, "fam_match") {
 
   def id = column[Long]("idMatch", O.PrimaryKey, O.AutoInc)
 
@@ -21,19 +22,14 @@ private[models] object Matches extends Table[Match]("fam_match") {
 
   def eventId = column[Long]("id_event")
 
-  def * = id.? ~ fixtureId.? ~ competitionId ~ eventId.? <>(Match.apply _, Match.unapply _)
-
-  def autoInc = * returning id
+  def * = (id.? , fixtureId.? , competitionId , eventId.? )
 
 
   // A reified foreign key relation that can be navigated to create a join
-  def fixture = foreignKey("FIXTURE_FK", fixtureId, Fixtures)(_.id)
+  def fixture = foreignKey("FIXTURE_FK", fixtureId, TableQuery[Fixtures])(_.id)
 
-  def competition = foreignKey("COMPETITION_FK", competitionId, SeasonCompetitions)(_.id)
+  def competition = foreignKey("COMPETITION_FK", competitionId, TableQuery[SeasonCompetitions])(_.id)
 
-  def event = foreignKey("EVENT_FK", eventId, Events)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byEventId = createFinderBy(_.eventId)
+  def event = foreignKey("EVENT_FK", eventId, TableQuery[Events])(_.id)
 
 }

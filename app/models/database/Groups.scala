@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.Group
+import models.{Category, Group}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,22 +13,17 @@ import models.Group
  */
 
 // define tables
-private[models] object Groups extends Table[Group]("fam_group") {
+  class Groups(tag:Tag) extends Table[Group](tag, "fam_group") {
 
   def id = column[Long]("id_group", O.PrimaryKey, O.AutoInc)
 
   def name = column[String]("lib_group")
 
 
-  def * = id.? ~ name <>(Group.apply _, Group.unapply _)
-
-  def autoInc = * returning id
+  def * = (id.? , name)
 
   // A reified foreign key relation that can be navigated to create a join
   //  def typMatch = foreignKey("TYP_MATCH_FK", typMatchId, TypMatches)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
 
 
 }

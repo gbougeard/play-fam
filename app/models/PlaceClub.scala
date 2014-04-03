@@ -24,7 +24,7 @@ object PlaceClub{
   //
   //    val offset = pageSize * page
   //
-  //    DB.withSession {
+  //     {
   //      implicit session:Session => {
   //        val places = (
   //          for {t <- Places
@@ -46,7 +46,7 @@ object PlaceClub{
   //    }
   //  }
 
-  def findByClub(id: Long): Seq[(PlaceClub, Place, Club)] = DB.withSession {
+  def findByClub(id: Long): Seq[(PlaceClub, Place, Club)] =  {
     implicit session: Session => {
       val query = for {ps <- PlaceClubs
                        if ps.clubId === id
@@ -58,7 +58,7 @@ object PlaceClub{
     }
   }
 
-  def findByPlace(id: Long): Seq[(PlaceClub, Place, Club)] = DB.withSession {
+  def findByPlace(id: Long): Seq[(PlaceClub, Place, Club)] =  {
     implicit session: Session => {
       val query = for {ps <- PlaceClubs
                        if ps.placeId === id
@@ -70,21 +70,21 @@ object PlaceClub{
     }
   }
 
-  def insert(placeClub: PlaceClub): Long = DB.withSession {
+  def insert(placeClub: PlaceClub): Long =  {
     implicit session: Session => {
       play.Logger.debug(s"insert $placeClub")
       PlaceClubs.insert(placeClub)
     }
   }
 
-  def insert(pcLst: Seq[PlaceClub]):Try[Option[Int]] = DB.withSession {
+  def insert(pcLst: Seq[PlaceClub]):Try[Option[Int]] =  {
     implicit session:Session => {
       Try(PlaceClubs.insertAll(pcLst:_*))
     }
   }
 
   //
-  //    def update(idPlace: Long,idClub: Long, place: PlaceClub) = DB.withSession {
+  //    def update(idPlace: Long,idClub: Long, place: PlaceClub) =  {
   //      implicit session:Session => {
   //        val place2update = place.copy(Some(id))
   //        Logger.info("playe2update " + place2update)
@@ -92,7 +92,7 @@ object PlaceClub{
   //      }
   //    }
 
-  def delete(idPlace: Long, idClub: Long) = DB.withSession {
+  def delete(idPlace: Long, idClub: Long) =  {
     implicit session: Session => {
       val q = for {ps <- PlaceClubs
                    if ps.placeId === idPlace
@@ -107,7 +107,7 @@ object PlaceClub{
    */
   //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.firstName + " " + c.lastName)
 
-  //  def options: Seq[(String, String)] = DB.withSession {
+  //  def options: Seq[(String, String)] =  {
   //    implicit session:Session =>
   //      val query = (for {
   //        item <- Places

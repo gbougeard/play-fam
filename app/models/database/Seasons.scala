@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.Season
+import models.{Category, Season}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +12,7 @@ import models.Season
  * To change this template use File | Settings | File Templates.
  */
 // define tables
-private[models] object Seasons extends Table[Season]("fam_season") {
+  class Seasons(tag:Tag) extends Table[Season](tag, "fam_season") {
 
   def id = column[Long]("id_season", O.PrimaryKey, O.AutoInc)
 
@@ -19,13 +20,6 @@ private[models] object Seasons extends Table[Season]("fam_season") {
 
   def currentSeason = column[Boolean]("current_season")
 
-  def * = id.? ~ currentSeason ~ name <>(Season.apply _, Season.unapply _)
-
-  def autoInc = * returning id
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCurrentSeason = createFinderBy(_.currentSeason)
-
+  def * = (id.? , currentSeason , name )
 
 }

@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.SeasonCompetition
+import models.{Category, SeasonCompetition}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +12,7 @@ import models.SeasonCompetition
  * To change this template use File | Settings | File Templates.
  */
 // define tables
-private[models] object SeasonCompetitions extends Table[SeasonCompetition]("fam_season_competition") {
+  class SeasonCompetitions(tag:Tag) extends Table[SeasonCompetition](tag, "fam_season_competition") {
 
   def id = column[Long]("id_season_competition", O.PrimaryKey, O.AutoInc)
 
@@ -23,24 +24,16 @@ private[models] object SeasonCompetitions extends Table[SeasonCompetition]("fam_
 
   def typCompetitionId = column[Long]("id_typ_competition")
 
-  def * = id.? ~ categoryId ~ scaleId ~ seasonId ~ typCompetitionId <>(SeasonCompetition.apply _, SeasonCompetition.unapply _)
+  def * = (id.? , categoryId , scaleId , seasonId , typCompetitionId )
 
-  def autoInc = * returning id
 
   // A reified foreign key relation that can be navigated to create a join
-  def category = foreignKey("CATEGORY_FK", categoryId, Categories)(_.id)
+  def category = foreignKey("CATEGORY_FK", categoryId, TableQuery[Categories])(_.id)
 
-  def scale = foreignKey("SCALE_FK", scaleId, Scales)(_.id)
+  def scale = foreignKey("SCALE_FK", scaleId, TableQuery[Scales])(_.id)
 
-  def season = foreignKey("SEASON_FK", seasonId, Seasons)(_.id)
+  def season = foreignKey("SEASON_FK", seasonId, TableQuery[Seasons])(_.id)
 
-  def typCompetition = foreignKey("TYP_COMPETITION_FK", typCompetitionId, TypCompetitions)(_.id)
-
-
-  val byId = createFinderBy(_.id)
-  val bySeason = createFinderBy(_.seasonId)
-  val byTypCompetition = createFinderBy(_.typCompetitionId)
-  val byCategory = createFinderBy(_.categoryId)
-
+  def typCompetition = foreignKey("TYP_COMPETITION_FK", typCompetitionId, TableQuery[TypCompetitions])(_.id)
 
 }

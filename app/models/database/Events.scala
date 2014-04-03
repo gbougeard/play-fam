@@ -5,7 +5,8 @@ import org.joda.time.DateTime
 
 import com.github.tototoshi.slick.JodaSupport._
 
-import models.Event
+import models.{Category, Event}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,7 +16,7 @@ import models.Event
  * To change this template use File | Settings | File Templates.
  */
 // define tables
-private[models] object Events extends Table[Event]("fam_event") {
+  class Events(tag:Tag) extends Table[Event](tag, "fam_event") {
 
   def id = column[Long]("id_event", O.PrimaryKey, O.AutoInc)
 
@@ -33,19 +34,15 @@ private[models] object Events extends Table[Event]("fam_event") {
 
   def comments = column[String]("comments")
 
-  def * = id.? ~ dtEvent ~ duration ~ name ~ typEventId ~ placeId.? ~ eventStatusId ~ comments.? <>(Event.apply _ , Event.unapply _)
+  def * = (id.? , dtEvent , duration , name , typEventId , placeId.? , eventStatusId , comments.? )
 
-  def autoInc =  * returning id
 
   // A reified foreign key relation that can be navigated to create a join
-  def typEvent = foreignKey("TYP_EVENT_FK", typEventId, TypEvents)(_.id)
+  def typEvent = foreignKey("TYP_EVENT_FK", typEventId, TableQuery[TypEvents])(_.id)
 
-  def place = foreignKey("PLACE_FK", placeId, Places)(_.id)
+  def place = foreignKey("PLACE_FK", placeId, TableQuery[Places])(_.id)
 
-  def eventStatus = foreignKey("EVENT_STATUS_FK", eventStatusId, EventStatuses)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
+  def eventStatus = foreignKey("EVENT_STATUS_FK", eventStatusId, TableQuery[EventStatuses])(_.id)
 
 
 }

@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.PlayerSeason
+import models.{Category, PlayerSeason}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +12,7 @@ import models.PlayerSeason
  * To change this template use File | Settings | File Templates.
  */
 // define tables
-private[models] object PlayerSeasons extends Table[PlayerSeason]("fam_player_season") {
+  class PlayerSeasons(tag:Tag) extends Table[PlayerSeason](tag, "fam_player_season") {
 
   def playerId = column[Long]("id_player")
 
@@ -55,16 +56,16 @@ private[models] object PlayerSeasons extends Table[PlayerSeason]("fam_player_sea
 
   def statTimePlayed = column[Long]("time_played")
 
-  def * = playerId ~ seasonId ~ teamId.? ~ clubId ~ cap_att.? ~ cap_def.? ~ cap_phy.? ~ cap_pui.? ~ cap_tec.? ~ cap_vit.? ~ height.? ~ weight.? ~ statAvgAssistPerMatch.? ~ statAvgGoalPerMatch.? ~ statAvgNote.? ~ statNbAssist.? ~ statNbGoal.? ~ statNbMatch.? ~ statNbSubstitue.? ~ statNbWorkout.? ~ statTimePlayed.? <>(PlayerSeason.apply _, PlayerSeason.unapply _)
+  def * = (playerId , seasonId , teamId.? , clubId , cap_att.? , cap_def.? , cap_phy.? , cap_pui.? , cap_tec.? , cap_vit.? , height.? , weight.? , statAvgAssistPerMatch.? , statAvgGoalPerMatch.? , statAvgNote.? , statNbAssist.? , statNbGoal.? , statNbMatch.? , statNbSubstitue.? , statNbWorkout.? , statTimePlayed.? )
 
   // A reified foreign key relation that can be navigated to create a join
-  def player = foreignKey("PLAYER_FK", playerId, Players)(_.id)
+  def player = foreignKey("PLAYER_FK", playerId, TableQuery[Players])(_.id)
 
-  def season = foreignKey("SEASON_FK", seasonId, Seasons)(_.id)
+  def season = foreignKey("SEASON_FK", seasonId, TableQuery[Seasons])(_.id)
 
-  def team = foreignKey("TEAM_FK", teamId, Teams)(_.id)
+  def team = foreignKey("TEAM_FK", teamId, TableQuery[Teams])(_.id)
 
-  def club = foreignKey("CLUB_FK", clubId, Clubs)(_.id)
+  def club = foreignKey("CLUB_FK", clubId, TableQuery[Clubs])(_.id)
 
 
 }

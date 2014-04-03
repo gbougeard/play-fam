@@ -24,7 +24,7 @@ case class Goal(id: Option[Long],
 object Goal{
   lazy val pageSize = 10
 
-  def findByMatchAndTeam(idMatch: Long, idTeam: Long): Seq[(Goal, Option[Player])] = DB.withSession {
+  def findByMatchAndTeam(idMatch: Long, idTeam: Long): Seq[(Goal, Option[Player])] =  {
     implicit session:Session => {
       val query = for {(g, s) <- Goals leftJoin Players on (_.strikerId === _.id)
                        if g.matchId === idMatch
@@ -35,20 +35,20 @@ object Goal{
     }
   }
 
-  def insert(goal: Goal): Long = DB.withSession {
+  def insert(goal: Goal): Long =  {
     implicit session:Session => {
       Goals.autoInc.insert(goal)
     }
   }
 
-  def update(id: Long, goal: Goal) = DB.withSession {
+  def update(id: Long, goal: Goal) =  {
     implicit session:Session => {
       val goal2update = goal.copy(Some(id))
       Goals.where(_.id === id).update(goal2update)
     }
   }
 
-  def delete(goalId: Long) = DB.withSession {
+  def delete(goalId: Long) =  {
     implicit session:Session => {
       Goals.where(_.id === goalId).delete
     }

@@ -2,7 +2,8 @@ package models.database
 
 import play.api.db.slick.Config.driver.simple._
 import securesocial.core.AuthenticationMethod
-import models.User
+import models.{Category, User}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +12,7 @@ import models.User
  * Time: 19:54
  * To change this template use File | Settings | File Templates.
  */
-private[models] object Users extends Table[User]("fam_user") {
+  class Users(tag:Tag) extends Table[User](tag, "fam_user") {
 
   // Conversions for AuthenticationMethod
   implicit def string2AuthenticationMethod: TypeMapper[AuthenticationMethod] = MappedTypeMapper.base[AuthenticationMethod, String](
@@ -36,7 +37,7 @@ private[models] object Users extends Table[User]("fam_user") {
   //  def oAuth1Info = {
   //    def token = column[String]("token")
   //    def secret = column[String]("secret")
-  //    token ~ secret <> (OAuth1Info.apply _, OAuth1Info.unapply _)
+  //    token , secret <> (OAuth1Info.apply _, OAuth1Info.unapply _)
   //  }
 
   //  def oAuth2Info = {
@@ -44,7 +45,7 @@ private[models] object Users extends Table[User]("fam_user") {
   //    def tokenType = column[Option[String]]("tokenType")
   //    def expiresIn = column[Option[Int]]("expiresIn")
   //    def refreshToken = column[Option[String]]("refreshToken")
-  //    accessToken ~ tokenType ~ expiresIn ~ refreshToken <> (OAuth2Info.apply _, OAuth2Info.unapply _)
+  //    accessToken , tokenType , expiresIn , refreshToken <> (OAuth2Info.apply _, OAuth2Info.unapply _)
   //  }
 
   //    def passwordInfo = {
@@ -58,14 +59,13 @@ private[models] object Users extends Table[User]("fam_user") {
 
   def avatarUrl = column[String]("avatarUrl")
 
-  //      def apply = hasher ~ password ~ salt.? <> (PasswordInfo.apply _, PasswordInfo.unapply _)
+  //      def apply = hasher , password , salt.? <> (PasswordInfo.apply _, PasswordInfo.unapply _)
   //    }
 
   // Projections
-  //  def * =  pid.? ~ userId ~ providerId ~ email.? ~ firstName ~ lastName ~  authMethod ~ passwordInfo.? <>(User.apply _, User.unapply _)
-  def * = pid.? ~ userId ~ providerId ~ email.? ~ firstName.? ~ lastName.? ~ authMethod ~ hasher.? ~ password.? ~ salt.? ~ currentClubId.? ~ avatarUrl.? <>(User.apply _, User.unapply _)
+  //  def * =  pid.? , userId , providerId , email.? , firstName , lastName ,  authMethod , passwordInfo.? <>(User.apply _, User.unapply _)
+  def * = (pid.? , userId , providerId , email.? , firstName.? , lastName.? , authMethod , hasher.? , password.? , salt.? , currentClubId.? , avatarUrl.? )
 
-  def autoInc = * returning pid
 
 
 }

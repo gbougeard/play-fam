@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.Role
+import models.{Category, Role}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,18 +12,18 @@ import models.Role
  * To change this template use File | Settings | File Templates.
  */
 // define tables
-private[models] object Roles extends Table[Role]("fam_user_group") {
+  class Roles(tag:Tag) extends Table[Role](tag, "fam_user_group") {
 
   def userId = column[Long]("id_user")
 
   def groupId = column[Long]("id_group")
 
 
-  def * = userId ~ groupId <>(Role.apply _, Role.unapply _)
+  def * = (userId , groupId )
 
   // A reified foreign key relation that can be navigated to create a join
-  def user = foreignKey("USER_FK", userId, Users)(_.pid)
+  def user = foreignKey("USER_FK", userId, TableQuery[Users])(_.pid)
 
-  def group = foreignKey("GROUP_FK", groupId, Groups)(_.id)
+  def group = foreignKey("GROUP_FK", groupId, TableQuery[Groups])(_.id)
 
 }

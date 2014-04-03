@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.State
+import models.{Category, State}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +12,7 @@ import models.State
  * To change this template use File | Settings | File Templates.
  */
 // define tables
-private[models] object States extends Table[State]("fam_state") {
+  class States(tag:Tag) extends Table[State](tag, "fam_state") {
 
   def id = column[Long]("id_state", O.PrimaryKey, O.AutoInc)
 
@@ -25,19 +26,10 @@ private[models] object States extends Table[State]("fam_state") {
 
   def countryId = column[Long]("id_country")
 
-  def * = id.? ~ code ~ name ~ upper ~ lower ~ countryId <>(State.apply _, State.unapply _)
+  def * = (id.? , code , name , upper , lower , countryId )
 
-  def autoInc = * returning id
 
   // A reified foreign key relation that can be navigated to create a join
-  def country = foreignKey("COUNTRY_FK", countryId, Countries)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-  val byUpper = createFinderBy(_.upper)
-  val byLower = createFinderBy(_.lower)
-  val byCountry = createFinderBy(_.countryId)
-
+  def country = foreignKey("COUNTRY_FK", countryId, TableQuery[Countries])(_.id)
 
 }

@@ -24,7 +24,7 @@ case class Substitution(id: Option[Long],
 object Substitution{
   lazy val pageSize = 10
 
-  def findByMatchAndTeam(idMatch: Long, idTeam: Long): Seq[(Substitution, Match, Team, Player, Player)] = DB.withSession {
+  def findByMatchAndTeam(idMatch: Long, idTeam: Long): Seq[(Substitution, Match, Team, Player, Player)] =  {
     implicit session:Session => {
       val query = for {mp <- Substitutions
                        if mp.matchId === idMatch
@@ -39,13 +39,13 @@ object Substitution{
     }
   }
 
-  def insert(substitution: Substitution): Long = DB.withSession {
+  def insert(substitution: Substitution): Long =  {
     implicit session:Session => {
       Substitutions.insert(substitution)
     }
   }
 
-  def update(id: Long, substitution: Substitution) = DB.withSession {
+  def update(id: Long, substitution: Substitution) =  {
     implicit session:Session => {
       val substitution2update = substitution.copy(Some(id))
       Logger.info("playe2update " + substitution2update)
@@ -53,7 +53,7 @@ object Substitution{
     }
   }
 
-  def delete(id: Long) = DB.withSession {
+  def delete(id: Long) =  {
     implicit session:Session => {
       Substitutions.where(_.id === id).delete
     }

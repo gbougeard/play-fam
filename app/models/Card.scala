@@ -24,13 +24,12 @@ case class Card(id: Option[Long],
                         typCardId: Long,
                         time: Option[Long])
 
-object Card{
+object Card extends DAO{
 
   lazy val pageSize = 10
 
-  def findByMatchAndTeam(idMatch: Long, idTeam: Long): Seq[(Card, Match, Team, Player, TypCard)] = DB.withSession {
-    implicit session:Session => {
-      val query = for {mp <- Cards
+  def findByMatchAndTeam(idMatch: Long, idTeam: Long)(implicit session: Session): Seq[(Card, Match, Team, Player, TypCard)] = {
+      val query = for {mp <- cards
                        if mp.matchId === idMatch
                        if mp.teamId === idTeam
                        m <- mp.matche
@@ -40,27 +39,20 @@ object Card{
 
       } yield (mp, m, t, p, tc)
       query.list.sortBy(_._1.time)
-    }
   }
 
-  def insert(card: Card): Long = DB.withSession {
-    implicit session:Session => {
-      Cards.insert(card)
-    }
+  def insert(card: Card)(implicit session: Session): Long = {
+      cards.insert(card)
   }
 
-  def update(id: Long, card: Card) = DB.withSession {
-    implicit session:Session => {
+  def update(id: Long, card: Card)(implicit session: Session) = {
       val card2update = card.copy(Some(id))
 //      Logger.info("playe2update " + card2update)
-      Cards.where(_.id === id).update(card2update)
-    }
+      cards.where(_.id === id).update(card2update)
   }
 
-  def delete(id: Long) = DB.withSession {
-    implicit session:Session => {
-      Cards.where(_.id === id).delete
-    }
+  def delete(id: Long)(implicit session: Session) = {
+      cards.where(_.id === id).delete
   }
 
   implicit val cardFormat = Json.format[Card]

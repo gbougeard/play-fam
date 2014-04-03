@@ -17,13 +17,13 @@ case class TypAnswer(id: Option[Long],
 object TypAnswer{
   lazy val pageSize = 10
 
-  def findAll: Seq[TypAnswer] = DB.withSession {
+  def findAll: Seq[TypAnswer] =  {
     implicit session:Session => {
       (for (c <- TypAnswers.sortBy(_.name)) yield c).list
     }
   }
 
-  def count: Int = DB.withSession {
+  def count: Int =  {
     implicit session:Session => {
       Query(TypAnswers.length).first
     }
@@ -33,7 +33,7 @@ object TypAnswer{
 
     val offset = pageSize * page
 
-    DB.withSession {
+     {
       implicit session:Session =>
         val typAnswers = (
           for {c <- TypAnswers
@@ -51,44 +51,44 @@ object TypAnswer{
     }
   }
 
-  def findById(id: Long): Option[TypAnswer] = DB.withSession {
+  def findById(id: Long): Option[TypAnswer] =  {
     implicit session:Session => {
       TypAnswers.byId(id).firstOption
     }
   }
 
-  def findByName(name: String): Option[TypAnswer] = DB.withSession {
+  def findByName(name: String): Option[TypAnswer] =  {
     implicit session:Session => {
       TypAnswers.byName(name).firstOption
     }
   }
 
-  def findByCode(code: String): Option[TypAnswer] = DB.withSession {
+  def findByCode(code: String): Option[TypAnswer] =  {
     implicit session:Session => {
       TypAnswers.byCode(code).firstOption
     }
   }
 
-  def findByGroup(group: String): Option[TypAnswer] = DB.withSession {
+  def findByGroup(group: String): Option[TypAnswer] =  {
     implicit session:Session => {
       TypAnswers.byGroup(group).firstOption
     }
   }
 
-  def insert(typAnswer: TypAnswer): Long = DB.withSession {
+  def insert(typAnswer: TypAnswer): Long =  {
     implicit session:Session => {
       TypAnswers.autoInc.insert(typAnswer)
     }
   }
 
-  def update(id: Long, typAnswer: TypAnswer) = DB.withSession {
+  def update(id: Long, typAnswer: TypAnswer) =  {
     implicit session:Session => {
       val typAnswer2update = typAnswer.copy(Some(id), typAnswer.code, typAnswer.name)
       TypAnswers.where(_.id === id).update(typAnswer2update)
     }
   }
 
-  def delete(typAnswerId: Long) = DB.withSession {
+  def delete(typAnswerId: Long) =  {
     implicit session:Session => {
       TypAnswers.where(_.id === typAnswerId).delete
     }
@@ -100,7 +100,7 @@ object TypAnswer{
   //  def options: Seq[(String, String)] = for {
   //    c <- findAll
   //  } yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] = DB.withSession {
+  def options: Seq[(String, String)] =  {
     implicit session:Session =>
       val query = (for {
         item <- TypAnswers

@@ -2,7 +2,8 @@ package models.database
 
 
 import play.api.db.slick.Config.driver.simple._
-import models.Country
+import models.{Category, Country}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,7 +14,7 @@ import models.Country
  */
 
 // define tables
-private[models] object Countries extends Table[Country]("fam_country") {
+  class Countries(tag:Tag) extends Table[Country](tag, "fam_country") {
 
   def id = column[Long]("id_country", O.PrimaryKey, O.AutoInc)
 
@@ -25,15 +26,7 @@ private[models] object Countries extends Table[Country]("fam_country") {
 
   def lower = column[String]("lib_lower")
 
-  def * = id.? ~ code ~ name ~ upper ~ lower <>(Country.apply _, Country.unapply _)
-
-  def autoInc = * returning id
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-  val byUpper = createFinderBy(_.upper)
-  val byLower = createFinderBy(_.lower)
+  def * = (id.? , code , name , upper , lower )
 
 
 }

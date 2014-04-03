@@ -41,7 +41,7 @@ object PlayerSeason{
   //
   //    val offset = pageSize * page
   //
-  //    DB.withSession {
+  //     {
   //      implicit session:Session => {
   //        val players = (
   //          for {t <- Players
@@ -63,7 +63,7 @@ object PlayerSeason{
   //    }
   //  }
 
-  def findBySeason(id: Long): Seq[(PlayerSeason, Player, Season, Club)] = DB.withSession {
+  def findBySeason(id: Long): Seq[(PlayerSeason, Player, Season, Club)] =  {
     implicit session:Session => {
       val query = for {ps <- PlayerSeasons
                        if ps.seasonId === id
@@ -76,7 +76,7 @@ object PlayerSeason{
     }
   }
 
-  def findByPlayer(id: Long): Seq[(PlayerSeason, Player, Season, Team, Club)] = DB.withSession {
+  def findByPlayer(id: Long): Seq[(PlayerSeason, Player, Season, Team, Club)] =  {
     implicit session:Session => {
       val query = for {ps <- PlayerSeasons
                        if ps.playerId === id
@@ -90,7 +90,7 @@ object PlayerSeason{
     }
   }
 
-  def findByClub(id: Long): Seq[(PlayerSeason, Player, Season, Team, Club)] = DB.withSession {
+  def findByClub(id: Long): Seq[(PlayerSeason, Player, Season, Team, Club)] =  {
     implicit session:Session => {
       val query = for {ps <- PlayerSeasons
                        if ps.clubId === id
@@ -104,7 +104,7 @@ object PlayerSeason{
     }
   }
 
-  def findByClubAndSeason(idClub: Long, idSeason: Long): Seq[(PlayerSeason, Player, Season, Club)] = DB.withSession {
+  def findByClubAndSeason(idClub: Long, idSeason: Long): Seq[(PlayerSeason, Player, Season, Club)] =  {
     implicit session:Session => {
       val query = for {ps <- PlayerSeasons
                        if ps.clubId === idClub
@@ -118,7 +118,7 @@ object PlayerSeason{
     }
   }
 
-  def findPlayerByClubAndSeason(idPlayer: Long, idClub: Long, idSeason: Long): Option[(PlayerSeason, Player, Season, Club)] = DB.withSession {
+  def findPlayerByClubAndSeason(idPlayer: Long, idClub: Long, idSeason: Long): Option[(PlayerSeason, Player, Season, Club)] =  {
     implicit session:Session => {
       val query = for {ps <- PlayerSeasons
                        if ps.clubId === idClub
@@ -133,7 +133,7 @@ object PlayerSeason{
     }
   }
 
-  def findByTeam(id: Long): Seq[(PlayerSeason, Player, Season, Team, Club)] = DB.withSession {
+  def findByTeam(id: Long): Seq[(PlayerSeason, Player, Season, Team, Club)] =  {
     implicit session:Session => {
       val query = for {ps <- PlayerSeasons
                        if ps.teamId === id
@@ -147,13 +147,13 @@ object PlayerSeason{
     }
   }
 
-  //  def insert(player: Player): Long = DB.withSession {
+  //  def insert(player: Player): Long =  {
   //    implicit session:Session => {
   //      Players.autoInc.insert((player))
   //    }
   //  }
   //
-  //  def update(id: Long, player: Player) = DB.withSession {
+  //  def update(id: Long, player: Player) =  {
   //    implicit session:Session => {
   //      val player2update = player.copy(Some(id))
   //      Logger.info("playe2update " + player2update)
@@ -161,7 +161,7 @@ object PlayerSeason{
   //    }
   //  }
   //
-  //  def delete(playerId: Long) = DB.withSession {
+  //  def delete(playerId: Long) =  {
   //    implicit session:Session => {
   //      Players.where(_.id === playerId).delete
   //    }
@@ -172,7 +172,7 @@ object PlayerSeason{
    */
   //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.firstName + " " + c.lastName)
 
-  //  def options: Seq[(String, String)] = DB.withSession {
+  //  def options: Seq[(String, String)] =  {
   //    implicit session:Session =>
   //      val query = (for {
   //        item <- Players

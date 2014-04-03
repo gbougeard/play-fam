@@ -29,7 +29,7 @@ case class Event(id: Option[Long],
 object Event{
   lazy val pageSize = 10
 
-  def findAll: Seq[Event] = DB.withSession {
+  def findAll: Seq[Event] =  {
     implicit session:Session => {
       (for {c <- Events.sortBy(_.name)
       //            t <- c.typEvent
@@ -37,7 +37,7 @@ object Event{
     }
   }
 
-  def count: Int = DB.withSession {
+  def count: Int =  {
     implicit session:Session => {
       Query(Events.length).first
     }
@@ -46,7 +46,7 @@ object Event{
   def findPage(page: Int = 0, orderField: Int): Page[(Event, TypEvent, EventStatus)] = {
 
     val offset = pageSize * page
-    DB.withSession {
+     {
       implicit session:Session => {
         val events = (for {
           c <- Events
@@ -70,7 +70,7 @@ object Event{
     }
   }
 
-  def findById(id: Long): Option[(Event, TypEvent, EventStatus)] = DB.withSession {
+  def findById(id: Long): Option[(Event, TypEvent, EventStatus)] =  {
     implicit session:Session => {
       val query = for {e <- Events
                        if e.id === id
@@ -81,27 +81,27 @@ object Event{
     }
   }
 
-  def findByName(name: String): Option[Event] = DB.withSession {
+  def findByName(name: String): Option[Event] =  {
     implicit session:Session => {
       Events.byName(name).firstOption
     }
   }
 
-  def insert(event: Event): Long = DB.withSession {
+  def insert(event: Event): Long =  {
     implicit session:Session => {
       Logger.debug("insert %s".format(event))
       Events.autoInc.insert(event)
     }
   }
 
-  def update(id: Long, event: Event) = DB.withSession {
+  def update(id: Long, event: Event) =  {
     implicit session:Session => {
       val event2update = event.copy(Some(id))
       Events.where(_.id === id).update(event2update)
     }
   }
 
-  def delete(eventId: Long) = DB.withSession {
+  def delete(eventId: Long) =  {
     implicit session:Session => {
       Events.where(_.id === eventId).delete
     }
@@ -111,7 +111,7 @@ object Event{
    * Construct the Map[String,String] needed to fill a select options set.
    */
   //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] = DB.withSession {
+  def options: Seq[(String, String)] =  {
     implicit session:Session =>
       val query = (for {
         item <- Events

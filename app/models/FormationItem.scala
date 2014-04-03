@@ -16,7 +16,7 @@ case class FormationItem(id: Option[Long],
 
 object FormationItem {
 
-  def findByFormation(id: Long): Seq[FormationItem] = DB.withSession {
+  def findByFormation(id: Long): Seq[FormationItem] =  {
     implicit session: Session => {
       val query = for {fi <- FormationItems
                        if fi.formationId === id
@@ -25,20 +25,20 @@ object FormationItem {
     }
   }
 
-  def insert(formationItem: FormationItem): Long = DB.withSession {
+  def insert(formationItem: FormationItem): Long =  {
     implicit session: Session => {
       FormationItems.autoInc.insert(formationItem)
     }
   }
 
-  def update(id: Long, formationItem: FormationItem) = DB.withSession {
+  def update(id: Long, formationItem: FormationItem) =  {
     implicit session: Session => {
       val formationItem2update = formationItem.copy(Some(id))
       FormationItems.where(_.id === id).update(formationItem2update)
     }
   }
 
-  def delete(formationItemId: Long) = DB.withSession {
+  def delete(formationItemId: Long) =  {
     implicit session: Session => {
       FormationItems.where(_.id === formationItemId).delete
     }
@@ -48,7 +48,7 @@ object FormationItem {
     items.map(item => update(item.id.getOrElse(0), item))
   }
 
-  def init(formationId: Long) = DB.withSession {
+  def init(formationId: Long) =  {
     implicit session: Session => {
       Formation.findById(formationId).map {
         formation => TypMatch.findById(formation.typMatchId).map {
@@ -60,7 +60,7 @@ object FormationItem {
     }
   }
 
-  def copy(formationIdToCopy: Long, formationId: Long) = DB.withSession {
+  def copy(formationIdToCopy: Long, formationId: Long) =  {
     implicit session: Session => {
       findByFormation(formationIdToCopy).map {
         item => insert(new FormationItem(None, item.coord, item.numItem, formationId))

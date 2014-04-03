@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.TypCompetition
+import models.{Category, TypCompetition}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +12,7 @@ import models.TypCompetition
  * To change this template use File | Settings | File Templates.
  */
 // define tables
-private[models] object TypCompetitions extends Table[TypCompetition]("fam_typ_competition") {
+  class TypCompetitions(tag:Tag) extends Table[TypCompetition](tag, "fam_typ_competition") {
 
   def id = column[Long]("id_typ_competition", O.PrimaryKey, O.AutoInc)
 
@@ -23,16 +24,9 @@ private[models] object TypCompetitions extends Table[TypCompetition]("fam_typ_co
 
   def typMatchId = column[Long]("id_typ_match")
 
-  def * = id.? ~ code ~ name ~ isChampionship ~ typMatchId <>(TypCompetition.apply _, TypCompetition.unapply _)
-
-  def autoInc = * returning id
+  def * = (id.? , code , name , isChampionship , typMatchId)
 
   // A reified foreign key relation that can be navigated to create a join
-  def typMatch = foreignKey("TYP_MATCH_FK", typMatchId, TypMatches)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-
+  def typMatch = foreignKey("TYP_MATCH_FK", typMatchId, TableQuery[TypMatches])(_.id)
 
 }

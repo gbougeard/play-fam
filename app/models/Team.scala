@@ -22,13 +22,13 @@ case class Team(id: Option[Long],
 object Team{
   lazy val pageSize = 10
 
-  def findAll: Seq[Team] = DB.withSession {
+  def findAll: Seq[Team] =  {
     implicit session:Session => {
       (for (c <- Teams.sortBy(_.name)) yield c).list
     }
   }
 
-  def count: Int = DB.withSession {
+  def count: Int =  {
     implicit session:Session => {
       Query(Teams.length).first
     }
@@ -37,7 +37,7 @@ object Team{
   def findPage(page: Int = 0, orderField: Int): Page[(Team, Club)] = {
 
     val offset = pageSize * page
-    DB.withSession {
+     {
       implicit session:Session => {
         val teams = (
           for {t <- Teams
@@ -59,44 +59,44 @@ object Team{
     }
   }
 
-  def findById(id: Long): Option[Team] = DB.withSession {
+  def findById(id: Long): Option[Team] =  {
     implicit session:Session => {
       Teams.byId(id).firstOption
     }
   }
 
-  def findByName(name: String): Option[Team] = DB.withSession {
+  def findByName(name: String): Option[Team] =  {
     implicit session:Session => {
       Teams.byName(name).firstOption
     }
   }
 
-  def findByCode(code: String): Option[Team] = DB.withSession {
+  def findByCode(code: String): Option[Team] =  {
     implicit session:Session => {
       Teams.byCode(code).firstOption
     }
   }
 
-  def findByClub(id: Long): Seq[Team] = DB.withSession {
+  def findByClub(id: Long): Seq[Team] =  {
     implicit session:Session => {
       Teams.byClub(id).list
     }
   }
 
-  def insert(team: Team): Long = DB.withSession {
+  def insert(team: Team): Long =  {
     implicit session:Session => {
       Teams.autoInc.insert(team)
     }
   }
 
-  def update(id: Long, team: Team) = DB.withSession {
+  def update(id: Long, team: Team) =  {
     implicit session:Session => {
       val team2update = team.copy(Some(id), team.code, team.name, team.clubId)
       Teams.where(_.id === id).update(team2update)
     }
   }
 
-  def delete(teamId: Long) = DB.withSession {
+  def delete(teamId: Long) =  {
     implicit session:Session => {
       Teams.where(_.id === teamId).delete
     }
@@ -106,7 +106,7 @@ object Team{
    * Construct the Map[String,String] needed to fill a select options set.
    */
 //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] = DB.withSession {
+  def options: Seq[(String, String)] =  {
     implicit session:Session =>
       val query = (for {
         item <- Teams
@@ -115,7 +115,7 @@ object Team{
       query.list.map(row => (row._1.toString, row._2))
   }
 
-  def findByClubOptions(id: Long): Seq[(String, String)] = DB.withSession {
+  def findByClubOptions(id: Long): Seq[(String, String)] =  {
     implicit session:Session =>
       val query = (for {
         item <- Teams

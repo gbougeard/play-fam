@@ -16,7 +16,7 @@ case class EventCategory(eventId: Long,
                      categoryId: Long)
 
 object EventCategory{
-  def findByEvent(id: Long): Seq[(EventCategory, Event, Category)] = DB.withSession {
+  def findByEvent(id: Long): Seq[(EventCategory, Event, Category)] =  {
     implicit session:Session => {
       val query = for {et <- EventCategories
                        if et.eventId === id
@@ -28,7 +28,7 @@ object EventCategory{
     }
   }
 
-  def findByCategory(id: Long): Seq[(EventCategory, Event, Category)] = DB.withSession {
+  def findByCategory(id: Long): Seq[(EventCategory, Event, Category)] =  {
     implicit session:Session => {
       val query = for {et <- EventCategories
                        if et.categoryId === id
@@ -40,14 +40,14 @@ object EventCategory{
     }
   }
 
-  def insert(event: EventCategory): Long = DB.withSession {
+  def insert(event: EventCategory): Long =  {
     implicit session:Session => {
       EventCategories.insert(event)
     }
   }
 
 
-//  def delete(eId: Long, tId : Long) = DB.withSession {
+//  def delete(eId: Long, tId : Long) =  {
 //    implicit session:Session => {
 //      EventCategories.where(_.eventId === eId).and( _.categoryId === tId).delete
 //    }

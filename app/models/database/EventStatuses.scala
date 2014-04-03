@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.EventStatus
+import models.{Category, EventStatus}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,7 +13,7 @@ import models.EventStatus
  */
 
 // define tables
-private[models] object EventStatuses extends Table[EventStatus]("fam_event_status") {
+  class EventStatuses(tag:Tag) extends Table[EventStatus](tag, "fam_event_status") {
 
   def id = column[Long]("id_event_status", O.PrimaryKey, O.AutoInc)
 
@@ -20,16 +21,9 @@ private[models] object EventStatuses extends Table[EventStatus]("fam_event_statu
 
   def code = column[String]("cod_event_status")
 
-  def * = id.? ~ code ~ name <>(EventStatus.apply _, EventStatus.unapply _)
-
-  def autoInc = * returning id
+  def * = (id.? , code , name)
 
   // A reified foreign key relation that can be navigated to create a join
   //  def typMatch = foreignKey("TYP_MATCH_FK", typMatchId, TypMatches)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-
 
 }

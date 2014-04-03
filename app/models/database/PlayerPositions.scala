@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.PlayerPosition
+import models.{Category, PlayerPosition}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +12,7 @@ import models.PlayerPosition
  * To change this template use File | Settings | File Templates.
  */
 // define tables
-private[models] object PlayerPositions extends Table[PlayerPosition]("fam_player_position") {
+  class PlayerPositions(tag:Tag) extends Table[PlayerPosition](tag, "fam_player_position") {
 
   def playerId = column[Long]("id_player")
 
@@ -19,12 +20,12 @@ private[models] object PlayerPositions extends Table[PlayerPosition]("fam_player
 
   def numOrder = column[Int]("num_order")
 
-  def * = playerId ~ positionId ~ numOrder <>(PlayerPosition.apply _, PlayerPosition.unapply _)
+  def * = (playerId , positionId , numOrder )
 
   // A reified foreign key relation that can be navigated to create a join
-  def player = foreignKey("PLAYER_FK", playerId, Players)(_.id)
+  def player = foreignKey("PLAYER_FK", playerId, TableQuery[Players])(_.id)
 
-  def position = foreignKey("SEASON_FK", positionId, Positions)(_.id)
+  def position = foreignKey("SEASON_FK", positionId, TableQuery[Positions])(_.id)
 
 
 }

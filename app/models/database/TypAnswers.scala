@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.TypAnswer
+import models.{Category, TypAnswer}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +12,7 @@ import models.TypAnswer
  * To change this template use File | Settings | File Templates.
  */
 // define tables
-private[models] object TypAnswers extends Table[TypAnswer]("fam_typ_answer") {
+  class TypAnswers(tag:Tag) extends Table[TypAnswer](tag, "fam_typ_answer") {
 
   def id = column[Long]("id_typ_answer", O.PrimaryKey, O.AutoInc)
 
@@ -21,17 +22,10 @@ private[models] object TypAnswers extends Table[TypAnswer]("fam_typ_answer") {
 
   def group = column[String]("grp_typ_answer")
 
-  def * = id.? ~ code ~ name ~ group <>(TypAnswer.apply _, TypAnswer.unapply _)
-
-  def autoInc = * returning id
+  def * = (id.? , code , name , group )
 
   // A reified foreign key relation that can be navigated to create a join
   //  def typMatch = foreignKey("TYP_MATCH_FK", typMatchId, TypMatches)(_.id)
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-  val byGroup = createFinderBy(_.group)
 
 
 }

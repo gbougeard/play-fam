@@ -11,4 +11,4 @@ resolvers += Resolver.url("scalasbt", new URL("http://scalasbt.artifactoryonline
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "0.6.3")
 
 // Use the Play sbt plugin for Play projects
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.2.1")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.2.2")

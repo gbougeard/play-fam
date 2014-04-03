@@ -21,13 +21,13 @@ case class Province(id: Option[Long],
 object Province{
   lazy val pageSize = 10
 
-  def findAll: Seq[Province] = DB.withSession {
+  def findAll: Seq[Province] =  {
     implicit session:Session => {
       (for (c <- Provinces.sortBy(_.code)) yield c).list
     }
   }
 
-  def count: Int = DB.withSession {
+  def count: Int =  {
     implicit session:Session => {
       Query(Provinces.length).first
     }
@@ -37,7 +37,7 @@ object Province{
 
     val offset = pageSize * page
 
-    DB.withSession {
+     {
       implicit session:Session => {
         val provinces = (
           for {p <- Provinces
@@ -61,37 +61,37 @@ object Province{
     }
   }
 
-  def findById(id: Long): Option[Province] = DB.withSession {
+  def findById(id: Long): Option[Province] =  {
     implicit session:Session => {
       Provinces.byId(id).firstOption
     }
   }
 
-  def findByName(name: String): Option[Province] = DB.withSession {
+  def findByName(name: String): Option[Province] =  {
     implicit session:Session => {
       Provinces.byName(name).firstOption
     }
   }
 
-  def findByCode(code: String): Option[Province] = DB.withSession {
+  def findByCode(code: String): Option[Province] =  {
     implicit session:Session => {
       Provinces.byCode(code).firstOption
     }
   }
 
-  def insert(province: Province): Long = DB.withSession {
+  def insert(province: Province): Long =  {
     implicit session:Session => {
       Provinces.autoInc.insert(province)
     }
   }
 
-  def update(id: Long, province: Province) = DB.withSession {
+  def update(id: Long, province: Province) =  {
     implicit session:Session => {
       Provinces.where(_.id === province.id).update(province.copy(Some(id)))
     }
   }
 
-  def delete(provinceId: Long) = DB.withSession {
+  def delete(provinceId: Long) =  {
     implicit session:Session => {
       Provinces.where(_.id === provinceId).delete
     }
@@ -101,7 +101,7 @@ object Province{
    * Construct the Map[String,String] needed to fill a select options set.
    */
 //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.code + " - " + c.name)
-  def options: Seq[(String, String)] = DB.withSession {
+  def options: Seq[(String, String)] =  {
     implicit session:Session =>
       val query = (for {
         item <- Provinces

@@ -25,13 +25,13 @@ case class TypMatch(id: Option[Long],
 object TypMatch{
   lazy val pageSize = 10
 
-  def findAll: Seq[TypMatch] = DB.withSession {
+  def findAll: Seq[TypMatch] =  {
     implicit session:Session => {
       (for (c <- TypMatches.sortBy(_.name)) yield c).list
     }
   }
 
-  def count: Int = DB.withSession {
+  def count: Int =  {
     implicit session:Session => {
       Query(TypMatches.length).first
     }
@@ -41,7 +41,7 @@ object TypMatch{
 
     val offset = pageSize * page
 
-    DB.withSession {
+     {
       implicit session:Session =>
         val typMatchs = (
           for {c <- TypMatches
@@ -59,38 +59,38 @@ object TypMatch{
     }
   }
 
-  def findById(id: Long): Option[TypMatch] = DB.withSession {
+  def findById(id: Long): Option[TypMatch] =  {
     implicit session:Session => {
       TypMatches.byId(id).firstOption
     }
   }
 
-  def findByName(name: String): Option[TypMatch] = DB.withSession {
+  def findByName(name: String): Option[TypMatch] =  {
     implicit session:Session => {
       TypMatches.byName(name).firstOption
     }
   }
 
-  def findByCode(code: String): Option[TypMatch] = DB.withSession {
+  def findByCode(code: String): Option[TypMatch] =  {
     implicit session:Session => {
       TypMatches.byCode(code).firstOption
     }
   }
 
-  def insert(typMatch: TypMatch): Long = DB.withSession {
+  def insert(typMatch: TypMatch): Long =  {
     implicit session:Session => {
       TypMatches.autoInc.insert(typMatch)
     }
   }
 
-  def update(id: Long, typMatch: TypMatch) = DB.withSession {
+  def update(id: Long, typMatch: TypMatch) =  {
     implicit session:Session => {
       val typMatch2update = typMatch.copy(Some(id), typMatch.code, typMatch.name)
       TypMatches.where(_.id === id).update(typMatch2update)
     }
   }
 
-  def delete(typMatchId: Long) = DB.withSession {
+  def delete(typMatchId: Long) =  {
     implicit session:Session => {
       TypMatches.where(_.id === typMatchId).delete
     }
@@ -102,7 +102,7 @@ object TypMatch{
 //  def options: Seq[(String, String)] = for {
 //    c <- findAll
 //  } yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] = DB.withSession {
+  def options: Seq[(String, String)] =  {
     implicit session:Session =>
       val query = (for {
         item <- TypMatches

@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.Ranking
+import models.{Category, Ranking}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +12,7 @@ import models.Ranking
  * To change this template use File | Settings | File Templates.
  */
 // define tables
-private[models] object Rankings extends Table[Ranking]("v_rankings") {
+  class Rankings(tag:Tag) extends Table[Ranking](tag, "v_rankings") {
 
   def competitionId = column[Long]("id_season_competition")
 
@@ -35,12 +36,7 @@ private[models] object Rankings extends Table[Ranking]("v_rankings") {
 
   def goalShipped = column[Int]("goal_shipped")
 
-  def * = competitionId ~ clubId ~ teamId ~ team ~ points ~ victory ~ defeat ~ draw ~ played ~ goalScored ~ goalShipped <>(Ranking.apply _, Ranking.unapply _)
-
-
-  val byCompetition = createFinderBy(_.competitionId)
-  val byClub = createFinderBy(_.clubId)
-  val byTeam = createFinderBy(_.teamId)
+  def * = (competitionId , clubId , teamId , team , points , victory , defeat , draw , played , goalScored , goalShipped )
 
 
 }

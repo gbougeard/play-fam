@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.Club
+import models.{Category, Club}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,7 +13,7 @@ import models.Club
  */
 
 // define tables
-private[models] object Clubs extends Table[Club]("fam_club") {
+  class Clubs(tag:Tag) extends Table[Club](tag, "fam_club") {
 
   def id = column[Long]("id_club", O.PrimaryKey, O.AutoInc)
 
@@ -36,15 +37,7 @@ private[models] object Clubs extends Table[Club]("fam_club") {
 
   def comments = column[String]("comments")
 
-  def * = id.? ~ code ~ name ~ countryId.? ~ cityId.? ~ colours.? ~ address.? ~ zipcode.? ~ city.? ~ organization.? ~ comments.? <>(Club.apply _, Club.unapply _)
+  def * = (id.? , code , name , countryId.? , cityId.? , colours.? , address.? , zipcode.? , city.? , organization.? , comments.? )
 
-  def autoInc = * returning id
-
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
-  val byZipCode = createFinderBy(_.zipcode)
-  val byCity = createFinderBy(_.city)
 
 }

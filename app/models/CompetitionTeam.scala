@@ -21,7 +21,7 @@ object CompetitionTeam{
   //
   //    val offset = pageSize * page
   //
-  //    DB.withSession {
+  //     {
   //      implicit session:Session => {
   //        val competitions = (
   //          for {t <- Competitions
@@ -43,7 +43,7 @@ object CompetitionTeam{
   //    }
   //  }
 
-  def findByTeam(id: Long): Seq[(CompetitionTeam, SeasonCompetition, Team)] = DB.withSession {
+  def findByTeam(id: Long): Seq[(CompetitionTeam, SeasonCompetition, Team)] =  {
     implicit session:Session => {
       val query = (
         for {ps <- CompetitionTeams
@@ -56,7 +56,7 @@ object CompetitionTeam{
     }
   }
 
-  def findByCompetition(id: Long): Seq[(CompetitionTeam, SeasonCompetition, Team)] = DB.withSession {
+  def findByCompetition(id: Long): Seq[(CompetitionTeam, SeasonCompetition, Team)] =  {
     implicit session:Session => {
       val query = (
         for {ps <- CompetitionTeams
@@ -69,13 +69,13 @@ object CompetitionTeam{
     }
   }
 
-  def insert(competitionTeam: CompetitionTeam): Long = DB.withSession {
+  def insert(competitionTeam: CompetitionTeam): Long =  {
     implicit session:Session => {
       CompetitionTeams.autoInc.insert((competitionTeam))
     }
   }
 
-  def update(id: Long, competition: CompetitionTeam) = DB.withSession {
+  def update(id: Long, competition: CompetitionTeam) =  {
     implicit session:Session => {
       val competition2update = competition.copy(Some(id))
       //        Logger.info("playe2update " + competition2update)
@@ -83,7 +83,7 @@ object CompetitionTeam{
     }
   }
 
-  def delete(competitionId: Long) = DB.withSession {
+  def delete(competitionId: Long) =  {
     implicit session:Session => {
       CompetitionTeams.where(_.id === competitionId).delete
     }
@@ -94,7 +94,7 @@ object CompetitionTeam{
    */
   //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.firstName + " " + c.lastName)
 
-  //  def options: Seq[(String, String)] = DB.withSession {
+  //  def options: Seq[(String, String)] =  {
   //    implicit session:Session =>
   //      val query = (for {
   //        item <- Competitions

@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.EventCategory
+import models.{Category, EventCategory}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,18 +12,18 @@ import models.EventCategory
  * To change this template use File | Settings | File Templates.
  */
  // define tables
-private[models] object EventCategories extends Table[EventCategory]("fam_event_category") {
+  class EventCategories(tag:Tag) extends Table[EventCategory](tag, "fam_event_category") {
 
   def eventId = column[Long]("id_event")
 
   def categoryId = column[Long]("id_category")
 
-  def * = eventId ~ categoryId <>(EventCategory.apply _, EventCategory.unapply _)
+  def * = (eventId , categoryId )
 
   // A reified foreign key relation that can be navigated to create a join
-  def category = foreignKey("TEAM_FK", categoryId, Categories)(_.id)
+  def category = foreignKey("TEAM_FK", categoryId, TableQuery[Categories])(_.id)
 
-  def event = foreignKey("EVENT_FK", eventId, Events)(_.id)
+  def event = foreignKey("EVENT_FK", eventId, TableQuery[Events])(_.id)
 
 
 }

@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.Goal
+import models.{Category, Goal}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,7 +13,7 @@ import models.Goal
  */
 
 // define tables
-private[models] object Goals extends Table[Goal]("fam_goal") {
+  class Goals(tag:Tag) extends Table[Goal](tag, "fam_goal") {
 
   def id = column[Long]("id_goal", O.PrimaryKey, O.AutoInc)
 
@@ -30,19 +31,17 @@ private[models] object Goals extends Table[Goal]("fam_goal") {
 
   def csc = column[Boolean]("csc")
 
-  def * = id.? ~ matchId ~ teamId ~ strikerId.? ~ assistId.? ~ goalTime.? ~ penalty ~ csc <>(Goal.apply _, Goal.unapply _)
-
-  def autoInc = * returning id
+  def * = (id.? , matchId , teamId , strikerId.? , assistId.? , goalTime.? , penalty , csc )
 
 
   // A reified foreign key relation that can be navigated to create a join
-  def matche = foreignKey("MATCH_FK", matchId, Matches)(_.id)
+  def matche = foreignKey("MATCH_FK", matchId, TableQuery[Matches])(_.id)
 
-  def team = foreignKey("TEAM_FK", teamId, Teams)(_.id)
+  def team = foreignKey("TEAM_FK", teamId, TableQuery[Teams])(_.id)
 
-  def striker = foreignKey("STRIKER_FK", strikerId, Players)(_.id)
+  def striker = foreignKey("STRIKER_FK", strikerId, TableQuery[Players])(_.id)
 
-  def assist = foreignKey("ASSIST_FK", assistId, Players)(_.id)
+  def assist = foreignKey("ASSIST_FK", assistId, TableQuery[Players])(_.id)
 
 
 }

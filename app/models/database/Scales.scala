@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.Scale
+import models.{Category, Scale}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +12,7 @@ import models.Scale
  * To change this template use File | Settings | File Templates.
  */
 // define tables
-private[models] object Scales extends Table[Scale]("fam_scale") {
+  class Scales(tag:Tag) extends Table[Scale](tag, "fam_scale") {
 
   def id = column[Long]("id_scale", O.PrimaryKey, O.AutoInc)
 
@@ -26,14 +27,8 @@ private[models] object Scales extends Table[Scale]("fam_scale") {
   def ptsVictory = column[Int]("pts_victory")
 
 
-  def * = id.? ~ code ~ name ~ ptsDefeat ~ ptsDraw ~ ptsVictory <>(Scale.apply _, Scale.unapply _)
+  def * = (id.? , code , name , ptsDefeat , ptsDraw , ptsVictory )
 
-  def autoInc = * returning id
-
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
 
 
 }

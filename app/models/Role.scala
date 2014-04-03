@@ -23,7 +23,7 @@ object Role{
   //
   //    val offset = pageSize * page
   //
-  //    DB.withSession {
+  //     {
   //      implicit session:Session => {
   //        val players = (
   //          for {t <- Players
@@ -45,7 +45,7 @@ object Role{
   //    }
   //  }
 
-  def findByUserId(id: Long): Seq[String] = DB.withSession {
+  def findByUserId(id: Long): Seq[String] =  {
     implicit session:Session => {
       play.Logger.debug(s"Roles.findByUserId $id")
       val query = for {r <- Roles
@@ -57,7 +57,7 @@ object Role{
     }
   }
 
-  def findByGroupId(id: Long): Seq[(Role, User, Group)] = DB.withSession {
+  def findByGroupId(id: Long): Seq[(Role, User, Group)] =  {
     implicit session:Session => {
       val query = for {r <- Roles
                        if r.groupId === id
@@ -70,20 +70,20 @@ object Role{
   }
 
 
-  def insert(role: Role): Int = DB.withSession {
+  def insert(role: Role): Int =  {
     implicit session:Session => {
       Logger.debug("insert %s".format(role))
       Roles.insert(role)
     }
   }
 
-  def insert(roles: Seq[Role]): Try[Option[Int]] = DB.withSession {
+  def insert(roles: Seq[Role]): Try[Option[Int]] =  {
     implicit session:Session => {
       Try(Roles.insertAll(roles: _*))
     }
   }
 
-  def delete(id: Long) = DB.withSession {
+  def delete(id: Long) =  {
     implicit session:Session => {
       Roles.where(_.userId === id).delete
     }
@@ -108,7 +108,7 @@ object Role{
    */
   //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.firstName + " " + c.lastName)
 
-  //  def options: Seq[(String, String)] = DB.withSession {
+  //  def options: Seq[(String, String)] =  {
   //    implicit session:Session =>
   //      val query = (for {
   //        item <- Players

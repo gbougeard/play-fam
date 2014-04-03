@@ -54,12 +54,12 @@ object TokenDao {
   }
 
   // Queries
-  def all: List[User] = DB.withSession { implicit session:Session =>
+  def all: List[User] =  { implicit session:Session =>
     val q = for (user <- Users) yield user
     q.list
   }
 
-  def findByUUID(uuid: String): Option[Token] = DB.withSession { implicit session:Session =>
+  def findByUUID(uuid: String): Option[Token] =  { implicit session:Session =>
     def byUUID = Tokens.createFinderBy(_.uuid)
     Logger.debug("find token %s".format(uuid))
     byUUID(uuid).firstOption

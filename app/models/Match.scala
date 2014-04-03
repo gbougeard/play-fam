@@ -20,13 +20,13 @@ object Match{
 
   lazy val pageSize = 10
 
-  def findAll: Seq[Match] = DB.withSession {
+  def findAll: Seq[Match] =  {
     implicit session:Session => {
       (for (c <- Matches) yield c).list
     }
   }
 
-  def count: Int = DB.withSession {
+  def count: Int =  {
     implicit session:Session => {
       Query(Matches.length).first
     }
@@ -36,7 +36,7 @@ object Match{
 
     val offset = pageSize * page
 
-    DB.withSession {
+     {
       implicit session:Session => {
         val matchs = (
           for {m <- Matches
@@ -60,32 +60,32 @@ object Match{
     }
   }
 
-  def findById(id: Long): Option[Match] = DB.withSession {
+  def findById(id: Long): Option[Match] =  {
     implicit session:Session => {
       Matches.byId(id).firstOption
     }
   }
 
-  def findByEventId(id: Long): Option[Match] = DB.withSession {
+  def findByEventId(id: Long): Option[Match] =  {
     implicit session:Session => {
       Matches.byEventId(id).firstOption
     }
   }
 
-  def insert(m: Match): Long = DB.withSession {
+  def insert(m: Match): Long =  {
     implicit session:Session => {
       Matches.autoInc.insert(m)
     }
   }
 
-  def update(id: Long, m: Match) = DB.withSession {
+  def update(id: Long, m: Match) =  {
     implicit session:Session => {
       val match2update = m.copy(Some(id))
       Matches.where(_.id === id).update(match2update)
     }
   }
 
-  def delete(matchId: Long) = DB.withSession {
+  def delete(matchId: Long) =  {
     implicit session:Session => {
       Matches.where(_.id === matchId).delete
     }

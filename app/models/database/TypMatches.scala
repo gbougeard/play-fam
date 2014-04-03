@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.TypMatch
+import models.{Category, TypMatch}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +12,7 @@ import models.TypMatch
  * To change this template use File | Settings | File Templates.
  */
 // define tables
-private[models] object TypMatches extends Table[TypMatch]("fam_typ_match") {
+  class TypMatches(tag:Tag) extends Table[TypMatch](tag, "fam_typ_match") {
 
   def id = column[Long]("id_typ_match", O.PrimaryKey, O.AutoInc)
 
@@ -37,13 +38,8 @@ private[models] object TypMatches extends Table[TypMatch]("fam_typ_match") {
 
   def nbPenalties = column[Int]("nb_penalties")
 
-  def * = id.? ~ code ~ name ~ nbSubstitute ~ nbPlayer ~ periodDuration ~ hasExtraTime ~ extraTimeDuration.? ~ hasInfiniteSubs ~ nbSubstitution.? ~ hasPenalties ~ nbPenalties.? <>(TypMatch.apply _, TypMatch.unapply _)
+  def * = (id.? , code , name , nbSubstitute , nbPlayer , periodDuration , hasExtraTime , extraTimeDuration.? , hasInfiniteSubs , nbSubstitution.? , hasPenalties , nbPenalties.? )
 
-  def autoInc = * returning id
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.code)
 
 
 }

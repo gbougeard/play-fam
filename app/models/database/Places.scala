@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.Place
+import models.{Category, Place}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +12,7 @@ import models.Place
  * To change this template use File | Settings | File Templates.
  */
 // define tables
-private[models] object Places extends Table[Place]("fam_place") {
+  class Places(tag:Tag) extends Table[Place](tag, "fam_place") {
 
   def id = column[Long]("id_place", O.PrimaryKey, O.AutoInc)
 
@@ -31,14 +32,8 @@ private[models] object Places extends Table[Place]("fam_place") {
 
   def typFff = column[String]("typ_fff")
 
-  def * = id.? ~ name ~ address ~ city ~ zipcode ~ latitude.? ~ longitude.? ~ comments.? ~ typFff.? <>(Place.apply _, Place.unapply _)
+  def * = (id.? , name , address , city , zipcode , latitude.? , longitude.? , comments.? , typFff.? )
 
-  def autoInc = * returning id
-
-  val byId = createFinderBy(_.id)
-  val byName = createFinderBy(_.name)
-  val byCode = createFinderBy(_.zipcode)
-  val byCity = createFinderBy(_.city)
 
 
 }

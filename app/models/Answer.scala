@@ -21,39 +21,31 @@ case class Answer(id: Option[Long],
                   typAnswerId: Long,
                   comments: Option[String])
 
-object Answer{
+object Answers extends DAO{
   lazy val pageSize = 10
 
-  def findByEvent(idEvent: Long): Seq[(Answer, Event, Player, TypAnswer)] = DB.withSession {
-    implicit session:Session => {
-      val query = for {a <- Answers
+  def findByEvent(idEvent: Long)(implicit session: Session): Seq[(Answer, Event, Player, TypAnswer)] =  {
+      val query = for {a <- answers
                        if a.eventId === idEvent
                        e <- a.event
                        p <- a.player
                        ta <- a.typAnswer
       } yield (a, e, p, ta)
       query.list
-    }
   }
 
-  def insert(answer: Answer): Long = DB.withSession {
-    implicit session:Session => {
-      Answers.insert(answer)
-    }
+  def insert(answer: Answer)(implicit session: Session): Long =  {
+      answers.insert(answer)
   }
 
-  def update(idMatch: Long, idPlayer: Long, answer: Answer) = DB.withSession {
-    implicit session:Session => {
+  def update(idMatch: Long, idPlayer: Long, answer: Answer)(implicit session: Session) =  {
       //      val answer2update = answer.copy(Some(id))
       //      Logger.info("playe2update " + answer2update)
       //      Answers.where(_.id === id).update(answer2update)
-    }
   }
 
-  def delete(idMatch: Long, idPlayer: Long) = DB.withSession {
-    implicit session:Session => {
+  def delete(idMatch: Long, idPlayer: Long)(implicit session: Session) =  {
       //      Answers.where(_.id === answerId).delete
-    }
   }
 
   implicit val answerFormat = Json.format[Answer]
@@ -62,14 +54,14 @@ object Answer{
     (__ \ 'answer).read[Answer] ~
       (__ \ 'event).read[Event] ~
       (__ \ 'player).read[Player] ~
-      (__ \ 'typanswer).read[TypAnswer]
+      (__ \ 'typAnswer).read[TypAnswer]
     ) tupled
 
   implicit val mpCompleteWrites: Writes[(Answer, Event, Player, TypAnswer)] = (
     (__ \ 'answer).write[Answer] ~
       (__ \ 'event).write[Event] ~
       (__ \ 'player).write[Player] ~
-      (__ \ 'typanswer).write[TypAnswer]
+      (__ \ 'typAnswer).write[TypAnswer]
     ) tupled
 
 }

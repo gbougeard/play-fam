@@ -25,30 +25,24 @@ case class Club(id: Option[Long] = None,
                 comments: Option[String] = None
                  )
 
-object Club {
+object Clubs extends DAO {
 
   lazy val pageSize = 10
 
-  def findAll: Seq[Club] = DB.withSession {
-    implicit session: Session => {
-      (for (c <- Clubs.sortBy(_.name)) yield c).list
-    }
+  def findAll(implicit session: Session): Seq[Club] =  {
+      (for (c <- clubs.sortBy(_.name)) yield c).list
   }
 
-  def count(filter: String): Int = DB.withSession {
-    implicit session: Session => {
-      Query(Clubs.where(_.name like s"%$filter%").length).first
-    }
+  def count(filter: String)(implicit session: Session): Int =  {
+      clubs.where(_.name like s"%$filter%").length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int, filter: String): Page[Club] = {
+  def findPage(page: Int = 0, orderField: Int, filter: String)(implicit session: Session): Page[Club] = {
 
     val offset = pageSize * page
 
-    DB.withSession {
-      implicit session: Session =>
-        val clubs = (
-          for {c <- Clubs
+        val q = (
+          for {c <- clubs
                if c.name like s"%$filter%"
           } yield c)
           .sortBy(club => orderField match {
@@ -63,65 +57,45 @@ object Club {
         })
           .drop(offset)
           .take(pageSize)
-          .list
 
-        Page(clubs, page, offset, count(filter))
-    }
+        Page(q.list, page, offset, count(filter))
   }
 
-  def findById(id: Long): Option[Club] = DB.withSession {
-    implicit session: Session => {
-      Clubs.byId(id).firstOption
-    }
+  def findById(id: Long)(implicit session: Session): Option[Club] =  {
+      clubs.where(_.id === id).firstOption
   }
 
-  def findByName(name: String): Option[Club] = DB.withSession {
-    implicit session: Session => {
-      Clubs.byName(name).firstOption
-    }
+  def findByName(name: String)(implicit session: Session): Option[Club] =  {
+      clubs.where(_.name === name).firstOption
   }
 
-  def findByCode(code: Int): Option[Club] = DB.withSession {
-    implicit session: Session => {
-      Clubs.byCode(code).firstOption
-    }
+  def findByCode(code: Int)(implicit session: Session): Option[Club] =  {
+      clubs.where(_.code === code).firstOption
   }
 
-  def findByZipCode(code: String): Seq[Club] = DB.withSession {
-    implicit session: Session => {
-      Clubs.byZipCode(code).list
-    }
+  def findByZipCode(code: String)(implicit session: Session): Seq[Club] =  {
+      clubs.where(_.zipcode === code).list
   }
 
-  def findByCity(city: String): Seq[Club] = DB.withSession {
-    implicit session: Session => {
-      Clubs.byCity(city).list
-    }
+  def findByCity(city: String)(implicit session: Session): Seq[Club] =  {
+      clubs.where(_.city === city).list
   }
 
-  def findLikeCity(c: String): Seq[Club] = DB.withSession {
-    implicit session: Session => {
-      Query(Clubs).where(_.city like s"%$c%").list
-    }
+  def findLikeCity(c: String)(implicit session: Session): Seq[Club] =  {
+      clubs.where(_.city like s"%$c%").list
   }
 
-  def insert(club: Club): Long = DB.withSession {
-    implicit session: Session => {
-      Clubs.autoInc.insert(club)
-    }
+  def insert(club: Club)(implicit session: Session): Long =  {
+      clubs.insert(club)
   }
 
-  def update(id: Long, club: Club) = DB.withSession {
-    implicit session: Session => {
+  def update(id: Long, club: Club)(implicit session: Session) =  {
       val club2update = club.copy(Some(id), club.code, club.name)
-      Clubs.where(_.id === id).update(club2update)
-    }
+      clubs.where(_.id === id).update(club2update)
   }
 
-  def delete(clubId: Long) = DB.withSession {
-    implicit session: Session => {
-      Clubs.where(_.id === clubId).delete
-    }
+  def delete(clubId: Long)(implicit session: Session) =  {
+      clubs.where(_.id === clubId).delete
   }
 
   /**
@@ -130,10 +104,9 @@ object Club {
   //  def options: Seq[(String, String)] = for {
   //    c <- findAll
   //  } yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] = DB.withSession {
-    implicit session: Session =>
+  def options(implicit session: Session): Seq[(String, String)] =  {
       val query = (for {
-        item <- Clubs
+        item <- clubs
       } yield (item.id, item.name)
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))

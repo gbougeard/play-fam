@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.PlaceClub
+import models.{Category, PlaceClub}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,17 +12,17 @@ import models.PlaceClub
  * To change this template use File | Settings | File Templates.
  */
 // define tables
-private[models] object PlaceClubs extends Table[PlaceClub]("fam_club_place") {
+  class PlaceClubs(tag:Tag) extends Table[PlaceClub](tag, "fam_club_place") {
 
   def placeId = column[Long]("id_place")
 
   def clubId = column[Long]("id_club")
 
-  def * = placeId ~ clubId <>(PlaceClub.apply _, PlaceClub.unapply _)
+  def * = (placeId , clubId )
 
   // A reified foreign key relation that can be navigated to create a join
-  def place = foreignKey("PLACE_FK", placeId, Places)(_.id)
+  def place = foreignKey("PLACE_FK", placeId, TableQuery[Places])(_.id)
 
-  def club = foreignKey("CLUB_FK", clubId, Clubs)(_.id)
+  def club = foreignKey("CLUB_FK", clubId, TableQuery[Clubs])(_.id)
 
 }

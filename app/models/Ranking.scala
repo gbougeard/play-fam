@@ -25,7 +25,7 @@ case class Ranking(competitionId: Long,
 object Ranking{
   lazy val pageSize = 10
 
-  def findAll: Seq[Ranking] = DB.withSession {
+  def findAll: Seq[Ranking] =  {
     implicit session:Session => {
       (for (c <- Rankings.sortBy(_.points.desc)) yield c).list
     }
@@ -35,7 +35,7 @@ object Ranking{
   //
   //    val offset = pageSize * page
   //
-  //    DB.withSession {
+  //     {
   //      implicit session:Session =>
   //        val clubs = (
   //          for {c <- Rankings
@@ -54,7 +54,7 @@ object Ranking{
   //    }
   //  }
 
-  def findByCompetition(id: Long): Seq[Ranking] = DB.withSession {
+  def findByCompetition(id: Long): Seq[Ranking] =  {
     implicit session:Session => {
       (for {
         c <- Rankings.sortBy(_.points.desc)
@@ -63,7 +63,7 @@ object Ranking{
     }
   }
 
-  def findByClub(id: Long): Seq[Ranking] = DB.withSession {
+  def findByClub(id: Long): Seq[Ranking] =  {
     implicit session:Session => {
       (for {
         c <- Rankings.sortBy(_.points.desc)
@@ -72,7 +72,7 @@ object Ranking{
     }
   }
 
-  def findByTeam(id: Long): Seq[Ranking] = DB.withSession {
+  def findByTeam(id: Long): Seq[Ranking] =  {
     implicit session:Session => {
       (for {
         c <- Rankings.sortBy(_.points.desc)

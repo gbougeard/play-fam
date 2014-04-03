@@ -1,7 +1,8 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.FormationItem
+import models.{Category, FormationItem}
+import scala.slick.lifted.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +12,7 @@ import models.FormationItem
  * To change this template use File | Settings | File Templates.
  */
 // define tables
-private[models] object FormationItems extends Table[FormationItem]("fam_formation_item") {
+  class FormationItems(tag:Tag) extends Table[FormationItem](tag, "fam_formation_item") {
 
   def id = column[Long]("id_formation_item", O.PrimaryKey, O.AutoInc)
 
@@ -21,12 +22,11 @@ private[models] object FormationItems extends Table[FormationItem]("fam_formatio
 
   def formationId = column[Long]("id_formation")
 
-  def * = id.? ~ coord ~ numItem ~ formationId <>(FormationItem.apply _, FormationItem.unapply _)
+  def * = (id.? , coord , numItem , formationId )
 
-  def autoInc = * returning id
 
   // A reified foreign key relation that can be navigated to create a join
-  def formation = foreignKey("FORMATION_FK", formationId, Formations)(_.id)
+  def formation = foreignKey("FORMATION_FK", formationId, TableQuery[Formations])(_.id)
 
 
 }

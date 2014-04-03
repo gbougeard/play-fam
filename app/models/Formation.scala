@@ -18,13 +18,13 @@ case class Formation(id: Option[Long],
 object Formation{
   lazy val pageSize = 10
 
-  def findAll: Seq[Formation] = DB.withSession {
+  def findAll: Seq[Formation] =  {
     implicit session:Session => {
       (for (c <- Formations.sortBy(_.name)) yield c).list
     }
   }
 
-  def count: Int = DB.withSession {
+  def count: Int =  {
     implicit session:Session => {
       Query(Formations.length).first
     }
@@ -34,7 +34,7 @@ object Formation{
 
     val offset = pageSize * page
 
-    DB.withSession {
+     {
       implicit session:Session =>
         val formations = (
           for {c <- Formations
@@ -54,38 +54,38 @@ object Formation{
     }
   }
 
-  def findById(id: Long): Option[Formation] = DB.withSession {
+  def findById(id: Long): Option[Formation] =  {
     implicit session:Session => {
       Formations.byId(id).firstOption
     }
   }
 
-  def findByName(name: String): Option[Formation] = DB.withSession {
+  def findByName(name: String): Option[Formation] =  {
     implicit session:Session => {
       Formations.byName(name).firstOption
     }
   }
 
-  def findByCode(code: String): Option[Formation] = DB.withSession {
+  def findByCode(code: String): Option[Formation] =  {
     implicit session:Session => {
       Formations.byCode(code).firstOption
     }
   }
 
-  def insert(formation: Formation): Long = DB.withSession {
+  def insert(formation: Formation): Long =  {
     implicit session:Session => {
       Formations.autoInc.insert(formation)
     }
   }
 
-  def update(id: Long, formation: Formation) = DB.withSession {
+  def update(id: Long, formation: Formation) =  {
     implicit session:Session => {
       val formation2update = formation.copy(Some(id), formation.code, formation.name)
       Formations.where(_.id === id).update(formation2update)
     }
   }
 
-  def delete(formationId: Long) = DB.withSession {
+  def delete(formationId: Long) =  {
     implicit session:Session => {
       Formations.where(_.id === formationId).delete
     }
@@ -97,7 +97,7 @@ object Formation{
   //  def options: Seq[(String, String)] = for {
   //    c <- findAll
   //  } yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] = DB.withSession {
+  def options: Seq[(String, String)] =  {
     implicit session:Session =>
       val query = (for {
         item <- Formations

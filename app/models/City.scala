@@ -16,30 +16,23 @@ case class City(id: Option[Long],
                 lower: String,
                 provinceId: Long)
 
-object City{
+object Cities extends DAO{
   lazy val pageSize = 10
 
-  def findAll: Seq[City] = DB.withSession {
-    implicit session:Session => {
-      (for (c <- Cities.sortBy(_.name)) yield c).list
-    }
+  def findAll(implicit session: Session): Seq[City] =  {
+      (for (c <- cities.sortBy(_.name)) yield c).list
   }
 
-  def count: Int = DB.withSession {
-    implicit session:Session => {
-      Query(Cities.length).first
-    }
+  def count(implicit session: Session): Int =  {
+      Query(cities.length).first
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[(City, Province)] = {
+  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[(City, Province)] = {
 
     val offset = pageSize * page
 
-    DB.withSession {
-      implicit session:Session => {
-        val cities = (
-          for {c <- Cities
-
+        val q = (
+          for {c <- cities
                p <- c.province
           } yield (c, p))
         .sortBy(orderField match {
@@ -54,70 +47,54 @@ object City{
           .take(pageSize)
 
         val totalRows = count
-        Page(cities.list, page, offset, totalRows)
-      }
-    }
+        Page(q.list, page, offset, totalRows)
   }
 
-  def findById(id: Long): Option[City] = DB.withSession {
-    implicit session:Session => {
-      Cities.byId(id).firstOption
-    }
+  def findById(id: Long)(implicit session: Session): Option[City] =  {
+      cities.where(_.id === id).firstOption
   }
 
-  def findByName(name: String): Option[City] = DB.withSession {
-    implicit session:Session => {
-      Cities.byName(name).firstOption
-    }
+  def findByName(name: String)(implicit session: Session): Option[City] =  {
+      cities.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String): Option[City] = DB.withSession {
-    implicit session:Session => {
-      Cities.byCode(code).firstOption
-    }
+  def findByCode(code: String)(implicit session: Session): Option[City] =  {
+      cities.where(_.code === code).firstOption
   }
 
-  def insert(city: City): Long = DB.withSession {
-    implicit session:Session => {
-      Cities.autoInc.insert(city)
-    }
+  def insert(city: City)(implicit session: Session): Long =  {
+      cities.insert(city)
   }
 
-  def update(id: Long, city: City) = DB.withSession {
-    implicit session:Session => {
+  def update(id: Long, city: City)(implicit session: Session) =  {
       val city2update = city.copy(Some(id), city.code, city.name, city.upper, city.lower, city.provinceId)
-      Cities.where(_.id === id).update(city2update)
-    }
+      cities.where(_.id === id).update(city2update)
   }
 
-  def delete(cityId: Long) = DB.withSession {
-    implicit session:Session => {
-      Cities.where(_.id === cityId).delete
-    }
+  def delete(cityId: Long)(implicit session: Session) =  {
+      cities.where(_.id === cityId).delete
   }
 
   /**
    * Construct the Map[String,String] needed to fill a select options set.
    */
 //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] = DB.withSession {
-    implicit session:Session =>
+  def options(implicit session: Session): Seq[(String, String)] =  {
       val query = (for {
-        item <- Cities
+        item <- cities
       } yield (item.id, item.name)
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))
   }
 
 
-  def json(page: Int, pageSize: Int, orderField: Int): Seq[(City, Province)] = DB.withSession {
-    implicit session:Session => {
+  def json(page: Int, pageSize: Int, orderField: Int)(implicit session: Session): Seq[(City, Province)] =  {
 
-      println("page " + page)
-      println("pageSize " + pageSize)
-      println("orderField " + orderField)
+      play.Logger.debug("page " + page)
+      play.Logger.debug("pageSize " + pageSize)
+      play.Logger.debug("orderField " + orderField)
 
-      val cities = for {c <- Cities
+      val q = for {c <- cities
         .sortBy(city => orderField match {
         case 1 => city.id.asc
         case -1 => city.id.desc
@@ -131,9 +108,8 @@ object City{
                         p <- c.province
       } yield (c, p)
       //      Json.toJson(cities.list)
-      cities.list
+      q.list
 
-    }
   }
 
   implicit val cityFormat = Json.format[City]

@@ -23,7 +23,7 @@ object PlayerPosition{
   //
   //    val offset = pageSize * page
   //
-  //    DB.withSession {
+  //     {
   //      implicit session:Session => {
   //        val players = (
   //          for {t <- Players
@@ -45,7 +45,7 @@ object PlayerPosition{
   //    }
   //  }
 
-  def findByPosition(id: Long): Seq[(PlayerPosition, Player, Position)] = DB.withSession {
+  def findByPosition(id: Long): Seq[(PlayerPosition, Player, Position)] =  {
     implicit session:Session => {
       val query = for {ps <- PlayerPositions
                        if ps.positionId === id
@@ -57,7 +57,7 @@ object PlayerPosition{
     }
   }
 
-  def findByPlayer(id: Long): Seq[(PlayerPosition, Player, Position)] = DB.withSession {
+  def findByPlayer(id: Long): Seq[(PlayerPosition, Player, Position)] =  {
     implicit session:Session => {
       val query = for {ps <- PlayerPositions
                        if ps.playerId === id
@@ -69,13 +69,13 @@ object PlayerPosition{
     }
   }
 
-  //  def insert(player: Player): Long = DB.withSession {
+  //  def insert(player: Player): Long =  {
   //    implicit session:Session => {
   //      Players.autoInc.insert((player))
   //    }
   //  }
   //
-  //  def update(id: Long, player: Player) = DB.withSession {
+  //  def update(id: Long, player: Player) =  {
   //    implicit session:Session => {
   //      val player2update = player.copy(Some(id))
   //      Logger.info("playe2update " + player2update)
@@ -83,7 +83,7 @@ object PlayerPosition{
   //    }
   //  }
   //
-  //  def delete(playerId: Long) = DB.withSession {
+  //  def delete(playerId: Long) =  {
   //    implicit session:Session => {
   //      Players.where(_.id === playerId).delete
   //    }
@@ -94,7 +94,7 @@ object PlayerPosition{
    */
   //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.firstName + " " + c.lastName)
 
-  //  def options: Seq[(String, String)] = DB.withSession {
+  //  def options: Seq[(String, String)] =  {
   //    implicit session:Session =>
   //      val query = (for {
   //        item <- Players
