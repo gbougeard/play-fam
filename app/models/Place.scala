@@ -24,51 +24,41 @@ case class Place(id: Option[Long] = None,
                   )
 
 
-object Place {
+object Places extends DAO{
 
   lazy val pageSize = 10
 
-  def findAll: Seq[Place] =  {
-    implicit session: Session => {
-      (for (c <- Places.sortBy(_.id)) yield c)
+  def findAll(implicit session: Session): Seq[Place] =  {
+      (for (c <- places.sortBy(_.id)) yield c)
         .list
-    }
   }
 
-  def count: Int =  {
-    implicit session: Session => {
-      Query(Places.length).first
-    }
+  def count(implicit session: Session): Int =  {
+      places.length.run
   }
 
-  def placesWithCoords: Seq[Place] =  {
-    implicit session: Session => {
-      (for {c <- Places sortBy (_.zipcode)
+  def placesWithCoords(implicit session: Session): Seq[Place] =  {
+      (for {c <- places sortBy (_.zipcode)
             if (c.latitude isNotNull)
             if (c.longitude isNotNull)
       } yield c).list
-    }
   }
 
-  def placesWithoutCoords: Seq[Place] =  {
-    implicit session: Session => {
-      (for {c <- Places sortBy (_.zipcode)
+  def placesWithoutCoords(implicit session: Session): Seq[Place] =  {
+      (for {c <- places sortBy (_.zipcode)
             if (c.latitude isNotNull)
             if (c.longitude isNotNull)
       } yield c)
         .take(20)
         .list
-    }
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[Place] = {
+  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[Place] = {
 
     val offset = pageSize * page
 
-     {
-      implicit session: Session => {
         val places = (
-          for {c <- Places
+          for {c <- places
             .sortBy(place => orderField match {
             case 1 => place.zipcode.asc
             case -1 => place.zipcode.desc
@@ -88,50 +78,35 @@ object Place {
           } yield c).list
 
         Page(places, page, offset, count)
-      }
-    }
   }
 
-  def findById(id: Long): Option[Place] =  {
-    implicit session: Session => {
-      Places.byId(id).firstOption
-    }
+  def findById(id: Long)(implicit session: Session): Option[Place] =  {
+      places.where(_.id === id).firstOption
   }
 
-  def findByName(name: String): Seq[Place] =  {
-    implicit session: Session => {
-      Places.byName(name).list
-    }
+  def findByName(name: String)(implicit session: Session): Seq[Place] =  {
+      places.where(_.name === name).list
   }
 
-  def findByZipcode(zipcode: String): Seq[Place] =  {
-    implicit session: Session => {
-      Places.byCode(zipcode).list
-    }
+  def findByZipcode(zipcode: String)(implicit session: Session): Seq[Place] =  {
+      places.where(_.zipcode === zipcode).list
   }
 
-  def findLikeZipcode(c: String): Seq[Place] =  {
-    implicit session: Session => {
-      Query(Places).where(_.zipcode like s"$c%").list
-    }
+  def findLikeZipcode(c: String)(implicit session: Session): Seq[Place] =  {
+      places.where(_.zipcode like s"$c%").list
   }
 
-  def findByCity(c: String): Seq[Place] =  {
-    implicit session: Session => {
-      Places.byCity(c).list
-    }
+  def findByCity(c: String)(implicit session: Session): Seq[Place] =  {
+      places.where(_.city === c).list
   }
 
-  def findLikeCity(c: String): Seq[Place] =  {
-    implicit session: Session => {
-      Query(Places).where(_.city like s"$c%").list
-    }
+  def findLikeCity(c: String)(implicit session: Session): Seq[Place] =  {
+      places.where(_.city like s"$c%").list
   }
 
-  def findDups(place: Place): Seq[Place] =  {
-    implicit session: Session => {
+  def findDups(place: Place)(implicit session: Session): Seq[Place] =  {
       play.Logger.debug(s"findDups for $place")
-      val q = for {p <- Places
+      val q = for {p <- places
                    if p.id =!= place.id
                    if p.name === place.name
                    if p.zipcode === place.zipcode
@@ -139,37 +114,29 @@ object Place {
 
       } yield p
       q.list
-    }
   }
 
-  def insert(place: Place): Long =  {
-    implicit session: Session => {
-      Places.autoInc.insert(place)
-    }
+  def insert(place: Place)(implicit session: Session): Long =  {
+      places.insert(place)
   }
 
-  def update(id: Long, place: Place) =  {
-    implicit session: Session => {
+  def update(id: Long, place: Place)(implicit session: Session) =  {
       val place2update = place.copy(Some(id))
-      Places.where(_.id === id).update(place2update)
-    }
+      places.where(_.id === id).update(place2update)
   }
 
-  def delete(placeId: Long) =  {
-    implicit session: Session => {
+  def delete(placeId: Long)(implicit session: Session) =  {
       play.Logger.info(s"delete Place $placeId")
-      Places.where(_.id === placeId).delete
-    }
+      places.where(_.id === placeId).delete
   }
 
   /**
    * Construct the Map[String,String] needed to fill a select options set.
    */
   //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] =  {
-    implicit session: Session =>
+  def options(implicit session: Session): Seq[(String, String)] =  {
       val query = (for {
-        item <- Places
+        item <- places
       } yield (item.id, item.name)
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))

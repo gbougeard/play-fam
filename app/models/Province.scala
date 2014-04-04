@@ -18,29 +18,23 @@ case class Province(id: Option[Long],
                     lower: String,
                     stateId: Long)
 
-object Province{
+object Provinces extends DAO{
   lazy val pageSize = 10
 
-  def findAll: Seq[Province] =  {
-    implicit session:Session => {
-      (for (c <- Provinces.sortBy(_.code)) yield c).list
-    }
+  def findAll(implicit session: Session): Seq[Province] =  {
+      (for (c <- provinces.sortBy(_.code)) yield c).list
   }
 
-  def count: Int =  {
-    implicit session:Session => {
-      Query(Provinces.length).first
-    }
+  def count(implicit session: Session): Int =  {
+      provinces.length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[(Province, State)] = {
+  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[(Province, State)] = {
 
     val offset = pageSize * page
 
-     {
-      implicit session:Session => {
         val provinces = (
-          for {p <- Provinces
+          for {p <- provinces
 
                s <- p.state
           } yield (p, s))
@@ -57,54 +51,39 @@ object Province{
 
         val totalRows = count
         Page(provinces.list, page, offset, totalRows)
-      }
-    }
   }
 
-  def findById(id: Long): Option[Province] =  {
-    implicit session:Session => {
-      Provinces.byId(id).firstOption
+  def findById(id: Long)(implicit session: Session): Option[Province] =  {
+      provinces.where(_.id === id).firstOption
     }
+
+  def findByName(name: String)(implicit session: Session): Option[Province] =  {
+      provinces.where(_.name === name).firstOption
   }
 
-  def findByName(name: String): Option[Province] =  {
-    implicit session:Session => {
-      Provinces.byName(name).firstOption
-    }
+  def findByCode(code: String)(implicit session: Session): Option[Province] =  {
+      provinces.where(_.code === code).firstOption
   }
 
-  def findByCode(code: String): Option[Province] =  {
-    implicit session:Session => {
-      Provinces.byCode(code).firstOption
-    }
+  def insert(province: Province)(implicit session: Session): Long =  {
+      provinces.insert(province)
   }
 
-  def insert(province: Province): Long =  {
-    implicit session:Session => {
-      Provinces.autoInc.insert(province)
-    }
+  def update(id: Long, province: Province)(implicit session: Session) =  {
+      provinces.where(_.id === province.id).update(province.copy(Some(id)))
   }
 
-  def update(id: Long, province: Province) =  {
-    implicit session:Session => {
-      Provinces.where(_.id === province.id).update(province.copy(Some(id)))
-    }
-  }
-
-  def delete(provinceId: Long) =  {
-    implicit session:Session => {
-      Provinces.where(_.id === provinceId).delete
-    }
+  def delete(provinceId: Long)(implicit session: Session) =  {
+      provinces.where(_.id === provinceId).delete
   }
 
   /**
    * Construct the Map[String,String] needed to fill a select options set.
    */
 //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.code + " - " + c.name)
-  def options: Seq[(String, String)] =  {
-    implicit session:Session =>
+  def options(implicit session: Session): Seq[(String, String)] =  {
       val query = (for {
-        item <- Provinces
+        item <- provinces
       } yield (item.id, item.name)
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))

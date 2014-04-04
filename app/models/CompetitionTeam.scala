@@ -14,7 +14,7 @@ import database.CompetitionTeams
 case class CompetitionTeam(id: Option[Long],
                            competitionId: Long,
                            teamId: Long)
-object CompetitionTeam{
+object CompetitionTeams extends DAO{
   lazy val pageSize = 10
 
   //  def findPage(page: Int = 0, orderField: Int): Page[(Competition)] = {
@@ -43,50 +43,39 @@ object CompetitionTeam{
   //    }
   //  }
 
-  def findByTeam(id: Long): Seq[(CompetitionTeam, SeasonCompetition, Team)] =  {
-    implicit session:Session => {
+  def findByTeam(id: Long)(implicit session: Session): Seq[(CompetitionTeam, SeasonCompetition, Team)] =  {
       val query = (
-        for {ps <- CompetitionTeams
+        for {ps <- competitionTeams
              if ps.teamId === id
              p <- ps.competition
              s <- ps.team
 
         } yield (ps, p, s))
-      query.list
-    }
   }
 
-  def findByCompetition(id: Long): Seq[(CompetitionTeam, SeasonCompetition, Team)] =  {
-    implicit session:Session => {
+  def findByCompetition(id: Long)(implicit session: Session): Seq[(CompetitionTeam, SeasonCompetition, Team)] =  {
       val query = (
-        for {ps <- CompetitionTeams
+        for {ps <- competitionTeams
              if ps.competitionId === id
              p <- ps.competition
              s <- ps.team
 
         } yield (ps, p, s))
       query.list
-    }
   }
 
-  def insert(competitionTeam: CompetitionTeam): Long =  {
-    implicit session:Session => {
-      CompetitionTeams.autoInc.insert((competitionTeam))
-    }
+  def insert(competitionTeam: CompetitionTeam)(implicit session: Session): Long =  {
+      competitionTeams.insert(competitionTeam)
   }
 
-  def update(id: Long, competition: CompetitionTeam) =  {
-    implicit session:Session => {
+  def update(id: Long, competition: CompetitionTeam)(implicit session: Session) =  {
       val competition2update = competition.copy(Some(id))
       //        Logger.info("playe2update " + competition2update)
-      CompetitionTeams.where(_.id === id).update(competition2update)
-    }
+      competitionTeams.where(_.id === id).update(competition2update)
   }
 
-  def delete(competitionId: Long) =  {
-    implicit session:Session => {
-      CompetitionTeams.where(_.id === competitionId).delete
-    }
+  def delete(competitionId: Long)(implicit session: Session) =  {
+      competitionTeams.where(_.id === competitionId).delete
   }
 
   /**

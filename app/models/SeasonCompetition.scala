@@ -15,29 +15,23 @@ case class SeasonCompetition(id: Option[Long],
                              typCompetitionId: Long)
 
 
-object SeasonCompetition{
+object SeasonCompetitions extends DAO{
   lazy val pageSize = 10
 
-  def findAll: Seq[SeasonCompetition] =  {
-    implicit session:Session => {
-      (for (c <- SeasonCompetitions.sortBy(_.typCompetitionId)) yield c).list
-    }
+  def findAll(implicit session: Session): Seq[SeasonCompetition] =  {
+      (for (c <- seasonCompetitions.sortBy(_.typCompetitionId)) yield c).list
   }
 
-  def count: Int =  {
-    implicit session:Session => {
-      Query(SeasonCompetitions.length).first
-    }
+  def count(implicit session: Session): Int =  {
+      (seasonCompetitions.length).run
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[(SeasonCompetition, Category, Scale, Season, TypCompetition)] = {
+  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[(SeasonCompetition, Category, Scale, Season, TypCompetition)] = {
 
     val offset = pageSize * page
 
-     {
-      implicit session:Session =>
         val seasonCompetitions = (
-          for {sc <- SeasonCompetitions
+          for {sc <- seasonCompetitions
                c <- sc.category
                s <- sc.scale
                se <- sc.season
@@ -55,75 +49,57 @@ object SeasonCompetition{
           .take(pageSize)
 
         Page(seasonCompetitions.list, page, offset, count)
-    }
   }
 
-  def findById(id: Long): Option[SeasonCompetition] =  {
-    implicit session:Session => {
-      SeasonCompetitions.byId(id).firstOption
-    }
+  def findById(id: Long)(implicit session: Session): Option[SeasonCompetition] =  {
+      seasonCompetitions.where(_.id === id).firstOption
   }
 
-  def findByIdComplete(id: Long): Option[(SeasonCompetition, Season, TypCompetition)] =  {
-    implicit session:Session => {
+  def findByIdComplete(id: Long)(implicit session: Session): Option[(SeasonCompetition, Season, TypCompetition)] =  {
       val query = (
-        for {sc <- SeasonCompetitions
+        for {sc <- seasonCompetitions
              if sc.id === id
              s <- sc.season
              c <- sc.typCompetition
         } yield (sc, s, c))
       query.firstOption
-    }
   }
 
-  def findByCategory(category: Long): Option[SeasonCompetition] =  {
-    implicit session:Session => {
-      SeasonCompetitions.byCategory(category).firstOption
-    }
+  def findByCategory(category: Long)(implicit session: Session): Option[SeasonCompetition] =  {
+      seasonCompetitions.where(_.categoryId === category).firstOption
   }
 
-  def findBySeason(season: Long): Option[SeasonCompetition] =  {
-    implicit session:Session => {
-      SeasonCompetitions.bySeason(season).firstOption
-    }
+  def findBySeason(season: Long)(implicit session: Session): Option[SeasonCompetition] =  {
+      seasonCompetitions.where(_.seasonId === season).firstOption
   }
 
-  def findByTypCompetition(typCompetition: Long): Option[SeasonCompetition] =  {
-    implicit session:Session => {
-      SeasonCompetitions.byTypCompetition(typCompetition).firstOption
-    }
+  def findByTypCompetition(typCompetition: Long)(implicit session: Session): Option[SeasonCompetition] =  {
+      seasonCompetitions.where(_.typCompetitionId === typCompetition).firstOption
   }
 
-  def insert(seasonCompetition: SeasonCompetition): Long =  {
-    implicit session:Session => {
-      SeasonCompetitions.autoInc.insert((seasonCompetition))
-    }
+  def insert(seasonCompetition: SeasonCompetition)(implicit session: Session): Long =  {
+      seasonCompetitions.insert((seasonCompetition))
   }
 
-  def update(id: Long, seasonCompetition: SeasonCompetition) =  {
-    implicit session:Session => {
+  def update(id: Long, seasonCompetition: SeasonCompetition)(implicit session: Session) =  {
       val seasonCompetition2update = seasonCompetition.copy(Some(id))
-      SeasonCompetitions.where(_.id === id).update(seasonCompetition2update)
-    }
+      seasonCompetitions.where(_.id === id).update(seasonCompetition2update)
   }
 
-  def delete(seasonCompetitionId: Long) =  {
-    implicit session:Session => {
-      SeasonCompetitions.where(_.id === seasonCompetitionId).delete
-    }
+  def delete(seasonCompetitionId: Long)(implicit session: Session) =  {
+      seasonCompetitions.where(_.id === seasonCompetitionId).delete
   }
 
   /**
    * Construct the Map[String,String] needed to fill a select options set.
    */
-  def options: Seq[(String, String)] = for {
+  def options(implicit session: Session): Seq[(String, String)] = for {
     c <- findAll
   } yield (c.id.toString, c.typCompetitionId.toString())
 
-  def optionsChampionship: Seq[(Long, String)] =  {
-    implicit session:Session =>
+  def optionsChampionship(implicit session: Session): Seq[(Long, String)] =  {
       val query = (for {
-        item <- SeasonCompetitions
+        item <- seasonCompetitions
         s <- item.season
         tc <- item.typCompetition
         if tc.isChampionship

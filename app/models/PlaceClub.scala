@@ -16,7 +16,7 @@ import database.PlaceClubs
 case class PlaceClub(placeId: Long,
                      clubId: Long)
 
-object PlaceClub{
+object PlaceClubs extends DAO{
 
   lazy val pageSize = 10
 
@@ -46,41 +46,33 @@ object PlaceClub{
   //    }
   //  }
 
-  def findByClub(id: Long): Seq[(PlaceClub, Place, Club)] =  {
-    implicit session: Session => {
-      val query = for {ps <- PlaceClubs
+  def findByClub(id: Long)(implicit session: Session): Seq[(PlaceClub, Place, Club)] =  {
+      val query = for {ps <- placeClubs
                        if ps.clubId === id
                        p <- ps.place
                        s <- ps.club
 
       } yield (ps, p, s)
       query.list
-    }
   }
 
-  def findByPlace(id: Long): Seq[(PlaceClub, Place, Club)] =  {
-    implicit session: Session => {
-      val query = for {ps <- PlaceClubs
+  def findByPlace(id: Long)(implicit session: Session): Seq[(PlaceClub, Place, Club)] =  {
+      val query = for {ps <- placeClubs
                        if ps.placeId === id
                        p <- ps.place
                        s <- ps.club
 
       } yield (ps, p, s)
       query.list
-    }
   }
 
-  def insert(placeClub: PlaceClub): Long =  {
-    implicit session: Session => {
+  def insert(placeClub: PlaceClub)(implicit session: Session): Long =  {
       play.Logger.debug(s"insert $placeClub")
-      PlaceClubs.insert(placeClub)
-    }
+      placeClubs.insert(placeClub)
   }
 
-  def insert(pcLst: Seq[PlaceClub]):Try[Option[Int]] =  {
-    implicit session:Session => {
-      Try(PlaceClubs.insertAll(pcLst:_*))
-    }
+  def insert(pcLst: Seq[PlaceClub])(implicit session: Session):Try[Option[Int]] =  {
+      Try(placeClubs.insertAll(pcLst:_*))
   }
 
   //
@@ -88,18 +80,16 @@ object PlaceClub{
   //      implicit session:Session => {
   //        val place2update = place.copy(Some(id))
   //        Logger.info("playe2update " + place2update)
-  //        PlaceClubs.where(_.id === id).update(place2update)
+  //        placeClubs.where(_.id === id).update(place2update)
   //      }
   //    }
 
-  def delete(idPlace: Long, idClub: Long) =  {
-    implicit session: Session => {
-      val q = for {ps <- PlaceClubs
+  def delete(idPlace: Long, idClub: Long)(implicit session: Session) =  {
+      val q = for {ps <- placeClubs
                    if ps.placeId === idPlace
                    if ps.clubId === idClub
       } yield ps
       q.delete
-    }
   }
 
   /**

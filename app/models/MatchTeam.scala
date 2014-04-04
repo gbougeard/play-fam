@@ -27,12 +27,11 @@ case class MatchTeam(matchId: Option[Long],
                      draft: Option[Boolean]
                       )
 
-object MatchTeam{
+object MatchTeams extends DAO{
   lazy val pageSize = 10
 
-  def findByMatchAndTeam(idMatch: Long, idTeam: Long): Option[(MatchTeam, Team)] =  {
-    implicit session:Session => {
-      val query = for {mt <- MatchTeams
+  def findByMatchAndTeam(idMatch: Long, idTeam: Long)(implicit session: Session): Option[(MatchTeam, Team)] =  {
+      val query = for {mt <- matchTeams
                        if mt.matchId === idMatch
                        if mt.teamId === idTeam
                        m <- mt.matche
@@ -40,72 +39,57 @@ object MatchTeam{
 
       } yield (mt, t)
       query.firstOption
-    }
   }
 
-  def findByMatchAndHome(idMatch: Long): Option[(MatchTeam, Team)] =  {
-    implicit session:Session => {
-      val query = for {mt <- MatchTeams
+  def findByMatchAndHome(idMatch: Long)(implicit session: Session): Option[(MatchTeam, Team)] =  {
+      val query = for {mt <- matchTeams
                        if mt.matchId === idMatch
                        if mt.home === true
                        t <- mt.team
       } yield (mt, t)
       query.firstOption
-    }
   }
 
-  def findByMatchAndAway(idMatch: Long): Option[(MatchTeam, Team)] =  {
-    implicit session:Session => {
-      val query = for {mt <- MatchTeams
+  def findByMatchAndAway(idMatch: Long)(implicit session: Session): Option[(MatchTeam, Team)] =  {
+      val query = for {mt <- matchTeams
                        if mt.matchId === idMatch
                        if mt.home === false
                        t <- mt.team
       } yield (mt, t)
       query.firstOption
-    }
   }
 
-  def findByMatch(idMatch: Long): Seq[(MatchTeam, Match, Team)] =  {
-    implicit session:Session => {
-      val query = for {mt <- MatchTeams
+  def findByMatch(idMatch: Long)(implicit session: Session): Seq[(MatchTeam, Match, Team)] =  {
+      val query = for {mt <- matchTeams
                        if mt.matchId === idMatch
                        m <- mt.matche
                        t <- mt.team
 
       } yield (mt, m, t)
       query.list
-    }
   }
 
-  def findByTeam(idTeam: Long): Seq[(MatchTeam, Match, Team)] =  {
-    implicit session:Session => {
-      val query = for {mt <- MatchTeams
+  def findByTeam(idTeam: Long)(implicit session: Session): Seq[(MatchTeam, Match, Team)] =  {
+      val query = for {mt <- matchTeams
                        if mt.teamId === idTeam
                        m <- mt.matche
                        t <- mt.team
 
       } yield (mt, m, t)
       query.list
-    }
   }
 
-  def insert(mt: MatchTeam): Long =  {
-    implicit session:Session => {
-      MatchTeams.insert(mt)
-    }
+  def insert(mt: MatchTeam)(implicit session: Session): Long =  {
+      matchTeams.insert(mt)
   }
 
-  def update(id: Long, m: MatchTeam) =  {
-    implicit session:Session => {
+  def update(id: Long, m: MatchTeam)(implicit session: Session) =  {
       val matchTeam2update = m.copy(Some(id))
-      //      MatchTeams.where(_.id === id).update(matchTeam2update)
-    }
+      //      matchTeams.where(_.id === id).update(matchTeam2update)
   }
 
-  def delete(matchTeamId: Long) =  {
-    implicit session:Session => {
-      //      MatchTeams.where(_.id === matchTeamId).delete
-    }
+  def delete(matchTeamId: Long)(implicit session: Session) =  {
+      //      matchTeams.where(_.id === matchTeamId).delete
   }
 
   implicit val mtFormat = Json.format[MatchTeam]

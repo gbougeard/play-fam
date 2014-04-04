@@ -14,29 +14,23 @@ case class TypCard(id: Option[Long],
                           name: String)
 
 
-object TypCard{
+object TypCards extends DAO{
   lazy val pageSize = 10
 
-  def findAll: Seq[TypCard] =  {
-    implicit session:Session => {
-      (for (c <- TypCards.sortBy(_.name)) yield c).list
-    }
+  def findAll(implicit session: Session): Seq[TypCard] =  {
+      (for (c <- typCards.sortBy(_.name)) yield c).list
   }
 
-  def count: Int =  {
-    implicit session:Session => {
-      Query(TypCards.length).first
-    }
+  def count(implicit session: Session): Int =  {
+      (typCards.length).run
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[TypCard] = {
+  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[TypCard] = {
 
     val offset = pageSize * page
 
-     {
-      implicit session:Session =>
         val typCards = (
-          for {c <- TypCards
+          for {c <- typCards
             .sortBy(typCard => orderField match {
             case 1 => typCard.code.asc
             case -1 => typCard.code.desc
@@ -48,44 +42,31 @@ object TypCard{
           } yield c).list
 
         Page(typCards, page, offset, count)
-    }
   }
 
-  def findById(id: Long): Option[TypCard] =  {
-    implicit session:Session => {
-      TypCards.byId(id).firstOption
-    }
+  def findById(id: Long)(implicit session: Session): Option[TypCard] =  {
+      typCards.where(_.id === id).firstOption
   }
 
-  def findByName(name: String): Option[TypCard] =  {
-    implicit session:Session => {
-      TypCards.byName(name).firstOption
-    }
+  def findByName(name: String)(implicit session: Session): Option[TypCard] =  {
+      typCards.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String): Option[TypCard] =  {
-    implicit session:Session => {
-      TypCards.byCode(code).firstOption
-    }
+  def findByCode(code: String)(implicit session: Session): Option[TypCard] =  {
+      typCards.where(_.code === code).firstOption
   }
 
-  def insert(typCard: TypCard): Long =  {
-    implicit session:Session => {
-      TypCards.autoInc.insert(typCard)
-    }
+  def insert(typCard: TypCard)(implicit session: Session): Long =  {
+      typCards.insert(typCard)
   }
 
-  def update(id: Long, typCard: TypCard) =  {
-    implicit session:Session => {
+  def update(id: Long, typCard: TypCard)(implicit session: Session) =  {
       val typCard2update = typCard.copy(Some(id), typCard.code, typCard.name)
-      TypCards.where(_.id === id).update(typCard2update)
-    }
+      typCards.where(_.id === id).update(typCard2update)
   }
 
-  def delete(typCardId: Long) =  {
-    implicit session:Session => {
-      TypCards.where(_.id === typCardId).delete
-    }
+  def delete(typCardId: Long)(implicit session: Session) =  {
+      typCards.where(_.id === typCardId).delete
   }
 
   /**
@@ -94,10 +75,9 @@ object TypCard{
 //  def options: Seq[(String, String)] = for {
 //    c <- findAll
 //  } yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] =  {
-    implicit session:Session =>
+  def options(implicit session: Session): Seq[(String, String)] =  {
       val query = (for {
-        item <- TypCards
+        item <- typCards
       } yield (item.id, item.name)
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))

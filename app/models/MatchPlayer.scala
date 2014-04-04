@@ -24,14 +24,13 @@ case class MatchPlayer(matchId: Option[Long],
                        timePlayed: Option[Long],
                        comments: Option[String])
 
-object MatchPlayer{
+object MatchPlayers extends DAO{
 
   lazy val pageSize = 10
 
-  def findByMatchAndTeam(idMatch: Long, idTeam: Long): Seq[(MatchPlayer, Match, Player, Team)] =  {
-    implicit session:Session => {
-      Logger.debug("slick MatchPlayers "+idMatch +" "+idTeam)
-      val query = for {mp <- MatchPlayers
+  def findByMatchAndTeam(idMatch: Long, idTeam: Long)(implicit session: Session): Seq[(MatchPlayer, Match, Player, Team)] =  {
+      Logger.debug("slick matchPlayers "+idMatch +" "+idTeam)
+      val query = for {mp <- matchPlayers
                        if mp.matchId === idMatch
                        if mp.teamId === idTeam
                        m <- mp.matche
@@ -40,27 +39,20 @@ object MatchPlayer{
 
       } yield (mp, m, p, t)
       query.list
-    }
   }
 
-  def insert(matchPlayer: MatchPlayer): Long =  {
-    implicit session:Session => {
-      MatchPlayers.insert(matchPlayer)
-    }
+  def insert(matchPlayer: MatchPlayer)(implicit session: Session): Long =  {
+      matchPlayers.insert(matchPlayer)
   }
 
-  def update(idMatch: Long, idPlayer:Long, matchPlayer: MatchPlayer) =  {
-    implicit session:Session => {
+  def update(idMatch: Long, idPlayer:Long, matchPlayer: MatchPlayer)(implicit session: Session) =  {
 //      val matchPlayer2update = matchPlayer.copy(Some(id))
 //      Logger.info("playe2update " + matchPlayer2update)
-//      MatchPlayers.where(_.id === id).update(matchPlayer2update)
-    }
+//      matchPlayers.where(_.id === id).update(matchPlayer2update)
   }
 
-  def delete(idMatch: Long, idPlayer:Long) =  {
-    implicit session:Session => {
-//      MatchPlayers.where(_.id === matchPlayerId).delete
-    }
+  def delete(idMatch: Long, idPlayer:Long)(implicit session: Session) =  {
+//      matchPlayers.where(_.id === matchPlayerId).delete
   }
 
   implicit val mpFormat = Json.format[MatchPlayer]

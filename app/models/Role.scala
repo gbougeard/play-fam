@@ -16,7 +16,7 @@ import database.Roles
 case class Role(userId: Long,
                 groupId: Long)
 
-object Role{
+object Roles extends DAO{
   lazy val pageSize = 10
 
   //  def findPage(page: Int = 0, orderField: Int): Page[(Player)] = {
@@ -45,54 +45,44 @@ object Role{
   //    }
   //  }
 
-  def findByUserId(id: Long): Seq[String] =  {
-    implicit session:Session => {
-      play.Logger.debug(s"Roles.findByUserId $id")
-      val query = for {r <- Roles
+  def findByUserId(id: Long)(implicit session: Session): Seq[String] =  {
+      play.Logger.debug(s"roles.findByUserId $id")
+      val query = for {r <- roles
                        if r.userId === id
                        g <- r.group
 
       } yield g.name
       query.list
-    }
   }
 
-  def findByGroupId(id: Long): Seq[(Role, User, Group)] =  {
-    implicit session:Session => {
-      val query = for {r <- Roles
+  def findByGroupId(id: Long)(implicit session: Session): Seq[(Role, User, Group)] =  {
+      val query = for {r <- roles
                        if r.groupId === id
                        g <- r.group
                        u <- r.user
 
       } yield (r, u, g)
       query.list
-    }
   }
 
 
-  def insert(role: Role): Int =  {
-    implicit session:Session => {
+  def insert(role: Role)(implicit session: Session): Int =  {
       Logger.debug("insert %s".format(role))
-      Roles.insert(role)
-    }
+      roles.insert(role)
   }
 
-  def insert(roles: Seq[Role]): Try[Option[Int]] =  {
-    implicit session:Session => {
-      Try(Roles.insertAll(roles: _*))
-    }
+  def insert(roles: Seq[Role])(implicit session: Session): Try[Option[Int]] =  {
+      Try(roles.insertAll(roles: _*))
   }
 
-  def delete(id: Long) =  {
-    implicit session:Session => {
-      Roles.where(_.userId === id).delete
-    }
+  def delete(id: Long)(implicit session: Session) =  {
+      roles.where(_.userId === id).delete
   }
 
   def isUserInRole(userId: Long, permissions: Set[Permission]): Boolean = {
-    play.Logger.debug(s"isUserInRole - WithRoles getting roles from cache for roles.$userId")
+    play.Logger.debug(s"isUserInRole - Withroles getting roles from cache for roles.$userId")
     val rolesCached = Cache.get(s"roles.$userId")
-    play.Logger.debug(s"isUserInRole - WithRoles $permissions : $rolesCached")
+    play.Logger.debug(s"isUserInRole - Withroles $permissions : $rolesCached")
     rolesCached match {
       case Some(r) => {
         play.Logger.debug(s"isUserInRole - $r")

@@ -14,29 +14,23 @@ case class TypEvent(id: Option[Long],
                           name: String)
 
 
-object TypEvent{
+object TypEvents extends DAO{
   lazy val pageSize = 10
 
-  def findAll: Seq[TypEvent] =  {
-    implicit session:Session => {
-      (for (c <- TypEvents.sortBy(_.name)) yield c).list
-    }
+  def findAll(implicit session: Session): Seq[TypEvent] =  {
+      (for (c <- typEvents.sortBy(_.name)) yield c).list
   }
 
-  def count: Int =  {
-    implicit session:Session => {
-      Query(TypEvents.length).first
-    }
+  def count(implicit session: Session): Int =  {
+      (typEvents.length).run
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[TypEvent] = {
+  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[TypEvent] = {
 
     val offset = pageSize * page
 
-     {
-      implicit session:Session =>
-        val typEvents = (
-          for {c <- TypEvents
+        val q= (
+          for {c <- typEvents
             .sortBy(typEvent => orderField match {
             case 1 => typEvent.code.asc
             case -1 => typEvent.code.desc
@@ -45,47 +39,34 @@ object TypEvent{
           })
             .drop(offset)
             .take(pageSize)
-          } yield c).list
+          } yield c)
 
-        Page(typEvents, page, offset, count)
-    }
+        Page(q.list, page, offset, count)
   }
 
-  def findById(id: Long): Option[TypEvent] =  {
-    implicit session:Session => {
-      TypEvents.byId(id).firstOption
-    }
+  def findById(id: Long)(implicit session: Session): Option[TypEvent] =  {
+      typEvents.where(_.id === id).firstOption
   }
 
-  def findByName(name: String): Option[TypEvent] =  {
-    implicit session:Session => {
-      TypEvents.byName(name).firstOption
-    }
+  def findByName(name: String)(implicit session: Session): Option[TypEvent] =  {
+      typEvents.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String): Option[TypEvent] =  {
-    implicit session:Session => {
-      TypEvents.byCode(code).firstOption
-    }
+  def findByCode(code: String)(implicit session: Session): Option[TypEvent] =  {
+      typEvents.where(_.code === code).firstOption
   }
 
-  def insert(typEvent: TypEvent): Long =  {
-    implicit session:Session => {
-      TypEvents.autoInc.insert(typEvent)
-    }
+  def insert(typEvent: TypEvent)(implicit session: Session): Long =  {
+      typEvents.insert(typEvent)
   }
 
-  def update(id: Long, typEvent: TypEvent) =  {
-    implicit session:Session => {
+  def update(id: Long, typEvent: TypEvent)(implicit session: Session) =  {
       val typEvent2update = typEvent.copy(Some(id), typEvent.code, typEvent.name)
-      TypEvents.where(_.id === id).update(typEvent2update)
-    }
+      typEvents.where(_.id === id).update(typEvent2update)
   }
 
-  def delete(typEventId: Long) =  {
-    implicit session:Session => {
-      TypEvents.where(_.id === typEventId).delete
-    }
+  def delete(typEventId: Long)(implicit session: Session) =  {
+      typEvents.where(_.id === typEventId).delete
   }
 
   /**
@@ -94,10 +75,10 @@ object TypEvent{
 //  def options: Seq[(String, String)] = for {
 //    c <- findAll
 //  } yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] =  {
+  def options(implicit session: Session): Seq[(String, String)] =  {
     implicit session:Session =>
       val query = (for {
-        item <- TypEvents
+        item <- typEvents
       } yield (item.id, item.name)
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))

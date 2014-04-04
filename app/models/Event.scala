@@ -26,30 +26,24 @@ case class Event(id: Option[Long],
                  eventStatusId: Long,
                  comments: Option[String])
 
-object Event{
+object Events extends DAO{
   lazy val pageSize = 10
 
-  def findAll: Seq[Event] =  {
-    implicit session:Session => {
-      (for {c <- Events.sortBy(_.name)
+  def findAll(implicit session: Session): Seq[Event] =  {
+      (for {c <- events.sortBy(_.name)
       //            t <- c.typEvent
       } yield c).list
-    }
   }
 
-  def count: Int =  {
-    implicit session:Session => {
-      Query(Events.length).first
-    }
+  def count(implicit session: Session): Int =  {
+      events.length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[(Event, TypEvent, EventStatus)] = {
+  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[(Event, TypEvent, EventStatus)] = {
 
     val offset = pageSize * page
-     {
-      implicit session:Session => {
         val events = (for {
-          c <- Events
+          c <- events
           t <- c.typEvent
           e <- c.eventStatus
         } yield (c, t, e)
@@ -66,55 +60,41 @@ object Event{
           .take(pageSize)
 
         Page(events.list, page, offset, count)
-      }
-    }
   }
 
-  def findById(id: Long): Option[(Event, TypEvent, EventStatus)] =  {
-    implicit session:Session => {
-      val query = for {e <- Events
+  def findById(id: Long)(implicit session: Session): Option[(Event, TypEvent, EventStatus)] =  {
+      val query = for {e <- events
                        if e.id === id
                        te <- e.typEvent
                        es <- e.eventStatus
       } yield (e, te, es)
       query.firstOption
-    }
   }
 
-  def findByName(name: String): Option[Event] =  {
-    implicit session:Session => {
-      Events.byName(name).firstOption
-    }
+  def findByName(name: String)(implicit session: Session): Option[Event] =  {
+      events.where(_.name === name).firstOption
   }
 
-  def insert(event: Event): Long =  {
-    implicit session:Session => {
-      Logger.debug("insert %s".format(event))
-      Events.autoInc.insert(event)
-    }
+  def insert(event: Event)(implicit session: Session): Long =  {
+      events.insert(event)
   }
 
-  def update(id: Long, event: Event) =  {
-    implicit session:Session => {
+  def update(id: Long, event: Event)(implicit session: Session) =  {
       val event2update = event.copy(Some(id))
-      Events.where(_.id === id).update(event2update)
-    }
+      events.where(_.id === id).update(event2update)
   }
 
-  def delete(eventId: Long) =  {
-    implicit session:Session => {
-      Events.where(_.id === eventId).delete
-    }
+  def delete(eventId: Long)(implicit session: Session) =  {
+      events.where(_.id === eventId).delete
   }
 
   /**
    * Construct the Map[String,String] needed to fill a select options set.
    */
   //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] =  {
-    implicit session:Session =>
+  def options(implicit session: Session): Seq[(String, String)] =  {
       val query = (for {
-        item <- Events
+        item <- events
       } yield (item.id, item.name)
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))

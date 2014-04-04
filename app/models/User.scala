@@ -33,13 +33,12 @@ case class User(pid: Option[Long],
 }
 
 
-object User{
+object Users extends DAO{
   // Operations
-  def save(user: User): User = DB.withTransaction {
-    implicit session:Session =>
+  def save(user: User)(implicit session: Session): User =  {
       Logger.info("save %s".format(user))
 //      val u = findByUserId(user.id).match{
-//         x => Query(Users).where(_.pid is user.pid).update(user)
+//         x => Query(users).where(_.pid is user.pid).update(user)
 //          user
 //      } getOrElse(
 //
@@ -52,81 +51,80 @@ object User{
       findByUserId(user.id) match {
         case None  => {
           Logger.info("create user")
-          val pid = Users.autoInc.insert(user)
+          val pid = users.insert(user)
           user.copy(pid = Some(pid))
         }
         case Some(u) => {
           Logger.info("update user %s".format(user.email))
-          Query(Users).where(_.email is u.email).update(user.copy(pid=u.pid, currentClubId=u.currentClubId))
+          users.where(_.email is u.email).update(user.copy(pid=u.pid, currentClubId=u.currentClubId))
           u
         }
       }
   }
 
-  def delete(pid: Long) = DB.withTransaction {
-    implicit session:Session =>
+  def delete(pid: Long)(implicit session: Session) =  {
+   
       Logger.info("delete %s".format(pid))
-      Users.where(_.pid is pid).mutate(_.delete)
+      users.where(_.pid is pid).mutate(_.delete)
   }
 
   // Queries
-  def all: List[User] =  {
-    implicit session:Session =>
+  def all(implicit session: Session): List[User] =  {
+   
       Logger.info("all")
-      val q = for (user <- Users) yield user
+      val q = for (user <- users) yield user
       q.list
   }
 
-  def findById(pid: Long): Option[User] =  {
-    implicit session:Session =>
+  def findById(pid: Long)(implicit session: Session): Option[User] =  {
+   
       Logger.info("findById %s".format(pid))
-      def byId = Users.createFinderBy(_.pid)
-      byId(pid).firstOption
+      users.where(_.pid === pid).firstOption
   }
 
   //  def findByEmail(email: String): Option[User] =  {
-  //    implicit session:Session =>
+  //   
   //      def byEmail = createFinderBy(_.email)
   //      byEmail(email).firstOption
   //  }
 
-  def findByUserId(u: IdentityId): Option[User] =  {
-    implicit session:Session =>
+  def findByUserId(u: IdentityId)(implicit session: Session): Option[User] =  {
+   
       Logger.info("findByUserId %s".format(u))
       val q = for {
-        user <- Users
+        user <- users
         if (user.userId is u.userId) && (user.providerId is u.providerId)
       } yield user
 
       q.firstOption
   }
 
-  def findByEmailAndProvider(e: String, p: String): Option[User] =  {
-    implicit session:Session =>
+  def findByEmailAndProvider(e: String, p: String)(implicit session: Session): Option[User] =  {
+   
       Logger.info("findByEmailAndProvider %s %s".format(e, p))
       val q = for {
-        user <- Users
+        user <- users
         if (user.email is e)  && (user.providerId is p)
       } yield user
 
       q.firstOption
   }
 
-  def count: Int =  {
-    implicit session:Session => {
-      Query(Users.length).first
+  def count(implicit session: Session): Int =  {
+    {
+      (users.length).run
     }
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[User] = {
+  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[User] = {
     val pageSize = 10
     val offset = pageSize * page
 
      {
-      implicit session:Session => {
+      {
 
-        val users = (
-          for {t <- Users
+        val q = (
+          for {t <- users
             .sortBy(user => orderField match {
             case 1 => user.email.asc
             case -1 => user.email.desc
@@ -138,17 +136,17 @@ object User{
           })
             .drop(offset)
             .take(pageSize)
-          } yield t).list
+          } yield t)
 
-        Page(users, page, offset, count)
+        Page(q.list, page, offset, count)
       }
     }
   }
 
   //  def options: Seq[(String, String)] =  {
-  //    implicit session:Session =>
+  //   
   //      val query = (for {
-  //        item <- Users
+  //        item <- users
   //      } yield (item.id, item.email)
   //        ).sortBy(_._2)
   //      query.list.map(row => (row._1.toString, row._2))

@@ -16,30 +16,24 @@ case class Match(id: Option[Long],
                  competitionId: Long,
                  eventId: Option[Long])
 
-object Match{
+object Matches extends DAO{
 
   lazy val pageSize = 10
 
-  def findAll: Seq[Match] =  {
-    implicit session:Session => {
-      (for (c <- Matches) yield c).list
-    }
+  def findAll(implicit session: Session): Seq[Match] =  {
+      (for (c <- matches) yield c).list
   }
 
-  def count: Int =  {
-    implicit session:Session => {
-      Query(Matches.length).first
-    }
+  def count(implicit session: Session): Int =  {
+      matches.length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[(Match, SeasonCompetition, Event)] = {
+  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[(Match, SeasonCompetition, Event)] = {
 
     val offset = pageSize * page
 
-     {
-      implicit session:Session => {
         val matchs = (
-          for {m <- Matches
+          for {m <- matches
                if m.eventId.isNotNull
                c <- m.competition
                e <- m.event
@@ -56,39 +50,27 @@ object Match{
           .take(pageSize)
 
         Page(matchs.list, page, offset, count)
-      }
-    }
   }
 
-  def findById(id: Long): Option[Match] =  {
-    implicit session:Session => {
-      Matches.byId(id).firstOption
-    }
+  def findById(id: Long)(implicit session: Session): Option[Match] =  {
+      matches.where(_.id === id).firstOption
   }
 
-  def findByEventId(id: Long): Option[Match] =  {
-    implicit session:Session => {
-      Matches.byEventId(id).firstOption
-    }
+  def findByEventId(id: Long)(implicit session: Session): Option[Match] =  {
+      matches.where(_.eventId === id).firstOption
   }
 
-  def insert(m: Match): Long =  {
-    implicit session:Session => {
-      Matches.autoInc.insert(m)
-    }
+  def insert(m: Match)(implicit session: Session): Long =  {
+      matches.insert(m)
   }
 
-  def update(id: Long, m: Match) =  {
-    implicit session:Session => {
+  def update(id: Long, m: Match)(implicit session: Session) =  {
       val match2update = m.copy(Some(id))
-      Matches.where(_.id === id).update(match2update)
-    }
+      matches.where(_.id === id).update(match2update)
   }
 
-  def delete(matchId: Long) =  {
-    implicit session:Session => {
-      Matches.where(_.id === matchId).delete
-    }
+  def delete(matchId: Long)(implicit session: Session) =  {
+      matches.where(_.id === matchId).delete
   }
 
   implicit val matchFormat = Json.format[Match]

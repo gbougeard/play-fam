@@ -17,54 +17,42 @@ import database.EventTeams
 case class EventTeam(eventId: Long,
                      teamId: Long)
 
-object EventTeam{
-  def findByEvent(id: Long): Seq[(EventTeam, Event, Team)] =  {
-    implicit session:Session => {
-      val query = for {et <- EventTeams
+object EventTeams extends DAO{
+  def findByEvent(id: Long)(implicit session: Session): Seq[(EventTeam, Event, Team)] =  {
+      val query = for {et <- eventTeams
                        if et.eventId === id
                        t <- et.team
                        e <- et.event
 
       } yield (et, e, t)
       query.list
-    }
   }
 
-  def findByTeam(id: Long): Seq[(EventTeam, Event, Team)] =  {
-    implicit session:Session => {
-      val query = for {et <- EventTeams
+  def findByTeam(id: Long)(implicit session: Session): Seq[(EventTeam, Event, Team)] =  {
+      val query = for {et <- eventTeams
                        if et.teamId === id
                        t <- et.team
                        e <- et.event
 
       } yield (et, e, t)
       query.list
-    }
   }
 
-  def insert(event: EventTeam):Int =  {
-    implicit session:Session => {
-      Logger.debug("insert %s".format(event))
-        EventTeams.insert(event)
-    }
+  def insert(event: EventTeam)(implicit session: Session):Int =  {
+        eventTeams.insert(event)
   }
-  def insert(events: Seq[EventTeam]):Try[Option[Int]] =  {
-    implicit session:Session => {
-      Try(EventTeams.insertAll(events:_*))
-    }
+  def insert(events: Seq[EventTeam])(implicit session: Session):Try[Option[Int]] =  {
+      Try(eventTeams.insertAll(events:_*))
   }
 
-  def deleteForEvent(id: Long) =  {
-    implicit session:Session => {
-      Logger.debug("delete %s".format(id))
-      EventTeams.where(_.eventId === id).delete
-    }
+  def deleteForEvent(id: Long)(implicit session: Session) =  {
+      eventTeams.where(_.eventId === id).delete
   }
 
 
   //  def delete(eId: Long, tId : Long) =  {
   //    implicit session:Session => {
-  //      EventTeams.where(_.eventId === eId).and( _.teamId === tId).delete
+  //      eventTeams.where(_.eventId === eId).and( _.teamId === tId).delete
   //    }
   //  }
 

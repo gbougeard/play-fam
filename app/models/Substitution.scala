@@ -21,12 +21,11 @@ case class Substitution(id: Option[Long],
                         playerOutId: Long,
                         time: Option[Long])
 
-object Substitution{
+object Substitutions extends DAO{
   lazy val pageSize = 10
 
-  def findByMatchAndTeam(idMatch: Long, idTeam: Long): Seq[(Substitution, Match, Team, Player, Player)] =  {
-    implicit session:Session => {
-      val query = for {mp <- Substitutions
+  def findByMatchAndTeam(idMatch: Long, idTeam: Long)(implicit session: Session): Seq[(Substitution, Match, Team, Player, Player)] =  {
+      val query = for {mp <- substitutions
                        if mp.matchId === idMatch
                        if mp.teamId === idTeam
                        m <- mp.matche
@@ -36,27 +35,20 @@ object Substitution{
 
       } yield (mp, m, t, in, out)
       query.list.sortBy(_._1.time)
-    }
   }
 
-  def insert(substitution: Substitution): Long =  {
-    implicit session:Session => {
-      Substitutions.insert(substitution)
-    }
+  def insert(substitution: Substitution)(implicit session: Session): Long =  {
+      substitutions.insert(substitution)
   }
 
-  def update(id: Long, substitution: Substitution) =  {
-    implicit session:Session => {
+  def update(id: Long, substitution: Substitution)(implicit session: Session) =  {
       val substitution2update = substitution.copy(Some(id))
       Logger.info("playe2update " + substitution2update)
-      Substitutions.where(_.id === id).update(substitution2update)
-    }
+      substitutions.where(_.id === id).update(substitution2update)
   }
 
-  def delete(id: Long) =  {
-    implicit session:Session => {
-      Substitutions.where(_.id === id).delete
-    }
+  def delete(id: Long)(implicit session: Session) =  {
+      substitutions.where(_.id === id).delete
   }
 
   implicit val substitutionFormat = Json.format[Substitution]

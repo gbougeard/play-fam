@@ -14,29 +14,23 @@ case class TypAnswer(id: Option[Long],
                      group: String)
 
 
-object TypAnswer{
+object TypAnswers extends DAO{
   lazy val pageSize = 10
 
-  def findAll: Seq[TypAnswer] =  {
-    implicit session:Session => {
-      (for (c <- TypAnswers.sortBy(_.name)) yield c).list
-    }
+  def findAll(implicit session: Session): Seq[TypAnswer] =  {
+      (for (c <- typAnswers.sortBy(_.name)) yield c).list
   }
 
-  def count: Int =  {
-    implicit session:Session => {
-      Query(TypAnswers.length).first
-    }
+  def count(implicit session: Session): Int =  {
+      (typAnswers.length).run
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[TypAnswer] = {
+  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[TypAnswer] = {
 
     val offset = pageSize * page
 
-     {
-      implicit session:Session =>
         val typAnswers = (
-          for {c <- TypAnswers
+          for {c <- typAnswers
             .sortBy(typAnswer => orderField match {
             case 1 => typAnswer.code.asc
             case -1 => typAnswer.code.desc
@@ -48,50 +42,35 @@ object TypAnswer{
           } yield c).list
 
         Page(typAnswers, page, offset, count)
-    }
   }
 
-  def findById(id: Long): Option[TypAnswer] =  {
-    implicit session:Session => {
-      TypAnswers.byId(id).firstOption
-    }
+  def findById(id: Long)(implicit session: Session): Option[TypAnswer] =  {
+      typAnswers.where(_.id === id).firstOption
   }
 
-  def findByName(name: String): Option[TypAnswer] =  {
-    implicit session:Session => {
-      TypAnswers.byName(name).firstOption
-    }
+  def findByName(name: String)(implicit session: Session): Option[TypAnswer] =  {
+      typAnswers.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String): Option[TypAnswer] =  {
-    implicit session:Session => {
-      TypAnswers.byCode(code).firstOption
-    }
+  def findByCode(code: String)(implicit session: Session): Option[TypAnswer] =  {
+      typAnswers.where(_.code === code).firstOption
   }
 
-  def findByGroup(group: String): Option[TypAnswer] =  {
-    implicit session:Session => {
-      TypAnswers.byGroup(group).firstOption
-    }
+  def findByGroup(group: String)(implicit session: Session): Option[TypAnswer] =  {
+      typAnswers.where(_.group === group).firstOption
   }
 
-  def insert(typAnswer: TypAnswer): Long =  {
-    implicit session:Session => {
-      TypAnswers.autoInc.insert(typAnswer)
-    }
+  def insert(typAnswer: TypAnswer)(implicit session: Session): Long =  {
+      typAnswers.insert(typAnswer)
   }
 
-  def update(id: Long, typAnswer: TypAnswer) =  {
-    implicit session:Session => {
+  def update(id: Long, typAnswer: TypAnswer)(implicit session: Session) =  {
       val typAnswer2update = typAnswer.copy(Some(id), typAnswer.code, typAnswer.name)
-      TypAnswers.where(_.id === id).update(typAnswer2update)
-    }
+      typAnswers.where(_.id === id).update(typAnswer2update)
   }
 
-  def delete(typAnswerId: Long) =  {
-    implicit session:Session => {
-      TypAnswers.where(_.id === typAnswerId).delete
-    }
+  def delete(typAnswerId: Long)(implicit session: Session) =  {
+      typAnswers.where(_.id === typAnswerId).delete
   }
 
   /**
@@ -100,10 +79,9 @@ object TypAnswer{
   //  def options: Seq[(String, String)] = for {
   //    c <- findAll
   //  } yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] =  {
-    implicit session:Session =>
+  def options(implicit session: Session): Seq[(String, String)] =  {
       val query = (for {
-        item <- TypAnswers
+        item <- typAnswers
       } yield (item.id, item.name)
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))

@@ -22,13 +22,11 @@ case class Ranking(competitionId: Long,
                    goalShipped: Int)
 
 
-object Ranking{
+object Rankings extends DAO{
   lazy val pageSize = 10
 
-  def findAll: Seq[Ranking] =  {
-    implicit session:Session => {
-      (for (c <- Rankings.sortBy(_.points.desc)) yield c).list
-    }
+  def findAll(implicit session: Session): Seq[Ranking] =  {
+      (for (c <- rankings.sortBy(_.points.desc)) yield c).list
   }
 
   //  def findPage(page: Int = 0, orderField: Int): Page[Ranking] = {
@@ -38,7 +36,7 @@ object Ranking{
   //     {
   //      implicit session:Session =>
   //        val clubs = (
-  //          for {c <- Rankings
+  //          for {c <- rankings
   //            .sortBy(club => orderField match {
   //            case 1 => club.code.asc
   //            case -1 => club.code.desc
@@ -49,36 +47,30 @@ object Ranking{
   //            .take(pageSize)
   //          } yield c).list
   //
-  //        val totalRows = (for (c <- Rankings) yield c.id).list.size
+  //        val totalRows = (for (c <- rankings) yield c.id).list.size
   //        Page(clubs, page, offset, totalRows)
   //    }
   //  }
 
-  def findByCompetition(id: Long): Seq[Ranking] =  {
-    implicit session:Session => {
+  def findByCompetition(id: Long)(implicit session: Session): Seq[Ranking] =  {
       (for {
-        c <- Rankings.sortBy(_.points.desc)
+        c <- rankings.sortBy(_.points.desc)
         if c.competitionId === id
       } yield c).list
-    }
   }
 
-  def findByClub(id: Long): Seq[Ranking] =  {
-    implicit session:Session => {
+  def findByClub(id: Long)(implicit session: Session): Seq[Ranking] =  {
       (for {
-        c <- Rankings.sortBy(_.points.desc)
+        c <- rankings.sortBy(_.points.desc)
         if c.clubId === id
       } yield c).list
-    }
   }
 
-  def findByTeam(id: Long): Seq[Ranking] =  {
-    implicit session:Session => {
+  def findByTeam(id: Long)(implicit session: Session): Seq[Ranking] =  {
       (for {
-        c <- Rankings.sortBy(_.points.desc)
+        c <- rankings.sortBy(_.points.desc)
         if c.teamId === id
       } yield c).list
-    }
   }
 
   implicit val rankingFormat = Json.format[Ranking]

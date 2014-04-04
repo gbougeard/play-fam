@@ -15,80 +15,59 @@ case class Country(id: Option[Long],
                    name: String,
                    upper: String,
                    lower: String)
-object Country{
+object Countries extends DAO{
   lazy val pageSize = 10
 
   lazy val countryCount = count
 
-  def findAll: Seq[Country] =  {
-    implicit session:Session => {
-      (for (c <- Countries.sortBy(_.name)) yield c).list
-    }
+  def findAll(implicit session: Session): Seq[Country] =  {
+      (for (c <- countries.sortBy(_.name)) yield c).list
   }
 
-  def count: Int =  {
-    implicit session:Session => {
-      Query(Countries.length).first
-    }
+  def count(implicit session: Session): Int =  {
+      countries.length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[Country] = {
+  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[Country] = {
 
     val offset = pageSize * page
-     {
-      implicit session:Session => {
-        val countrys = for {t <- Countries
+        val countrys = for {t <- countries
           .sortBy(_.id)
           .drop(offset)
           .take(pageSize)
         } yield t
 
         Page(countrys.list, page, offset, countryCount)
-      }
-    }
   }
 
-  def findById(id: Long): Option[Country] =  {
-    implicit session:Session => {
-      Countries.byId(id).firstOption
-    }
+  def findById(id: Long)(implicit session: Session): Option[Country] =  {
+      countries.where(_.id === id).firstOption
   }
 
-  def findByName(name: String): Option[Country] =  {
-    implicit session:Session => {
-      Countries.byName(name).firstOption
-    }
+  def findByName(name: String)(implicit session: Session): Option[Country] =  {
+      countries.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String): Option[Country] =  {
-    implicit session:Session => {
-      Countries.byCode(code).firstOption
-    }
+  def findByCode(code: String)(implicit session: Session): Option[Country] =  {
+      countries.where(_.code === code).firstOption
   }
 
-  def insert(country: Country): Long =  {
-    implicit session:Session => {
-      Countries.autoInc.insert(country)
-    }
+  def insert(country: Country)(implicit session: Session): Long =  {
+      countries.insert(country)
   }
 
-  def update(id: Long, country: Country) =  {
-    implicit session:Session => {
+  def update(id: Long, country: Country)(implicit session: Session) =  {
       val country2update = country.copy(Some(id), country.code, country.name, country.upper, country.lower)
-      Countries.where(_.id === id).update(country2update)
-    }
+      countries.where(_.id === id).update(country2update)
   }
 
-  def delete(countryId: Long) =  {
-    implicit session:Session => {
-      Countries.where(_.id === countryId).delete
-    }
+  def delete(countryId: Long)(implicit session: Session) =  {
+      countries.where(_.id === countryId).delete
   }
 
-  def json(page: Int, pageSize: Int, orderField: Int): Seq[Country] =  {
-    implicit session:Session => {
+  def json(page: Int, pageSize: Int, orderField: Int)(implicit session: Session): Seq[Country] =  {
 
-      val countries = for {c <- Countries
+      val q = for {c <- countries
         .sortBy(country => orderField match {
         case 1 => country.id.asc
         case -1 => country.id.desc
@@ -101,18 +80,16 @@ object Country{
         .take(pageSize)
       } yield c
       //      Json.toJson(cities.list)
-      countries.list
-    }
+      q.list
   }
 
   /**
    * Construct the Map[String,String] needed to fill a select options set.
    */
   //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] =  {
-    implicit session:Session =>
+  def options(implicit session: Session): Seq[(String, String)] =  {
       val query = (for {
-        item <- Countries
+        item <- countries
       } yield (item.id, item.name)
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))

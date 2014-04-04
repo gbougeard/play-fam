@@ -22,29 +22,23 @@ case class TypMatch(id: Option[Long],
                     nbPenalties: Option[Int])
 
 
-object TypMatch{
+object TypMatches extends DAO{
   lazy val pageSize = 10
 
-  def findAll: Seq[TypMatch] =  {
-    implicit session:Session => {
-      (for (c <- TypMatches.sortBy(_.name)) yield c).list
-    }
+  def findAll(implicit session: Session): Seq[TypMatch] =  {
+      (for (c <- typMatches.sortBy(_.name)) yield c).list
   }
 
-  def count: Int =  {
-    implicit session:Session => {
-      Query(TypMatches.length).first
-    }
+  def count(implicit session: Session): Int =  {
+      (typMatches.length).run
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[TypMatch] = {
+  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[TypMatch] = {
 
     val offset = pageSize * page
 
-     {
-      implicit session:Session =>
-        val typMatchs = (
-          for {c <- TypMatches
+        val q = (
+          for {c <- typMatches
             .sortBy(typMatch => orderField match {
             case 1 => typMatch.code.asc
             case -1 => typMatch.code.desc
@@ -53,47 +47,34 @@ object TypMatch{
           })
             .drop(offset)
             .take(pageSize)
-          } yield c).list
+          } yield c)
 
-        Page(typMatchs, page, offset, count)
-    }
+        Page(q.list, page, offset, count)
   }
 
-  def findById(id: Long): Option[TypMatch] =  {
-    implicit session:Session => {
-      TypMatches.byId(id).firstOption
-    }
+  def findById(id: Long)(implicit session: Session): Option[TypMatch] =  {
+      typMatches.where(_.id === id).firstOption
   }
 
-  def findByName(name: String): Option[TypMatch] =  {
-    implicit session:Session => {
-      TypMatches.byName(name).firstOption
-    }
+  def findByName(name: String)(implicit session: Session): Option[TypMatch] =  {
+      typMatches.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String): Option[TypMatch] =  {
-    implicit session:Session => {
-      TypMatches.byCode(code).firstOption
-    }
+  def findByCode(code: String)(implicit session: Session): Option[TypMatch] =  {
+      typMatches.where(_.code === code).firstOption
   }
 
-  def insert(typMatch: TypMatch): Long =  {
-    implicit session:Session => {
-      TypMatches.autoInc.insert(typMatch)
-    }
+  def insert(typMatch: TypMatch)(implicit session: Session): Long =  {
+      typMatches.insert(typMatch)
   }
 
-  def update(id: Long, typMatch: TypMatch) =  {
-    implicit session:Session => {
+  def update(id: Long, typMatch: TypMatch)(implicit session: Session) =  {
       val typMatch2update = typMatch.copy(Some(id), typMatch.code, typMatch.name)
-      TypMatches.where(_.id === id).update(typMatch2update)
-    }
+      typMatches.where(_.id === id).update(typMatch2update)
   }
 
-  def delete(typMatchId: Long) =  {
-    implicit session:Session => {
-      TypMatches.where(_.id === typMatchId).delete
-    }
+  def delete(typMatchId: Long)(implicit session: Session) =  {
+      typMatches.where(_.id === typMatchId).delete
   }
 
   /**
@@ -102,10 +83,9 @@ object TypMatch{
 //  def options: Seq[(String, String)] = for {
 //    c <- findAll
 //  } yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] =  {
-    implicit session:Session =>
+  def options(implicit session: Session): Seq[(String, String)] =  {
       val query = (for {
-        item <- TypMatches
+        item <- typMatches
       } yield (item.id, item.name)
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))

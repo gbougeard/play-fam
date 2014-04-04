@@ -15,79 +15,59 @@ case class TypCompetition(id: Option[Long],
                           typMatchId: Long)
 
 
-object TypCompetition{
+object TypCompetitions extends DAO{
   lazy val pageSize = 10
 
-  def findAll: Seq[TypCompetition] =  {
-    implicit session:Session => {
-      (for (c <- TypCompetitions.sortBy(_.name)) yield c).list
-    }
+  def findAll(implicit session: Session): Seq[TypCompetition] =  {
+      (for (c <- typCompetitions.sortBy(_.name)) yield c).list
   }
 
-  def count: Int =  {
-    implicit session:Session => {
-      Query(TypCompetitions.length).first
-    }
+  def count(implicit session: Session): Int =  {
+      (typCompetitions.length).run
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[(TypCompetition, TypMatch)] = {
+  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[(TypCompetition, TypMatch)] = {
 
     val offset = pageSize * page
 
-     {
-      implicit session:Session =>
-        val typCompetitions = (
-          for {c <- TypCompetitions
-            .sortBy(typCompetition => orderField match {
-            case 1 => typCompetition.code.asc
-            case -1 => typCompetition.code.desc
-            case 2 => typCompetition.name.asc
-            case -2 => typCompetition.name.desc
-          })
-            .drop(offset)
-            .take(pageSize)
-               m <- c.typMatch
-          } yield (c,m)).list
+        val q = for {c <- typCompetitions
+          .sortBy(typCompetition => orderField match {
+          case 1 => typCompetition.code.asc
+          case -1 => typCompetition.code.desc
+          case 2 => typCompetition.name.asc
+          case -2 => typCompetition.name.desc
+        })
+          .drop(offset)
+          .take(pageSize)
+                     m <- c.typMatch
+        } yield (c, m)
 
-        Page(typCompetitions, page, offset, count)
-    }
+        Page(q.list, page, offset, count)
   }
 
-  def findById(id: Long): Option[TypCompetition] =  {
-    implicit session:Session => {
-      TypCompetitions.byId(id).firstOption
-    }
+  def findById(id: Long)(implicit session: Session): Option[TypCompetition] =  {
+      typCompetitions.where(_.id === id).firstOption
   }
 
-  def findByName(name: String): Option[TypCompetition] =  {
-    implicit session:Session => {
-      TypCompetitions.byName(name).firstOption
-    }
+  def findByName(name: String)(implicit session: Session): Option[TypCompetition] =  {
+      typCompetitions.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String): Option[TypCompetition] =  {
-    implicit session:Session => {
-      TypCompetitions.byCode(code).firstOption
-    }
+  def findByCode(code: String)(implicit session: Session): Option[TypCompetition] =  {
+      typCompetitions.where(_.code === code).firstOption
   }
 
-  def insert(typCompetition: TypCompetition): Long =  {
-    implicit session:Session => {
-      TypCompetitions.autoInc.insert(typCompetition)
-    }
+  def insert(typCompetition: TypCompetition)(implicit session: Session): Long =  {
+      typCompetitions.insert(typCompetition)
   }
 
-  def update(id: Long, typCompetition: TypCompetition) =  {
-    implicit session:Session => {
+  def update(id: Long, typCompetition: TypCompetition)(implicit session: Session) =  {
       val typCompetition2update = typCompetition.copy(Some(id), typCompetition.code, typCompetition.name)
-      TypCompetitions.where(_.id === id).update(typCompetition2update)
-    }
+      typCompetitions.where(_.id === id).update(typCompetition2update)
   }
 
-  def delete(typCompetitionId: Long) =  {
-    implicit session:Session => {
-      TypCompetitions.where(_.id === typCompetitionId).delete
-    }
+  def delete(typCompetitionId: Long)(implicit session: Session) =  {
+      typCompetitions.where(_.id === typCompetitionId).delete
   }
 
   /**
@@ -96,10 +76,10 @@ object TypCompetition{
 //  def options: Seq[(String, String)] = for {
 //    c <- findAll
 //  } yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] =  {
+  def options(implicit session: Session): Seq[(String, String)] =  {
     implicit session:Session =>
       val query = (for {
-        item <- TypCompetitions
+        item <- typCompetitions
       } yield (item.id, item.name)
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))

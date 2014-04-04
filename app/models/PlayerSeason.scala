@@ -34,7 +34,7 @@ case class PlayerSeason(playerId: Long,
                         statTimePlayed: Option[Long]
                          )
 
-object PlayerSeason{
+object PlayerSeasons extends DAO{
   lazy val pageSize = 10
 
   //  def findPage(page: Int = 0, orderField: Int): Page[(Player)] = {
@@ -63,9 +63,8 @@ object PlayerSeason{
   //    }
   //  }
 
-  def findBySeason(id: Long): Seq[(PlayerSeason, Player, Season, Club)] =  {
-    implicit session:Session => {
-      val query = for {ps <- PlayerSeasons
+  def findBySeason(id: Long)(implicit session: Session): Seq[(PlayerSeason, Player, Season, Club)] =  {
+      val query = for {ps <- playerSeasons
                        if ps.seasonId === id
                        c <- ps.club
                        p <- ps.player
@@ -73,12 +72,10 @@ object PlayerSeason{
 
       } yield (ps, p, s, c)
       query.list
-    }
   }
 
-  def findByPlayer(id: Long): Seq[(PlayerSeason, Player, Season, Team, Club)] =  {
-    implicit session:Session => {
-      val query = for {ps <- PlayerSeasons
+  def findByPlayer(id: Long)(implicit session: Session): Seq[(PlayerSeason, Player, Season, Team, Club)] =  {
+      val query = for {ps <- playerSeasons
                        if ps.playerId === id
                        t <- ps.team
                        c <- ps.club
@@ -87,12 +84,10 @@ object PlayerSeason{
 
       } yield (ps, p, s, t, c)
       query.list
-    }
   }
 
-  def findByClub(id: Long): Seq[(PlayerSeason, Player, Season, Team, Club)] =  {
-    implicit session:Session => {
-      val query = for {ps <- PlayerSeasons
+  def findByClub(id: Long)(implicit session: Session): Seq[(PlayerSeason, Player, Season, Team, Club)] =  {
+      val query = for {ps <- playerSeasons
                        if ps.clubId === id
                        t <- ps.team
                        c <- ps.club
@@ -101,12 +96,10 @@ object PlayerSeason{
 
       } yield (ps, p, s, t, c)
       query.list
-    }
   }
 
-  def findByClubAndSeason(idClub: Long, idSeason: Long): Seq[(PlayerSeason, Player, Season, Club)] =  {
-    implicit session:Session => {
-      val query = for {ps <- PlayerSeasons
+  def findByClubAndSeason(idClub: Long, idSeason: Long)(implicit session: Session): Seq[(PlayerSeason, Player, Season, Club)] =  {
+      val query = for {ps <- playerSeasons
                        if ps.clubId === idClub
                        if ps.seasonId === idSeason
                        c <- ps.club
@@ -115,12 +108,10 @@ object PlayerSeason{
 
       } yield (ps, p, s, c)
       query.list
-    }
   }
 
-  def findPlayerByClubAndSeason(idPlayer: Long, idClub: Long, idSeason: Long): Option[(PlayerSeason, Player, Season, Club)] =  {
-    implicit session:Session => {
-      val query = for {ps <- PlayerSeasons
+  def findPlayerByClubAndSeason(idPlayer: Long, idClub: Long, idSeason: Long)(implicit session: Session): Option[(PlayerSeason, Player, Season, Club)] =  {
+      val query = for {ps <- playerSeasons
                        if ps.clubId === idClub
                        if ps.seasonId === idSeason
                        if ps.playerId === idPlayer
@@ -130,12 +121,10 @@ object PlayerSeason{
 
       } yield (ps, p, s, c)
       query.firstOption
-    }
   }
 
-  def findByTeam(id: Long): Seq[(PlayerSeason, Player, Season, Team, Club)] =  {
-    implicit session:Session => {
-      val query = for {ps <- PlayerSeasons
+  def findByTeam(id: Long)(implicit session: Session): Seq[(PlayerSeason, Player, Season, Team, Club)] =  {
+      val query = for {ps <- playerSeasons
                        if ps.teamId === id
                        t <- ps.team
                        c <- ps.club
@@ -144,7 +133,6 @@ object PlayerSeason{
 
       } yield (ps, p, s, t, c)
       query.list
-    }
   }
 
   //  def insert(player: Player): Long =  {

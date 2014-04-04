@@ -15,7 +15,7 @@ case class PlayerPosition(playerId: Long,
                         positionId: Long,
                         numOrder: Int)
 
-object PlayerPosition{
+object PlayerPositions extends DAO{
 
   lazy val pageSize = 10
 
@@ -45,28 +45,24 @@ object PlayerPosition{
   //    }
   //  }
 
-  def findByPosition(id: Long): Seq[(PlayerPosition, Player, Position)] =  {
-    implicit session:Session => {
-      val query = for {ps <- PlayerPositions
+  def findByPosition(id: Long)(implicit session: Session): Seq[(PlayerPosition, Player, Position)] =  {
+      val query = for {ps <- playerPositions
                        if ps.positionId === id
                        p <- ps.player
                        s <- ps.position
 
       } yield (ps, p, s)
       query.list
-    }
   }
 
-  def findByPlayer(id: Long): Seq[(PlayerPosition, Player, Position)] =  {
-    implicit session:Session => {
-      val query = for {ps <- PlayerPositions
+  def findByPlayer(id: Long)(implicit session: Session): Seq[(PlayerPosition, Player, Position)] =  {
+      val query = for {ps <- playerPositions
                        if ps.playerId === id
                        p <- ps.player
                        s <- ps.position
 
       } yield (ps, p, s)
       query.list
-    }
   }
 
   //  def insert(player: Player): Long =  {

@@ -19,28 +19,22 @@ case class Team(id: Option[Long],
                 clubId: Long) {
 }
 
-object Team{
+object Teams extends DAO{
   lazy val pageSize = 10
 
-  def findAll: Seq[Team] =  {
-    implicit session:Session => {
-      (for (c <- Teams.sortBy(_.name)) yield c).list
-    }
+  def findAll(implicit session: Session): Seq[Team] =  {
+      (for (c <- teams.sortBy(_.name)) yield c).list
   }
 
-  def count: Int =  {
-    implicit session:Session => {
-      Query(Teams.length).first
-    }
+  def count(implicit session: Session): Int =  {
+      (teams.length).run
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[(Team, Club)] = {
+  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[(Team, Club)] = {
 
     val offset = pageSize * page
-     {
-      implicit session:Session => {
-        val teams = (
-          for {t <- Teams
+        val q = (
+          for {t <- teams
                c <- t.club
           } yield (t, c)
           ).sortBy(orderField match {
@@ -54,71 +48,53 @@ object Team{
           .drop(offset)
           .take(pageSize)
 
-        Page(teams.list, page, offset, count)
-      }
-    }
+        Page(q.list, page, offset, count)
   }
 
-  def findById(id: Long): Option[Team] =  {
-    implicit session:Session => {
-      Teams.byId(id).firstOption
-    }
+  def findById(id: Long)(implicit session: Session): Option[Team] =  {
+      teams.where(_.id === id).firstOption
   }
 
-  def findByName(name: String): Option[Team] =  {
-    implicit session:Session => {
-      Teams.byName(name).firstOption
-    }
+  def findByName(name: String)(implicit session: Session): Option[Team] =  {
+      teams.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String): Option[Team] =  {
-    implicit session:Session => {
-      Teams.byCode(code).firstOption
-    }
+  def findByCode(code: String)(implicit session: Session): Option[Team] =  {
+      teams.where(_.code === code).firstOption
   }
 
-  def findByClub(id: Long): Seq[Team] =  {
-    implicit session:Session => {
-      Teams.byClub(id).list
-    }
+  def findByClub(id: Long)(implicit session: Session): Seq[Team] =  {
+      teams.where(_.clubId === id).list
   }
 
-  def insert(team: Team): Long =  {
-    implicit session:Session => {
-      Teams.autoInc.insert(team)
-    }
+  def insert(team: Team)(implicit session: Session): Long =  {
+      teams.insert(team)
   }
 
-  def update(id: Long, team: Team) =  {
-    implicit session:Session => {
+  def update(id: Long, team: Team)(implicit session: Session) =  {
       val team2update = team.copy(Some(id), team.code, team.name, team.clubId)
-      Teams.where(_.id === id).update(team2update)
-    }
+      teams.where(_.id === id).update(team2update)
   }
 
-  def delete(teamId: Long) =  {
-    implicit session:Session => {
-      Teams.where(_.id === teamId).delete
-    }
+  def delete(teamId: Long)(implicit session: Session) =  {
+      teams.where(_.id === teamId).delete
   }
 
   /**
    * Construct the Map[String,String] needed to fill a select options set.
    */
 //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] =  {
-    implicit session:Session =>
+  def options(implicit session: Session): Seq[(String, String)] =  {
       val query = (for {
-        item <- Teams
+        item <- teams
       } yield (item.id, item.name)
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))
   }
 
-  def findByClubOptions(id: Long): Seq[(String, String)] =  {
-    implicit session:Session =>
+  def findByClubOptions(id: Long)(implicit session: Session): Seq[(String, String)] =  {
       val query = (for {
-        item <- Teams
+        item <- teams
         if item.clubId is id
       } yield (item.id, item.name)
         ).sortBy(_._2)

@@ -24,29 +24,23 @@ case class Player(id: Option[Long],
   }
 }
 
-object Player{
+object Players extends DAO{
   lazy val pageSize = 10
 
-  def findAll: Seq[Player] =  {
-    implicit session:Session => {
-      (for (c <- Players.sortBy(_.lastName)) yield c).list
-    }
+  def findAll(implicit session: Session): Seq[Player] =  {
+      (for (c <- players.sortBy(_.lastName)) yield c).list
   }
 
-  def count: Int =  {
-    implicit session:Session => {
-      Query(Players.length).first
-    }
+  def count(implicit session: Session): Int =  {
+      players.length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[(Player)] = {
+  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[(Player)] = {
 
     val offset = pageSize * page
 
-     {
-      implicit session:Session => {
         val players = (
-          for {t <- Players
+          for {t <- players
             .sortBy(player => orderField match {
             case 1 => player.firstName.asc
             case -1 => player.firstName.desc
@@ -60,63 +54,45 @@ object Player{
           } yield t).list
 
         Page(players, page, offset, count)
-      }
-    }
   }
 
-  def findById(id: Long): Option[Player] =  {
-    implicit session:Session => {
-      Players.byId(id).firstOption
-    }
+  def findById(id: Long)(implicit session: Session): Option[Player] =  {
+      players.where(_.id === id).firstOption
   }
 
-  def findByFirstName(firstName: String): Option[Player] =  {
-    implicit session:Session => {
-      Players.byFirstName(firstName).firstOption
-    }
+  def findByFirstName(firstName: String)(implicit session: Session): Option[Player] =  {
+      players.where(_.firstName === firstName).firstOption
   }
 
-  def findByLastName(lastName: String): Option[Player] =  {
-    implicit session:Session => {
-      Players.byLastName(lastName).firstOption
-    }
+  def findByLastName(lastName: String)(implicit session: Session): Option[Player] =  {
+      players.where(_.lastName === lastName).firstOption
   }
 
-  def findByUserId(id: Long): Option[Player] =  {
-    implicit session:Session => {
-      Players.byUserId(id).firstOption
-    }
+  def findByUserId(id: Long)(implicit session: Session): Option[Player] =  {
+      players.where(_.userId === id).firstOption
   }
 
 
-  def insert(player: Player): Long =  {
-    implicit session:Session => {
-      Players.autoInc.insert(player)
-    }
+  def insert(player: Player)(implicit session: Session): Long =  {
+      players.insert(player)
   }
 
-  def update(id: Long, player: Player) =  {
-    implicit session:Session => {
+  def update(id: Long, player: Player)(implicit session: Session) =  {
       val player2update = player.copy(Some(id))
       Logger.info("playe2update " + player2update)
-      Players.where(_.id === id).update(player2update)
-    }
+      players.where(_.id === id).update(player2update)
   }
 
-  def delete(playerId: Long) =  {
-    implicit session:Session => {
-      Players.where(_.id === playerId).delete
-    }
+  def delete(playerId: Long)(implicit session: Session) =  {
+      players.where(_.id === playerId).delete
   }
 
-  def find(filter: String) =  {
-    implicit session:Session => {
-      play.Logger.debug(s"Players.find $filter")
-      val q1 = Query(Players).filter(_.firstName.toUpperCase like s"%${filter.toUpperCase}%")
-      val q2 = Query(Players).filter(_.lastName.toUpperCase like s"%${filter.toUpperCase}%")
+  def find(filter: String)(implicit session: Session) =  {
+      play.Logger.debug(s"players.find $filter")
+      val q1 = players.filter(_.firstName.toUpperCase like s"%${filter.toUpperCase}%")
+      val q2 = players.filter(_.lastName.toUpperCase like s"%${filter.toUpperCase}%")
       val unionQuery = q1 union q2
       unionQuery.list
-    }
   }
 
   /**
@@ -124,10 +100,9 @@ object Player{
    */
 //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.firstName + " " + c.lastName)
 
-  def options: Seq[(String, String)] =  {
-    implicit session:Session =>
+  def options(implicit session: Session): Seq[(String, String)] =  {
       val query = (for {
-        item <- Players
+        item <- players
       } yield (item.id, item.firstName + " " + item.lastName)
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))

@@ -69,6 +69,7 @@ private[models] trait DAO {
   val typEvents = TableQuery[TypEvents]
   val typMatches = TableQuery[TypMatches]
   val users = TableQuery[Users]
+  val tokens = TableQuery[Tokens]
 }
 
 import scala.slick.lifted.CanBeQueryCondition

@@ -12,29 +12,23 @@ case class Position(id: Option[Long],
                           code: String,
                           name: String)
 
-object Position{
+object Positions extends DAO{
   lazy val pageSize = 10
 
-  def findAll: Seq[Position] =  {
-    implicit session:Session => {
-      (for (c <- Positions.sortBy(_.name)) yield c).list
-    }
+  def findAll(implicit session: Session): Seq[Position] =  {
+      (for (c <- positions.sortBy(_.name)) yield c).list
   }
 
-  def count: Int =  {
-    implicit session:Session => {
-      Query(Positions.length).first
-    }
+  def count(implicit session: Session): Int =  {
+      positions.length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[Position] = {
+  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[Position] = {
 
     val offset = pageSize * page
 
-     {
-      implicit session:Session =>
         val positions = (
-          for {c <- Positions
+          for {c <- positions
             .sortBy(position => orderField match {
             case 1 => position.code.asc
             case -1 => position.code.desc
@@ -46,44 +40,31 @@ object Position{
           } yield c).list
 
         Page(positions, page, offset, count)
-    }
   }
 
-  def findById(id: Long): Option[Position] =  {
-    implicit session:Session => {
-      Positions.byId(id).firstOption
-    }
+  def findById(id: Long)(implicit session: Session): Option[Position] =  {
+      positions.where(_.id === id).firstOption
   }
 
-  def findByName(name: String): Option[Position] =  {
-    implicit session:Session => {
-      Positions.byName(name).firstOption
-    }
+  def findByName(name: String)(implicit session: Session): Option[Position] =  {
+      positions.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String): Option[Position] =  {
-    implicit session:Session => {
-      Positions.byCode(code).firstOption
-    }
+  def findByCode(code: String)(implicit session: Session): Option[Position] =  {
+      positions.where(_.code === code).firstOption
   }
 
-  def insert(position: Position): Long =  {
-    implicit session:Session => {
-      Positions.autoInc.insert(position)
-    }
+  def insert(position: Position)(implicit session: Session): Long =  {
+      positions.insert(position)
   }
 
-  def update(id: Long, position: Position) =  {
-    implicit session:Session => {
+  def update(id: Long, position: Position)(implicit session: Session) =  {
       val position2update = position.copy(Some(id), position.code, position.name)
-      Positions.where(_.id === id).update(position2update)
-    }
+      positions.where(_.id === id).update(position2update)
   }
 
-  def delete(positionId: Long) =  {
-    implicit session:Session => {
-      Positions.where(_.id === positionId).delete
-    }
+  def delete(positionId: Long)(implicit session: Session) =  {
+      positions.where(_.id === positionId).delete
   }
 
   /**
@@ -92,10 +73,9 @@ object Position{
 //  def options: Seq[(String, String)] = for {
 //    c <- findAll
 //  } yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] =  {
-    implicit session:Session =>
+  def options(implicit session: Session): Seq[(String, String)] =  {
       val query = (for {
-        item <- Positions
+        item <- positions
       } yield (item.id, item.name)
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))

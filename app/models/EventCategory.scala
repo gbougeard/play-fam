@@ -15,41 +15,35 @@ import database.EventCategories
 case class EventCategory(eventId: Long,
                      categoryId: Long)
 
-object EventCategory{
-  def findByEvent(id: Long): Seq[(EventCategory, Event, Category)] =  {
-    implicit session:Session => {
-      val query = for {et <- EventCategories
+object EventCategories extends DAO{
+  def findByEvent(id: Long)(implicit session: Session): Seq[(EventCategory, Event, Category)] =  {
+      val query = for {et <- eventCategories
                        if et.eventId === id
                        t <- et.category
                        e <- et.event
 
       } yield (et, e, t)
       query.list
-    }
   }
 
-  def findByCategory(id: Long): Seq[(EventCategory, Event, Category)] =  {
-    implicit session:Session => {
-      val query = for {et <- EventCategories
+  def findByCategory(id: Long)(implicit session: Session): Seq[(EventCategory, Event, Category)] =  {
+      val query = for {et <- eventCategories
                        if et.categoryId === id
                        t <- et.category
                        e <- et.event
 
       } yield (et, e, t)
       query.list
-    }
   }
 
-  def insert(event: EventCategory): Long =  {
-    implicit session:Session => {
-      EventCategories.insert(event)
-    }
+  def insert(event: EventCategory)(implicit session: Session): Long =  {
+      eventCategories.insert(event)
   }
 
 
 //  def delete(eId: Long, tId : Long) =  {
 //    implicit session:Session => {
-//      EventCategories.where(_.eventId === eId).and( _.categoryId === tId).delete
+//      eventCategories.where(_.eventId === eId).and( _.categoryId === tId).delete
 //    }
 //  }
 

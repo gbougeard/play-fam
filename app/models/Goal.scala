@@ -21,37 +21,29 @@ case class Goal(id: Option[Long],
                 penalty: Boolean,
                 csc: Boolean) {
 }
-object Goal{
+object Goals extends DAO{
   lazy val pageSize = 10
 
-  def findByMatchAndTeam(idMatch: Long, idTeam: Long): Seq[(Goal, Option[Player])] =  {
-    implicit session:Session => {
-      val query = for {(g, s) <- Goals leftJoin Players on (_.strikerId === _.id)
+  def findByMatchAndTeam(idMatch: Long, idTeam: Long)(implicit session: Session): Seq[(Goal, Option[Player])] =  {
+      val query = for {(g, s) <- goals leftJoin Players on (_.strikerId === _.id)
                        if g.matchId === idMatch
                        if g.teamId === idTeam
       } yield (g, s.id.?, s.firstName.?, s.lastName.?, s.email.?, s.userId.?)
 
       query.list.map(row => (row._1, row._2.map(value => Player(Option(value), row._3.get, row._4.get, row._5.get, row._6)))).sortBy(_._1.goalTime)
-    }
   }
 
-  def insert(goal: Goal): Long =  {
-    implicit session:Session => {
-      Goals.autoInc.insert(goal)
-    }
+  def insert(goal: Goal)(implicit session: Session): Long =  {
+      goals.insert(goal)
   }
 
-  def update(id: Long, goal: Goal) =  {
-    implicit session:Session => {
+  def update(id: Long, goal: Goal)(implicit session: Session) =  {
       val goal2update = goal.copy(Some(id))
-      Goals.where(_.id === id).update(goal2update)
-    }
+      goals.where(_.id === id).update(goal2update)
   }
 
-  def delete(goalId: Long) =  {
-    implicit session:Session => {
-      Goals.where(_.id === goalId).delete
-    }
+  def delete(goalId: Long)(implicit session: Session) =  {
+      goals.where(_.id === goalId).delete
   }
 
 

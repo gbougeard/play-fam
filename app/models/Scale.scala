@@ -16,29 +16,23 @@ case class Scale(id: Option[Long],
                  ptsVictory: Int)
 
 
-object Scale{
+object Scales extends DAO{
   lazy val pageSize = 10
 
-  def findAll: Seq[Scale] =  {
-    implicit session:Session => {
-      (for (c <- Scales.sortBy(_.name)) yield c).list
-    }
+  def findAll(implicit session: Session): Seq[Scale] =  {
+      (for (c <- scales.sortBy(_.name)) yield c).list
   }
 
-  def count: Int =  {
-    implicit session:Session => {
-      Query(Scales.length).first
-    }
+  def count(implicit session: Session): Int =  {
+      scales.length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[Scale] = {
+  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[Scale] = {
 
     val offset = pageSize * page
 
-     {
-      implicit session:Session =>
         val scales = (
-          for {c <- Scales
+          for {c <- scales
             .sortBy(scale => orderField match {
             case 1 => scale.code.asc
             case -1 => scale.code.desc
@@ -50,44 +44,31 @@ object Scale{
           } yield c).list
 
         Page(scales, page, offset, count)
-    }
   }
 
-  def findById(id: Long): Option[Scale] =  {
-    implicit session:Session => {
-      Scales.byId(id).firstOption
-    }
+  def findById(id: Long)(implicit session: Session): Option[Scale] =  {
+      scales.where(_.id === id).firstOption
   }
 
-  def findByName(name: String): Option[Scale] =  {
-    implicit session:Session => {
-      Scales.byName(name).firstOption
-    }
+  def findByName(name: String)(implicit session: Session): Option[Scale] =  {
+      scales.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String): Option[Scale] =  {
-    implicit session:Session => {
-      Scales.byCode(code).firstOption
-    }
+  def findByCode(code: String)(implicit session: Session): Option[Scale] =  {
+      scales.where(_.code === code).firstOption
   }
 
-  def insert(scale: Scale): Long =  {
-    implicit session:Session => {
-      Scales.autoInc.insert(scale)
-    }
+  def insert(scale: Scale)(implicit session: Session): Long =  {
+      scales.insert(scale)
   }
 
-  def update(id: Long, scale: Scale) =  {
-    implicit session:Session => {
+  def update(id: Long, scale: Scale)(implicit session: Session) =  {
       val scale2update = scale.copy(Some(id), scale.code, scale.name)
-      Scales.where(_.id === id).update(scale2update)
-    }
+      scales.where(_.id === id).update(scale2update)
   }
 
-  def delete(scaleId: Long) =  {
-    implicit session:Session => {
-      Scales.where(_.id === scaleId).delete
-    }
+  def delete(scaleId: Long)(implicit session: Session) =  {
+      scales.where(_.id === scaleId).delete
   }
 
   /**
@@ -96,10 +77,9 @@ object Scale{
 //  def options: Seq[(String, String)] = for {
 //    c <- findAll
 //  } yield (c.id.toString, c.name)
-  def options: Seq[(String, String)] =  {
-    implicit session:Session =>
+  def options(implicit session: Session): Seq[(String, String)] =  {
       val query = (for {
-        item <- Scales
+        item <- scales
       } yield (item.id, item.name)
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))
