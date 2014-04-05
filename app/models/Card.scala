@@ -24,11 +24,12 @@ case class Card(id: Option[Long],
                         typCardId: Long,
                         time: Option[Long])
 
-object Card extends DAO{
+object Cards extends DAO{
 
   lazy val pageSize = 10
 
-  def findByMatchAndTeam(idMatch: Long, idTeam: Long)(implicit session: Session): Seq[(Card, Match, Team, Player, TypCard)] = {
+  def findByMatchAndTeam(idMatch: Long, idTeam: Long): Seq[(Card, Match, Team, Player, TypCard)] = DB.withSession {
+    implicit session =>
       val query = for {mp <- cards
                        if mp.matchId === idMatch
                        if mp.teamId === idTeam
@@ -41,17 +42,20 @@ object Card extends DAO{
       query.list.sortBy(_._1.time)
   }
 
-  def insert(card: Card)(implicit session: Session): Long = {
+  def insert(card: Card): Long = DB.withSession {
+    implicit session =>
       cards.insert(card)
   }
 
-  def update(id: Long, card: Card)(implicit session: Session) = {
+  def update(id: Long, card: Card) = DB.withSession {
+    implicit session =>
       val card2update = card.copy(Some(id))
 //      Logger.info("playe2update " + card2update)
       cards.where(_.id === id).update(card2update)
   }
 
-  def delete(id: Long)(implicit session: Session) = {
+  def delete(id: Long) = DB.withSession {
+    implicit session =>
       cards.where(_.id === id).delete
   }
 

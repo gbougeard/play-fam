@@ -28,23 +28,27 @@ object Places extends DAO{
 
   lazy val pageSize = 10
 
-  def findAll(implicit session: Session): Seq[Place] =  {
+  def findAll: Seq[Place] =  DB.withSession {
+    implicit session =>
       (for (c <- places.sortBy(_.id)) yield c)
         .list
   }
 
-  def count(implicit session: Session): Int =  {
+  def count: Int =  DB.withSession {
+    implicit session =>
       places.length.run
   }
 
-  def placesWithCoords(implicit session: Session): Seq[Place] =  {
+  def placesWithCoords: Seq[Place] =  DB.withSession {
+    implicit session =>
       (for {c <- places sortBy (_.zipcode)
             if (c.latitude isNotNull)
             if (c.longitude isNotNull)
       } yield c).list
   }
 
-  def placesWithoutCoords(implicit session: Session): Seq[Place] =  {
+  def placesWithoutCoords: Seq[Place] =  DB.withSession {
+    implicit session =>
       (for {c <- places sortBy (_.zipcode)
             if (c.latitude isNotNull)
             if (c.longitude isNotNull)
@@ -53,7 +57,8 @@ object Places extends DAO{
         .list
   }
 
-  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[Place] = {
+  def findPage(page: Int = 0, orderField: Int): Page[Place] = DB.withSession {
+    implicit session =>
 
     val offset = pageSize * page
 
@@ -80,31 +85,38 @@ object Places extends DAO{
         Page(places, page, offset, count)
   }
 
-  def findById(id: Long)(implicit session: Session): Option[Place] =  {
+  def findById(id: Long): Option[Place] =  DB.withSession {
+    implicit session =>
       places.where(_.id === id).firstOption
   }
 
-  def findByName(name: String)(implicit session: Session): Seq[Place] =  {
+  def findByName(name: String): Seq[Place] =  DB.withSession {
+    implicit session =>
       places.where(_.name === name).list
   }
 
-  def findByZipcode(zipcode: String)(implicit session: Session): Seq[Place] =  {
+  def findByZipcode(zipcode: String): Seq[Place] =  DB.withSession {
+    implicit session =>
       places.where(_.zipcode === zipcode).list
   }
 
-  def findLikeZipcode(c: String)(implicit session: Session): Seq[Place] =  {
+  def findLikeZipcode(c: String): Seq[Place] =  DB.withSession {
+    implicit session =>
       places.where(_.zipcode like s"$c%").list
   }
 
-  def findByCity(c: String)(implicit session: Session): Seq[Place] =  {
+  def findByCity(c: String): Seq[Place] =  DB.withSession {
+    implicit session =>
       places.where(_.city === c).list
   }
 
-  def findLikeCity(c: String)(implicit session: Session): Seq[Place] =  {
+  def findLikeCity(c: String): Seq[Place] =  DB.withSession {
+    implicit session =>
       places.where(_.city like s"$c%").list
   }
 
-  def findDups(place: Place)(implicit session: Session): Seq[Place] =  {
+  def findDups(place: Place): Seq[Place] =  DB.withSession {
+    implicit session =>
       play.Logger.debug(s"findDups for $place")
       val q = for {p <- places
                    if p.id =!= place.id
@@ -116,16 +128,19 @@ object Places extends DAO{
       q.list
   }
 
-  def insert(place: Place)(implicit session: Session): Long =  {
+  def insert(place: Place): Long =  DB.withSession {
+    implicit session =>
       places.insert(place)
   }
 
-  def update(id: Long, place: Place)(implicit session: Session) =  {
+  def update(id: Long, place: Place) =  DB.withSession {
+    implicit session =>
       val place2update = place.copy(Some(id))
       places.where(_.id === id).update(place2update)
   }
 
-  def delete(placeId: Long)(implicit session: Session) =  {
+  def delete(placeId: Long) =  DB.withSession {
+    implicit session =>
       play.Logger.info(s"delete Place $placeId")
       places.where(_.id === placeId).delete
   }
@@ -134,7 +149,8 @@ object Places extends DAO{
    * Construct the Map[String,String] needed to fill a select options set.
    */
   //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
-  def options(implicit session: Session): Seq[(String, String)] =  {
+  def options: Seq[(String, String)] =  DB.withSession {
+    implicit session =>
       val query = (for {
         item <- places
       } yield (item.id, item.name)

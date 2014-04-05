@@ -14,6 +14,7 @@ import views._
 import models._
 import service.{Administrator, Permission, RequestUtil}
 import play.api.libs.json.Json
+import java.util.concurrent.Future
 
 
 object Application extends Controller with securesocial.core.SecureSocial {
@@ -23,11 +24,11 @@ object Application extends Controller with securesocial.core.SecureSocial {
     //      play.Logger.debug(s"test index ${Cache.get("roles.1258")}")
       val famUser: FamUser = RequestUtil.getFamUser(request.user)
       val currentClub = famUser.currentClubId match {
-        case Some(id) => Club.findById(id)
+        case Some(id) => models.Clubs.findById(id)
         case None => None
       }
 
-      val player = Player.findByUserId(famUser.pid.get)
+      val player = models.Players.findByUserId(famUser.pid.get)
       Ok(views.html.me(request.user, currentClub, player))
   }
 
@@ -35,10 +36,10 @@ object Application extends Controller with securesocial.core.SecureSocial {
     implicit request =>
       val famUser: FamUser = RequestUtil.getFamUser(request.user)
 
-      val player = Player.findByUserId(famUser.pid.get)
+      val player = models.Players.findByUserId(famUser.pid.get)
       val players = filter match {
         case "" => List()
-        case _ => Player.find(filter)
+        case _ => models.Players.find(filter)
       }
       play.Logger.debug(s"filter : $filter , $players")
       Ok(views.html.myPlayer(player, players, filter))
@@ -48,7 +49,7 @@ object Application extends Controller with securesocial.core.SecureSocial {
     implicit request =>
       val famUser: FamUser = RequestUtil.getFamUser(request.user)
 
-      val player = Player.findByUserId(famUser.pid.get)
+      val player = models.Players.findByUserId(famUser.pid.get)
       Ok(views.html.myPlayer(player, List(), ""))
   }
 
@@ -71,7 +72,7 @@ object Application extends Controller with securesocial.core.SecureSocial {
       Redirect(routes.Application.index())
   }
 
-  def deleteCacheCurrentUser = SecuredAction {
+  def deleteCacheCurrentUser() = SecuredAction {
     implicit request =>
       val id = request.user.identityId.userId
       play.Logger.info(s"delete cache for user $id")
@@ -170,14 +171,10 @@ case class WithRightClub(id: Long) extends Authorization {
   def isAuthorized(user: Identity) = {
     val res = user match {
       case u: FamUser =>
-        val rightClub = u.currentClubId.map {
-          clubId => clubId == id
-        } getOrElse false
-        val admin = u.pid.map {
-          userId => {
-            Role.isUserInRole(userId, Set(Administrator))
-          }
-        } getOrElse false
+        val rightClub = u.currentClubId.exists(clubId => clubId == id)
+        val admin = u.pid.exists(userId => {
+          models.Roles.isUserInRole(userId, Set(Administrator))
+        })
         admin || rightClub
       case _ => false
     }
@@ -190,11 +187,9 @@ case class WithRoles(permissions: Set[Permission]) extends Authorization {
     play.Logger.debug(s"isAuthorized $user - $permissions")
     val res = user match {
       case u: FamUser =>
-        u.pid.map {
-          userId => {
-            Role.isUserInRole(userId, permissions)
-          }
-        } getOrElse false
+        u.pid.exists(userId => {
+          models.Roles.isUserInRole(userId, permissions)
+        })
       case _ => false
     }
     res

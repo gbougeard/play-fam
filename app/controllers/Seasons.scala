@@ -7,6 +7,7 @@ import models._
 import service.{Administrator, Coach}
 
 
+
 object Seasons extends Controller with securesocial.core.SecureSocial{
 
   /**
@@ -30,23 +31,23 @@ object Seasons extends Controller with securesocial.core.SecureSocial{
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val seasons = Season.findPage(page, orderBy)
+      val seasons = models.Seasons.findPage(page, orderBy)
       val html = views.html.seasons.list("Liste des seasons", seasons, orderBy)
       Ok(html)
   }
 
   def view(id: Long) = Action {
     implicit request =>
-      Season.findById(id).map {
+      models.Seasons.findById(id).map {
         season => Ok(views.html.seasons.view("View Season", season))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   def edit(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      Season.findById(id).map {
+      models.Seasons.findById(id).map {
         season => Ok(views.html.seasons.edit("Edit Season", id, seasonForm.fill(season)))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   /**
@@ -59,7 +60,7 @@ object Seasons extends Controller with securesocial.core.SecureSocial{
       seasonForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.seasons.edit("Edit Season - errors", id, formWithErrors)),
         season => {
-          Season.update(id, season)
+          models.Seasons.update(id, season)
           Redirect(routes.Seasons.list(0, 2)).flashing("success" -> "Season %s has been updated".format(season.name))
         }
       )
@@ -81,7 +82,7 @@ object Seasons extends Controller with securesocial.core.SecureSocial{
       seasonForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.seasons.create("New Season - errors", formWithErrors)),
         season => {
-          Season.insert(season)
+          models.Seasons.insert(season)
           //        Home.flashing("success" -> "Season %s has been created".format(season.name))
           Redirect(routes.Seasons.list(0, 2))
         }
@@ -93,7 +94,7 @@ object Seasons extends Controller with securesocial.core.SecureSocial{
    */
   def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      Season.delete(id)
+      models.Seasons.delete(id)
       Redirect(routes.Seasons.list(0,2)).flashing("success" -> "Season has been deleted")
   }
 

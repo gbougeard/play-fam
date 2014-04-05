@@ -3,9 +3,9 @@ package models.database
 import play.api.db.slick.Config.driver.simple._
 import org.joda.time.DateTime
 
-import com.github.tototoshi.slick.JodaSupport._
+import com.github.tototoshi.slick.MySQLJodaSupport._
 
-import models.{Category, Event}
+import models.Event
 import scala.slick.lifted.Tag
 
 /**

@@ -4,9 +4,12 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models._
+import models.Clubs._
+import models.Places._
 import service.Coach
 import service.Administrator
 import play.api.libs.json._
+
 
 
 object Clubs extends Controller with securesocial.core.SecureSocial {
@@ -45,7 +48,7 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
 
   def list(page: Int, orderBy: Int, filter: String) = Action {
     implicit request =>
-      val clubs = Club.findPage(page, orderBy, filter)
+      val clubs = models.Clubs.findPage(page, orderBy, filter)
       render {
         case Accepts.Html() => Ok(views.html.clubs.list("Liste des clubs", clubs, orderBy, filter))
         case Accepts.Json() => Ok(Json.toJson(clubs))
@@ -54,7 +57,7 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
 
   def view(id: Long) = Action {
     implicit request =>
-      Club.findById(id).map {
+      models.Clubs.findById(id).map {
         club =>
           render {
             case Accepts.Html() => Ok(views.html.clubs.view("View Club", club))
@@ -65,7 +68,7 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
 
   def edit(id: Long) = SecuredAction(WithRightClub(id)) {
     implicit request =>
-      Club.findById(id).map {
+      models.Clubs.findById(id).map {
         club => Ok(views.html.clubs.edit("Edit Club", id, clubForm.fill(club)))
       } getOrElse NotFound
   }
@@ -85,7 +88,7 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
         },
         club => {
           play.Logger.debug(s"update club $id $club ")
-          Club.update(id, club)
+          models.Clubs.update(id, club)
           Home.flashing("success" -> "Club %s has been updated".format(club.name))
           //Redirect(routes.Clubs.list(0, 2))
           //          Redirect(routes.Clubs.view(id)).flashing("success" -> "Club %s has been updated".format(club.name))
@@ -129,7 +132,7 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
       clubForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.clubs.create("New Club - errors", formWithErrors)),
         club => {
-          Club.insert(club)
+          models.Clubs.insert(club)
           Home.flashing("success" -> "Club %s has been created".format(club.name))
           //          Redirect(routes.Clubs.list(0, 2))
         }
@@ -141,7 +144,7 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
    */
   def delete(id: Long) = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
-      Club.delete(id)
+      models.Clubs.delete(id)
       Home.flashing("success" -> "Club has been deleted")
   }
 
@@ -183,7 +186,7 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
               case s: String => Some(s.trim)
             })
           play.Logger.debug(s"$club")
-          Club.insert(club)
+          models.Clubs.insert(club)
       }
 
       Ok
@@ -191,11 +194,11 @@ object Clubs extends Controller with securesocial.core.SecureSocial {
 
   def findPlaces(id:Long) = Action {
     implicit request =>
-      val club = Club.findById(id)
+      val club = models.Clubs.findById(id)
       club match {
         case None => NotFound
         case Some(c) =>   {
-          val places = PlaceClub.findByClub(id)
+          val places = models.PlaceClubs.findByClub(id)
           render {
             case Accepts.Html() =>  Ok(views.html.clubs.places("Places", c, places))
             case Accepts.Json() => Ok(Json.toJson(places))

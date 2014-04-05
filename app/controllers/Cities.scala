@@ -4,8 +4,10 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models._
+import models.Cities._
 import play.api.libs.json.Json
 import service.Administrator
+
 
 object Cities extends Controller  with securesocial.core.SecureSocial {
 
@@ -41,20 +43,20 @@ object Cities extends Controller  with securesocial.core.SecureSocial {
 
   def view(id: Long) = Action {
     implicit request =>
-      City.findById(id).map {
+      models.Cities.findById(id).map {
         city =>
           render {
             case Accepts.Html() => Ok(views.html.cities.view("View City", city))
             case Accepts.Json() => Ok(Json.toJson(city))
           }
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   def edit(id: Long) = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
-      City.findById(id).map {
-        city => Ok(views.html.cities.edit("Edit City", id, cityForm.fill(city), Province.options))
-      } getOrElse (NotFound)
+      models.Cities.findById(id).map {
+        city => Ok(views.html.cities.edit("Edit City", id, cityForm.fill(city), models.Provinces.options))
+      } getOrElse NotFound
   }
 
   /**
@@ -65,9 +67,9 @@ object Cities extends Controller  with securesocial.core.SecureSocial {
   def update(id: Long) = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
       cityForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.cities.edit("Edit City - errors", id, formWithErrors, Province.options)),
+        formWithErrors => BadRequest(views.html.cities.edit("Edit City - errors", id, formWithErrors, models.Provinces.options)),
         city => {
-          City.update(id, city)
+          models.Cities.update(id, city)
           Redirect(routes.Cities.edit(id)).flashing("success" -> "City %s has been updated".format(city.name))
           //Redirect(routes.Cities.view(city.id.get))
         }
@@ -79,7 +81,7 @@ object Cities extends Controller  with securesocial.core.SecureSocial {
    */
   def create = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
-      Ok(views.html.cities.create("New City", cityForm, Province.options))
+      Ok(views.html.cities.create("New City", cityForm, models.Provinces.options))
   }
 
   /**
@@ -88,9 +90,9 @@ object Cities extends Controller  with securesocial.core.SecureSocial {
   def save = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
       cityForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.cities.create("New City - errors", formWithErrors, Province.options)),
+        formWithErrors => BadRequest(views.html.cities.create("New City - errors", formWithErrors, models.Provinces.options)),
         city => {
-          City.insert(city)
+          models.Cities.insert(city)
           //        Home.flashing("success" -> "City %s has been created".format(city.name))
           //Redirect(routes.Cities.view(city.id))
           Redirect(routes.Cities.create).flashing("success" -> "City %s has been created".format(city.name))
@@ -101,7 +103,7 @@ object Cities extends Controller  with securesocial.core.SecureSocial {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val cities = City.findPage(page, orderBy)
+      val cities = models.Cities.findPage(page, orderBy)
       render {
         case Accepts.Html() => Ok( views.html.cities.list("Liste des cities", cities, orderBy))
         case Accepts.Json() => Ok(Json.toJson(cities))
@@ -113,7 +115,7 @@ object Cities extends Controller  with securesocial.core.SecureSocial {
    */
   def delete(id: Long) = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
-      City.delete(id)
+      models.Cities.delete(id)
       Home.flashing("success" -> "City has been deleted")
   }
 

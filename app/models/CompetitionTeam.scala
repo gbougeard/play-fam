@@ -43,17 +43,19 @@ object CompetitionTeams extends DAO{
   //    }
   //  }
 
-  def findByTeam(id: Long)(implicit session: Session): Seq[(CompetitionTeam, SeasonCompetition, Team)] =  {
-      val query = (
-        for {ps <- competitionTeams
-             if ps.teamId === id
-             p <- ps.competition
-             s <- ps.team
+  def findByTeam(id: Long): Seq[(CompetitionTeam, SeasonCompetition, Team)] =  DB.withSession {
+    implicit session =>
+      val query = for {ps <- competitionTeams
+                       if ps.teamId === id
+                       p <- ps.competition
+                       s <- ps.team
 
-        } yield (ps, p, s))
+      } yield (ps, p, s)
+    query.list
   }
 
-  def findByCompetition(id: Long)(implicit session: Session): Seq[(CompetitionTeam, SeasonCompetition, Team)] =  {
+  def findByCompetition(id: Long): Seq[(CompetitionTeam, SeasonCompetition, Team)] =  DB.withSession {
+    implicit session =>
       val query = (
         for {ps <- competitionTeams
              if ps.competitionId === id
@@ -64,17 +66,20 @@ object CompetitionTeams extends DAO{
       query.list
   }
 
-  def insert(competitionTeam: CompetitionTeam)(implicit session: Session): Long =  {
+  def insert(competitionTeam: CompetitionTeam): Long =  DB.withSession {
+    implicit session =>
       competitionTeams.insert(competitionTeam)
   }
 
-  def update(id: Long, competition: CompetitionTeam)(implicit session: Session) =  {
+  def update(id: Long, competition: CompetitionTeam) =  DB.withSession {
+    implicit session =>
       val competition2update = competition.copy(Some(id))
       //        Logger.info("playe2update " + competition2update)
       competitionTeams.where(_.id === id).update(competition2update)
   }
 
-  def delete(competitionId: Long)(implicit session: Session) =  {
+  def delete(competitionId: Long) =  DB.withSession {
+    implicit session =>
       competitionTeams.where(_.id === competitionId).delete
   }
 

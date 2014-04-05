@@ -29,15 +29,18 @@ object Clubs extends DAO {
 
   lazy val pageSize = 10
 
-  def findAll(implicit session: Session): Seq[Club] =  {
+  def findAll: Seq[Club] =  DB.withSession {
+    implicit session =>
       (for (c <- clubs.sortBy(_.name)) yield c).list
   }
 
-  def count(filter: String)(implicit session: Session): Int =  {
+  def count(filter: String): Int =  DB.withSession {
+    implicit session =>
       clubs.where(_.name like s"%$filter%").length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int, filter: String)(implicit session: Session): Page[Club] = {
+  def findPage(page: Int = 0, orderField: Int, filter: String): Page[Club] = DB.withSession {
+    implicit session =>
 
     val offset = pageSize * page
 
@@ -61,40 +64,49 @@ object Clubs extends DAO {
         Page(q.list, page, offset, count(filter))
   }
 
-  def findById(id: Long)(implicit session: Session): Option[Club] =  {
+  def findById(id: Long): Option[Club] =  DB.withSession {
+    implicit session =>
       clubs.where(_.id === id).firstOption
   }
 
-  def findByName(name: String)(implicit session: Session): Option[Club] =  {
+  def findByName(name: String): Option[Club] =  DB.withSession {
+    implicit session =>
       clubs.where(_.name === name).firstOption
   }
 
-  def findByCode(code: Int)(implicit session: Session): Option[Club] =  {
+  def findByCode(code: Int): Option[Club] =  DB.withSession {
+    implicit session =>
       clubs.where(_.code === code).firstOption
   }
 
-  def findByZipCode(code: String)(implicit session: Session): Seq[Club] =  {
+  def findByZipCode(code: String): Seq[Club] =  DB.withSession {
+    implicit session =>
       clubs.where(_.zipcode === code).list
   }
 
-  def findByCity(city: String)(implicit session: Session): Seq[Club] =  {
+  def findByCity(city: String): Seq[Club] =  DB.withSession {
+    implicit session =>
       clubs.where(_.city === city).list
   }
 
-  def findLikeCity(c: String)(implicit session: Session): Seq[Club] =  {
+  def findLikeCity(c: String): Seq[Club] =  DB.withSession {
+    implicit session =>
       clubs.where(_.city like s"%$c%").list
   }
 
-  def insert(club: Club)(implicit session: Session): Long =  {
+  def insert(club: Club): Long =  DB.withSession {
+    implicit session =>
       clubs.insert(club)
   }
 
-  def update(id: Long, club: Club)(implicit session: Session) =  {
+  def update(id: Long, club: Club) =  DB.withSession {
+    implicit session =>
       val club2update = club.copy(Some(id), club.code, club.name)
       clubs.where(_.id === id).update(club2update)
   }
 
-  def delete(clubId: Long)(implicit session: Session) =  {
+  def delete(clubId: Long) =  DB.withSession {
+    implicit session =>
       clubs.where(_.id === clubId).delete
   }
 
@@ -104,7 +116,8 @@ object Clubs extends DAO {
   //  def options: Seq[(String, String)] = for {
   //    c <- findAll
   //  } yield (c.id.toString, c.name)
-  def options(implicit session: Session): Seq[(String, String)] =  {
+  def options: Seq[(String, String)] =  DB.withSession {
+    implicit session =>
       val query = (for {
         item <- clubs
       } yield (item.id, item.name)

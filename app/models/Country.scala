@@ -20,15 +20,18 @@ object Countries extends DAO{
 
   lazy val countryCount = count
 
-  def findAll(implicit session: Session): Seq[Country] =  {
+  def findAll: Seq[Country] =  DB.withSession {
+    implicit session =>
       (for (c <- countries.sortBy(_.name)) yield c).list
   }
 
-  def count(implicit session: Session): Int =  {
+  def count: Int =  DB.withSession {
+    implicit session =>
       countries.length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[Country] = {
+  def findPage(page: Int = 0, orderField: Int): Page[Country] = DB.withSession {
+    implicit session =>
 
     val offset = pageSize * page
         val countrys = for {t <- countries
@@ -40,32 +43,39 @@ object Countries extends DAO{
         Page(countrys.list, page, offset, countryCount)
   }
 
-  def findById(id: Long)(implicit session: Session): Option[Country] =  {
+  def findById(id: Long): Option[Country] =  DB.withSession {
+    implicit session =>
       countries.where(_.id === id).firstOption
   }
 
-  def findByName(name: String)(implicit session: Session): Option[Country] =  {
+  def findByName(name: String): Option[Country] =  DB.withSession {
+    implicit session =>
       countries.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String)(implicit session: Session): Option[Country] =  {
+  def findByCode(code: String): Option[Country] =  DB.withSession {
+    implicit session =>
       countries.where(_.code === code).firstOption
   }
 
-  def insert(country: Country)(implicit session: Session): Long =  {
+  def insert(country: Country): Long =  DB.withSession {
+    implicit session =>
       countries.insert(country)
   }
 
-  def update(id: Long, country: Country)(implicit session: Session) =  {
+  def update(id: Long, country: Country) =  DB.withSession {
+    implicit session =>
       val country2update = country.copy(Some(id), country.code, country.name, country.upper, country.lower)
       countries.where(_.id === id).update(country2update)
   }
 
-  def delete(countryId: Long)(implicit session: Session) =  {
+  def delete(countryId: Long) =  DB.withSession {
+    implicit session =>
       countries.where(_.id === countryId).delete
   }
 
-  def json(page: Int, pageSize: Int, orderField: Int)(implicit session: Session): Seq[Country] =  {
+  def json(page: Int, pageSize: Int, orderField: Int): Seq[Country] =  DB.withSession {
+    implicit session =>
 
       val q = for {c <- countries
         .sortBy(country => orderField match {
@@ -87,7 +97,8 @@ object Countries extends DAO{
    * Construct the Map[String,String] needed to fill a select options set.
    */
   //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
-  def options(implicit session: Session): Seq[(String, String)] =  {
+  def options: Seq[(String, String)] =  DB.withSession {
+    implicit session =>
       val query = (for {
         item <- countries
       } yield (item.id, item.name)

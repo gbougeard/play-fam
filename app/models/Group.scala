@@ -14,15 +14,18 @@ case class Group(id: Option[Long],
 object Groups extends DAO{
   lazy val pageSize = 10
 
-  def findAll(implicit session: Session): Seq[Group] =  {
+  def findAll: Seq[Group] =  DB.withSession {
+    implicit session =>
       (for (c <- groups.sortBy(_.name)) yield c).list
   }
 
-  def count(implicit session: Session): Int =  {
+  def count: Int =  DB.withSession {
+    implicit session =>
       groups.length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[Group] = {
+  def findPage(page: Int = 0, orderField: Int): Page[Group] = DB.withSession {
+    implicit session =>
 
     val offset = pageSize * page
 
@@ -38,25 +41,30 @@ object Groups extends DAO{
         Page(q.list, page, offset, count)
   }
 
-  def findById(id: Long)(implicit session: Session): Option[Group] =  {
+  def findById(id: Long): Option[Group] =  DB.withSession {
+    implicit session =>
       groups.where(_.id === id).firstOption
   }
 
-  def findByName(name: String)(implicit session: Session): Option[Group] =  {
+  def findByName(name: String): Option[Group] =  DB.withSession {
+    implicit session =>
       groups.where(_.name === name).firstOption
   }
 
 
-  def insert(typCard: Group)(implicit session: Session): Long =  {
+  def insert(typCard: Group): Long =  DB.withSession {
+    implicit session =>
       groups.insert(typCard)
   }
 
-  def update(id: Long, typCard: Group)(implicit session: Session) =  {
+  def update(id: Long, typCard: Group) =  DB.withSession {
+    implicit session =>
       val typCard2update = typCard.copy(Some(id), typCard.name)
       groups.where(_.id === id).update(typCard2update)
   }
 
-  def delete(typCardId: Long)(implicit session: Session) =  {
+  def delete(typCardId: Long) =  DB.withSession {
+    implicit session =>
       groups.where(_.id === typCardId).delete
   }
 
@@ -66,7 +74,8 @@ object Groups extends DAO{
   //  def options: Seq[(String, String)] = for {
   //    c <- findAll
   //  } yield (c.id.toString, c.name)
-  def options(implicit session: Session): Seq[(String, String)] =  {
+  def options: Seq[(String, String)] =  DB.withSession {
+    implicit session =>
       val query = (for {
         item <- groups
       } yield (item.id, item.name)

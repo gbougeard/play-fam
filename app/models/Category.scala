@@ -17,15 +17,18 @@ object Categories extends DAO{
   
   lazy val pageSize = 10
 
-  def findAll(implicit session: Session): Seq[Category] =  {
+  def findAll: Seq[Category] =  DB.withSession {
+    implicit session =>
       (for (c <- categories.sortBy(_.name)) yield c).list
   }
 
-  def count(implicit session: Session): Int =  {
+  def count: Int =  DB.withSession {
+    implicit session =>
       categories.length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[Category] = {
+  def findPage(page: Int = 0, orderField: Int): Page[Category] = DB.withSession {
+    implicit session =>
 
     val offset = pageSize * page
 
@@ -44,28 +47,34 @@ object Categories extends DAO{
         Page(categorys, page, offset, count)
   }
 
-  def findById(id: Long)(implicit session: Session): Option[Category] =  {
+  def findById(id: Long): Option[Category] =  DB.withSession {
+    implicit session =>
       categories.where(_.id === id).firstOption
   }
 
-  def findByName(name: String)(implicit session: Session): Option[Category] =  {
+  def findByName(name: String): Option[Category] =  DB.withSession {
+    implicit session =>
       categories.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String)(implicit session: Session): Option[Category] =  {
+  def findByCode(code: String): Option[Category] =  DB.withSession {
+    implicit session =>
       categories.where(_.code === code).firstOption
   }
 
-  def insert(category: Category)(implicit session: Session): Long =  {
+  def insert(category: Category): Long =  DB.withSession {
+    implicit session =>
       categories.insert(category)
   }
 
-  def update(id: Long, category: Category)(implicit session: Session) =  {
+  def update(id: Long, category: Category) =  DB.withSession {
+    implicit session =>
       val category2update = category.copy(Some(id), category.code, category.name)
       categories.where(_.id === id).update(category2update)
   }
 
-  def delete(categoryId: Long)(implicit session: Session) =  {
+  def delete(categoryId: Long) =  DB.withSession {
+    implicit session =>
       categories.where(_.id === categoryId).delete
   }
 
@@ -75,7 +84,8 @@ object Categories extends DAO{
 //  def options: Seq[(String, String)] = for {
 //    c <- findAll
 //  } yield (c.id.toString, c.name)
-  def options(implicit session: Session): Seq[(String, String)] =  {
+  def options: Seq[(String, String)] =  DB.withSession {
+    implicit session =>
       val query = (for {
         item <- categories
       } yield (item.id, item.name)

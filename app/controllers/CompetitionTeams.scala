@@ -7,6 +7,7 @@ import play.api.data.Forms._
 import models._
 
 
+
 object CompetitionTeams extends Controller with securesocial.core.SecureSocial {
 
   /**
@@ -30,15 +31,15 @@ object CompetitionTeams extends Controller with securesocial.core.SecureSocial {
 
   def byCompetition(id: Long) = Action {
     implicit request =>
-      val competitionTeams = CompetitionTeam.findByCompetition(id)
-      val competition = SeasonCompetition.findByIdComplete(id)
+      val competitionTeams = models.CompetitionTeams.findByCompetition(id)
+      val competition = models.SeasonCompetitions.findByIdComplete(id)
       val html = views.html.competitionTeams.listTeam("Liste des competitionTeams", competition, competitionTeams)
       Ok(html)
   }
 
   def byTeam(id: Long) = Action {
     implicit request =>
-      val competitionTeams = CompetitionTeam.findByTeam(id)
+      val competitionTeams = models.CompetitionTeams.findByTeam(id)
       val html = views.html.competitionTeams.list("Liste des competitionTeams", competitionTeams)
       Ok(html)
   }

@@ -2,11 +2,9 @@ package models.database
 
 import play.api.db.slick.Config.driver.simple._
 import securesocial.core.providers.Token
-import com.github.tototoshi.slick.JodaSupport._
 import org.joda.time.DateTime
 import scala.slick.lifted.Tag
-import models.Category
-
+import com.github.tototoshi.slick.MySQLJodaSupport._
 /**
  * Created with IntelliJ IDEA.
  * User: gbougeard

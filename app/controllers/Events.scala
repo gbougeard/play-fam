@@ -6,10 +6,12 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models._
+import models.Events._
 import service.{Administrator, Coach}
 
 import play.api.libs.json._
 import scala.util.{Failure, Success}
+
 
 case class EventWithTeams(event: Event, teams: Seq[Long])
 
@@ -47,7 +49,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val events = Event.findPage(page, orderBy)
+      val events = models.Events.findPage(page, orderBy)
       render {
         case Accepts.Html() => Ok( views.html.events.list("Liste des events", events, orderBy))
         case Accepts.Json() => Ok(Json.toJson(events))
@@ -56,10 +58,10 @@ object Events extends Controller with securesocial.core.SecureSocial {
 
   def view(id: Long) = Action {
     implicit request =>
-      Event.findById(id).map {
+      models.Events.findById(id).map {
         event =>
           render {
-            case Accepts.Html() => Ok(views.html.events.view("View Event", event, EventTeam.findByEvent(id)))
+            case Accepts.Html() => Ok(views.html.events.view("View Event", event, models.EventTeams.findByEvent(id)))
             case Accepts.Json() => Ok(Json.toJson(event))
           }
       } getOrElse NotFound
@@ -71,12 +73,12 @@ object Events extends Controller with securesocial.core.SecureSocial {
         case user: FamUser => // do whatever you need with your user class
           user.currentClubId.map {
             idClub =>
-              val teams = EventTeam.findByEvent(id).map {
+              val teams = models.EventTeams.findByEvent(id).map {
                 x => x._3.id.get
               }
-              Event.findById(id).map {
+              models.Events.findById(id).map {
                 case (event, typEvent, eventStatus) =>
-                  Ok(views.html.events.edit("Edit Event", idClub, Json.toJson(EventWithTeams(event, teams)).toString(), Json.toJson(Team.findByClub(1)).toString()))
+                  Ok(views.html.events.edit("Edit Event", idClub, Json.toJson(EventWithTeams(event, teams)).toString(), Json.toJson(models.Teams.findByClub(1)).toString()))
                 case _ =>
                   NotFound
 
@@ -110,7 +112,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
     implicit request =>
       val json = request.body
       val event = json.as[Event]
-      Event.update(id, event)
+      models. Events.update(id, event)
       Ok(Json.toJson(id))
   }
 
@@ -123,7 +125,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
         case user: FamUser => // do whatever you need with your user class
           user.currentClubId.map {
             idClub =>
-              Ok(views.html.events.create("New Event", idClub, Json.toJson(Team.findByClub(idClub)).toString()))
+              Ok(views.html.events.create("New Event", idClub, Json.toJson(models.Teams.findByClub(idClub)).toString))
           } getOrElse Unauthorized("You don't belong to any club")
 
         case _ => // did not get a User instance, should not happen,log error/thow exception
@@ -139,7 +141,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
     implicit request =>
       val json = request.body
       val event = json.as[Event]
-      val id = Event.insert(event)
+      val id = models.Events.insert(event)
       Ok(Json.toJson(id))
   }
 
@@ -149,15 +151,12 @@ object Events extends Controller with securesocial.core.SecureSocial {
       val eventTeams = json.as[Seq[EventTeam]]
 
       val id = eventTeams.head.eventId
-      EventTeam.deleteForEvent(id)
-      EventTeam.insert(eventTeams) match {
-        case Success(a) => {
-          Ok
-        }
-        case Failure(e) => {
+      models.EventTeams.deleteForEvent(id)
+      models.EventTeams.insert(eventTeams) match {
+        case Success(a) => Ok
+        case Failure(e) =>
           Logger.error("update error:", e)
           BadRequest(Json.toJson(Map("error" -> e.getMessage)))
-        }
       }
   }
 
@@ -166,7 +165,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
    */
   def delete(id: Long) = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
-      Event.delete(id)
+      models.Events.delete(id)
       Home.flashing("success" -> "Event has been deleted")
   }
 
@@ -177,7 +176,7 @@ object Events extends Controller with securesocial.core.SecureSocial {
     implicit request =>
       render {
         case Accepts.Html() => Ok(views.html.events.agenda("Agenda"))
-        case Accepts.Json() => Ok(Json.toJson(Event.findAll))
+        case Accepts.Json() => Ok(Json.toJson(models.Events.findAll))
       }
   }
 

@@ -45,7 +45,8 @@ object Roles extends DAO{
   //    }
   //  }
 
-  def findByUserId(id: Long)(implicit session: Session): Seq[String] =  {
+  def findByUserId(id: Long): Seq[String] =  DB.withSession {
+    implicit session =>
       play.Logger.debug(s"roles.findByUserId $id")
       val query = for {r <- roles
                        if r.userId === id
@@ -55,7 +56,8 @@ object Roles extends DAO{
       query.list
   }
 
-  def findByGroupId(id: Long)(implicit session: Session): Seq[(Role, User, Group)] =  {
+  def findByGroupId(id: Long): Seq[(Role, User, Group)] =  DB.withSession {
+    implicit session =>
       val query = for {r <- roles
                        if r.groupId === id
                        g <- r.group
@@ -66,16 +68,19 @@ object Roles extends DAO{
   }
 
 
-  def insert(role: Role)(implicit session: Session): Int =  {
+  def insert(role: Role): Int =  DB.withSession {
+    implicit session =>
       Logger.debug("insert %s".format(role))
       roles.insert(role)
   }
 
-  def insert(roles: Seq[Role])(implicit session: Session): Try[Option[Int]] =  {
-      Try(roles.insertAll(roles: _*))
+  def insert(list: Seq[Role]): Try[Option[Int]] =  DB.withSession {
+    implicit session =>
+      Try(roles.insertAll(list: _*))
   }
 
-  def delete(id: Long)(implicit session: Session) =  {
+  def delete(id: Long) =  DB.withSession {
+    implicit session =>
       roles.where(_.userId === id).delete
   }
 

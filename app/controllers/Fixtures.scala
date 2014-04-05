@@ -7,6 +7,7 @@ import models._
 import service.Coach
 
 
+
 object Fixtures extends Controller with securesocial.core.SecureSocial{
 
   /**
@@ -31,23 +32,23 @@ object Fixtures extends Controller with securesocial.core.SecureSocial{
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val fixtures = Fixture.findPage(page, orderBy)
+      val fixtures = models.Fixtures.findPage(page, orderBy)
       val html = views.html.fixtures.list("Liste des fixtures", fixtures, orderBy)
       Ok(html)
   }
 
   def view(id: Long) = Action {
     implicit request =>
-      Fixture.findById(id).map {
+      models.Fixtures.findById(id).map {
         fixture => Ok(views.html.fixtures.view("View Fixture", fixture))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   def edit(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
-      Fixture.findById(id).map {
-        fixture => Ok(views.html.fixtures.edit("Edit Fixture", id, fixtureForm.fill(fixture), SeasonCompetition.options))
-      } getOrElse (NotFound)
+      models.Fixtures.findById(id).map {
+        fixture => Ok(views.html.fixtures.edit("Edit Fixture", id, fixtureForm.fill(fixture), models.SeasonCompetitions.options))
+      } getOrElse NotFound
   }
 
   /**
@@ -58,9 +59,9 @@ object Fixtures extends Controller with securesocial.core.SecureSocial{
   def update(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       fixtureForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.fixtures.edit("Edit Fixture - errors", id, formWithErrors, SeasonCompetition.options)),
+        formWithErrors => BadRequest(views.html.fixtures.edit("Edit Fixture - errors", id, formWithErrors, models.SeasonCompetitions.options)),
         fixture => {
-          Fixture.update(id, fixture)
+          models.Fixtures.update(id, fixture)
           //        Home.flashing("success" -> "Fixture %s has been updated".format(fixture.name))
           Redirect(routes.Fixtures.list(0, 2))
         }
@@ -72,7 +73,7 @@ object Fixtures extends Controller with securesocial.core.SecureSocial{
    */
   def create =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
-      Ok(views.html.fixtures.create("New Fixture", fixtureForm, Club.options))
+      Ok(views.html.fixtures.create("New Fixture", fixtureForm, models.Clubs.options))
   }
 
   /**
@@ -81,9 +82,9 @@ object Fixtures extends Controller with securesocial.core.SecureSocial{
   def save =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       fixtureForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.fixtures.create("New Fixture - errors", formWithErrors, SeasonCompetition.options)),
+        formWithErrors => BadRequest(views.html.fixtures.create("New Fixture - errors", formWithErrors, models.SeasonCompetitions.options)),
         fixture => {
-          Fixture.insert(fixture)
+          models.Fixtures.insert(fixture)
           //        Home.flashing("success" -> "Fixture %s has been created".format(fixture.name))
           Redirect(routes.Fixtures.list(0, 2))
         }
@@ -95,7 +96,7 @@ object Fixtures extends Controller with securesocial.core.SecureSocial{
    */
   def delete(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
-      Fixture.delete(id)
+      models.Fixtures.delete(id)
       Home.flashing("success" -> "Fixture has been deleted")
   }
 

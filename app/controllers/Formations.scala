@@ -5,8 +5,10 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models._
+import models.Formations._
 import play.api.libs.json.{JsError, Json}
 import service.{Administrator, Coach}
+
 
 
 object Formations extends Controller  with securesocial.core.SecureSocial{
@@ -34,25 +36,25 @@ object Formations extends Controller  with securesocial.core.SecureSocial{
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val formations = Formation.findPage(page, orderBy)
+      val formations = models.Formations.findPage(page, orderBy)
       val html = views.html.formations.list("Liste des formations", formations, orderBy)
       Ok(html)
   }
 
   def view(id: Long) = Action {
     implicit request =>
-      Formation.findById(id).map {
-        formation => Ok(views.html.formations.view("View Formation", formation, FormationItem.findByFormation(id)))
-      } getOrElse (NotFound)
+      models.Formations.findById(id).map {
+        formation => Ok(views.html.formations.view("View Formation", formation, models.FormationItems.findByFormation(id)))
+      } getOrElse NotFound
   }
 
   def edit(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
-      Formation.findById(id).map {
+      models.Formations.findById(id).map {
         formation =>
-          val items = FormationItem.findByFormation(id).sortBy(_.numItem)
-          Ok(views.html.formations.edit("Edit Formation", id, formationForm.fill(formation), items, Json.toJson(items).toString(),TypMatch.options))
-      } getOrElse (NotFound)
+          val items = models.FormationItems.findByFormation(id).sortBy(_.numItem)
+          Ok(views.html.formations.edit("Edit Formation", id, formationForm.fill(formation), items, Json.toJson(items).toString(), models.TypMatches.options))
+      } getOrElse NotFound
   }
 
   /**
@@ -62,12 +64,12 @@ object Formations extends Controller  with securesocial.core.SecureSocial{
    */
   def update(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
-      val items = FormationItem.findByFormation(id).sortBy(_.numItem)
+      val items = models.FormationItems.findByFormation(id).sortBy(_.numItem)
       Logger.debug(items.toString())
       formationForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.formations.edit("Edit Formation - errors", id, formWithErrors, items, Json.toJson(items).toString(),TypMatch.options)),
+        formWithErrors => BadRequest(views.html.formations.edit("Edit Formation - errors", id, formWithErrors, items, Json.toJson(items).toString(),models.TypMatches.options)),
         formation => {
-          Formation.update(id, formation)
+          models.Formations.update(id, formation)
           //        Home.flashing("success" -> "Formation %s has been updated".format(formation.name))
           Redirect(routes.Formations.list(0, 2))
         }
@@ -79,7 +81,7 @@ object Formations extends Controller  with securesocial.core.SecureSocial{
    */
   def create =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
-      Ok(views.html.formations.create("New Formation", formationForm,Club.options))
+      Ok(views.html.formations.create("New Formation", formationForm,models.Clubs.options))
   }
 
   /**
@@ -88,9 +90,9 @@ object Formations extends Controller  with securesocial.core.SecureSocial{
   def save =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       formationForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.formations.create("New Formation - errors", formWithErrors,Club.options)),
+        formWithErrors => BadRequest(views.html.formations.create("New Formation - errors", formWithErrors,models.Clubs.options)),
         formation => {
-          Formation.insert(formation)
+          models.Formations.insert(formation)
           //        Home.flashing("success" -> "Formation %s has been created".format(formation.name))
           Redirect(routes.Formations.list(0, 2))
         }
@@ -102,7 +104,7 @@ object Formations extends Controller  with securesocial.core.SecureSocial{
       val itemsJson = request.body
       Logger.debug(itemsJson.toString())
       itemsJson.validate[Seq[FormationItem]].map {
-        case items => FormationItem.save(items)
+        case items => models.FormationItems.save(items)
         Ok("Saved")
       }.recoverTotal {
         e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -114,7 +116,7 @@ object Formations extends Controller  with securesocial.core.SecureSocial{
    */
   def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      Formation.delete(id)
+      models.Formations.delete(id)
       Home.flashing("success" -> "Formation has been deleted")
   }
 

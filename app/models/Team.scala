@@ -22,15 +22,18 @@ case class Team(id: Option[Long],
 object Teams extends DAO{
   lazy val pageSize = 10
 
-  def findAll(implicit session: Session): Seq[Team] =  {
+  def findAll: Seq[Team] =  DB.withSession {
+    implicit session =>
       (for (c <- teams.sortBy(_.name)) yield c).list
   }
 
-  def count(implicit session: Session): Int =  {
-      (teams.length).run
+  def count: Int =  DB.withSession {
+    implicit session =>
+      teams.length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[(Team, Club)] = {
+  def findPage(page: Int = 0, orderField: Int): Page[(Team, Club)] = DB.withSession {
+    implicit session =>
 
     val offset = pageSize * page
         val q = (
@@ -51,32 +54,39 @@ object Teams extends DAO{
         Page(q.list, page, offset, count)
   }
 
-  def findById(id: Long)(implicit session: Session): Option[Team] =  {
+  def findById(id: Long): Option[Team] =  DB.withSession {
+    implicit session =>
       teams.where(_.id === id).firstOption
   }
 
-  def findByName(name: String)(implicit session: Session): Option[Team] =  {
+  def findByName(name: String): Option[Team] =  DB.withSession {
+    implicit session =>
       teams.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String)(implicit session: Session): Option[Team] =  {
+  def findByCode(code: String): Option[Team] =  DB.withSession {
+    implicit session =>
       teams.where(_.code === code).firstOption
   }
 
-  def findByClub(id: Long)(implicit session: Session): Seq[Team] =  {
+  def findByClub(id: Long): Seq[Team] =  DB.withSession {
+    implicit session =>
       teams.where(_.clubId === id).list
   }
 
-  def insert(team: Team)(implicit session: Session): Long =  {
+  def insert(team: Team): Long =  DB.withSession {
+    implicit session =>
       teams.insert(team)
   }
 
-  def update(id: Long, team: Team)(implicit session: Session) =  {
+  def update(id: Long, team: Team) =  DB.withSession {
+    implicit session =>
       val team2update = team.copy(Some(id), team.code, team.name, team.clubId)
       teams.where(_.id === id).update(team2update)
   }
 
-  def delete(teamId: Long)(implicit session: Session) =  {
+  def delete(teamId: Long) =  DB.withSession {
+    implicit session =>
       teams.where(_.id === teamId).delete
   }
 
@@ -84,7 +94,8 @@ object Teams extends DAO{
    * Construct the Map[String,String] needed to fill a select options set.
    */
 //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
-  def options(implicit session: Session): Seq[(String, String)] =  {
+  def options: Seq[(String, String)] =  DB.withSession {
+    implicit session =>
       val query = (for {
         item <- teams
       } yield (item.id, item.name)
@@ -92,7 +103,8 @@ object Teams extends DAO{
       query.list.map(row => (row._1.toString, row._2))
   }
 
-  def findByClubOptions(id: Long)(implicit session: Session): Seq[(String, String)] =  {
+  def findByClubOptions(id: Long): Seq[(String, String)] =  DB.withSession {
+    implicit session =>
       val query = (for {
         item <- teams
         if item.clubId is id

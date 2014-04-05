@@ -28,7 +28,8 @@ object MatchPlayers extends DAO{
 
   lazy val pageSize = 10
 
-  def findByMatchAndTeam(idMatch: Long, idTeam: Long)(implicit session: Session): Seq[(MatchPlayer, Match, Player, Team)] =  {
+  def findByMatchAndTeam(idMatch: Long, idTeam: Long): Seq[(MatchPlayer, Match, Player, Team)] =  DB.withSession {
+    implicit session =>
       Logger.debug("slick matchPlayers "+idMatch +" "+idTeam)
       val query = for {mp <- matchPlayers
                        if mp.matchId === idMatch
@@ -41,17 +42,20 @@ object MatchPlayers extends DAO{
       query.list
   }
 
-  def insert(matchPlayer: MatchPlayer)(implicit session: Session): Long =  {
+  def insert(matchPlayer: MatchPlayer): Long =  DB.withSession {
+    implicit session =>
       matchPlayers.insert(matchPlayer)
   }
 
-  def update(idMatch: Long, idPlayer:Long, matchPlayer: MatchPlayer)(implicit session: Session) =  {
+  def update(idMatch: Long, idPlayer:Long, matchPlayer: MatchPlayer) =  DB.withSession {
+    implicit session =>
 //      val matchPlayer2update = matchPlayer.copy(Some(id))
 //      Logger.info("playe2update " + matchPlayer2update)
 //      matchPlayers.where(_.id === id).update(matchPlayer2update)
   }
 
-  def delete(idMatch: Long, idPlayer:Long)(implicit session: Session) =  {
+  def delete(idMatch: Long, idPlayer:Long) =  DB.withSession {
+    implicit session =>
 //      matchPlayers.where(_.id === matchPlayerId).delete
   }
 

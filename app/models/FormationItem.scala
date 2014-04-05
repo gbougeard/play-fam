@@ -16,33 +16,39 @@ case class FormationItem(id: Option[Long],
 
 object FormationItems extends DAO{
 
-  def findByFormation(id: Long)(implicit session: Session): Seq[FormationItem] =  {
+  def findByFormation(id: Long): Seq[FormationItem] =  DB.withSession {
+    implicit session =>
       val query = for {fi <- formationItems
                        if fi.formationId === id
       } yield fi
       query.list
   }
 
-  def insert(formationItem: FormationItem)(implicit session: Session): Long =  {
+  def insert(formationItem: FormationItem): Long =  DB.withSession {
+    implicit session =>
       formationItems.insert(formationItem)
   }
 
-  def update(id: Long, formationItem: FormationItem)(implicit session: Session) =  {
+  def update(id: Long, formationItem: FormationItem) =  DB.withSession {
+    implicit session =>
       val formationItem2update = formationItem.copy(Some(id))
       formationItems.where(_.id === id).update(formationItem2update)
   }
 
-  def delete(formationItemId: Long)(implicit session: Session) =  {
+  def delete(formationItemId: Long) =  DB.withSession {
+    implicit session =>
       formationItems.where(_.id === formationItemId).delete
   }
 
-  def save(items: Seq[FormationItem])(implicit session: Session) {
+  def save(items: Seq[FormationItem]) = DB.withSession {
+    implicit session =>
     items.map(item => update(item.id.getOrElse(0), item))
   }
 
-  def init(formationId: Long)(implicit session: Session) =  {
+  def init(formationId: Long) =  DB.withSession {
+    implicit session =>
       Formations.findById(formationId).map {
-        formation => TypMatch.findById(formation.typMatchId).map {
+        formation => TypMatches.findById(formation.typMatchId).map {
           typMatch => for (i <- 1 to typMatch.nbPlayer) {
             insert(new FormationItem(None, i, i, formationId))
           }
@@ -50,7 +56,8 @@ object FormationItems extends DAO{
       }
   }
 
-  def copy(formationIdToCopy: Long, formationId: Long)(implicit session: Session) =  {
+  def copy(formationIdToCopy: Long, formationId: Long) =  DB.withSession {
+    implicit session =>
       findByFormation(formationIdToCopy).map {
         item => insert(new FormationItem(None, item.coord, item.numItem, formationId))
     }

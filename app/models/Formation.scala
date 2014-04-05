@@ -18,15 +18,18 @@ case class Formation(id: Option[Long],
 object Formations extends DAO{
   lazy val pageSize = 10
 
-  def findAll(implicit session: Session): Seq[Formation] =  {
+  def findAll: Seq[Formation] =  DB.withSession {
+    implicit session =>
       (for (c <- formations.sortBy(_.name)) yield c).list
   }
 
-  def count(implicit session: Session): Int =  {
+  def count: Int =  DB.withSession {
+    implicit session =>
       formations.length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[(Formation, TypMatch)] = {
+  def findPage(page: Int = 0, orderField: Int): Page[(Formation, TypMatch)] = DB.withSession {
+    implicit session =>
 
     val offset = pageSize * page
 
@@ -46,28 +49,34 @@ object Formations extends DAO{
         Page(q.list, page, offset, count)
   }
 
-  def findById(id: Long)(implicit session: Session): Option[Formation] =  {
+  def findById(id: Long): Option[Formation] =  DB.withSession {
+    implicit session =>
       formations.where(_.id === id).firstOption
   }
 
-  def findByName(name: String)(implicit session: Session): Option[Formation] =  {
+  def findByName(name: String): Option[Formation] =  DB.withSession {
+    implicit session =>
       formations.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String)(implicit session: Session): Option[Formation] =  {
+  def findByCode(code: String): Option[Formation] =  DB.withSession {
+    implicit session =>
       formations.where(_.code === code).firstOption
   }
 
-  def insert(formation: Formation)(implicit session: Session): Long =  {
+  def insert(formation: Formation): Long =  DB.withSession {
+    implicit session =>
       formations.insert(formation)
   }
 
-  def update(id: Long, formation: Formation)(implicit session: Session) =  {
+  def update(id: Long, formation: Formation) =  DB.withSession {
+    implicit session =>
       val formation2update = formation.copy(Some(id), formation.code, formation.name)
       formations.where(_.id === id).update(formation2update)
   }
 
-  def delete(formationId: Long)(implicit session: Session) =  {
+  def delete(formationId: Long) =  DB.withSession {
+    implicit session =>
       formations.where(_.id === formationId).delete
   }
 
@@ -77,7 +86,8 @@ object Formations extends DAO{
   //  def options: Seq[(String, String)] = for {
   //    c <- findAll
   //  } yield (c.id.toString, c.name)
-  def options(implicit session: Session): Seq[(String, String)] =  {
+  def options: Seq[(String, String)] =  DB.withSession {
+    implicit session =>
       val query = (for {
         item <- formations
       } yield (item.id, item.name)

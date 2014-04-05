@@ -32,23 +32,23 @@ object Players extends Controller with securesocial.core.SecureSocial{
 
   def list(page: Int, orderBy: Int) = SecuredAction {
     implicit request =>
-      val players =Player.findPage(page, orderBy)
+      val players = models.Players.findPage(page, orderBy)
       val html = views.html.players.list("Liste des players", players, orderBy)
       Ok(html)
   }
 
   def view(id: Long) = SecuredAction {
     implicit request =>
-     Player.findById(id).map {
+      models.Players.findById(id).map {
         player => Ok(views.html.players.view("View Player", player))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   def edit(id: Long) = SecuredAction {
     implicit request =>
-     Player.findById(id).map {
+      models.Players.findById(id).map {
         player => Ok(views.html.players.edit("Edit Player", id, playerForm.fill(player)))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   /**
@@ -63,7 +63,7 @@ object Players extends Controller with securesocial.core.SecureSocial{
         formWithErrors => BadRequest(views.html.players.edit("Edit Player - errors", id, formWithErrors)),
         player => {
 
-         Player.update(id, player)
+          models.Players.update(id, player)
           Redirect(routes.Players.edit(id)).flashing("success" -> "Player %s has been updated".format(player.firstName + " " + player.lastName))
           //          Redirect(routes.Players.list(0, 2))
         }
@@ -86,7 +86,7 @@ object Players extends Controller with securesocial.core.SecureSocial{
       playerForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.players.create("New Player - errors", formWithErrors)),
         player => {
-         Player.insert(player)
+          models.Players.insert(player)
           //        Home.flashing("success" -> "Player %s has been created".format(player.name))
           Redirect(routes.Players.list(0, 2))
         }
@@ -98,7 +98,7 @@ object Players extends Controller with securesocial.core.SecureSocial{
    */
   def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-     Player.delete(id)
+      models.Players.delete(id)
       Redirect(routes.Players.list(0,0)).flashing("success" -> "Player has been deleted")
   }
 

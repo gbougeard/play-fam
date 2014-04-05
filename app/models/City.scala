@@ -19,15 +19,18 @@ case class City(id: Option[Long],
 object Cities extends DAO{
   lazy val pageSize = 10
 
-  def findAll(implicit session: Session): Seq[City] =  {
+  def findAll: Seq[City] =  DB.withSession {
+    implicit session =>
       (for (c <- cities.sortBy(_.name)) yield c).list
   }
 
-  def count(implicit session: Session): Int =  {
+  def count: Int =  DB.withSession {
+    implicit session =>
       Query(cities.length).first
   }
 
-  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[(City, Province)] = {
+  def findPage(page: Int = 0, orderField: Int): Page[(City, Province)] = DB.withSession {
+    implicit session =>
 
     val offset = pageSize * page
 
@@ -50,28 +53,34 @@ object Cities extends DAO{
         Page(q.list, page, offset, totalRows)
   }
 
-  def findById(id: Long)(implicit session: Session): Option[City] =  {
+  def findById(id: Long): Option[City] =  DB.withSession {
+    implicit session =>
       cities.where(_.id === id).firstOption
   }
 
-  def findByName(name: String)(implicit session: Session): Option[City] =  {
+  def findByName(name: String): Option[City] =  DB.withSession {
+    implicit session =>
       cities.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String)(implicit session: Session): Option[City] =  {
+  def findByCode(code: String): Option[City] =  DB.withSession {
+    implicit session =>
       cities.where(_.code === code).firstOption
   }
 
-  def insert(city: City)(implicit session: Session): Long =  {
+  def insert(city: City): Long =  DB.withSession {
+    implicit session =>
       cities.insert(city)
   }
 
-  def update(id: Long, city: City)(implicit session: Session) =  {
+  def update(id: Long, city: City) =  DB.withSession {
+    implicit session =>
       val city2update = city.copy(Some(id), city.code, city.name, city.upper, city.lower, city.provinceId)
       cities.where(_.id === id).update(city2update)
   }
 
-  def delete(cityId: Long)(implicit session: Session) =  {
+  def delete(cityId: Long) =  DB.withSession {
+    implicit session =>
       cities.where(_.id === cityId).delete
   }
 
@@ -79,7 +88,8 @@ object Cities extends DAO{
    * Construct the Map[String,String] needed to fill a select options set.
    */
 //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
-  def options(implicit session: Session): Seq[(String, String)] =  {
+  def options: Seq[(String, String)] =  DB.withSession {
+    implicit session =>
       val query = (for {
         item <- cities
       } yield (item.id, item.name)
@@ -88,7 +98,8 @@ object Cities extends DAO{
   }
 
 
-  def json(page: Int, pageSize: Int, orderField: Int)(implicit session: Session): Seq[(City, Province)] =  {
+  def json(page: Int, pageSize: Int, orderField: Int): Seq[(City, Province)] =  DB.withSession {
+    implicit session =>
 
       play.Logger.debug("page " + page)
       play.Logger.debug("pageSize " + pageSize)

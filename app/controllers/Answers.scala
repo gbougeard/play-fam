@@ -5,9 +5,13 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models._
+import models.Answers._
 
 import play.api.libs.json._
 import play.api.Logger
+
+import java.util.concurrent.Future
+import play.api.db.DB
 
 
 object Answers extends Controller with securesocial.core.SecureSocial {
@@ -56,24 +60,23 @@ object Answers extends Controller with securesocial.core.SecureSocial {
 
   def byEvent(id: Long) = SecuredAction {
     implicit request =>
-      Event.findById(id).map {
+      models.Events.findById(id).map {
         event =>
-          val answers = Answer.findByEvent(id)
+          val answers = models.Answers.findByEvent(id)
           play.Logger.debug(s"User ${request.user}")
           val player = session.get("userId").map {
             uid =>
-              Player.findByUserId(uid.toLong)
+              models.Players.findByUserId(uid.toLong)
           } getOrElse None
           Ok(views.html.answers.view("View Answers", event, answers, request.user, player))
       } getOrElse NotFound
-
   }
 
   def jsonByEvent(id: Long) = Action {
     implicit request =>
-      Event.findById(id).map {
+      models.Events.findById(id).map {
         event =>
-          val answers = Answer.findByEvent(id)
+          val answers = models.Answers.findByEvent(id)
           Ok(Json.toJson(answers))
       } getOrElse NotFound
 

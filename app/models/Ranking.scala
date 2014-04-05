@@ -25,7 +25,8 @@ case class Ranking(competitionId: Long,
 object Rankings extends DAO{
   lazy val pageSize = 10
 
-  def findAll(implicit session: Session): Seq[Ranking] =  {
+  def findAll: Seq[Ranking] =  DB.withSession {
+    implicit session =>
       (for (c <- rankings.sortBy(_.points.desc)) yield c).list
   }
 
@@ -52,21 +53,24 @@ object Rankings extends DAO{
   //    }
   //  }
 
-  def findByCompetition(id: Long)(implicit session: Session): Seq[Ranking] =  {
+  def findByCompetition(id: Long): Seq[Ranking] =  DB.withSession {
+    implicit session =>
       (for {
         c <- rankings.sortBy(_.points.desc)
         if c.competitionId === id
       } yield c).list
   }
 
-  def findByClub(id: Long)(implicit session: Session): Seq[Ranking] =  {
+  def findByClub(id: Long): Seq[Ranking] =  DB.withSession {
+    implicit session =>
       (for {
         c <- rankings.sortBy(_.points.desc)
         if c.clubId === id
       } yield c).list
   }
 
-  def findByTeam(id: Long)(implicit session: Session): Seq[Ranking] =  {
+  def findByTeam(id: Long): Seq[Ranking] =  DB.withSession {
+    implicit session =>
       (for {
         c <- rankings.sortBy(_.points.desc)
         if c.teamId === id

@@ -45,7 +45,8 @@ object PlayerPositions extends DAO{
   //    }
   //  }
 
-  def findByPosition(id: Long)(implicit session: Session): Seq[(PlayerPosition, Player, Position)] =  {
+  def findByPosition(id: Long): Seq[(PlayerPosition, Player, Position)] =  DB.withSession {
+    implicit session =>
       val query = for {ps <- playerPositions
                        if ps.positionId === id
                        p <- ps.player
@@ -55,7 +56,8 @@ object PlayerPositions extends DAO{
       query.list
   }
 
-  def findByPlayer(id: Long)(implicit session: Session): Seq[(PlayerPosition, Player, Position)] =  {
+  def findByPlayer(id: Long): Seq[(PlayerPosition, Player, Position)] =  DB.withSession {
+    implicit session =>
       val query = for {ps <- playerPositions
                        if ps.playerId === id
                        p <- ps.player

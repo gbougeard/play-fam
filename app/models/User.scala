@@ -35,7 +35,8 @@ case class User(pid: Option[Long],
 
 object Users extends DAO{
   // Operations
-  def save(user: User)(implicit session: Session): User =  {
+  def save(user: User): User =  DB.withSession {
+    implicit session =>
       Logger.info("save %s".format(user))
 //      val u = findByUserId(user.id).match{
 //         x => Query(users).where(_.pid is user.pid).update(user)
@@ -62,21 +63,24 @@ object Users extends DAO{
       }
   }
 
-  def delete(pid: Long)(implicit session: Session) =  {
+  def delete(pid: Long) =  DB.withSession {
+    implicit session =>
    
       Logger.info("delete %s".format(pid))
       users.where(_.pid is pid).mutate(_.delete)
   }
 
   // Queries
-  def all(implicit session: Session): List[User] =  {
+  def all: List[User] =  DB.withSession {
+    implicit session =>
    
       Logger.info("all")
       val q = for (user <- users) yield user
       q.list
   }
 
-  def findById(pid: Long)(implicit session: Session): Option[User] =  {
+  def findById(pid: Long): Option[User] =  DB.withSession {
+    implicit session =>
    
       Logger.info("findById %s".format(pid))
       users.where(_.pid === pid).firstOption
@@ -88,7 +92,8 @@ object Users extends DAO{
   //      byEmail(email).firstOption
   //  }
 
-  def findByUserId(u: IdentityId)(implicit session: Session): Option[User] =  {
+  def findByUserId(u: IdentityId): Option[User] =  DB.withSession {
+    implicit session =>
    
       Logger.info("findByUserId %s".format(u))
       val q = for {
@@ -99,7 +104,8 @@ object Users extends DAO{
       q.firstOption
   }
 
-  def findByEmailAndProvider(e: String, p: String)(implicit session: Session): Option[User] =  {
+  def findByEmailAndProvider(e: String, p: String): Option[User] =  DB.withSession {
+    implicit session =>
    
       Logger.info("findByEmailAndProvider %s %s".format(e, p))
       val q = for {
@@ -110,13 +116,15 @@ object Users extends DAO{
       q.firstOption
   }
 
-  def count(implicit session: Session): Int =  {
+  def count: Int =  DB.withSession {
+    implicit session =>
     {
       (users.length).run
     }
   }
 
-  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[User] = {
+  def findPage(page: Int = 0, orderField: Int): Page[User] = DB.withSession {
+    implicit session =>
     val pageSize = 10
     val offset = pageSize * page
 

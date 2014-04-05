@@ -4,6 +4,7 @@ import play.api.mvc._
 import models._
 
 
+
 object Rankings extends Controller with securesocial.core.SecureSocial {
 
 
@@ -13,7 +14,7 @@ object Rankings extends Controller with securesocial.core.SecureSocial {
    */
   def index = Action {
     implicit request =>
-      val competitions = SeasonCompetition.findAll
+      val competitions = models.SeasonCompetitions.findAll
       val html = views.html.rankings.index("Rankings", competitions)
       Ok(html)
   }
@@ -26,8 +27,8 @@ object Rankings extends Controller with securesocial.core.SecureSocial {
 
   def list(competition: Long, orderBy: Int) = Action {
     implicit request =>
-      val rankings = Ranking.findByCompetition(competition)
-      val html = views.html.rankings.list("Liste des rankings", rankings, competition, orderBy, SeasonCompetition.optionsChampionship)
+      val rankings = models.Rankings.findByCompetition(competition)
+      val html = views.html.rankings.list("Liste des rankings", rankings, competition, orderBy, models.SeasonCompetitions.optionsChampionship)
       Ok(html)
   }
 

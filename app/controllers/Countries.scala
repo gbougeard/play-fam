@@ -4,9 +4,10 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models._
+import models.Countries._
 import play.api.libs.json.Json
-import slick.session.Session
 import service.Administrator
+
 
 
 object Countries extends Controller with securesocial.core.SecureSocial {
@@ -34,23 +35,23 @@ object Countries extends Controller with securesocial.core.SecureSocial {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val countries = Country.findPage(page, orderBy)
+      val countries = models.Countries.findPage(page, orderBy)
      Ok(views.html.countries.list("Liste des countries", countries, orderBy))
   }
 
 
   def view(id: Long) = Action {
     implicit request =>
-      Country.findById(id).map {
+      models.Countries.findById(id).map {
         country => Ok(views.html.countries.view("View Country", country))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   def edit(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      Country.findById(id).map {
+      models.Countries.findById(id).map {
         country => Ok(views.html.countries.edit("Edit Country", id, countryForm.fill(country)))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   /**
@@ -63,7 +64,7 @@ object Countries extends Controller with securesocial.core.SecureSocial {
       countryForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.countries.edit("Edit Country - errors", id, formWithErrors)),
         country => {
-          Country.update(id, country)
+          models.Countries.update(id, country)
           Redirect(routes.Countries.edit(id)).flashing("success" -> "Country %s has been updated".format(country.name))
           //Redirect(routes.Countries.view(country.id))
         }
@@ -87,8 +88,8 @@ object Countries extends Controller with securesocial.core.SecureSocial {
       countryForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.countries.create("New Country - errors", formWithErrors)),
         country => {
-          Country.insert(country)
-          Redirect(routes.Countries.create).flashing("success" -> "Country %s has been created".format(country.name))
+          models.Countries.insert(country)
+          Redirect(routes.Countries.create()).flashing("success" -> "Country %s has been created".format(country.name))
           //Redirect(routes.Countries.view(country.id))
         }
       )
@@ -99,7 +100,7 @@ object Countries extends Controller with securesocial.core.SecureSocial {
    */
   def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      Country.delete(id)
+      models.Countries.delete(id)
       Home.flashing("success" -> "Country has been deleted")
   }
 

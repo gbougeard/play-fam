@@ -21,15 +21,18 @@ case class State(id: Option[Long],
 object States extends DAO{
   lazy val pageSize = 10
 
-  def findAll(implicit session: Session): Seq[State] =  {
+  def findAll: Seq[State] =  DB.withSession {
+    implicit session =>
       (for (c <- states.sortBy(_.name)) yield c).list
   }
 
-  def count(implicit session: Session): Int =  {
-      (states.length).run
+  def count: Int =  DB.withSession {
+    implicit session =>
+      states.length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[(State, Country)] = {
+  def findPage(page: Int = 0, orderField: Int): Page[(State, Country)] = DB.withSession {
+    implicit session =>
 
     val offset = pageSize * page
 
@@ -53,27 +56,33 @@ object States extends DAO{
         Page(states.list, page, offset, totalRows)
   }
 
-  def findById(id: Long)(implicit session: Session): Option[State] =  {
+  def findById(id: Long): Option[State] =  DB.withSession {
+    implicit session =>
       states.where(_.id === id).firstOption
   }
 
-  def findByName(name: String)(implicit session: Session): Option[State] =  {
+  def findByName(name: String): Option[State] =  DB.withSession {
+    implicit session =>
       states.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String)(implicit session: Session): Option[State] =  {
+  def findByCode(code: String): Option[State] =  DB.withSession {
+    implicit session =>
       states.where(_.code === code).firstOption
   }
 
-  def insert(state: State)(implicit session: Session): Long =  {
+  def insert(state: State): Long =  DB.withSession {
+    implicit session =>
       states.insert(state)
   }
 
-  def update(id: Long, state: State)(implicit session: Session) =  {
+  def update(id: Long, state: State) =  DB.withSession {
+    implicit session =>
       states.where(_.id === state.id).update(state.copy(Some(id)))
   }
 
-  def delete(stateId: Long)(implicit session: Session) =  {
+  def delete(stateId: Long) =  DB.withSession {
+    implicit session =>
       states.where(_.id === stateId).delete
   }
 
@@ -81,7 +90,8 @@ object States extends DAO{
    * Construct the Map[String,String] needed to fill a select options set.
    */
 //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
-  def options(implicit session: Session): Seq[(String, String)] =  {
+  def options: Seq[(String, String)] =  DB.withSession {
+    implicit session =>
     implicit session:Session =>
       val query = (for {
         item <- states

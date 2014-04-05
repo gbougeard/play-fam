@@ -25,15 +25,18 @@ case class TypMatch(id: Option[Long],
 object TypMatches extends DAO{
   lazy val pageSize = 10
 
-  def findAll(implicit session: Session): Seq[TypMatch] =  {
+  def findAll: Seq[TypMatch] =  DB.withSession {
+    implicit session =>
       (for (c <- typMatches.sortBy(_.name)) yield c).list
   }
 
-  def count(implicit session: Session): Int =  {
-      (typMatches.length).run
+  def count: Int =  DB.withSession {
+    implicit session =>
+      typMatches.length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[TypMatch] = {
+  def findPage(page: Int = 0, orderField: Int): Page[TypMatch] = DB.withSession {
+    implicit session =>
 
     val offset = pageSize * page
 
@@ -52,28 +55,34 @@ object TypMatches extends DAO{
         Page(q.list, page, offset, count)
   }
 
-  def findById(id: Long)(implicit session: Session): Option[TypMatch] =  {
+  def findById(id: Long): Option[TypMatch] =  DB.withSession {
+    implicit session =>
       typMatches.where(_.id === id).firstOption
   }
 
-  def findByName(name: String)(implicit session: Session): Option[TypMatch] =  {
+  def findByName(name: String): Option[TypMatch] =  DB.withSession {
+    implicit session =>
       typMatches.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String)(implicit session: Session): Option[TypMatch] =  {
+  def findByCode(code: String): Option[TypMatch] =  DB.withSession {
+    implicit session =>
       typMatches.where(_.code === code).firstOption
   }
 
-  def insert(typMatch: TypMatch)(implicit session: Session): Long =  {
+  def insert(typMatch: TypMatch): Long =  DB.withSession {
+    implicit session =>
       typMatches.insert(typMatch)
   }
 
-  def update(id: Long, typMatch: TypMatch)(implicit session: Session) =  {
+  def update(id: Long, typMatch: TypMatch) =  DB.withSession {
+    implicit session =>
       val typMatch2update = typMatch.copy(Some(id), typMatch.code, typMatch.name)
       typMatches.where(_.id === id).update(typMatch2update)
   }
 
-  def delete(typMatchId: Long)(implicit session: Session) =  {
+  def delete(typMatchId: Long) =  DB.withSession {
+    implicit session =>
       typMatches.where(_.id === typMatchId).delete
   }
 
@@ -83,7 +92,8 @@ object TypMatches extends DAO{
 //  def options: Seq[(String, String)] = for {
 //    c <- findAll
 //  } yield (c.id.toString, c.name)
-  def options(implicit session: Session): Seq[(String, String)] =  {
+  def options: Seq[(String, String)] =  DB.withSession {
+    implicit session =>
       val query = (for {
         item <- typMatches
       } yield (item.id, item.name)

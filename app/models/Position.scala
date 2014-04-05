@@ -15,15 +15,18 @@ case class Position(id: Option[Long],
 object Positions extends DAO{
   lazy val pageSize = 10
 
-  def findAll(implicit session: Session): Seq[Position] =  {
+  def findAll: Seq[Position] =  DB.withSession {
+    implicit session =>
       (for (c <- positions.sortBy(_.name)) yield c).list
   }
 
-  def count(implicit session: Session): Int =  {
+  def count: Int =  DB.withSession {
+    implicit session =>
       positions.length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[Position] = {
+  def findPage(page: Int = 0, orderField: Int): Page[Position] = DB.withSession {
+    implicit session =>
 
     val offset = pageSize * page
 
@@ -42,28 +45,34 @@ object Positions extends DAO{
         Page(positions, page, offset, count)
   }
 
-  def findById(id: Long)(implicit session: Session): Option[Position] =  {
+  def findById(id: Long): Option[Position] =  DB.withSession {
+    implicit session =>
       positions.where(_.id === id).firstOption
   }
 
-  def findByName(name: String)(implicit session: Session): Option[Position] =  {
+  def findByName(name: String): Option[Position] =  DB.withSession {
+    implicit session =>
       positions.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String)(implicit session: Session): Option[Position] =  {
+  def findByCode(code: String): Option[Position] =  DB.withSession {
+    implicit session =>
       positions.where(_.code === code).firstOption
   }
 
-  def insert(position: Position)(implicit session: Session): Long =  {
+  def insert(position: Position): Long =  DB.withSession {
+    implicit session =>
       positions.insert(position)
   }
 
-  def update(id: Long, position: Position)(implicit session: Session) =  {
+  def update(id: Long, position: Position) =  DB.withSession {
+    implicit session =>
       val position2update = position.copy(Some(id), position.code, position.name)
       positions.where(_.id === id).update(position2update)
   }
 
-  def delete(positionId: Long)(implicit session: Session) =  {
+  def delete(positionId: Long) =  DB.withSession {
+    implicit session =>
       positions.where(_.id === positionId).delete
   }
 
@@ -73,7 +82,8 @@ object Positions extends DAO{
 //  def options: Seq[(String, String)] = for {
 //    c <- findAll
 //  } yield (c.id.toString, c.name)
-  def options(implicit session: Session): Seq[(String, String)] =  {
+  def options: Seq[(String, String)] =  DB.withSession {
+    implicit session =>
       val query = (for {
         item <- positions
       } yield (item.id, item.name)

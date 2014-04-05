@@ -39,7 +39,6 @@ private[models] trait DAO {
   val eventCategories = TableQuery[EventCategories]
   val eventStatuses = TableQuery[EventStatuses]
   val eventTeams = TableQuery[EventTeams]
-  val famUsers = TableQuery[FamUser]
   val fixtures = TableQuery[Fixtures]
   val formations = TableQuery[Formations]
   val formationItems = TableQuery[FormationItems]

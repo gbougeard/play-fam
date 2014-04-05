@@ -7,6 +7,7 @@ import models._
 import service.{Administrator, Coach}
 
 
+
 object Teams extends Controller with securesocial.core.SecureSocial{
 
   /**
@@ -31,23 +32,23 @@ object Teams extends Controller with securesocial.core.SecureSocial{
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val teams = Team.findPage(page, orderBy)
+      val teams = models.Teams.findPage(page, orderBy)
       val html = views.html.teams.list("Liste des teams", teams, orderBy)
       Ok(html)
   }
 
   def view(id: Long) = Action {
     implicit request =>
-      Team.findById(id).map {
+      models.Teams.findById(id).map {
         team => Ok(views.html.teams.view("View Team", team))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   def edit(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
-      Team.findById(id).map {
-        team => Ok(views.html.teams.edit("Edit Team", id, teamForm.fill(team), Club.options))
-      } getOrElse (NotFound)
+      models.Teams.findById(id).map {
+        team => Ok(views.html.teams.edit("Edit Team", id, teamForm.fill(team), models.Clubs.options))
+      } getOrElse NotFound
   }
 
   /**
@@ -58,9 +59,9 @@ object Teams extends Controller with securesocial.core.SecureSocial{
   def update(id: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       teamForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.teams.edit("Edit Team - errors", id, formWithErrors, Club.options)),
+        formWithErrors => BadRequest(views.html.teams.edit("Edit Team - errors", id, formWithErrors, models.Clubs.options)),
         team => {
-          Team.update(id, team)
+          models.Teams.update(id, team)
           //        Home.flashing("success" -> "Team %s has been updated".format(team.name))
           Redirect(routes.Teams.list(0, 2))
         }
@@ -72,7 +73,7 @@ object Teams extends Controller with securesocial.core.SecureSocial{
    */
   def create =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
-      Ok(views.html.teams.create("New Team", teamForm, Club.options))
+      Ok(views.html.teams.create("New Team", teamForm, models.Clubs.options))
   }
 
   /**
@@ -81,9 +82,9 @@ object Teams extends Controller with securesocial.core.SecureSocial{
   def save =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
       teamForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.teams.create("New Team - errors", formWithErrors, Club.options)),
+        formWithErrors => BadRequest(views.html.teams.create("New Team - errors", formWithErrors, models.Clubs.options)),
         team => {
-          Team.insert(team)
+          models.Teams.insert(team)
           //        Home.flashing("success" -> "Team %s has been created".format(team.name))
           Redirect(routes.Teams.list(0, 2))
         }
@@ -95,7 +96,7 @@ object Teams extends Controller with securesocial.core.SecureSocial{
    */
   def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      Team.delete(id)
+      models.Teams.delete(id)
       Home.flashing("success" -> "Team has been deleted")
   }
 

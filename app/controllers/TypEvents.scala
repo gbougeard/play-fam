@@ -9,6 +9,7 @@ import play.api.libs.json._
 import service.Administrator
 
 
+
 object TypEvents extends Controller with securesocial.core.SecureSocial {
 
   /**
@@ -32,23 +33,23 @@ object TypEvents extends Controller with securesocial.core.SecureSocial {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val typEvents =TypEvent.findPage(page, orderBy)
+      val typEvents = models.TypEvents.findPage(page, orderBy)
       val html = views.html.typEvents.list("Liste des typEvents", typEvents, orderBy)
       Ok(html)
   }
 
   def view(id: Long) = Action {
     implicit request =>
-     TypEvent.findById(id).map {
+      models.TypEvents.findById(id).map {
         typEvent => Ok(views.html.typEvents.view("View TypEvent", typEvent))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   def edit(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-     TypEvent.findById(id).map {
+      models.TypEvents.findById(id).map {
         typEvent => Ok(views.html.typEvents.edit("Edit TypEvent", id, typEventForm.fill(typEvent)))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   /**
@@ -61,7 +62,7 @@ object TypEvents extends Controller with securesocial.core.SecureSocial {
       typEventForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.typEvents.edit("Edit TypEvent - errors", id, formWithErrors)),
         typEvent => {
-         TypEvent.update(id, typEvent)
+          models.TypEvents.update(id, typEvent)
           //        Home.flashing("success" -> "TypEvent %s has been updated".format(typEvent.name))
           //Redirect(routes.TypEvents.list(0, 2))
           Redirect(routes.TypEvents.view(id)).flashing("success" -> "TypEvent %s has been updated".format(typEvent.name))
@@ -86,7 +87,7 @@ object TypEvents extends Controller with securesocial.core.SecureSocial {
       typEventForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.typEvents.create("New TypEvent - errors", formWithErrors)),
         typEvent => {
-         TypEvent.insert(typEvent)
+          models.TypEvents.insert(typEvent)
           //        Home.flashing("success" -> "TypEvent %s has been created".format(typEvent.name))
           Redirect(routes.TypEvents.list(0, 2))
         }
@@ -98,13 +99,13 @@ object TypEvents extends Controller with securesocial.core.SecureSocial {
    */
   def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-     TypEvent.delete(id)
+      models.TypEvents.delete(id)
       Home.flashing("success" -> "TypEvent has been deleted")
   }
 
   def jsonList = Action {
     implicit request =>
-      Ok(Json.toJson(TypEvent.findAll))
+      Ok(Json.toJson(models.TypEvents.findAll))
   }
 
 }

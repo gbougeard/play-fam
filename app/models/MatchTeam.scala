@@ -30,7 +30,8 @@ case class MatchTeam(matchId: Option[Long],
 object MatchTeams extends DAO{
   lazy val pageSize = 10
 
-  def findByMatchAndTeam(idMatch: Long, idTeam: Long)(implicit session: Session): Option[(MatchTeam, Team)] =  {
+  def findByMatchAndTeam(idMatch: Long, idTeam: Long): Option[(MatchTeam, Team)] =  DB.withSession {
+    implicit session =>
       val query = for {mt <- matchTeams
                        if mt.matchId === idMatch
                        if mt.teamId === idTeam
@@ -41,7 +42,8 @@ object MatchTeams extends DAO{
       query.firstOption
   }
 
-  def findByMatchAndHome(idMatch: Long)(implicit session: Session): Option[(MatchTeam, Team)] =  {
+  def findByMatchAndHome(idMatch: Long): Option[(MatchTeam, Team)] =  DB.withSession {
+    implicit session =>
       val query = for {mt <- matchTeams
                        if mt.matchId === idMatch
                        if mt.home === true
@@ -50,7 +52,8 @@ object MatchTeams extends DAO{
       query.firstOption
   }
 
-  def findByMatchAndAway(idMatch: Long)(implicit session: Session): Option[(MatchTeam, Team)] =  {
+  def findByMatchAndAway(idMatch: Long): Option[(MatchTeam, Team)] =  DB.withSession {
+    implicit session =>
       val query = for {mt <- matchTeams
                        if mt.matchId === idMatch
                        if mt.home === false
@@ -59,7 +62,8 @@ object MatchTeams extends DAO{
       query.firstOption
   }
 
-  def findByMatch(idMatch: Long)(implicit session: Session): Seq[(MatchTeam, Match, Team)] =  {
+  def findByMatch(idMatch: Long): Seq[(MatchTeam, Match, Team)] =  DB.withSession {
+    implicit session =>
       val query = for {mt <- matchTeams
                        if mt.matchId === idMatch
                        m <- mt.matche
@@ -69,7 +73,8 @@ object MatchTeams extends DAO{
       query.list
   }
 
-  def findByTeam(idTeam: Long)(implicit session: Session): Seq[(MatchTeam, Match, Team)] =  {
+  def findByTeam(idTeam: Long): Seq[(MatchTeam, Match, Team)] =  DB.withSession {
+    implicit session =>
       val query = for {mt <- matchTeams
                        if mt.teamId === idTeam
                        m <- mt.matche
@@ -79,16 +84,19 @@ object MatchTeams extends DAO{
       query.list
   }
 
-  def insert(mt: MatchTeam)(implicit session: Session): Long =  {
+  def insert(mt: MatchTeam): Long =  DB.withSession {
+    implicit session =>
       matchTeams.insert(mt)
   }
 
-  def update(id: Long, m: MatchTeam)(implicit session: Session) =  {
+  def update(id: Long, m: MatchTeam) =  DB.withSession {
+    implicit session =>
       val matchTeam2update = m.copy(Some(id))
       //      matchTeams.where(_.id === id).update(matchTeam2update)
   }
 
-  def delete(matchTeamId: Long)(implicit session: Session) =  {
+  def delete(matchTeamId: Long) =  DB.withSession {
+    implicit session =>
       //      matchTeams.where(_.id === matchTeamId).delete
   }
 

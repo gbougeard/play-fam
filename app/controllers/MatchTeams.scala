@@ -6,23 +6,24 @@ import models._
 import play.api.libs.json._
 
 
+
 object MatchTeams extends Controller with securesocial.core.SecureSocial {
 
 
   def jsonByMatchAndTeam(idMatch: Long, idTeam: Long) = Action {
     implicit request =>
-      Ok(Json.toJson(MatchTeam.findByMatchAndTeam(idMatch, idTeam)))
+      Ok(Json.toJson(models.MatchTeams.findByMatchAndTeam(idMatch, idTeam)))
   }
 
   def jsonByMatchAndHome(idMatch: Long) = Action {
     implicit request =>
-      val goals = MatchTeam.findByMatchAndHome(idMatch)
+      val goals = models.MatchTeams.findByMatchAndHome(idMatch)
       Ok(Json.toJson(goals))
   }
 
   def jsonByMatchAndAway(idMatch: Long) = Action {
     implicit request =>
-      MatchTeam.findByMatchAndAway(idMatch).map {
+      models.MatchTeams.findByMatchAndAway(idMatch).map {
         goals => Ok(Json.toJson(goals))
       } getOrElse NotFound
   }

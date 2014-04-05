@@ -7,6 +7,7 @@ import models._
 import service.{Administrator, Coach}
 
 
+
 object Provinces extends Controller with securesocial.core.SecureSocial {
 
   /**
@@ -33,23 +34,23 @@ object Provinces extends Controller with securesocial.core.SecureSocial {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val provinces = Province.findPage(page, orderBy)
+      val provinces = models.Provinces.findPage(page, orderBy)
       val html = views.html.provinces.list("Liste des provinces", provinces, orderBy)
       Ok(html)
   }
 
   def view(id: Long) = Action {
     implicit request =>
-      Province.findById(id).map {
+      models.Provinces.findById(id).map {
         province => Ok(views.html.provinces.view("View Province", province))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   def edit(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      Province.findById(id).map {
-        province => Ok(views.html.provinces.edit("Edit Province", id, provinceForm.fill(province), State.options))
-      } getOrElse (NotFound)
+      models.Provinces.findById(id).map {
+        province => Ok(views.html.provinces.edit("Edit Province", id, provinceForm.fill(province), models.States.options))
+      } getOrElse NotFound
   }
 
   /**
@@ -60,10 +61,10 @@ object Provinces extends Controller with securesocial.core.SecureSocial {
   def update(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       provinceForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.provinces.edit("Edit Province - errors", id, formWithErrors, State.options)),
+        formWithErrors => BadRequest(views.html.provinces.edit("Edit Province - errors", id, formWithErrors, models.States.options)),
         province => {
 
-          Province.update(id, province)
+          models.Provinces.update(id, province)
           Redirect(routes.Provinces.edit(id)).flashing("success" -> "Province %s has been updated".format(province.name))
           //Redirect(routes.Provinces.view(province.id))
         }
@@ -75,7 +76,7 @@ object Provinces extends Controller with securesocial.core.SecureSocial {
    */
   def create =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      Ok(views.html.provinces.create("New Province", provinceForm, State.options))
+      Ok(views.html.provinces.create("New Province", provinceForm, models.States.options))
   }
 
   /**
@@ -84,10 +85,10 @@ object Provinces extends Controller with securesocial.core.SecureSocial {
   def save =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
       provinceForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.provinces.create("New Province - errors", formWithErrors, State.options)),
+        formWithErrors => BadRequest(views.html.provinces.create("New Province - errors", formWithErrors, models.States.options)),
         province => {
-          Province.insert(province)
-          Redirect(routes.Provinces.create).flashing("success" -> "Province %s has been created".format(province.name))
+          models.Provinces.insert(province)
+          Redirect(routes.Provinces.create()).flashing("success" -> "Province %s has been created".format(province.name))
           // Redirect(routes.Provinces.view(province.id))
         }
       )
@@ -98,7 +99,7 @@ object Provinces extends Controller with securesocial.core.SecureSocial {
    */
   def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      Province.delete(id)
+      models.Provinces.delete(id)
       Home.flashing("success" -> "Province has been deleted")
   }
 

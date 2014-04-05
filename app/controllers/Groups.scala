@@ -7,6 +7,7 @@ import models._
 import service.Administrator
 
 
+
 object Groups extends Controller with securesocial.core.SecureSocial{
 
 
@@ -30,23 +31,23 @@ object Groups extends Controller with securesocial.core.SecureSocial{
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val groups = Group.findPage(page, orderBy)
+      val groups = models.Groups.findPage(page, orderBy)
       val html = views.html.groups.list("Liste des groups", groups, orderBy)
       Ok(html)
   }
 
   def view(id: Long) = Action {
     implicit request =>
-      Group.findById(id).map {
+      models.Groups.findById(id).map {
         group => Ok(views.html.groups.view("View Group", group))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   def edit(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      Group.findById(id).map {
+      models.Groups.findById(id).map {
         group => Ok(views.html.groups.edit("Edit Group", id, groupForm.fill(group)))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   /**
@@ -59,7 +60,7 @@ object Groups extends Controller with securesocial.core.SecureSocial{
       groupForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.groups.edit("Edit Group - errors", id, formWithErrors)),
         group => {
-          Group.update(id, group)
+          models.Groups.update(id, group)
           //        Home.flashing("success" -> "Group %s has been updated".format(group.name))
           //Redirect(routes.Groups.list(0, 2))
           Redirect(routes.Groups.view(id)).flashing("success" -> "Group %s has been updated".format(group.name))
@@ -84,7 +85,7 @@ object Groups extends Controller with securesocial.core.SecureSocial{
       groupForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.groups.create("New Group - errors", formWithErrors)),
         group => {
-          Group.insert(group)
+          models.Groups.insert(group)
           //        Home.flashing("success" -> "Group %s has been created".format(group.name))
           Redirect(routes.Groups.list(0, 2))
         }
@@ -96,7 +97,7 @@ object Groups extends Controller with securesocial.core.SecureSocial{
    */
   def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      Group.delete(id)
+      models.Groups.delete(id)
       Home.flashing("success" -> "Group has been deleted")
   }
 

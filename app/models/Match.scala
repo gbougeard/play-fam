@@ -20,15 +20,18 @@ object Matches extends DAO{
 
   lazy val pageSize = 10
 
-  def findAll(implicit session: Session): Seq[Match] =  {
+  def findAll: Seq[Match] =  DB.withSession {
+    implicit session =>
       (for (c <- matches) yield c).list
   }
 
-  def count(implicit session: Session): Int =  {
+  def count: Int =  DB.withSession {
+    implicit session =>
       matches.length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[(Match, SeasonCompetition, Event)] = {
+  def findPage(page: Int = 0, orderField: Int): Page[(Match, SeasonCompetition, Event)] = DB.withSession {
+    implicit session =>
 
     val offset = pageSize * page
 
@@ -52,24 +55,29 @@ object Matches extends DAO{
         Page(matchs.list, page, offset, count)
   }
 
-  def findById(id: Long)(implicit session: Session): Option[Match] =  {
+  def findById(id: Long): Option[Match] =  DB.withSession {
+    implicit session =>
       matches.where(_.id === id).firstOption
   }
 
-  def findByEventId(id: Long)(implicit session: Session): Option[Match] =  {
+  def findByEventId(id: Long): Option[Match] =  DB.withSession {
+    implicit session =>
       matches.where(_.eventId === id).firstOption
   }
 
-  def insert(m: Match)(implicit session: Session): Long =  {
+  def insert(m: Match): Long =  DB.withSession {
+    implicit session =>
       matches.insert(m)
   }
 
-  def update(id: Long, m: Match)(implicit session: Session) =  {
+  def update(id: Long, m: Match) =  DB.withSession {
+    implicit session =>
       val match2update = m.copy(Some(id))
       matches.where(_.id === id).update(match2update)
   }
 
-  def delete(matchId: Long)(implicit session: Session) =  {
+  def delete(matchId: Long) =  DB.withSession {
+    implicit session =>
       matches.where(_.id === matchId).delete
   }
 

@@ -6,6 +6,7 @@ import play.api.data.Forms._
 import models._
 import service.{Administrator, Coach}
 
+
 object Categories extends Controller with securesocial.core.SecureSocial {
 
   /**
@@ -43,23 +44,23 @@ object Categories extends Controller with securesocial.core.SecureSocial {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val categories = Category.findPage(page, orderBy)
+      val categories = models.Categories.findPage(page, orderBy)
       val html = views.html.categories.list("List categories", categories, orderBy)
       Ok(html)
   }
 
   def view(id: Long) = Action {
     implicit request =>
-      Category.findById(id).map {
+      models.Categories.findById(id).map {
         category => Ok(views.html.categories.view("View Category", category))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   def edit(id: Long) = SecuredAction(WithRoles(Set(Coach))) {
     implicit request =>
-      Category.findById(id).map {
+      models.Categories.findById(id).map {
         category => Ok(views.html.categories.edit("Edit Category", id, categoryForm.fill(category)))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   /**
@@ -72,7 +73,7 @@ object Categories extends Controller with securesocial.core.SecureSocial {
       categoryForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.categories.edit("Edit Category - errors", id, formWithErrors)),
         category => {
-          Category.update(id, category)
+          models.Categories.update(id, category)
           //        Home.flashing("success" -> "Category %s has been updated".format(category.name))
           //Redirect(routes.Categorys.list(0, 2))
           Redirect(routes.Categories.view(id)).flashing("success" -> "Category %s has been updated".format(category.name))
@@ -97,7 +98,7 @@ object Categories extends Controller with securesocial.core.SecureSocial {
       categoryForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.categories.create("New Category - errors", formWithErrors)),
         category => {
-          Category.insert(category)
+          models.Categories.insert(category)
           //        Home.flashing("success" -> "Category %s has been created".format(category.name))
           Redirect(routes.Categories.list(0, 2))
         }
@@ -109,7 +110,7 @@ object Categories extends Controller with securesocial.core.SecureSocial {
    */
   def delete(id: Long) = SecuredAction(WithRoles(Set(Administrator))) {
     implicit request =>
-      Category.delete(id)
+      models.Categories.delete(id)
       Home.flashing("success" -> "Category has been deleted")
   }
 

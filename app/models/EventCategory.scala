@@ -8,15 +8,16 @@ import play.api.db.slick.DB
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-import models.Event._
-import models.Category._
+import models.Events._
+import models.Categories._
 import database.EventCategories
 
 case class EventCategory(eventId: Long,
                      categoryId: Long)
 
 object EventCategories extends DAO{
-  def findByEvent(id: Long)(implicit session: Session): Seq[(EventCategory, Event, Category)] =  {
+  def findByEvent(id: Long): Seq[(EventCategory, Event, Category)] =  DB.withSession {
+    implicit session =>
       val query = for {et <- eventCategories
                        if et.eventId === id
                        t <- et.category
@@ -26,7 +27,8 @@ object EventCategories extends DAO{
       query.list
   }
 
-  def findByCategory(id: Long)(implicit session: Session): Seq[(EventCategory, Event, Category)] =  {
+  def findByCategory(id: Long): Seq[(EventCategory, Event, Category)] =  DB.withSession {
+    implicit session =>
       val query = for {et <- eventCategories
                        if et.categoryId === id
                        t <- et.category
@@ -36,7 +38,8 @@ object EventCategories extends DAO{
       query.list
   }
 
-  def insert(event: EventCategory)(implicit session: Session): Long =  {
+  def insert(event: EventCategory): Long =  DB.withSession {
+    implicit session =>
       eventCategories.insert(event)
   }
 

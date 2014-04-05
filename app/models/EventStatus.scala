@@ -7,7 +7,7 @@ import play.api.db.slick.DB
 
 import play.api.libs.json._
 
-import database.eventStatuses
+import database.EventStatuses
 
 case class EventStatus(id: Option[Long],
                           code: String,
@@ -16,11 +16,13 @@ case class EventStatus(id: Option[Long],
 object EventStatuses extends DAO{
   lazy val pageSize = 10
 
-  def findAll(implicit session: Session): Seq[EventStatus] =  {
+  def findAll: Seq[EventStatus] =  DB.withSession {
+    implicit session =>
       (for (c <- eventStatuses.sortBy(_.name)) yield c).list
   }
 
-  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[EventStatus] = {
+  def findPage(page: Int = 0, orderField: Int): Page[EventStatus] = DB.withSession {
+    implicit session =>
 
     val offset = pageSize * page
 
@@ -40,28 +42,34 @@ object EventStatuses extends DAO{
         Page(q, page, offset, totalRows)
   }
 
-  def findById(id: Long)(implicit session: Session): Option[EventStatus] =  {
+  def findById(id: Long): Option[EventStatus] =  DB.withSession {
+    implicit session =>
       eventStatuses.where(_.id === id).firstOption
   }
 
-  def findByName(name: String)(implicit session: Session): Option[EventStatus] =  {
+  def findByName(name: String): Option[EventStatus] =  DB.withSession {
+    implicit session =>
       eventStatuses.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String)(implicit session: Session): Option[EventStatus] =  {
+  def findByCode(code: String): Option[EventStatus] =  DB.withSession {
+    implicit session =>
       eventStatuses.where(_.code === code).firstOption
   }
 
-  def insert(eventStatus: EventStatus)(implicit session: Session): Long =  {
+  def insert(eventStatus: EventStatus): Long =  DB.withSession {
+    implicit session =>
       eventStatuses.insert(eventStatus)
   }
 
-  def update(id: Long, eventStatus: EventStatus)(implicit session: Session) =  {
+  def update(id: Long, eventStatus: EventStatus) =  DB.withSession {
+    implicit session =>
       val eventStatus2update = eventStatus.copy(Some(id), eventStatus.code, eventStatus.name)
       eventStatuses.where(_.id === id).update(eventStatus2update)
   }
 
-  def delete(eventStatusId: Long)(implicit session: Session) =  {
+  def delete(eventStatusId: Long) =  DB.withSession {
+    implicit session =>
       eventStatuses.where(_.id === eventStatusId).delete
   }
 
@@ -71,7 +79,8 @@ object EventStatuses extends DAO{
 //  def options: Seq[(String, String)] = for {
 //    c <- findAll
 //  } yield (c.id.toString, c.name)
-  def options(implicit session: Session): Seq[(String, String)] =  {
+  def options: Seq[(String, String)] =  DB.withSession {
+    implicit session =>
       val query = (for {
         item <- eventStatuses
       } yield (item.id, item.name)

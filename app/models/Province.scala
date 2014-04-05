@@ -8,7 +8,7 @@ import play.api.db.slick.DB
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-import models.State._
+import models.States._
 import database.Provinces
 
 case class Province(id: Option[Long],
@@ -21,15 +21,18 @@ case class Province(id: Option[Long],
 object Provinces extends DAO{
   lazy val pageSize = 10
 
-  def findAll(implicit session: Session): Seq[Province] =  {
+  def findAll: Seq[Province] =  DB.withSession {
+    implicit session =>
       (for (c <- provinces.sortBy(_.code)) yield c).list
   }
 
-  def count(implicit session: Session): Int =  {
+  def count: Int =  DB.withSession {
+    implicit session =>
       provinces.length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[(Province, State)] = {
+  def findPage(page: Int = 0, orderField: Int): Page[(Province, State)] = DB.withSession {
+    implicit session =>
 
     val offset = pageSize * page
 
@@ -53,27 +56,33 @@ object Provinces extends DAO{
         Page(provinces.list, page, offset, totalRows)
   }
 
-  def findById(id: Long)(implicit session: Session): Option[Province] =  {
+  def findById(id: Long): Option[Province] =  DB.withSession {
+    implicit session =>
       provinces.where(_.id === id).firstOption
     }
 
-  def findByName(name: String)(implicit session: Session): Option[Province] =  {
+  def findByName(name: String): Option[Province] =  DB.withSession {
+    implicit session =>
       provinces.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String)(implicit session: Session): Option[Province] =  {
+  def findByCode(code: String): Option[Province] =  DB.withSession {
+    implicit session =>
       provinces.where(_.code === code).firstOption
   }
 
-  def insert(province: Province)(implicit session: Session): Long =  {
+  def insert(province: Province): Long =  DB.withSession {
+    implicit session =>
       provinces.insert(province)
   }
 
-  def update(id: Long, province: Province)(implicit session: Session) =  {
+  def update(id: Long, province: Province) =  DB.withSession {
+    implicit session =>
       provinces.where(_.id === province.id).update(province.copy(Some(id)))
   }
 
-  def delete(provinceId: Long)(implicit session: Session) =  {
+  def delete(provinceId: Long) =  DB.withSession {
+    implicit session =>
       provinces.where(_.id === provinceId).delete
   }
 
@@ -81,7 +90,8 @@ object Provinces extends DAO{
    * Construct the Map[String,String] needed to fill a select options set.
    */
 //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.code + " - " + c.name)
-  def options(implicit session: Session): Seq[(String, String)] =  {
+  def options: Seq[(String, String)] =  DB.withSession {
+    implicit session =>
       val query = (for {
         item <- provinces
       } yield (item.id, item.name)

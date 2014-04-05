@@ -24,7 +24,8 @@ case class Substitution(id: Option[Long],
 object Substitutions extends DAO{
   lazy val pageSize = 10
 
-  def findByMatchAndTeam(idMatch: Long, idTeam: Long)(implicit session: Session): Seq[(Substitution, Match, Team, Player, Player)] =  {
+  def findByMatchAndTeam(idMatch: Long, idTeam: Long): Seq[(Substitution, Match, Team, Player, Player)] =  DB.withSession {
+    implicit session =>
       val query = for {mp <- substitutions
                        if mp.matchId === idMatch
                        if mp.teamId === idTeam
@@ -37,17 +38,20 @@ object Substitutions extends DAO{
       query.list.sortBy(_._1.time)
   }
 
-  def insert(substitution: Substitution)(implicit session: Session): Long =  {
+  def insert(substitution: Substitution): Long =  DB.withSession {
+    implicit session =>
       substitutions.insert(substitution)
   }
 
-  def update(id: Long, substitution: Substitution)(implicit session: Session) =  {
+  def update(id: Long, substitution: Substitution) =  DB.withSession {
+    implicit session =>
       val substitution2update = substitution.copy(Some(id))
       Logger.info("playe2update " + substitution2update)
       substitutions.where(_.id === id).update(substitution2update)
   }
 
-  def delete(id: Long)(implicit session: Session) =  {
+  def delete(id: Long) =  DB.withSession {
+    implicit session =>
       substitutions.where(_.id === id).delete
   }
 

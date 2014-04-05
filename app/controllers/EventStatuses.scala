@@ -4,9 +4,11 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models._
+import models.EventStatuses._
 
 import play.api.libs.json._
 import service.{Administrator, Coach}
+
 
 
 object EventStatuses extends Controller with securesocial.core.SecureSocial  {
@@ -32,23 +34,23 @@ object EventStatuses extends Controller with securesocial.core.SecureSocial  {
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
-      val eventStatuses = EventStatus.findPage(page, orderBy)
+      val eventStatuses = models.EventStatuses.findPage(page, orderBy)
       val html = views.html.eventStatuses.list("Liste des eventStatuses", eventStatuses, orderBy)
       Ok(html)
   }
 
   def view(id: Long) = Action {
     implicit request =>
-      EventStatus.findById(id).map {
+      models.EventStatuses.findById(id).map {
         eventStatus => Ok(views.html.eventStatuses.view("View EventStatus", eventStatus))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   def edit(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      EventStatus.findById(id).map {
+      models.EventStatuses.findById(id).map {
         eventStatus => Ok(views.html.eventStatuses.edit("Edit EventStatus", id, eventStatusForm.fill(eventStatus)))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   /**
@@ -61,7 +63,7 @@ object EventStatuses extends Controller with securesocial.core.SecureSocial  {
       eventStatusForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.eventStatuses.edit("Edit EventStatus - errors", id, formWithErrors)),
         eventStatus => {
-          EventStatus.update(id, eventStatus)
+          models.EventStatuses.update(id, eventStatus)
           //        Home.flashing("success" -> "EventStatus %s has been updated".format(eventStatus.name))
           //Redirect(routes.EventStatuses.list(0, 2))
           Redirect(routes.EventStatuses.view(id)).flashing("success" -> "EventStatus %s has been updated".format(eventStatus.name))
@@ -86,7 +88,7 @@ object EventStatuses extends Controller with securesocial.core.SecureSocial  {
       eventStatusForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.eventStatuses.create("New EventStatus - errors", formWithErrors)),
         eventStatus => {
-          EventStatus.insert(eventStatus)
+          models.EventStatuses.insert(eventStatus)
           //        Home.flashing("success" -> "EventStatus %s has been created".format(eventStatus.name))
           Redirect(routes.EventStatuses.list(0, 2))
         }
@@ -98,13 +100,13 @@ object EventStatuses extends Controller with securesocial.core.SecureSocial  {
    */
   def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      EventStatus.delete(id)
+      models.EventStatuses.delete(id)
       Home.flashing("success" -> "EventStatus has been deleted")
   }
 
   def jsonList = Action {
     implicit request =>
-      Ok(Json.toJson(EventStatus.findAll))
+      Ok(Json.toJson(models.EventStatuses.findAll))
   }
 
 }

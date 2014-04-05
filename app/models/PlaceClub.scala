@@ -46,7 +46,8 @@ object PlaceClubs extends DAO{
   //    }
   //  }
 
-  def findByClub(id: Long)(implicit session: Session): Seq[(PlaceClub, Place, Club)] =  {
+  def findByClub(id: Long): Seq[(PlaceClub, Place, Club)] =  DB.withSession {
+    implicit session =>
       val query = for {ps <- placeClubs
                        if ps.clubId === id
                        p <- ps.place
@@ -56,7 +57,8 @@ object PlaceClubs extends DAO{
       query.list
   }
 
-  def findByPlace(id: Long)(implicit session: Session): Seq[(PlaceClub, Place, Club)] =  {
+  def findByPlace(id: Long): Seq[(PlaceClub, Place, Club)] =  DB.withSession {
+    implicit session =>
       val query = for {ps <- placeClubs
                        if ps.placeId === id
                        p <- ps.place
@@ -66,12 +68,14 @@ object PlaceClubs extends DAO{
       query.list
   }
 
-  def insert(placeClub: PlaceClub)(implicit session: Session): Long =  {
+  def insert(placeClub: PlaceClub): Long =  DB.withSession {
+    implicit session =>
       play.Logger.debug(s"insert $placeClub")
       placeClubs.insert(placeClub)
   }
 
-  def insert(pcLst: Seq[PlaceClub])(implicit session: Session):Try[Option[Int]] =  {
+  def insert(pcLst: Seq[PlaceClub]):Try[Option[Int]] =  DB.withSession {
+    implicit session =>
       Try(placeClubs.insertAll(pcLst:_*))
   }
 
@@ -84,7 +88,8 @@ object PlaceClubs extends DAO{
   //      }
   //    }
 
-  def delete(idPlace: Long, idClub: Long)(implicit session: Session) =  {
+  def delete(idPlace: Long, idClub: Long) =  DB.withSession {
+    implicit session =>
       val q = for {ps <- placeClubs
                    if ps.placeId === idPlace
                    if ps.clubId === idClub

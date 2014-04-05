@@ -7,13 +7,14 @@ import play.api.libs.json._
 import play.api.Logger
 
 
+
 object MatchPlayers extends Controller with securesocial.core.SecureSocial {
 
 
   def jsonByMatchAndTeam(idMatch: Long, idTeam: Long) = Action {
     implicit request =>
       Logger.debug("MatchPlayers " + idMatch + " " + idTeam)
-      val mps = MatchPlayer.findByMatchAndTeam(idMatch, idTeam)
+      val mps = models.MatchPlayers.findByMatchAndTeam(idMatch, idTeam)
       Ok(Json.toJson(mps))
   }
 

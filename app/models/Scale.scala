@@ -19,15 +19,18 @@ case class Scale(id: Option[Long],
 object Scales extends DAO{
   lazy val pageSize = 10
 
-  def findAll(implicit session: Session): Seq[Scale] =  {
+  def findAll: Seq[Scale] =  DB.withSession {
+    implicit session =>
       (for (c <- scales.sortBy(_.name)) yield c).list
   }
 
-  def count(implicit session: Session): Int =  {
+  def count: Int =  DB.withSession {
+    implicit session =>
       scales.length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[Scale] = {
+  def findPage(page: Int = 0, orderField: Int): Page[Scale] = DB.withSession {
+    implicit session =>
 
     val offset = pageSize * page
 
@@ -46,28 +49,34 @@ object Scales extends DAO{
         Page(scales, page, offset, count)
   }
 
-  def findById(id: Long)(implicit session: Session): Option[Scale] =  {
+  def findById(id: Long): Option[Scale] =  DB.withSession {
+    implicit session =>
       scales.where(_.id === id).firstOption
   }
 
-  def findByName(name: String)(implicit session: Session): Option[Scale] =  {
+  def findByName(name: String): Option[Scale] =  DB.withSession {
+    implicit session =>
       scales.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String)(implicit session: Session): Option[Scale] =  {
+  def findByCode(code: String): Option[Scale] =  DB.withSession {
+    implicit session =>
       scales.where(_.code === code).firstOption
   }
 
-  def insert(scale: Scale)(implicit session: Session): Long =  {
+  def insert(scale: Scale): Long =  DB.withSession {
+    implicit session =>
       scales.insert(scale)
   }
 
-  def update(id: Long, scale: Scale)(implicit session: Session) =  {
+  def update(id: Long, scale: Scale) =  DB.withSession {
+    implicit session =>
       val scale2update = scale.copy(Some(id), scale.code, scale.name)
       scales.where(_.id === id).update(scale2update)
   }
 
-  def delete(scaleId: Long)(implicit session: Session) =  {
+  def delete(scaleId: Long) =  DB.withSession {
+    implicit session =>
       scales.where(_.id === scaleId).delete
   }
 
@@ -77,7 +86,8 @@ object Scales extends DAO{
 //  def options: Seq[(String, String)] = for {
 //    c <- findAll
 //  } yield (c.id.toString, c.name)
-  def options(implicit session: Session): Seq[(String, String)] =  {
+  def options: Seq[(String, String)] =  DB.withSession {
+    implicit session =>
       val query = (for {
         item <- scales
       } yield (item.id, item.name)

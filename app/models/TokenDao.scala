@@ -30,9 +30,10 @@ import models.database.{Users, Tokens}
 
 object Tokens extends DAO {
   // Operations
-  def save(token: Token)(implicit session: Session): Token =  {
+  def save(token: Token): Token =  DB.withSession {
+    implicit session =>
     findByUUID(token.uuid) map { t =>
-      (tokens).where(_.uuid is t.uuid).update(token)
+      tokens.where(_.uuid is t.uuid).update(token)
     } getOrElse {
       tokens.insert(token)
     }
@@ -40,26 +41,31 @@ object Tokens extends DAO {
     token
   }
 
-  def delete(uuid: String)(implicit session: Session) =  {
+  def delete(uuid: String) =  DB.withSession {
+    implicit session =>
     Logger.debug("delete token %s".format(uuid))
     tokens.where(_.uuid is uuid).mutate(_.delete)
   }
 
-  def deleteAll(implicit session: Session) =  {
-    (tokens).mutate(_.delete)
+  def deleteAll =  DB.withSession {
+    implicit session =>
+    tokens.mutate(_.delete)
   }
 
-  def deleteExpiredtokens(implicit session: Session) =  {
-    (tokens).where(_.expirationTime <= DateTime.now).mutate(_.delete)
+  def deleteExpiredtokens =  DB.withSession {
+    implicit session =>
+    tokens.where(_.expirationTime <= DateTime.now).mutate(_.delete)
   }
 
   // Queries
-  def all(implicit session: Session): List[User] =  {
+  def all: List[User] =  DB.withSession {
+    implicit session =>
     val q = for (user <- users) yield user
     q.list
   }
 
-  def findByUUID(uuid: String)(implicit session: Session): Option[Token] =  {
+  def findByUUID(uuid: String): Option[Token] =  DB.withSession {
+    implicit session =>
     Logger.debug("find token %s".format(uuid))
     tokens.where(_.uuid === uuid).firstOption
   }

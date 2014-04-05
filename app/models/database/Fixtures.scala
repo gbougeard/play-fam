@@ -1,11 +1,10 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import scala.slick.lifted.{Tag, MappedTypeMapper}
-import java.util.Date
-import models.{Category, Fixture}
+import scala.slick.lifted.Tag
+import models.Fixture
 import org.joda.time.DateTime
-
+import com.github.tototoshi.slick.MySQLJodaSupport._
 /**
  * Created with IntelliJ IDEA.
  * User: gbougeard

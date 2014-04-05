@@ -18,15 +18,18 @@ case class TypCompetition(id: Option[Long],
 object TypCompetitions extends DAO{
   lazy val pageSize = 10
 
-  def findAll(implicit session: Session): Seq[TypCompetition] =  {
+  def findAll: Seq[TypCompetition] =  DB.withSession {
+    implicit session =>
       (for (c <- typCompetitions.sortBy(_.name)) yield c).list
   }
 
-  def count(implicit session: Session): Int =  {
-      (typCompetitions.length).run
+  def count: Int =  DB.withSession {
+    implicit session =>
+      typCompetitions.length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[(TypCompetition, TypMatch)] = {
+  def findPage(page: Int = 0, orderField: Int): Page[(TypCompetition, TypMatch)] = DB.withSession {
+    implicit session =>
 
     val offset = pageSize * page
 
@@ -45,28 +48,34 @@ object TypCompetitions extends DAO{
         Page(q.list, page, offset, count)
   }
 
-  def findById(id: Long)(implicit session: Session): Option[TypCompetition] =  {
+  def findById(id: Long): Option[TypCompetition] =  DB.withSession {
+    implicit session =>
       typCompetitions.where(_.id === id).firstOption
   }
 
-  def findByName(name: String)(implicit session: Session): Option[TypCompetition] =  {
+  def findByName(name: String): Option[TypCompetition] =  DB.withSession {
+    implicit session =>
       typCompetitions.where(_.name === name).firstOption
   }
 
-  def findByCode(code: String)(implicit session: Session): Option[TypCompetition] =  {
+  def findByCode(code: String): Option[TypCompetition] =  DB.withSession {
+    implicit session =>
       typCompetitions.where(_.code === code).firstOption
   }
 
-  def insert(typCompetition: TypCompetition)(implicit session: Session): Long =  {
+  def insert(typCompetition: TypCompetition): Long =  DB.withSession {
+    implicit session =>
       typCompetitions.insert(typCompetition)
   }
 
-  def update(id: Long, typCompetition: TypCompetition)(implicit session: Session) =  {
+  def update(id: Long, typCompetition: TypCompetition) =  DB.withSession {
+    implicit session =>
       val typCompetition2update = typCompetition.copy(Some(id), typCompetition.code, typCompetition.name)
       typCompetitions.where(_.id === id).update(typCompetition2update)
   }
 
-  def delete(typCompetitionId: Long)(implicit session: Session) =  {
+  def delete(typCompetitionId: Long) =  DB.withSession {
+    implicit session =>
       typCompetitions.where(_.id === typCompetitionId).delete
   }
 
@@ -76,8 +85,8 @@ object TypCompetitions extends DAO{
 //  def options: Seq[(String, String)] = for {
 //    c <- findAll
 //  } yield (c.id.toString, c.name)
-  def options(implicit session: Session): Seq[(String, String)] =  {
-    implicit session:Session =>
+  def options: Seq[(String, String)] =  DB.withSession {
+    implicit session =>
       val query = (for {
         item <- typCompetitions
       } yield (item.id, item.name)

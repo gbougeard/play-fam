@@ -11,7 +11,7 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 import org.joda.time.DateTime
-import com.github.tototoshi.slick.JodaSupport._
+import com.github.tototoshi.slick.MySQLJodaSupport._
 
 import models.TypEvent._
 import models.EventStatus._
@@ -29,17 +29,20 @@ case class Event(id: Option[Long],
 object Events extends DAO{
   lazy val pageSize = 10
 
-  def findAll(implicit session: Session): Seq[Event] =  {
+  def findAll: Seq[Event] =  DB.withSession {
+    implicit session =>
       (for {c <- events.sortBy(_.name)
       //            t <- c.typEvent
       } yield c).list
   }
 
-  def count(implicit session: Session): Int =  {
+  def count: Int =  DB.withSession {
+    implicit session =>
       events.length.run
   }
 
-  def findPage(page: Int = 0, orderField: Int)(implicit session: Session): Page[(Event, TypEvent, EventStatus)] = {
+  def findPage(page: Int = 0, orderField: Int): Page[(Event, TypEvent, EventStatus)] = DB.withSession {
+    implicit session =>
 
     val offset = pageSize * page
         val events = (for {
@@ -62,7 +65,8 @@ object Events extends DAO{
         Page(events.list, page, offset, count)
   }
 
-  def findById(id: Long)(implicit session: Session): Option[(Event, TypEvent, EventStatus)] =  {
+  def findById(id: Long): Option[(Event, TypEvent, EventStatus)] = DB.withSession {
+    implicit session =>
       val query = for {e <- events
                        if e.id === id
                        te <- e.typEvent
@@ -71,20 +75,24 @@ object Events extends DAO{
       query.firstOption
   }
 
-  def findByName(name: String)(implicit session: Session): Option[Event] =  {
+  def findByName(name: String): Option[Event] =  DB.withSession {
+    implicit session =>
       events.where(_.name === name).firstOption
   }
 
-  def insert(event: Event)(implicit session: Session): Long =  {
+  def insert(event: Event): Long =  DB.withSession {
+    implicit session =>
       events.insert(event)
   }
 
-  def update(id: Long, event: Event)(implicit session: Session) =  {
+  def update(id: Long, event: Event) =  DB.withSession {
+    implicit session =>
       val event2update = event.copy(Some(id))
       events.where(_.id === id).update(event2update)
   }
 
-  def delete(eventId: Long)(implicit session: Session) =  {
+  def delete(eventId: Long) =  DB.withSession {
+    implicit session =>
       events.where(_.id === eventId).delete
   }
 
@@ -92,7 +100,8 @@ object Events extends DAO{
    * Construct the Map[String,String] needed to fill a select options set.
    */
   //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
-  def options(implicit session: Session): Seq[(String, String)] =  {
+  def options: Seq[(String, String)] =  DB.withSession {
+    implicit session =>
       val query = (for {
         item <- events
       } yield (item.id, item.name)
