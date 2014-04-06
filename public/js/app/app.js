@@ -17,7 +17,7 @@ var fam = angular.module('fam',
         'fam.directives',
         'ui',
 //        'ui.bootstrap',
-        '$strap.directives'
+        'mgcrea.ngStrap'
 //        'restangular'
     ]);
 
