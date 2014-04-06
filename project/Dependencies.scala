@@ -32,7 +32,7 @@ object Dependencies {
   val wjMomentjsVersion = "2.5.1-1"
   val wjSelect2Version = "3.4.6"
   val wjJqueryVersion = "1.11.0"
-  //  val wjJqueryUiVersion = "1.10.3"
+    val wjJqueryUiVersion = "1.10.3"
 
   // Libraries
   val akkaActor = "com.typesafe.akka" %% "akka-actor" % akkaVersion
@@ -58,11 +58,11 @@ object Dependencies {
 //  val wjUnderscorejs = "org.webjars" % "underscorejs" % wjUnderscorejsVersion
   val wjBootstrapDatepicker = "org.webjars" % "bootstrap-datepicker" % "1.2.0"
   val wjBootstrapTimepicker =  "org.webjars" % "bootstrap-timepicker" % "0.2.3"
-  val wjBootswatch=  "org.webjars" % "bootswatch" % "2.3.1"
+  val wjBootswatch=  "org.webjars" % "bootswatch" % wjBootswatchVersion
   val wjFamfamFlag =  "org.webjars" % "famfamfam-flags" % "0.0"
-  val wjFontAwesome =  "org.webjars" % "font-awesome" % "3.2.1"
-  val wjJquery =  "org.webjars" % "jquery" % "1.10.2-1"
-  val wjJqueryUi = "org.webjars" % "jquery-ui" % "1.10.3"
-  val wjMomentjs = "org.webjars" % "momentjs" % "2.3.1"
-  val wjSelect2 = "org.webjars" % "select2" % "3.4.4"
+  val wjFontAwesome =  "org.webjars" % "font-awesome" % wjFontAwesomeVersion
+  val wjJquery =  "org.webjars" % "jquery" % wjJqueryVersion
+  val wjJqueryUi = "org.webjars" % "jquery-ui" % wjJqueryUiVersion
+  val wjMomentjs = "org.webjars" % "momentjs" % wjMomentjsVersion
+  val wjSelect2 = "org.webjars" % "select2" % wjSelect2Version
 }

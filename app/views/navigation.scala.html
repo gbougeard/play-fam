@@ -1,58 +1,55 @@
 @()
-<div id="navigation" class="navbar navbar-inverse navbar-static-top">
-    <div class="navbar-inner">
-        <div class="container" style="width : auto ;">
-            <a class="brand" href="@routes.Application.index()">FAM</a>
-            <ul class="nav " role="navigation">
-                <li class="dropdown">
-                    <a id="dropAgenda" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Agenda<b class="caret"></b></a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="Agenda">
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Events.agenda">Agenda</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a id="dropGeo" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Geo<b class="caret"></b></a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="Geo">
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Countries.list(0)">Countries</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.States.list(0)">States</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Provinces.list(0)">Provinces</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Cities.list(0)">Cities</a></li>
-                        <li class="divider"></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1"  href="@routes.Places.list(0)">Places</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1"  href="@routes.Places.map">Map</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a id="dropRef" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">General<b class="caret"></b></a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="Ref">
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Clubs.list(0)">Clubs</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Teams.list(0)">Teams</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Players.list(0)">Players</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Users.list(0)">Users</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Seasons.list(0)">Seasons</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Events.list(0)">Events</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.SeasonCompetitions.list(0)">SeasonCompetitions</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Fixtures.list(0)">Fixtures</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Rankings.list(1)">Rankings</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.PlayerSeasons.bySeason(1)">PlayerSeasons</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Matchs.list(0)">Matches</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a id="dropRef" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Ref<b class="caret"></b></a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="Ref">
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Formations.list(0)">Formations</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Categories.list(0)">Categories</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Scales.list(0)">Scales</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.TypMatches.list(0)">TypMatches</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.TypCompetitions.list(0)">TypCompetitions</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.TypCards.list(0)">TypCards</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Positions.list(0)">Positions</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.TypEvents.list(0)">TypEvents</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.EventStatuses.list(0)">EventStatuses</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.Groups.list(0)">Groups</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
+<nav id="navigation" class="navbar navbar-default navbar-static-top" role="navigation">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="@routes.Application.index()">FAM</a>
     </div>
+    <ul class="nav navbar-nav">
+        <li ><a href="@routes.Events.agenda">Agenda</a></li>
+        <li class="dropdown">
+            <a id="dropGeo" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
+                Geo<b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="Geo">
+                <li ><a href="@routes.Countries.list(0)"> Countries</a></li>
+                <li ><a href="@routes.States.list(0)">States</a></li>
+                <li ><a href="@routes.Provinces.list(0)"> Provinces</a></li>
+                <li ><a href="@routes.Cities.list(0)">Cities</a></li>
+                <li class="divider"></li>
+                <li ><a href="@routes.Places.list(0)">Places</a></li>
+                <li ><a href="@routes.Places.map">Map</a></li>
+            </ul>
+        </li>
+        <li class="dropdown">
+            <a id="dropRef" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
+                General<b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="Ref">
+                <li ><a href="@routes.Clubs.list(0)">Clubs</a></li>
+                <li ><a href="@routes.Teams.list(0)">Teams</a></li>
+                <li ><a href="@routes.Players.list(0)">Players</a></li>
+                <li ><a href="@routes.Users.list(0)">Users</a></li>
+                <li ><a href="@routes.Seasons.list(0)">Seasons</a></li>
+                <li ><a href="@routes.Events.list(0)">Events</a></li>
+                <li ><a href="@routes.SeasonCompetitions.list(0)"> SeasonCompetitions</a></li>
+                <li ><a href="@routes.Fixtures.list(0)">Fixtures</a></li>
+                <li ><a href="@routes.Rankings.list(1)">Rankings</a></li>
+                <li ><a href="@routes.PlayerSeasons.bySeason(1)"> PlayerSeasons</a></li>
+                <li ><a href="@routes.Matchs.list(0)">Matches</a></li>
+            </ul>
+        </li>
+        <li class="dropdown">
+            <a id="dropRef" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
+                Ref<b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="Ref">
+                <li ><a href="@routes.Formations.list(0)"> Formations</a></li>
+                <li ><a href="@routes.Categories.list(0)"> Categories</a></li>
+                <li ><a href="@routes.Scales.list(0)">Scales</a></li>
+                <li ><a href="@routes.TypMatches.list(0)"> TypMatches</a></li>
+                <li ><a href="@routes.TypCompetitions.list(0)"> TypCompetitions</a></li>
+                <li ><a href="@routes.TypCards.list(0)">TypCards</a></li>
+                <li ><a href="@routes.Positions.list(0)"> Positions</a></li>
+                <li ><a href="@routes.TypEvents.list(0)"> TypEvents</a></li>
+                <li ><a href="@routes.EventStatuses.list(0)"> EventStatuses</a></li>
+                <li ><a href="@routes.Groups.list(0)">Groups</a></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
