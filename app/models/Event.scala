@@ -13,8 +13,8 @@ import play.api.libs.functional.syntax._
 import org.joda.time.DateTime
 import com.github.tototoshi.slick.MySQLJodaSupport._
 
-import models.TypEvent._
-import models.EventStatus._
+import models.TypEvents._
+import models.EventStatuses._
 import database.Events
 
 case class Event(id: Option[Long],
@@ -45,7 +45,7 @@ object Events extends DAO{
     implicit session =>
 
     val offset = pageSize * page
-        val events = (for {
+        val q = (for {
           c <- events
           t <- c.typEvent
           e <- c.eventStatus
@@ -62,7 +62,7 @@ object Events extends DAO{
         }).drop(offset)
           .take(pageSize)
 
-        Page(events.list, page, offset, count)
+        Page(q.list, page, offset, count)
   }
 
   def findById(id: Long): Option[(Event, TypEvent, EventStatus)] = DB.withSession {

@@ -32,7 +32,7 @@ import scala.slick.lifted.Tag
 
   def typFff = column[String]("typ_fff")
 
-  def * = (id.? , name , address , city , zipcode , latitude.? , longitude.? , comments.? , typFff.? )
+  def * = (id.? , name , address , city , zipcode , latitude.? , longitude.? , comments.? , typFff.? )<>(Place.tupled, Place.unapply _)
 
 
 

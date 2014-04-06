@@ -34,19 +34,18 @@ object Scales extends DAO{
 
     val offset = pageSize * page
 
-        val scales = (
-          for {c <- scales
-            .sortBy(scale => orderField match {
-            case 1 => scale.code.asc
-            case -1 => scale.code.desc
-            case 2 => scale.name.asc
-            case -2 => scale.name.desc
-          })
-            .drop(offset)
-            .take(pageSize)
-          } yield c).list
+        val q = for {c <- scales
+          .sortBy(scale => orderField match {
+          case 1 => scale.code.asc
+          case -1 => scale.code.desc
+          case 2 => scale.name.asc
+          case -2 => scale.name.desc
+        })
+          .drop(offset)
+          .take(pageSize)
+        } yield c
 
-        Page(scales, page, offset, count)
+        Page(q.list, page, offset, count)
   }
 
   def findById(id: Long): Option[Scale] =  DB.withSession {

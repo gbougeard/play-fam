@@ -30,7 +30,7 @@ import scala.slick.lifted.Tag
 
   def comments = column[String]("comments")
 
-  def * = (matchId.? , playerId.? , teamId.? , num.? , captain , note.? , timePlayed.? , comments.? )
+  def * = (matchId.? , playerId.? , teamId.? , num.? , captain , note.? , timePlayed.? , comments.? )<>(MatchPlayer.tupled, MatchPlayer.unapply _)
 
   // A reified foreign key relation that can be navigated to create a join
   def matche = foreignKey("MATCH_FK", matchId, TableQuery[Matches])(_.id)

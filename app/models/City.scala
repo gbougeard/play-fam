@@ -7,6 +7,8 @@ import play.api.db.slick.DB
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
+import models.Provinces._
+
 import database.Cities
 
 case class City(id: Option[Long],

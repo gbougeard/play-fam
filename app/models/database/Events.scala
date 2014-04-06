@@ -34,7 +34,7 @@ import scala.slick.lifted.Tag
 
   def comments = column[String]("comments")
 
-  def * = (id.? , dtEvent , duration , name , typEventId , placeId.? , eventStatusId , comments.? )
+  def * = (id.? , dtEvent , duration , name , typEventId , placeId.? , eventStatusId , comments.? )<>(Event.tupled, Event.unapply _)
 
 
   // A reified foreign key relation that can be navigated to create a join

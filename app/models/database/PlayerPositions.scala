@@ -20,7 +20,7 @@ import scala.slick.lifted.Tag
 
   def numOrder = column[Int]("num_order")
 
-  def * = (playerId , positionId , numOrder )
+  def * = (playerId , positionId , numOrder )<>(PlayerPosition.tupled, PlayerPosition.unapply _)
 
   // A reified foreign key relation that can be navigated to create a join
   def player = foreignKey("PLAYER_FK", playerId, TableQuery[Players])(_.id)

@@ -1,7 +1,7 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.{Category, Season}
+import models.Season
 import scala.slick.lifted.Tag
 
 /**
@@ -20,6 +20,6 @@ import scala.slick.lifted.Tag
 
   def currentSeason = column[Boolean]("current_season")
 
-  def * = (id.? , currentSeason , name )
+  def * = (id.? , currentSeason , name )<>(Season.tupled, Season.unapply _)
 
 }

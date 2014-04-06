@@ -36,7 +36,7 @@ import scala.slick.lifted.Tag
 
   def goalShipped = column[Int]("goal_shipped")
 
-  def * = (competitionId , clubId , teamId , team , points , victory , defeat , draw , played , goalScored , goalShipped )
+  def * = (competitionId , clubId , teamId , team , points , victory , defeat , draw , played , goalScored , goalShipped )<>(Ranking.tupled, Ranking.unapply _)
 
 
 }

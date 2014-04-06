@@ -10,9 +10,11 @@ import play.api.libs.functional.syntax._
 
 import java.util.Date
 import database.Fixtures
+import org.joda.time.DateTime
+import com.github.tototoshi.slick.MySQLJodaSupport._
 
 case class Fixture(id: Option[Long],
-                date: Date,
+                date: DateTime,
                 name: String,
                 competitionId: Long) {
 }
@@ -60,7 +62,7 @@ object Fixtures extends DAO{
       fixtures.where(_.name === name).firstOption
   }
 
-  def findByDate(date: Date): Option[Fixture] =  DB.withSession {
+  def findByDate(date: DateTime): Option[Fixture] =  DB.withSession {
     implicit session =>
       fixtures.where(_.date === date).firstOption
   }

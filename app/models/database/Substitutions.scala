@@ -1,7 +1,7 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.{Category, Substitution}
+import models.Substitution
 import scala.slick.lifted.Tag
 
 /**
@@ -26,7 +26,7 @@ import scala.slick.lifted.Tag
 
   def time = column[Long]("substitution_time")
 
-  def * = (id.? , matchId , teamId , playerInId , playerOutId , time.? )
+  def * = (id.? , matchId , teamId , playerInId , playerOutId , time.? )<>(Substitution.tupled, Substitution.unapply _)
 
   // A reified foreign key relation that can be navigated to create a join
   def matche = foreignKey("MATCH_FK", matchId, TableQuery[Matches])(_.id)

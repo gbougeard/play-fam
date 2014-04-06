@@ -41,7 +41,7 @@ if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
             <tr>
               @*  <td>@fixture.id</td>  *@
                 <td><a href="@routes.Fixtures.view(fixture.id.getOrElse(0))">@fixture.name</a></td>
-                <td>@fixture.date.format("dd MMM yyyy")</td>
+                <td>@fixture.date.toString("dd MMM yyyy")</td>
                 <td><a href="@routes.SeasonCompetitions.view(fixture.competitionId)">@competition.id</a></td>
             </tr>
         }

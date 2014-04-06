@@ -8,9 +8,9 @@ import play.api.db.slick.DB
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-import models.Match._
-import models.Player._
-import models.Team._
+import models.Matches._
+import models.Players._
+import models.Teams._
 
 import play.api.Logger
 import models.database.MatchPlayers

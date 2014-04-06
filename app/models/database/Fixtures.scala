@@ -17,13 +17,13 @@ import com.github.tototoshi.slick.MySQLJodaSupport._
 
   def id = column[Long]("id_fixture", O.PrimaryKey, O.AutoInc)
 
-  def name = column[String]("lib_fixture")
-
   def date = column[DateTime]("dt_fixture")
+
+  def name = column[String]("lib_fixture")
 
   def competitionId = column[Long]("id_season_competition")
 
-  def * = (id.? , date , name , competitionId )
+  def * = (id.? , date , name , competitionId )<>(Fixture.tupled, Fixture.unapply _)
 
   // A reified foreign key relation that can be navigated to create a join
   def competition = foreignKey("COMPETTITION_FK", competitionId, TableQuery[SeasonCompetitions])(_.id)

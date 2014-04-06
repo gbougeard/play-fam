@@ -7,6 +7,8 @@ import play.api.data._
 import play.api.data.Forms._
 import models._
 import models.Events._
+import models.Teams._
+import models.EventTeams._
 import service.{Administrator, Coach}
 
 import play.api.libs.json._

@@ -26,7 +26,7 @@ import scala.slick.lifted.Tag
 
   def lower = column[String]("lib_lower")
 
-  def * = (id.? , code , name , upper , lower )
+  def * = (id.? , code , name , upper , lower )<>(Country.tupled, Country.unapply _)
 
 
 }

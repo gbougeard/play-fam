@@ -4,6 +4,7 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models._
+import models.TypMatches._
 import service.Administrator
 
 
@@ -55,9 +56,9 @@ object TypMatches extends Controller with securesocial.core.SecureSocial {
 
   def edit(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      TypMatch.findById(id).map {
+      models.TypMatches.findById(id).map {
         typMatch => Ok(views.html.typMatches.edit("Edit TypMatch", id, typMatchForm.fill(typMatch)))
-      } getOrElse (NotFound)
+      } getOrElse NotFound
   }
 
   /**

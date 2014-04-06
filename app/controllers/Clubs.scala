@@ -5,7 +5,7 @@ import play.api.data._
 import play.api.data.Forms._
 import models._
 import models.Clubs._
-import models.Places._
+import models.PlaceClubs._
 import service.Coach
 import service.Administrator
 import play.api.libs.json._

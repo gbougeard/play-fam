@@ -22,7 +22,7 @@ import scala.slick.lifted.Tag
 
   def group = column[String]("grp_typ_answer")
 
-  def * = (id.? , code , name , group )
+  def * = (id.? , code , name , group ) <>(TypAnswer.tupled, TypAnswer.unapply _)
 
   // A reified foreign key relation that can be navigated to create a join
   //  def typMatch = foreignKey("TYP_MATCH_FK", typMatchId, TypMatches)(_.id)

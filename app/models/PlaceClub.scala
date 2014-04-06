@@ -12,6 +12,8 @@ import play.api.Logger
 import scala.util.Try
 
 import database.PlaceClubs
+import models.Clubs._
+import models.Places._
 
 case class PlaceClub(placeId: Long,
                      clubId: Long)

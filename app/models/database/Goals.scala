@@ -31,7 +31,7 @@ import scala.slick.lifted.Tag
 
   def csc = column[Boolean]("csc")
 
-  def * = (id.? , matchId , teamId , strikerId.? , assistId.? , goalTime.? , penalty , csc )
+  def * = (id.? , matchId , teamId , strikerId.? , assistId.? , goalTime.? , penalty , csc )<>(Goal.tupled, Goal.unapply _)
 
 
   // A reified foreign key relation that can be navigated to create a join

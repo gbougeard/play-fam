@@ -21,6 +21,6 @@ import scala.slick.lifted.Tag
 
   def code = column[String]("cod_category")
 
-  def * = (id.? , code , name)
+  def * = (id.? , code , name)<>(Category.tupled, Category.unapply _)
 
 }

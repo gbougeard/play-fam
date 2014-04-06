@@ -50,7 +50,7 @@ object SeasonCompetitions extends Controller with securesocial.core.SecureSocial
       models.SeasonCompetitions.findById(id).map {
         seasonCompetition => {
           play.Logger.debug("data "+seasonCompetition)
-          Ok(views.html.seasonCompetitions.edit("Edit SeasonMatch", id, seasonCompetitionForm.fill(seasonCompetition), Category.options, Scale.options, Season.options, TypCompetition.options))
+          Ok(views.html.seasonCompetitions.edit("Edit SeasonMatch", id, seasonCompetitionForm.fill(seasonCompetition), models.Categories.options, models.Scales.options, models.Seasons.options, models.TypCompetitions.options))
         }
       } getOrElse NotFound
   }

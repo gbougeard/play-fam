@@ -62,27 +62,26 @@ object Places extends DAO{
 
     val offset = pageSize * page
 
-        val places = (
-          for {c <- places
-            .sortBy(place => orderField match {
-            case 1 => place.zipcode.asc
-            case -1 => place.zipcode.desc
-            case 2 => place.name.asc
-            case -2 => place.name.desc
-            case 3 => place.address.asc
-            case -3 => place.address.desc
-            case 4 => place.city.asc
-            case -4 => place.city.desc
-            case 5 => place.zipcode.asc
-            case -5 => place.zipcode.desc
-            case 6 => place.typFff.asc
-            case -6 => place.typFff.desc
-          })
-            .drop(offset)
-            .take(pageSize)
-          } yield c).list
+        val q = for {c <- places
+          .sortBy(place => orderField match {
+          case 1 => place.zipcode.asc
+          case -1 => place.zipcode.desc
+          case 2 => place.name.asc
+          case -2 => place.name.desc
+          case 3 => place.address.asc
+          case -3 => place.address.desc
+          case 4 => place.city.asc
+          case -4 => place.city.desc
+          case 5 => place.zipcode.asc
+          case -5 => place.zipcode.desc
+          case 6 => place.typFff.asc
+          case -6 => place.typFff.desc
+        })
+          .drop(offset)
+          .take(pageSize)
+        } yield c
 
-        Page(places, page, offset, count)
+        Page(q.list, page, offset, count)
   }
 
   def findById(id: Long): Option[Place] =  DB.withSession {

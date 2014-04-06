@@ -30,39 +30,41 @@ class SlickUserService(application: Application) extends UserServicePlugin(appli
 
   def find(id: IdentityId): Option[Identity] = {
     val user:User = Cache.getOrElse(s"user.$id") {
-      User.findByUserId(id).get
+      models.Users.findByUserId(id).get
     }
     play.Logger.debug(s"setCache for user ${user.pid}")
     Cache.set(s"user.${user.pid.get}", user)
     Some(FamUser.fromUser(user))
   }
 
-  def findByEmailAndProvider(email: String, providerId: String): Option[Identity] = User.findByEmailAndProvider(email, providerId).map {
+  def findByEmailAndProvider(email: String, providerId: String): Option[Identity] = models.Users.findByEmailAndProvider(email, providerId).map {
     u => FamUser.fromUser(u)
   }
 
   def save(identity: Identity): Identity = {
-    val u = User.fromIdentity(identity)
+    val u = models.Users.fromIdentity(identity)
     Logger.info("save identity to user %s".format(u))
-    FamUser.fromUser(User.save(u))
+    FamUser.fromUser(models.Users.save(u))
   }
 
   def save(token: Token) {
-    TokenDao.save(token)
+    models.Tokens.save(token)
   }
 
-  def findToken(token: String): Option[Token] = TokenDao.findByUUID(token)
+  def findToken(token: String): Option[Token] = {
+    models.Tokens.findByUUID(token)
+  }
 
   def deleteToken(uuid: String) {
-    TokenDao.delete(uuid)
+    models.Tokens.delete(uuid)
   }
 
   def deleteTokens() {
-    TokenDao.deleteAll()
+    models.Tokens.deleteAll()
   }
 
   def deleteExpiredTokens() {
-    TokenDao.deleteExpiredTokens()
+    models.Tokens.deleteExpiredTokens()
   }
 
 }

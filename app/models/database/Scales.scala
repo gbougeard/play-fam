@@ -27,7 +27,7 @@ import scala.slick.lifted.Tag
   def ptsVictory = column[Int]("pts_victory")
 
 
-  def * = (id.? , code , name , ptsDefeat , ptsDraw , ptsVictory )
+  def * = (id.? , code , name , ptsDefeat , ptsDraw , ptsVictory )<>(Scale.tupled, Scale.unapply _)
 
 
 

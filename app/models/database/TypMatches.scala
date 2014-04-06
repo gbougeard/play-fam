@@ -38,7 +38,7 @@ import scala.slick.lifted.Tag
 
   def nbPenalties = column[Int]("nb_penalties")
 
-  def * = (id.? , code , name , nbSubstitute , nbPlayer , periodDuration , hasExtraTime , extraTimeDuration.? , hasInfiniteSubs , nbSubstitution.? , hasPenalties , nbPenalties.? )
+  def * = (id.? , code , name , nbSubstitute , nbPlayer , periodDuration , hasExtraTime , extraTimeDuration.? , hasInfiniteSubs , nbSubstitution.? , hasPenalties , nbPenalties.? )<>(TypMatch.tupled, TypMatch.unapply _)
 
 
 

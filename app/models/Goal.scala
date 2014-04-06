@@ -26,7 +26,7 @@ object Goals extends DAO{
 
   def findByMatchAndTeam(idMatch: Long, idTeam: Long): Seq[(Goal, Option[Player])] =  DB.withSession {
     implicit session =>
-      val query = for {(g, s) <- goals leftJoin Players on (_.strikerId === _.id)
+      val query = for {(g, s) <- goals leftJoin players on (_.strikerId === _.id)
                        if g.matchId === idMatch
                        if g.teamId === idTeam
       } yield (g, s.id.?, s.firstName.?, s.lastName.?, s.email.?, s.userId.?)

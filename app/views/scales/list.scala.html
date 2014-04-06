@@ -87,7 +87,7 @@
     }
 
     @session.get("userId").map { userId =>
-        <div class="form-actions" display='@models.Role.isUserInRole(userId.toLong, Set(Coach))'>
+        <div class="form-actions" display='@models.Roles.isUserInRole(userId.toLong, Set(Coach))'>
         @btnNew(routes.Scales.create())
         </div>
     }

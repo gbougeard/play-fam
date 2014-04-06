@@ -30,7 +30,7 @@ object Positions extends DAO{
 
     val offset = pageSize * page
 
-        val positions = (
+        val q = (
           for {c <- positions
             .sortBy(position => orderField match {
             case 1 => position.code.asc
@@ -40,9 +40,9 @@ object Positions extends DAO{
           })
             .drop(offset)
             .take(pageSize)
-          } yield c).list
+          } yield c)
 
-        Page(positions, page, offset, count)
+        Page(q.list, page, offset, count)
   }
 
   def findById(id: Long): Option[Position] =  DB.withSession {

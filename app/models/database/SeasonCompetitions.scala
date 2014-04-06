@@ -1,7 +1,7 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import models.{Category, SeasonCompetition}
+import models.SeasonCompetition
 import scala.slick.lifted.Tag
 
 /**
@@ -24,7 +24,7 @@ import scala.slick.lifted.Tag
 
   def typCompetitionId = column[Long]("id_typ_competition")
 
-  def * = (id.? , categoryId , scaleId , seasonId , typCompetitionId )
+  def * = (id.? , categoryId , scaleId , seasonId , typCompetitionId )<>(SeasonCompetition.tupled, SeasonCompetition.unapply _)
 
 
   // A reified foreign key relation that can be navigated to create a join

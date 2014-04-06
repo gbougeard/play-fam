@@ -33,7 +33,7 @@ object SeasonCompetitions extends DAO{
 
     val offset = pageSize * page
 
-        val seasonCompetitions = (
+        val q = (
           for {sc <- seasonCompetitions
                c <- sc.category
                s <- sc.scale
@@ -51,7 +51,7 @@ object SeasonCompetitions extends DAO{
           .drop(offset)
           .take(pageSize)
 
-        Page(seasonCompetitions.list, page, offset, count)
+        Page(q.list, page, offset, count)
   }
 
   def findById(id: Long): Option[SeasonCompetition] =  DB.withSession {

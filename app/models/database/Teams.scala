@@ -22,7 +22,7 @@ import scala.slick.lifted.Tag
 
   def clubId = column[Long]("id_club")
 
-  def * = (id.? , code , name , clubId )
+  def * = (id.? , code , name , clubId ) <>(Team.tupled, Team.unapply _)
 
   // A reified foreign key relation that can be navigated to create a join
   def club = foreignKey("CLUB_FK", clubId, TableQuery[Clubs])(_.id)

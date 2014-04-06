@@ -7,6 +7,7 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models._
+import models.Matches._
 import play.api.libs.json._
 
 import play.api.Logger
@@ -77,9 +78,9 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
 
   def debrief(idMatch:Long, idTeam: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
-      Match.findById(idMatch).map {
+      models.Matches.findById(idMatch).map {
         m => {
-          Event.findById(m.eventId.getOrElse(0)).map {
+          models.Events.findById(m.eventId.getOrElse(0)).map {
             case (event, typEvent, eventStatus) => {
               Ok(views.html.matchs.debrief("Debrief Match", m, event, idMatch, idTeam))
 //              MatchTeam.findByMatchAndHome(id).map {
@@ -108,9 +109,9 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
 
   def prepare(idMatch:Long, idTeam: Long) =  SecuredAction(WithRoles(Set(Coach)))  {
     implicit request =>
-      Match.findById(idMatch).map {
+      models.Matches.findById(idMatch).map {
         m => {
-          Event.findById(m.eventId.getOrElse(0)).map {
+          models.Events.findById(m.eventId.getOrElse(0)).map {
             case (event, typEvent, eventStatus) => {
               Ok(views.html.matchs.prepare("Prepare Match", m, event, idMatch, idTeam))
 //              MatchTeam.findByMatchAndHome(id).map {
@@ -178,7 +179,7 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
       matchForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.matchs.create("New Match - errors", formWithErrors)),
         m => {
-          Match.insert(m)
+          models.Matches.insert(m)
           //        Home.flashing("success" -> "Match %s has been created".format(match.name))
           Redirect(routes.Matchs.list(0, 2))
         }
@@ -190,13 +191,13 @@ object Matchs extends Controller with securesocial.core.SecureSocial {
    */
   def delete(id: Long) =  SecuredAction(WithRoles(Set(Administrator)))  {
     implicit request =>
-      Match.delete(id)
+      models.Matches.delete(id)
       Redirect(routes.Matchs.list(0, 0)).flashing("success" -> "Match has been deleted")
   }
 
   def jsonById(id:Long) = Action {
     implicit request =>
-      Match.findById(id).map {
+      models.Matches.findById(id).map {
        m => Ok(Json.toJson(m))
       } getOrElse(NotFound)
   }

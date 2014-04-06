@@ -36,7 +36,7 @@ object Provinces extends DAO{
 
     val offset = pageSize * page
 
-        val provinces = (
+        val q = (
           for {p <- provinces
 
                s <- p.state
@@ -53,7 +53,7 @@ object Provinces extends DAO{
           .take(pageSize)
 
         val totalRows = count
-        Page(provinces.list, page, offset, totalRows)
+        Page(q.list, page, offset, totalRows)
   }
 
   def findById(id: Long): Option[Province] =  DB.withSession {

@@ -21,7 +21,7 @@ import scala.slick.lifted.Tag
 
   def code = column[String]("cod_position")
 
-  def * = (id.? , code , name )
+  def * = (id.? , code , name )<>(Position.tupled, Position.unapply _)
 
   // A reified foreign key relation that can be navigated to create a join
   //  def typMatch = foreignKey("TYP_MATCH_FK", typMatchId, TypMatches)(_.id)

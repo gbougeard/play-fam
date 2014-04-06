@@ -5,8 +5,7 @@ import play.api.db.slick.Config.driver.simple._
 
 import securesocial.core._
 import securesocial.core.providers.Token
-
-import com.github.tototoshi.slick.JodaSupport._
+import com.github.tototoshi.slick.MySQLJodaSupport._
 import org.joda.time.DateTime
 
 import play.api.Play.current
@@ -47,12 +46,12 @@ object Tokens extends DAO {
     tokens.where(_.uuid is uuid).mutate(_.delete)
   }
 
-  def deleteAll =  DB.withSession {
+  def deleteAll() =  DB.withSession {
     implicit session =>
     tokens.mutate(_.delete)
   }
 
-  def deleteExpiredtokens =  DB.withSession {
+  def deleteExpiredTokens() =  DB.withSession {
     implicit session =>
     tokens.where(_.expirationTime <= DateTime.now).mutate(_.delete)
   }

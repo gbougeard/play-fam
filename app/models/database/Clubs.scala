@@ -37,7 +37,7 @@ import scala.slick.lifted.Tag
 
   def comments = column[String]("comments")
 
-  def * = (id.? , code , name , countryId.? , cityId.? , colours.? , address.? , zipcode.? , city.? , organization.? , comments.? )
+  def * = (id.? , code , name , countryId.? , cityId.? , colours.? , address.? , zipcode.? , city.? , organization.? , comments.? )<>(Club.tupled, Club.unapply _)
 
 
 }

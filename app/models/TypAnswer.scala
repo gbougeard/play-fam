@@ -32,19 +32,18 @@ object TypAnswers extends DAO{
 
     val offset = pageSize * page
 
-        val typAnswers = (
-          for {c <- typAnswers
-            .sortBy(typAnswer => orderField match {
-            case 1 => typAnswer.code.asc
-            case -1 => typAnswer.code.desc
-            case 2 => typAnswer.name.asc
-            case -2 => typAnswer.name.desc
-          })
-            .drop(offset)
-            .take(pageSize)
-          } yield c).list
+        val q = for {c <- typAnswers
+          .sortBy(typAnswer => orderField match {
+          case 1 => typAnswer.code.asc
+          case -1 => typAnswer.code.desc
+          case 2 => typAnswer.name.asc
+          case -2 => typAnswer.name.desc
+        })
+          .drop(offset)
+          .take(pageSize)
+        } yield c
 
-        Page(typAnswers, page, offset, count)
+        Page(q.list, page, offset, count)
   }
 
   def findById(id: Long): Option[TypAnswer] =  DB.withSession {

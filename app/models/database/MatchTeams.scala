@@ -49,7 +49,7 @@ import scala.slick.lifted.Tag
     goalShipped.? ,
     points.? ,
     resume.? ,
-    draft.? )
+    draft.? )<>(MatchTeam.tupled, MatchTeam.unapply _)
 
 
   // A reified foreign key relation that can be navigated to create a join

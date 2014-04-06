@@ -24,7 +24,7 @@ import scala.slick.lifted.Tag
 
   def typMatchId = column[Long]("id_typ_match")
 
-  def * = (id.? , code , name , isDefault , typMatchId )
+  def * = (id.? , code , name , isDefault , typMatchId )<>(Formation.tupled, Formation.unapply _)
 
   // A reified foreign key relation that can be navigated to create a join
   def typMatch = foreignKey("TYP_MATCH_FK", typMatchId, TableQuery[TypMatches])(_.id)

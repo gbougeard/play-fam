@@ -19,7 +19,7 @@ import scala.slick.lifted.Tag
   def groupId = column[Long]("id_group")
 
 
-  def * = (userId , groupId )
+  def * = (userId , groupId )<>(Role.tupled, Role.unapply _)
 
   // A reified foreign key relation that can be navigated to create a join
   def user = foreignKey("USER_FK", userId, TableQuery[Users])(_.pid)

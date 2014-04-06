@@ -14,7 +14,7 @@ import models.Answer
 // define tables
   class Answers(tag:Tag) extends Table[Answer](tag, "fam_answer") {
 
-  def id = column[Long]("id_answer")
+  def id = column[Long]("id_answer", O.PrimaryKey, O.AutoInc)
 
   def eventId = column[Long]("id_event")
 
@@ -22,9 +22,9 @@ import models.Answer
 
   def typAnswerId = column[Long]("id_typ_answer")
 
-  def comments = column[String]("comments")
+  def comments = column[Option[String]]("comments")
 
-  def * = (id.? , eventId , playerId , typAnswerId , comments.?) <>(Answer.tupled, Answer.unapply _)
+  def * = (id.? , eventId , playerId , typAnswerId , comments)<>(Answer.tupled, Answer.unapply _)
 
 
   // A reified foreign key relation that can be navigated to create a join

@@ -87,7 +87,7 @@
     }
 
     @session.get("userId").map { userId =>
-        <div class="form-actions" display='@models.Role.isUserInRole(userId.toLong, Set(Administrator))'>
+        <div class="form-actions" display='@models.Roles.isUserInRole(userId.toLong, Set(Administrator))'>
         @btnNew(routes.EventStatuses.create())
         </div>
     }

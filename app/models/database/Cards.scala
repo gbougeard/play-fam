@@ -14,7 +14,7 @@ import scala.slick.lifted.Tag
 // define tables
   class Cards(tag:Tag) extends Table[Card](tag, "fam_card") {
 
-  def id = column[Long]("id_card")
+  def id = column[Long]("id_card", O.PrimaryKey, O.AutoInc)
 
   def matchId = column[Long]("id_match")
 
@@ -24,9 +24,9 @@ import scala.slick.lifted.Tag
 
   def typCardId = column[Long]("id_typ_card")
 
-  def time = column[Long]("card_time")
+  def time = column[Option[Long]]("card_time")
 
-  def * = (id.? , matchId , teamId , playerId , typCardId , time.?)
+  def * = (id.? , matchId , teamId , playerId , typCardId , time)<>(Card.tupled, Card.unapply _)
 
   // A reified foreign key relation that can be navigated to create a join
   def matche = foreignKey("MATCH_FK", matchId, TableQuery[Matches])(_.id)

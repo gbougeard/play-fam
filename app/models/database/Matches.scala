@@ -22,7 +22,7 @@ import scala.slick.lifted.Tag
 
   def eventId = column[Long]("id_event")
 
-  def * = (id.? , fixtureId.? , competitionId , eventId.? )
+  def * = (id.? , fixtureId.? , competitionId , eventId.? )<>(Match.tupled, Match.unapply _)
 
 
   // A reified foreign key relation that can be navigated to create a join

@@ -1,7 +1,7 @@
 package models.database
 
 import play.api.db.slick.Config.driver.simple._
-import securesocial.core.AuthenticationMethod
+import securesocial.core.{OAuth1Info, OAuth2Info, IdentityId, AuthenticationMethod}
 import models.{Category, User}
 import scala.slick.lifted.Tag
 
@@ -15,10 +15,29 @@ import scala.slick.lifted.Tag
   class Users(tag:Tag) extends Table[User](tag, "fam_user") {
 
   // Conversions for AuthenticationMethod
-  implicit def string2AuthenticationMethod: TypeMapper[AuthenticationMethod] = MappedTypeMapper.base[AuthenticationMethod, String](
+//  implicit def string2AuthenticationMethod: TypeMapper[AuthenticationMethod] = MappedTypeMapper.base[AuthenticationMethod, String](
+//    authenticationMethod => authenticationMethod.method,
+//    string => AuthenticationMethod(string)
+//  )
+
+  implicit def string2AuthenticationMethod = MappedColumnType.base[AuthenticationMethod, String](
     authenticationMethod => authenticationMethod.method,
     string => AuthenticationMethod(string)
   )
+
+  implicit def tuple2OAuth1Info(tuple: (Option[String], Option[String])): Option[OAuth1Info] = tuple match {
+    case (Some(token), Some(secret)) => Some(OAuth1Info(token, secret))
+    case _ => None
+  }
+
+  implicit def tuple2OAuth2Info(tuple: (Option[String], Option[String], Option[Int], Option[String])): Option[OAuth2Info] = tuple match {
+    case (Some(token), tokenType, expiresIn, refreshToken) => Some(OAuth2Info(token, tokenType, expiresIn, refreshToken))
+    case _ => None
+  }
+
+  implicit def tuple2IdentityId(tuple: (String, String)): IdentityId = tuple match {
+    case (userId, providerId) => IdentityId(userId, providerId)
+  }
 
   def pid = column[Long]("id_user", O.PrimaryKey, O.AutoInc)
 
@@ -64,7 +83,7 @@ import scala.slick.lifted.Tag
 
   // Projections
   //  def * =  pid.? , userId , providerId , email.? , firstName , lastName ,  authMethod , passwordInfo.? <>(User.apply _, User.unapply _)
-  def * = (pid.? , userId , providerId , email.? , firstName.? , lastName.? , authMethod , hasher.? , password.? , salt.? , currentClubId.? , avatarUrl.? )
+  def * = (pid.? , userId , providerId , email.? , firstName.? , lastName.? , authMethod , hasher.? , password.? , salt.? , currentClubId.? , avatarUrl.? )<>(User.tupled, User.unapply _)
 
 
 

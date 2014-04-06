@@ -9,9 +9,9 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 import database.Answers
-import models.Event._
-import models.Player._
-import models.TypAnswer._
+import models.Events._
+import models.Players._
+import models.TypAnswers._
 
 import play.api.Logger
 

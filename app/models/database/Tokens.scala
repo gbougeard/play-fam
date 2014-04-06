@@ -26,7 +26,7 @@ import com.github.tototoshi.slick.MySQLJodaSupport._
       email ,
       creationTime ,
       expirationTime ,
-      isSignUp )
+      isSignUp )  <>(Token.tupled, Token.unapply _)
 
 
 }

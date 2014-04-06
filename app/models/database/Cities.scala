@@ -26,7 +26,7 @@ import scala.slick.lifted.Tag
 
   def provinceId = column[Long]("id_province")
 
-  def * = (id.? , code , name , upper , lower , provinceId)
+  def * = (id.? , code , name , upper , lower , provinceId)<>(City.tupled, City.unapply _)
 
 
 

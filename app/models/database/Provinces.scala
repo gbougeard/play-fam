@@ -26,7 +26,7 @@ import scala.slick.lifted.Tag
 
   def stateId = column[Long]("id_state")
 
-  def * = (id.? , code , name , upper , lower , stateId )
+  def * = (id.? , code , name , upper , lower , stateId )<>(Province.tupled, Province.unapply _)
 
   // A reified foreign key relation that can be navigated to create a join
   def state = foreignKey("STATE_FK", stateId, TableQuery[States])(_.id)

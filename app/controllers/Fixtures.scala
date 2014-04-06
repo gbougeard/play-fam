@@ -21,7 +21,7 @@ object Fixtures extends Controller with securesocial.core.SecureSocial{
   val fixtureForm = Form(
     mapping(
       "id" -> optional(longNumber),
-      "date" -> date("yyyy-MM-dd"),
+      "date" -> jodaDate,
       "name" -> nonEmptyText,
       "competitionId" -> longNumber
     )

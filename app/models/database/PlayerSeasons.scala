@@ -56,7 +56,7 @@ import scala.slick.lifted.Tag
 
   def statTimePlayed = column[Long]("time_played")
 
-  def * = (playerId , seasonId , teamId.? , clubId , cap_att.? , cap_def.? , cap_phy.? , cap_pui.? , cap_tec.? , cap_vit.? , height.? , weight.? , statAvgAssistPerMatch.? , statAvgGoalPerMatch.? , statAvgNote.? , statNbAssist.? , statNbGoal.? , statNbMatch.? , statNbSubstitue.? , statNbWorkout.? , statTimePlayed.? )
+  def * = (playerId , seasonId , teamId.? , clubId , cap_att.? , cap_def.? , cap_phy.? , cap_pui.? , cap_tec.? , cap_vit.? , height.? , weight.? , statAvgAssistPerMatch.? , statAvgGoalPerMatch.? , statAvgNote.? , statNbAssist.? , statNbGoal.? , statNbMatch.? , statNbSubstitue.? , statNbWorkout.? , statTimePlayed.? )<>(PlayerSeason.tupled, PlayerSeason.unapply _)
 
   // A reified foreign key relation that can be navigated to create a join
   def player = foreignKey("PLAYER_FK", playerId, TableQuery[Players])(_.id)

@@ -9,6 +9,7 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 import database.States
+import Countries._
 
 case class State(id: Option[Long],
                  code: String,
@@ -37,7 +38,7 @@ object States extends DAO{
     val offset = pageSize * page
 
 
-        val states = (
+        val q = (
           for {s <- states
                c <- s.country
           } yield (s, c))
@@ -53,7 +54,7 @@ object States extends DAO{
           .take(pageSize)
 
         val totalRows = count
-        Page(states.list, page, offset, totalRows)
+        Page(q.list, page, offset, totalRows)
   }
 
   def findById(id: Long): Option[State] =  DB.withSession {
@@ -92,7 +93,6 @@ object States extends DAO{
 //  def options: Seq[(String, String)] = for {c <- findAll} yield (c.id.toString, c.name)
   def options: Seq[(String, String)] =  DB.withSession {
     implicit session =>
-    implicit session:Session =>
       val query = (for {
         item <- states
       } yield (item.id, item.name)
