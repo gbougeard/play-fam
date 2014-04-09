@@ -1,6 +1,7 @@
 @(message: String, currentPage: Page[Place], currentOrderBy: Int)(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
 
 @import service.Coach
+@import tags._
 @import tags.buttons._
 
         @****************************************
@@ -13,8 +14,6 @@
                     if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
             }.getOrElse(currentOrderBy))
     }
-@**, currentFilter)
-**@
 
         @**********************************
         * Helper generating table headers *
@@ -60,31 +59,29 @@
             </tbody>
         </table>
 
-        <div id="pagination" class="pagination">
-            <ul>
-                @currentPage.prev.map { page =>
-                    <li class="prev">
-                        <a href="@link(page)">&larr; Previous</a>
-                    </li>
-                }.getOrElse {
-                    <li class="prev disabled">
-                        <a>&larr; Previous</a>
-                    </li>
-                }
-            <li class="current">
-                <a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + places.size) of @currentPage.total</a>
+        <ul id="pagination" class="pagination">
+            @currentPage.prev.map { page =>
+                <li class="prev">
+                    <a href="@link(page)">&larr; Previous</a>
+                </li>
+            }.getOrElse {
+                <li class="prev disabled">
+                    <a>&larr; Previous</a>
+                </li>
+            }
+            <li class="active">
+                <a>Displaying @{currentPage.offset + 1} to @(currentPage.offset + places.size) of @currentPage.total</a>
             </li>
-                @currentPage.next.map { page =>
-                    <li class="next">
-                        <a href="@link(page)">Next &rarr;</a>
-                    </li>
-                }.getOrElse {
-                    <li class="next disabled">
-                        <a>Next &rarr;</a>
-                    </li>
-                }
-            </ul>
-        </div>
+            @currentPage.next.map { page =>
+                <li class="next">
+                    <a href="@link(page)">Next &rarr;</a>
+                </li>
+            }.getOrElse {
+                <li class="next disabled">
+                    <a>Next &rarr;</a>
+                </li>
+            }
+        </ul>
 
     }.getOrElse {
 

@@ -4,10 +4,9 @@
         <a class="navbar-brand" href="@routes.Application.index()">FAM</a>
     </div>
     <ul class="nav navbar-nav">
-        <li ><a href="@routes.Events.agenda">Agenda</a></li>
+        <li ><a href="@routes.Events.agenda"><i class="fa fa-calendar"> Agenda</i></a></li>
         <li class="dropdown">
-            <a id="dropGeo" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
-                Geo<b class="caret"></b></a>
+            <a id="dropGeo" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-map-marker"> Geo</i><b class="caret"></b></a>
             <ul class="dropdown-menu" role="menu" aria-labelledby="Geo">
                 <li ><a href="@routes.Countries.list(0)"> Countries</a></li>
                 <li ><a href="@routes.States.list(0)">States</a></li>
@@ -19,8 +18,7 @@
             </ul>
         </li>
         <li class="dropdown">
-            <a id="dropRef" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
-                General<b class="caret"></b></a>
+            <a id="dropRef" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> General<b class="caret"></b></a>
             <ul class="dropdown-menu" role="menu" aria-labelledby="Ref">
                 <li ><a href="@routes.Clubs.list(0)">Clubs</a></li>
                 <li ><a href="@routes.Teams.list(0)">Teams</a></li>
@@ -36,8 +34,7 @@
             </ul>
         </li>
         <li class="dropdown">
-            <a id="dropRef" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
-                Ref<b class="caret"></b></a>
+            <a id="dropRef" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> Ref<b class="caret"></b></a>
             <ul class="dropdown-menu" role="menu" aria-labelledby="Ref">
                 <li ><a href="@routes.Formations.list(0)"> Formations</a></li>
                 <li ><a href="@routes.Categories.list(0)"> Categories</a></li>

@@ -29,17 +29,28 @@
 
 @main(message) {
 
-    <div id="actions" >
+    <div class="row">
+        <div class="panel-group" id="filters">
+            <div class="panel panel-default">
+                <div class="panel-heading"><a data-toggle="collapse" data-parent="#filters" href="#collapseOne"><i class="fa fa-filter"></i> Filters</a></div>
+                <div id="collapseOne" class="panel-collapse collapse in">
+                    <div class="panel-body">
 
-        @helper.form(action=routes.Clubs.list()) {
-            <div class="input-append">
-                <input type="search" id="searchbox" name="f" value="@currentFilter" placeholder="Filter by name...">
-                @btnSubmit("Filter by name")
-             </div>
-        }
+                        @helper.form(action = routes.Clubs.list()) {
+                            <div class="col-lg-4">
+                                <div class="input-group">
+                                    <input type="search" class="form-control" id="searchbox" name="f" value="@currentFilter" placeholder="Filter by name...">
+                                    <span class="input-group-btn">
+                                    @btnSubmit("Filter by name")
+                                    </span>
+                                </div>
+                            </div>
+                        }
 
-        @*<a class="btn success" id="add" href="@routes.Application.create()">Add a new computer</a>*@
-
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     @Option(currentPage.items).filterNot(_.isEmpty).map { clubs =>
@@ -61,39 +72,37 @@
                     @* <td>@club.id</td> *@
                     <td>@club.code</td>
                     <td><a href="@routes.Clubs.view(club.id.getOrElse(0))">@club.name</a></td>
-                    <td>@club.city.getOrElse("-")</a></td>
-                    <td>@club.zipcode.getOrElse("-")</a></td>
+                    <td>@club.city.getOrElse("-")</td>
+                    <td>@club.zipcode.getOrElse("-")</td>
                 </tr>
             }
 
             </tbody>
         </table>
 
-        <div id="pagination" class="pagination">
-            <ul>
-                @currentPage.prev.map { page =>
-                    <li class="prev">
-                        <a href="@link(page)">&larr; Previous</a>
-                    </li>
-                }.getOrElse {
-                    <li class="prev disabled">
-                        <a>&larr; Previous</a>
-                    </li>
-                }
-            <li class="current">
+        <ul id="pagination" class="pagination">
+            @currentPage.prev.map { page =>
+                <li class="prev">
+                    <a href="@link(page)">&larr; Previous</a>
+                </li>
+            }.getOrElse {
+                <li class="prev disabled">
+                    <a>&larr; Previous</a>
+                </li>
+            }
+            <li class="active">
                 <a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + clubs.size) of @currentPage.total</a>
             </li>
-                @currentPage.next.map { page =>
-                    <li class="next">
-                        <a href="@link(page)">Next &rarr;</a>
-                    </li>
-                }.getOrElse {
-                    <li class="next disabled">
-                        <a>Next &rarr;</a>
-                    </li>
-                }
-            </ul>
-        </div>
+            @currentPage.next.map { page =>
+                <li class="next">
+                    <a href="@link(page)">Next &rarr;</a>
+                </li>
+            }.getOrElse {
+                <li class="next disabled">
+                    <a>Next &rarr;</a>
+                </li>
+            }
+        </ul>
 
     }.getOrElse {
 

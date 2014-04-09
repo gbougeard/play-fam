@@ -1,82 +1,81 @@
 @(message: String, currentPage: Page[User], currentOrderBy: Int)(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
-
-@****************************************
-* Helper generating navigation links    *
-****************************************@
-@link(newPage: Int, newOrderBy: Option[Int] = None) = @{
-routes.Users.list(newPage
-, newOrderBy.map { orderBy =>
-if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
-}.getOrElse(currentOrderBy))
-}
-@**, currentFilter)
-**@
-
-@**********************************
-* Helper generating table headers *
-***********************************@
-@header(orderBy: Int, title: String) = {
-<th class="col@orderBy header @if(scala.math.abs(currentOrderBy) == orderBy) @{if(currentOrderBy < 0) "headerSortDown" else "headerSortUp"}">
-    <a href="@link(0, Some(orderBy))">@title</a>
-</th>
-}
-
-@main(message) {
-
-@Option(currentPage.items).filterNot(_.isEmpty).map { users =>
-
-<table class="table table-striped table-bordered table-hover">
-    <thead>
-    <tr>
-        @header(1,"Email")
-        @header(2,"FullName")
-        @header(3,"Provider")
-    </tr>
-    </thead>
-    <tbody>
-
-    @users.map { user =>
-    <tr>
-        <td>@user.email</td>
-        <td>@user.fullName</td>
-        <td>@user.providerId</td>
-    </tr>
+    @****************************************
+    * Helper generating navigation links *
+    ****************************************@
+    @link(newPage: Int, newOrderBy: Option[Int] = None) = @{
+        routes.Users.list(newPage
+            , newOrderBy.map {
+                orderBy =>
+                    if(orderBy == scala.math.abs(currentOrderBy)) -currentOrderBy else orderBy
+            }.getOrElse(currentOrderBy))
+    }
+    @**, currentFilter)
+    **@
+        @**********************************
+        * Helper generating table headers *
+        ***********************************@
+    @header(orderBy: Int, title: String) = {
+        <th class="col@orderBy header @if(scala.math.abs(currentOrderBy) == orderBy) @{
+            if(currentOrderBy < 0) "headerSortDown" else "headerSortUp"
+        }">
+            <a href="@link(0, Some(orderBy))">@title</a>
+        </th>
     }
 
-    </tbody>
-</table>
+    @main(message) {
 
-<div id="pagination" class="pagination">
-    <ul>
-        @currentPage.prev.map { page =>
-        <li class="prev">
-            <a href="@link(page)">&larr; Previous</a>
-        </li>
+        @Option(currentPage.items).filterNot(_.isEmpty).map { users =>
+
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        @header(1, "Email")
+                        @header(2, "FullName")
+                        @header(3, "Provider")
+                    </tr>
+                </thead>
+                <tbody>
+
+                @users.map { user =>
+                    <tr>
+                        <td>@user.email</td>
+                        <td>@user.fullName</td>
+                        <td>@user.providerId</td>
+                    </tr>
+                }
+
+                </tbody>
+            </table>
+
+            <ul id="pagination" class="pagination">
+                @currentPage.prev.map { page =>
+                    <li class="prev">
+                        <a href="@link(page)">&larr; Previous</a>
+                    </li>
+                }.getOrElse {
+                    <li class="prev disabled">
+                        <a>&larr; Previous</a>
+                    </li>
+                }
+                <li class="active">
+                    <a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + users.size) of @currentPage.total</a>
+                </li>
+                @currentPage.next.map { page =>
+                    <li class="next">
+                        <a href="@link(page)">Next &rarr;</a>
+                    </li>
+                }.getOrElse {
+                    <li class="next disabled">
+                        <a>Next &rarr;</a>
+                    </li>
+                }
+            </ul>
+
         }.getOrElse {
-        <li class="prev disabled">
-            <a>&larr; Previous</a>
-        </li>
+
+            <div class="well">
+                <em>Nothing to display</em>
+            </div>
+
         }
-        <li class="current">
-            <a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + users.size) of @currentPage.total</a>
-        </li>
-        @currentPage.next.map { page =>
-        <li class="next">
-            <a href="@link(page)">Next &rarr;</a>
-        </li>
-        }.getOrElse {
-        <li class="next disabled">
-            <a>Next &rarr;</a>
-        </li>
-        }
-    </ul>
-</div>
-
-}.getOrElse {
-
-<div class="well">
-    <em>Nothing to display</em>
-</div>
-
-}
-}
+    }

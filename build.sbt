@@ -41,6 +41,8 @@ libraryDependencies ++= Seq(
   wjAngularStrap,
   wjAngularUi,
   wjAngularUiBootstrap,
+  wjAngularUiCalendar,
+  wjAngularUiUtils,
   wjBootstrap,
   wjPNtofify,
 //  wjRestangular,
@@ -50,8 +52,11 @@ libraryDependencies ++= Seq(
   wjBootswatch,
   wjFamfamFlag,
   wjFontAwesome,
+  wjIonic,
   wjJquery,
   wjJqueryUi,
   wjMomentjs,
   wjSelect2
 )
+
+play.Project.routesImport += "binders.Binders._"

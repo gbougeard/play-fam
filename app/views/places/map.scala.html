@@ -1,4 +1,4 @@
-@(message: String, zipcode:Option[String]=None)(implicit request: RequestHeader, session: play.api.mvc.Session)
+@(message: String, zipcode: Option[String] = None)(implicit request: RequestHeader, session: play.api.mvc.Session)
 
     @scripts = {
 
@@ -11,30 +11,48 @@
         @zipcode.map{ case code =>
             ng-init="zipcode=@code; findByZipcode()"
         }
-        >
-            <div class="span4">
-                <p>{{zoomMessage}}</p>
+    >
+    <div class="row">
+        <div class="panel-group" id="filters">
+            <div class="panel panel-default">
+                <div class="panel-heading"><a data-toggle="collapse" data-parent="#filters" href="#collapseOne"><i class="fa fa-filter"></i>
+                    Filters</a></div>
+                <div id="collapseOne" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <form id="formPlace" class="form-horizontal">
+                            <div class="row">
+                                <div class="col-lg-2">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="zipcode" name="zipcode" ng-model="zipcode" placeholder="ZipCode">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="button" ng-click="findByZipcode()"><i class="fa fa-search"></i></button>
+                                        </span>
+                                    </div><!-- /input-group -->
+                                </div><!-- /.col-lg-6 -->
+                                <div class="col-lg-2">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="city" name="city" ng-model="city" placeholder="City">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="button" ng-click="findByCity()"><i class="fa fa-search"></i></button>
+                                        </span>
+                                    </div><!-- /input-group -->
+                                </div><!-- /.col-lg-6 -->
+                            </div><!-- /.row -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <p>{{ zoomMessage }}</p>
                 <h3>{{ myMarkers.length }} places</h3>
 
-                <form id="formPlace" class="form-horizontal">
-                    <div class="control-group " >
-                        <div class="input-append">
-                            <input type="text" id="zipcode" name="zipcode" ng-model="zipcode" placeholder="ZipCode">
-                            <button class="btn" type="button" ng-click="findByZipcode()"><i class="icon icon-search"></i></button>
-                        </div>
-                    </div>
-                    <div class="control-group " >
-                        <div class="input-append">
-                            <input type="text" id="city" name="city" ng-model="city" placeholder="City">
-                            <button class="btn" type="button" ng-click="findByCity()"><i class="icon icon-search"></i></button>
-                        </div>
-                    </div>
-                </form>
 
                 <table class="table table-striped table-bordered table-hover">
                     <tbody>
                         <tr ng-repeat="marker in myMarkers">
-                            <td><a ng-click="myMap.panTo(marker.getPosition())"><i class="icon icon-map-marker"></i></a></td>
+                            <td><a ng-click="myMap.panTo(marker.getPosition())"><i class="fa fa-map-marker"></i></a></td>
                             <td><a href="/places/{{marker.idPlace}}">{{marker.title}}</a></td>
                         </tr>
                     </tbody>
@@ -48,26 +66,26 @@
 
             <div ui-map-info-window="myInfoWindow">
                 <h5><a href="/places/{{currentMarker.idPlace}}">{{currentMarker.title}}</a></h5>
-                    <dl class="dl-horizontal">
-                        <dt>Lat</dt>
-                        <dd>{{currentMarkerLat}}</dd>
-                        <dt>Long</dt>
-                        <dd>{{currentMarkerLng}}</dd>
-                    </dl>
-                    @* <input ng-model="currentMarkerLat">
-                    <input ng-model="currentMarkerLng">
-                    <a ng-click="setMarkerPosition(currentMarker, currentMarkerLat, currentMarkerLng)">Set Position</a> *@
+                <dl class="dl-horizontal">
+                    <dt>Lat</dt>
+                    <dd>{{currentMarkerLat}}</dd>
+                    <dt>Long</dt>
+                    <dd>{{currentMarkerLng}}</dd>
+                </dl>
+                @* <input ng-model="currentMarkerLat">
+                <input ng-model="currentMarkerLng">
+                <a ng-click="setMarkerPosition(currentMarker, currentMarkerLat, currentMarkerLng)">Set Position</a> *@
             </div>
 
                 <!-- Giving the div an id="map_canvas" fix problems with twitter bootstrap affecting google maps -->
-            <div class="span8">
-            <div id="map_canvas" ui-map="myMap" class="map-big "
-            ui-event="{'map-click': 'addMarker($event)', 'map-zoom_changed': 'setZoomMessage(myMap.getZoom())' }"
-            ui-options="mapOptions">
-            </div>
-                @*<button class="btn"  ng-click="geocodeMQ"><i class="icon icon-compass"></i>MapQuest</button>*@
+            <div class="col-md-8">
+                <div id="map_canvas" ui-map="myMap" class="map-big "
+                ui-event="{'map-click': 'addMarker($event)', 'map-zoom_changed': 'setZoomMessage(myMap.getZoom())' }"
+                ui-options="mapOptions">
+                </div>
+                @*<button class="btn" ng-click="geocodeMQ"><i class="icon icon-compass"></i>MapQuest</button>*@
             </div>
 
         </div>
 
-    }
+}
