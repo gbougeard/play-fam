@@ -38,8 +38,8 @@
             <div class="control-group" ng-class="{error: formEvent.type.$invalid}">
                 <label class="control-label" for="type">Type</label>
                 <div class="controls">
-                    @*<select class="span2" name="type" ng-model="selectedType" ng-options="value.id as value.name for (key, value) in types" data-style="btn-primary" bs-select ng-required></select>*@
-                    <select ui-select2  class="span4" name="type" ng-model="selectedType" data-placeholder="Pick a type" required>
+                    @*<select class="col-md-2" name="type" ng-model="selectedType" ng-options="value.id as value.name for (key, value) in types" data-style="btn-primary" bs-select ng-required></select>*@
+                    <select ui-select2  class="col-md-4" name="type" ng-model="selectedType" data-placeholder="Pick a type" required>
                         <option value=""></option>
                         <option ng-repeat="type in types" value="{{type.id}}">{{type.name}}</option>
                     </select>
@@ -56,7 +56,7 @@
             <div class="control-group" ng-class="{error: formEvent.place.$invalid}">
                 <label class="control-label" for="place">Place</label>
                 <div class="controls">
-                    @*<select class="span2" name="place" ng-model="selectedPlace" ng-options="value.id as value.name for (key, value) in places" data-style="btn-primary" bs-select></select>*@
+                    @*<select class="col-md-2" name="place" ng-model="selectedPlace" ng-options="value.id as value.name for (key, value) in places" data-style="btn-primary" bs-select></select>*@
                     <select ui-select2  class="span8" name="place" ng-model="selectedPlace" data-placeholder="Pick a place" >
                         <option value=""></option>
                         <option ng-repeat="place in places" value="{{place.place.id}}">{{place.place.name}} - {{place.place.zipcode}} - {{place.place.city}}</option>
@@ -68,7 +68,7 @@
             <div class="control-group" ng-class="{error: formEvent.teams.$invalid}">
                 <label class="control-label" for="teams">Teams</label>
                 <div class="controls">
-                    <select id="teams" class="span4" name="teams" ng-model="selectedTeams" multiple title="Choose teams..." ng-options="value.id as value.name for (key, value) in teams" data-style="btn-primary" bs-select></select>
+                    <select id="teams" class="col-md-4" name="teams" ng-model="selectedTeams" multiple title="Choose teams..." ng-options="value.id as value.name for (key, value) in teams" data-style="btn-primary" bs-select></select>
                 </div>
             </div>
 
@@ -85,7 +85,7 @@
                 <div class="control-group" ng-class="{error: formEvent.recevery.$invalid}">
                     <label class="control-label" for="place">Reccurence</label>
                     <div class="controls">
-                        <select ui-select2  class="span2" name="recevery" ng-model="selectedEvery" data-placeholder="Recurrence">
+                        <select ui-select2  class="col-md-2" name="recevery" ng-model="selectedEvery" data-placeholder="Recurrence">
                             <option ng-repeat="rec in recurrence" value="{{rec.id}}">{{rec.name}}</option>
                         </select>
                     </div>
@@ -93,7 +93,7 @@
                 <div class="control-group" ng-class="{error: formEvent.recrepevery.$invalid}">
                     <label class="control-label" for="recrep">Repeat every</label>
                     <div class="controls">
-                        <select ui-select2  class="span1" id="recrep" name="recrepevery" ng-model="selectedRepeat" data-placeholder="Repeat every">
+                        <select ui-select2  class="col-md-1" id="recrep" name="recrepevery" ng-model="selectedRepeat" data-placeholder="Repeat every">
                             @for(i <- 1 to 30){
                                 <option value="@i">@i</option>
                             }

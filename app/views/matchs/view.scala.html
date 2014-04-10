@@ -17,7 +17,7 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)] )(implicit request: RequestH
     <div class="clearfix"></div>
     <div id="preview">
         @Option(home).map { case (mtHome, homeTeam) =>
-            <div class="span5 offset1">
+            <div class="col-md-5 col-md-offset-1">
                  <div class="well">
                     <h2 class="text-center">@homeTeam.name</h2>
                     <h3 class="text-right muted">@mtHome.goalScored</h3>
@@ -26,8 +26,8 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)] )(implicit request: RequestH
                         @homeGoals.map { case (goal, striker) =>
                             <li>
                                 <p>
-                                    <span class="span1">@goal.goalTime'</span>
-                                    <span class="span11">@striker.map(_.displayName).getOrElse {<em>-</em>}
+                                    <span class="col-md-1">@goal.goalTime'</span>
+                                    <span class="col-md-11">@striker.map(_.displayName).getOrElse {<em>-</em>}
                                         <em>
                                             @if(goal.csc){csc}
                                             @if(goal.penalty){sp}
@@ -42,8 +42,8 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)] )(implicit request: RequestH
                         @homeCards.map { case (card, m, team, player, typCard) =>
                             <li>
                                 <p>
-                                    <span class="span1">@card.time'</span>
-                                    <span class="span11">@player.displayName <em>@typCard.name</em>
+                                    <span class="col-md-1">@card.time'</span>
+                                    <span class="col-md-11">@player.displayName <em>@typCard.name</em>
                         </span>
                                 </p>
                             </li>
@@ -55,10 +55,10 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)] )(implicit request: RequestH
                         @homeSubs.map { case (s, m, team, in, out) =>
                             <li>
                                 <p>
-                                    <span class="span1">@s.time'</span>
-                                    <span class="span5 text-error">@out.displayName</span>
-                                    <span class="span1"><i class="icon-exchange"></i></span>
-                                    <span class="span5 text-success">@in.displayName</span>
+                                    <span class="col-md-1">@s.time'</span>
+                                    <span class="col-md-5 text-error">@out.displayName</span>
+                                    <span class="col-md-1"><i class="icon-exchange"></i></span>
+                                    <span class="col-md-5 text-success">@in.displayName</span>
                                 </p>
                             </li>
                         }
@@ -69,10 +69,10 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)] )(implicit request: RequestH
                         @homePlayers.map { case (mp, m, p, t) =>
                             <li>
                                 <a href="#" data-toggle="tooltip" title="@mp.comments">
-                                <span class="span1"><span class="badge">@mp.num</span></span>
+                                <span class="col-md-1"><span class="badge">@mp.num</span></span>
                                 <span class="span9">@p.displayName</span>
-                                <span class="span1">@mp.note</span>
-                                <span class="span1">@mp.timePlayed'</span>
+                                <span class="col-md-1">@mp.note</span>
+                                <span class="col-md-1">@mp.timePlayed'</span>
                                 </a>
                             </li>
                         }
@@ -84,7 +84,7 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)] )(implicit request: RequestH
             </div>
         }
         @Option(away).map { case (mtAway, awayTeam) =>
-            <div class="span5">
+            <div class="col-md-5">
                 <div class="well">
                 <h2 class="text-center">@awayTeam.name</h2>
                 <h3 class="text-left muted">@mtAway.goalScored</h3>
@@ -92,8 +92,8 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)] )(implicit request: RequestH
                 <ul class="unstyled">
                     @awayGoals.map { case (goal, striker) =>
                         <li>
-                            <div class="span1">@goal.goalTime'</div>
-                            <div class="span11">@striker.map(_.displayName).getOrElse {<em>-</em>}
+                            <div class="col-md-1">@goal.goalTime'</div>
+                            <div class="col-md-11">@striker.map(_.displayName).getOrElse {<em>-</em>}
                                 <em>
                                     @if(goal.csc){csc}
                                     @if(goal.penalty){sp}
@@ -107,8 +107,8 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)] )(implicit request: RequestH
                     @awayCards.map { case (card, m, team, player, typCard) =>
                     <li>
                         <p>
-                        <span class="span1">@card.time'</span>
-                            <span class="span11">@player.displayName <em>@typCard.name</em>
+                        <span class="col-md-1">@card.time'</span>
+                            <span class="col-md-11">@player.displayName <em>@typCard.name</em>
                     </span>
                     </p>
                     </li>
@@ -120,10 +120,10 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)] )(implicit request: RequestH
                     @awaySubs.map { case (s, m, team, in, out) =>
                     <li>
                         <p>
-                            <span class="span1">@s.time'</span>
-                            <span class="span5 text-error">@out.displayName</span>
-                            <span class="span1"><i class="icon-exchange"></i></span>
-                            <span class="span5 text-success">@in.displayName</span>
+                            <span class="col-md-1">@s.time'</span>
+                            <span class="col-md-5 text-error">@out.displayName</span>
+                            <span class="col-md-1"><i class="icon-exchange"></i></span>
+                            <span class="col-md-5 text-success">@in.displayName</span>
                         </p>
                     </li>
                     }
@@ -134,10 +134,10 @@ awayCards:Seq[(Card, Match, Team, Player, TypCard)] )(implicit request: RequestH
                     @awayPlayers.map { case (mp, m, p, t) =>
                         <li>
                             <a href="#" data-toggle="tooltip" title="@mp.comments">
-                            <div class="span1"><span class="badge">@mp.num</span></div>
+                            <div class="col-md-1"><span class="badge">@mp.num</span></div>
                             <div class="span9">@p.displayName</div>
-                            <div class="span1">@mp.note</div>
-                            <div class="span1">@mp.timePlayed'</div>
+                            <div class="col-md-1">@mp.note</div>
+                            <div class="col-md-1">@mp.timePlayed'</div>
                             </a>
                         </li>
                     }

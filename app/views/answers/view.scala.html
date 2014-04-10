@@ -17,7 +17,7 @@
     @Option(events).map { case (event, typEvent, eventStatus) =>
     <fieldset>
     <legend><span class="badge">@eventStatus.name</span> @event.name - @event.dtEvent.toString("d MMM YYYY HH:mm") </legend>
-        <div class="span12 well">@event.placeId @event.comments.map{ c => @Html(c)}</div>
+        <div class="col-md-12 well">@event.placeId @event.comments.map{ c => @Html(c)}</div>
 
 
         @user match {
@@ -40,7 +40,7 @@
 
 
 
-        <div class="span4">
+        <div class="col-md-4">
             <ul class="unstyled">
             <legend>YES (@answers.count(x => x._4.group.equals("YES")))</legend>
                 @answers.filter(x => x._4.group.equals("YES")).sortBy(y=>y._3.lastName).map { case (answer, e, player, typAnswer) =>
@@ -53,7 +53,7 @@
             }
             </ul>
         </div>
-        <div class="span4">
+        <div class="col-md-4">
             <ul class="unstyled">
                 <legend>MAYBE (@answers.count(x => x._4.group.equals("MAYBE")))</legend>
                 @answers.filter(x => x._4.group.equals("MAYBE")).sortBy(y=>y._3.lastName).map { case (answer, e, player, typAnswer) =>
@@ -66,7 +66,7 @@
             }
             </ul>
         </div>
-        <div class="span3">
+        <div class="col-md-3">
             <ul class="unstyled">
                 <legend>NO (@answers.count(x => x._4.group.equals("NO")))</legend>
                 @answers.filter(x => x._4.group.equals("NO")).sortBy(y=>y._3.lastName).map { case (answer, e, player, typAnswer) =>

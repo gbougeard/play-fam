@@ -16,20 +16,20 @@ idTeam:Long)(implicit request: RequestHeader, session: play.api.mvc.Session, fla
 <div class="row-fluid" data-ng-controller="LineupCtrl" ng-init="idMatch=@idMatch ; idTeam=@idTeam ; loadMatch()">
     <div class="clearfix" ></div>
         <div id="preview">
-            <div class="well span12">
+            <div class="well col-md-12">
                 <h2 class="text-center">{{matchTeam.team.name}}</h2>
                 <hr>
-                <div class="span12">
-                    <ul class="unstyled span5" title="Answers">
+                <div class="col-md-12">
+                    <ul class="unstyled col-md-5" title="Answers">
                         <li ng-repeat="answer in answers | orderBy:'typanswer.id'">
-                            <span class="span10">{{answer.player.firstName}} {{answer.player.lastName}} </span>
-                            <span class="span2"><span class="badge badge-{{answer.typanswer |typAnswer }}">{{answer.typanswer.name}}</span></span>
+                            <span class="col-md-10">{{answer.player.firstName}} {{answer.player.lastName}} </span>
+                            <span class="col-md-2"><span class="badge badge-{{answer.typanswer |typAnswer }}">{{answer.typanswer.name}}</span></span>
                         </li>
                     </ul>
-                    <ul class="unstyled span6 offset1" title="Lineup">
+                    <ul class="unstyled span6 col-md-offset-1" title="Lineup">
                         <li ng-repeat="player in players">
-                            <span class="span1"><span class="badge">{{player.matchplayer.num}}</span></span>
-                            <span class="span11">{{player.player.firstName}} {{player.player.lastName}} </span>
+                            <span class="col-md-1"><span class="badge">{{player.matchplayer.num}}</span></span>
+                            <span class="col-md-11">{{player.player.firstName}} {{player.player.lastName}} </span>
                         </li>
                     </ul>
                 </div>

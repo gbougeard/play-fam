@@ -25,14 +25,14 @@
 
 @main(message) {
     <div>
-        <div class="span3">
+        <div class="col-md-3">
             <ul class="">
                 @for((id, name)<-competitions){
                 <li><a href="@routes.Rankings.list(id)">@name</a></li>
                }
             </ul>
         </div>
-        <div class="span8 offset1">
+        <div class="span8 col-md-offset-1">
             @Option(rankings).filterNot(_.isEmpty).map { ranks =>
 
                 <table class="table table-striped table-bordered table-hover">

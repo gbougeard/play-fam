@@ -16,11 +16,11 @@
             <dd> @formation.typMatchId </dd>
         </dl>
         <div class="row">
-            <div class="span4 offset1 soccer_field">
+            <div class="col-md-4 col-md-offset-1 soccer_field">
                 @for(j <- 1 to 6) {
                     <div class="row " style="@if(j == 1){padding-top: 30px;} margin-left: 10px;">
                         @for(i <- 1 to 5) {
-                            <div class="span2 " style="height:80px; margin-left: 15px;">
+                            <div class="col-md-2 " style="height:80px; margin-left: 15px;">
                                 @items.filter(_.coord == ((j-1)*5 +i)).map { i =>
                                     <span class="badge">@i.numItem</span>
                                 }

@@ -7,6 +7,7 @@
 
 @import helper._
 @import tags.buttons._
+@import tags.bootstrap._
 
 @implicitFieldConstructor = @{
     FieldConstructor(twitterBootstrapInput.f)
@@ -92,7 +93,8 @@
         @select(
             formationForm("typMatchId"),
             typMatchs,
-            '_label -> "TypMatch", '_default -> "-- Choose a typMatch --",
+            '_label -> "TypMatch",
+            '_default -> "-- Choose a typMatch --",
             '_showConstraints -> false
         )
 
@@ -104,11 +106,11 @@
         </div>
 
         <div class="row">
-            <div class="span4 offset1 container soccer_field">
+            <div class="col-md-4 col-md-offset-1 container soccer_field">
                 @for(j <- 1 to 6) {
                      <div class="row" style="@if(j == 1) { padding-top: 30px; } margin-left: 10px;">
                         @for(i <- 1 to 5) {
-                         <div id="drop-@{val idx=(j - 1) * 5 + i;idx}" class="span2 item" style=" margin-left: 15px;">
+                         <div id="drop-@{val idx=(j - 1) * 5 + i;idx}" class="col-md-2 item" style=" margin-left: 15px;">
                              @items.filter(_.coord == ((j - 1) * 5 + i)).map { fi =>
                                  <a id="drag-@fi.numItem" class="badge">@fi.numItem</a>
                              }
