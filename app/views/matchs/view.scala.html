@@ -1,155 +1,186 @@
 @(message: String,
-m: Match,
-event:Event,
-home: (MatchTeam, Team),
-away: (MatchTeam, Team),
-homeGoals: Seq[(Goal, Option[Player])],
-awayGoals: Seq[(Goal, Option[Player])],
-homePlayers:Seq[(MatchPlayer, Match, Player, Team)],
-awayPlayers:Seq[(MatchPlayer, Match, Player, Team)],
-homeSubs:Seq[(Substitution, Match, Team, Player, Player)],
-awaySubs:Seq[(Substitution, Match, Team, Player, Player)],
-homeCards:Seq[(Card, Match, Team, Player, TypCard)],
-awayCards:Seq[(Card, Match, Team, Player, TypCard)] )(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
+        m: Match,
+        event: Event,
+        home: (MatchTeam, Team),
+        away: (MatchTeam, Team),
+        homeGoals: Seq[(Goal, Option[Player])],
+        awayGoals: Seq[(Goal, Option[Player])],
+        homePlayers: Seq[(MatchPlayer, Match, Player, Team)],
+        awayPlayers: Seq[(MatchPlayer, Match, Player, Team)],
+        homeSubs: Seq[(Substitution, Match, Team, Player, Player)],
+        awaySubs: Seq[(Substitution, Match, Team, Player, Player)],
+        homeCards: Seq[(Card, Match, Team, Player, TypCard)],
+        awayCards: Seq[(Card, Match, Team, Player, TypCard)])(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
 
 
-@main(event.name+" "+event.dtEvent.toString("dd MM yyyy")) {
+@main(event.name + " " + event.dtEvent.toString("dd MM yyyy")) {
     <div class="clearfix"></div>
+
     <div id="preview">
-        @Option(home).map { case (mtHome, homeTeam) =>
-            <div class="col-md-5 col-md-offset-1">
-                 <div class="well">
-                    <h2 class="text-center">@homeTeam.name</h2>
-                    <h3 class="text-right muted">@mtHome.goalScored</h3>
-                    <hr>
-                    <ul class="unstyled">
-                        @homeGoals.map { case (goal, striker) =>
+        <div class="col-md-5 col-md-offset-1" >
+        @Option(home).map {
+            case (mtHome, homeTeam) => {
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="text-center">@homeTeam.name</h3>
+                        <h2 class="text-right muted"><strong>@mtHome.goalScored</strong></h2>
+                    </div>
+                    <ul class="list-unstyled">
+                    @homeGoals.map {
+                        case (goal, striker) => {
                             <li>
                                 <p>
                                     <span class="col-md-1">@goal.goalTime'</span>
-                                    <span class="col-md-11">@striker.map(_.displayName).getOrElse {<em>-</em>}
-                                        <em>
-                                            @if(goal.csc){csc}
-                                            @if(goal.penalty){sp}
-                                        </em>
+                                    <span class="col-md-11">@striker.map(_.displayName).getOrElse {
+                                        <em>-</em>
+                                    }
+                                    <em>
+                                        @if(goal.csc) {csc}
+                                        @if(goal.penalty) {sp}
+                                    </em>
                                     </span>
                                 </p>
                             </li>
                         }
+                    }
                     </ul>
                     &nbsp;
-                    <ul class="unstyled">
-                        @homeCards.map { case (card, m, team, player, typCard) =>
+                    <ul class="list-unstyled">
+                    @homeCards.map {
+                        case (card, m, team, player, typCard) => {
                             <li>
                                 <p>
                                     <span class="col-md-1">@card.time'</span>
                                     <span class="col-md-11">@player.displayName <em>@typCard.name</em>
-                        </span>
+                                    </span>
                                 </p>
                             </li>
                         }
+                    }
                     </ul>
                     &nbsp;
                     <hr>
-                 <ul class="unstyled">
-                        @homeSubs.map { case (s, m, team, in, out) =>
+                    <ul class="list-unstyled">
+                    @homeSubs.map {
+                        case (s, m, team, in, out) => {
                             <li>
                                 <p>
                                     <span class="col-md-1">@s.time'</span>
-                                    <span class="col-md-5 text-error">@out.displayName</span>
-                                    <span class="col-md-1"><i class="icon-exchange"></i></span>
+                                    <span class="col-md-5 text-danger">@out.displayName</span>
+                                    <span class="col-md-1"><i class="fa fa-exchange"></i></span>
                                     <span class="col-md-5 text-success">@in.displayName</span>
                                 </p>
                             </li>
                         }
+                    }
                     </ul>
-                    &nbsp;
+                            &nbsp;
                     <hr>
-                    <ul class="unstyled">
-                        @homePlayers.map { case (mp, m, p, t) =>
+                    <ul class="list-unstyled">
+                    @homePlayers.map {
+                        case (mp, m, p, t) => {
                             <li>
                                 <a href="#" data-toggle="tooltip" title="@mp.comments">
-                                <span class="col-md-1"><span class="badge">@mp.num</span></span>
-                                <span class="span9">@p.displayName</span>
-                                <span class="col-md-1">@mp.note</span>
-                                <span class="col-md-1">@mp.timePlayed'</span>
+                                    <span class="col-md-1"><span class="badge">@mp.num</span></span>
+                                    <span class="col-md-9">@p.displayName</span>
+                                    <span class="col-md-1">@mp.note</span>
+                                    <span class="col-md-1">@mp.timePlayed'</span>
                                 </a>
                             </li>
                         }
+                    }
                     </ul>
-                    &nbsp;
+                        &nbsp;
                     <hr>
                     <p>@Html(mtHome.resume.getOrElse(""))</p>
                 </div>
-            </div>
-        }
-        @Option(away).map { case (mtAway, awayTeam) =>
-            <div class="col-md-5">
-                <div class="well">
-                <h2 class="text-center">@awayTeam.name</h2>
-                <h3 class="text-left muted">@mtAway.goalScored</h3>
-                <hr>
-                <ul class="unstyled">
-                    @awayGoals.map { case (goal, striker) =>
-                        <li>
-                            <div class="col-md-1">@goal.goalTime'</div>
-                            <div class="col-md-11">@striker.map(_.displayName).getOrElse {<em>-</em>}
-                                <em>
-                                    @if(goal.csc){csc}
-                                    @if(goal.penalty){sp}
-                                </em>
-                            </div>
-                        </li>
-                    }
-                </ul>
-                &nbsp;
-                <ul class="unstyled">
-                    @awayCards.map { case (card, m, team, player, typCard) =>
-                    <li>
-                        <p>
-                        <span class="col-md-1">@card.time'</span>
-                            <span class="col-md-11">@player.displayName <em>@typCard.name</em>
-                    </span>
-                    </p>
-                    </li>
-                    }
-                </ul>
-                &nbsp;
-                <hr>
-                <ul class="unstyled">
-                    @awaySubs.map { case (s, m, team, in, out) =>
-                    <li>
-                        <p>
-                            <span class="col-md-1">@s.time'</span>
-                            <span class="col-md-5 text-error">@out.displayName</span>
-                            <span class="col-md-1"><i class="icon-exchange"></i></span>
-                            <span class="col-md-5 text-success">@in.displayName</span>
-                        </p>
-                    </li>
-                    }
-                </ul>
-                    &nbsp;
-                <hr>
-                <ul class="unstyled">
-                    @awayPlayers.map { case (mp, m, p, t) =>
-                        <li>
-                            <a href="#" data-toggle="tooltip" title="@mp.comments">
-                            <div class="col-md-1"><span class="badge">@mp.num</span></div>
-                            <div class="span9">@p.displayName</div>
-                            <div class="col-md-1">@mp.note</div>
-                            <div class="col-md-1">@mp.timePlayed'</div>
-                            </a>
-                        </li>
-                    }
-                </ul>
-                &nbsp;
-                <hr>
-                <p>@Html(mtAway.resume.getOrElse(""))</p>
-            </div>
-            </div>
-        }
-    </div>
 
+            }
+        }
+        </div>
+
+        <div class="col-md-5">
+        @Option(away).map {
+            case (mtAway, awayTeam) => {
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="text-center">@awayTeam.name</h3>
+                        <h2 class="text-left muted"><strong>@mtAway.goalScored</strong></h2>
+                    </div>
+                    <ul class="list-unstyled">
+                    @awayGoals.map {
+                        case (goal, striker) => {
+                            <li>
+                                <p>
+                                    <span class="col-md-1">@goal.goalTime'</span>
+                                    <span class="col-md-11">@striker.map(_.displayName).getOrElse {
+                                        <em>-</em>
+                                    }
+                                    <em>
+                                        @if(goal.csc) {csc}
+                                        @if(goal.penalty) {sp}
+                                    </em>
+                                    </span>
+                                </p>
+                            </li>
+                        }
+                    }
+                    </ul>
+                        &nbsp;
+                    <ul class="list-unstyled">
+                    @awayCards.map {
+                        case (card, m, team, player, typCard) => {
+                            <li>
+                                <p>
+                                    <span class="col-md-1">@card.time'</span>
+                                    <span class="col-md-11">@player.displayName <em>@typCard.name</em>
+                                    </span>
+                                </p>
+                            </li>
+                        }
+                    }
+                    </ul>
+                        &nbsp;
+                    <hr>
+                    <ul class="list-unstyled">
+                    @awaySubs.map {
+                        case (s, m, team, in, out) => {
+                            <li>
+                                <p>
+                                    <span class="col-md-1">@s.time'</span>
+                                    <span class="col-md-5 text-danger">@out.displayName</span>
+                                    <span class="col-md-1"><i class="fa fa-exchange"></i></span>
+                                    <span class="col-md-5 text-success">@in.displayName</span>
+                                </p>
+                            </li>
+                        }
+                    }
+                    </ul>
+                        &nbsp;
+                    <hr>
+                    <ul class="list-unstyled">
+                    @awayPlayers.map {
+                        case (mp, m, p, t) => {
+                            <li>
+                                <a href="#" data-toggle="tooltip" title="@mp.comments">
+                                    <span class="col-md-1"><span class="badge">@mp.num</span></span>
+                                    <span class="col-md-9">@p.displayName</span>
+                                    <span class="col-md-1">@mp.note</span>
+                                    <span class="col-md-1">@mp.timePlayed'</span>
+                                </a>
+                            </li>
+                        }
+                    }
+                    </ul>
+                        &nbsp;
+                    <hr>
+                    <p>@Html(mtAway.resume.getOrElse(""))</p>
+                </div>
+
+            }
+        }
+        </div>
+    </div>
 
 
 }
