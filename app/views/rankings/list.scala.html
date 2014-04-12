@@ -1,4 +1,4 @@
-@(message: String, rankings: Seq[Ranking], competition: Long, currentOrderBy: Int, competitions: Seq[(Long, String)])(implicit request: RequestHeader, session: play.api.mvc.Session)
+@(message: String, rankings: Seq[Ranking], competition: Long, currentOrderBy: Int, competitions: Seq[(Long, String)])(implicit lang:Lang, request: RequestHeader, session: play.api.mvc.Session)
 
 @****************************************
 * Helper generating navigation links *

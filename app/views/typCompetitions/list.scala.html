@@ -1,4 +1,4 @@
-@(message: String, currentPage: Page[(TypCompetition, TypMatch)], currentOrderBy: Int)(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
+@(message: String, currentPage: Page[(TypCompetition, TypMatch)], currentOrderBy: Int)(implicit lang:Lang, request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
 
 @import service.Administrator
 @import tags.buttons._

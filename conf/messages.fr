@@ -1,0 +1,5 @@
+menu.home=Accueil
+menu.countries=Pays
+menu.states=Département
+menu.provinces=Régions
+menu.cities=Villes

@@ -1,4 +1,4 @@
-@(player:Option[Player], players:Seq[Player], currentFilter:String)(implicit request: RequestHeader, session: play.api.mvc.Session)
+@(player:Option[Player], players:Seq[Player], currentFilter:String)(implicit lang:Lang, request: RequestHeader, session: play.api.mvc.Session)
 @import securesocial.core.IdentityProvider
 @import tags._
 @import tags.buttons._

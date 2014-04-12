@@ -1,4 +1,4 @@
-@(message: String, id: Long, typMatchForm: Form[TypCompetition], typMatches : Seq[(String, String)])(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
+@(message: String, id: Long, typMatchForm: Form[TypCompetition], typMatches : Seq[(String, String)])(implicit lang:Lang, request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
 
 @import helper._
 @import tags.buttons._

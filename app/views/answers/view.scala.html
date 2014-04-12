@@ -2,7 +2,7 @@
         events: (Event, TypEvent, EventStatus),
         answers: Seq[(Answer, Event, Player, TypAnswer)],
         user: securesocial.core.Identity,
-        player: Option[Player])(implicit request: RequestHeader, session: play.api.mvc.Session)
+        player: Option[Player])(implicit lang:Lang, request: RequestHeader, session: play.api.mvc.Session)
 @import securesocial.core.IdentityProvider
 
 @scripts ={

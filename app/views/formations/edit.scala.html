@@ -3,15 +3,11 @@
         formationForm: Form[Formation],
         items: Seq[FormationItem],
         jsonItems: String,
-        typMatchs: Seq[(String, String)])(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
+        typMatchs: Seq[(String, String)])(implicit lang:Lang, flash: Flash, request: RequestHeader, session: play.api.mvc.Session)
 
-@import helper._
+@import helper.twitterBootstrap._
 @import tags.buttons._
-@import tags.bootstrap._
 
-@implicitFieldConstructor = @{
-    FieldConstructor(twitterBootstrapInput.f)
-}
 
 @scripts = {
 
@@ -29,7 +25,6 @@
                     var oldCoord = 0;
                     var swap = false;
                     var swapItem = {};
-            console.log(numItem, coord);
                     angular.forEach(myItems, function(value, key){
                         if (value.coord == coord){
                             swap = true;
@@ -85,17 +80,17 @@
         </div>
     }
 
-    @form(routes.Formations.update(id), 'class -> "form-horizontal") {
+    @helper.form(action = routes.Formations.update(id)) {
 
-        @inputText(formationForm("code"), '_label -> "Code")
-        @inputText(formationForm("name"), '_label -> "Nom")
+        @helper.inputText(formationForm("code"))
+        @helper.inputText(formationForm("name"))
 
-        @select(
-            formationForm("typMatchId"),
-            typMatchs,
-            '_label -> "TypMatch",
+        @helper.select(
+            field = formationForm("typMatchId"),
+            options = typMatchs,
             '_default -> "-- Choose a typMatch --",
-            '_showConstraints -> false
+            '_showConstraints -> false ,
+            'class -> "form-control"
         )
 
         <div class="form-actions">

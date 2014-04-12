@@ -1,4 +1,4 @@
-@()
+@()(implicit lang:Lang)
 <nav id="navigation" class="navbar navbar-default navbar-static-top" role="navigation">
     <div class="navbar-header">
         <a class="navbar-brand" href="@routes.Application.index()">FAM</a>
@@ -8,10 +8,10 @@
         <li class="dropdown">
             <a id="dropGeo" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-map-marker"> Geo</i><b class="caret"></b></a>
             <ul class="dropdown-menu" role="menu" aria-labelledby="Geo">
-                <li ><a href="@routes.Countries.list(0)"> Countries</a></li>
-                <li ><a href="@routes.States.list(0)">States</a></li>
-                <li ><a href="@routes.Provinces.list(0)"> Provinces</a></li>
-                <li ><a href="@routes.Cities.list(0)">Cities</a></li>
+                <li ><a href="@routes.Countries.list(0)"> @Messages("menu.countries")</a></li>
+                <li ><a href="@routes.States.list(0)"> @Messages("menu.states")</a></li>
+                <li ><a href="@routes.Provinces.list(0)"> @Messages("menu.provinces")</a></li>
+                <li ><a href="@routes.Cities.list(0)"> @Messages("menu.cities")</a></li>
                 <li class="divider"></li>
                 <li ><a href="@routes.Places.list(0)">Places</a></li>
                 <li ><a href="@routes.Places.map">Map</a></li>

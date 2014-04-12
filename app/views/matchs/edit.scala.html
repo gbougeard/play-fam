@@ -3,7 +3,7 @@ m: Match,
 event:Event,
 idMatch:Long,
     idTeam:Long
-        )(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
+        )(implicit lang:Lang, request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
 
 @scripts = {
     <script type="text/javascript" src='@routes.Assets.at("js/app/controllers/debriefing.js")'

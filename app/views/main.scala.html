@@ -1,4 +1,4 @@
-@(title: String, scripts: Html = Html(""))(content: Html)(implicit request: RequestHeader, session: play.api.mvc.Session)
+@(title: String, scripts: Html = Html(""))(content: Html)(implicit lang: Lang, request: RequestHeader, session: play.api.mvc.Session)
 
 @import tags._
 @import tags.buttons._
@@ -8,8 +8,16 @@
 <html lang="en" ng-app="fam">
     <head>
         <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
         <title>@title</title>
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("img/favicon.png")">
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+<script src="/assets/js/html5shiv.js" type="text/javascript"></script>
+<script src="/assets/js/respond.min.js" type="text/javascript"></script>
+<![endif]-->
 
         <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("3.1.1/cerulean/bootstrap.min.css"))'>
         <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("4.0.3/css/font-awesome.min.css"))'>

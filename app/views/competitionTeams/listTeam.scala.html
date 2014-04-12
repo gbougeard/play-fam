@@ -1,6 +1,6 @@
 @(message: String,
         competition: Option[(SeasonCompetition, Season, TypCompetition)],
-        currentPage: Seq[(CompetitionTeam, SeasonCompetition, Team)])(implicit request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
+        currentPage: Seq[(CompetitionTeam, SeasonCompetition, Team)])(implicit lang:Lang, request: RequestHeader, session: play.api.mvc.Session, flash: play.api.mvc.Flash)
 
 
 
