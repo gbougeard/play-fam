@@ -1,8 +1,8 @@
-@(message: String, idClub:Long, event:String,  teams: String)(implicit lang:Lang, request: RequestHeader, session: play.api.mvc.Session)
+@(message: String, idClub: Long, event: String, teams: String)(implicit lang: Lang, request: RequestHeader, session: play.api.mvc.Session)
 
-    @import tags.buttons._
+@import tags.buttons._
 
-    @scripts={
+    @scripts = {
         <script type="text/javascript" src='@routes.Assets.at("js/app/controllers/event.js")'></script>
 
         <script>
@@ -14,75 +14,87 @@
 
 
     <div data-ng-controller="EventCtrl" ng-init="event=@event; teams=@teams ; idClub=@idClub; load(); ">
-        <form id="formEvent" class="form-horizontal" data-ng-submit="update()">
-            <div class="control-group" ng-class="{error: formEvent.name.$invalid}">
-                <label class="control-label" for="eventName">Title</label>
-                <div class="controls">
-                    <input type="text" id="eventName" name="name" placeholder="Title" class="input-xxlarge input-with-feedback" data-ng-model="event.event.name" required>
+
+        <form id="formEvent" class="form-horizontal" data-ng-submit="update()" role="form">
+
+            <div class="form-group" ng-class="{error: formEvent.name.$invalid}">
+                <label for="eventName" class="col-sm-2 control-label">Title</label>
+                <div class="col-sm-10">
+                    <input type="text" id="eventName" name="name" placeholder="Title" class="form-control input-with-feedback" data-ng-model="event.event.name" required>
                 </div>
             </div>
-            <div class="control-group input-append" ng-class="{error: formEvent.date.$invalid}">
-                <label class="control-label" for="eventDate">Date</label>
-                <div class="controls">
-                    <input type="text" id="eventDate" name="date" ng-model="datepicker.date" data-date-format="dd/mm/yyyy" bs-datepicker required>
-                    <button type="button" class="btn" data-toggle="datepicker"><i class="icon-calendar"></i></button>
+            <div class="form-group" ng-class="{'has-error': formEvent.date.$invalid}">
+                <label class="col-sm-2 control-label"><i class="fa fa-calendar"></i> Date <small>(as date)</small></label>
+                <div class="col-xs-4">
+                    <input type="text" class="form-control" ng-model="datepicker.date" name="date" data-date-format="dd/mm/yyyy" bs-datepicker required>
+                </div>
+            </div>
+            @*<div class="form-group input-group" ng-class="{error: formEvent.date.$invalid}">*@
+            @*<label for="eventDate">Date</label>*@
+            @*<input type="text" class="form-control" id="eventDate" name="date" ng-model="datepicker.date" data-date-format="dd/mm/yyyy" bs-datepicker required>*@
+            @*<span class="input-group-btn">*@
+            @*<button type="button" class="btn" data-toggle="datepicker"><i class="icon-calendar"></i></button>*@
+            @*</span>*@
+            @*</div>*@
+            <div class="form-group" ng-class="{'has-error': formEvent.time.$invalid}">
+                <label class="col-sm-2 control-label"><i class="fa fa-clock-o"></i> Time <small>(as date)</small></label>
+                <div class="col-xs-2">
+                    <input type="text" class="form-control" size="8" ng-model="timepicker.time" name="time" bs-timepicker>
                 </div>
             </div>
 
-            <div class="control-group  input-append" ng-class="{error: formEvent.time.$invalid}">
-                <label class="control-label" for="eventTime">Time</label>
-                <div class="controls">
-                    <input type="text" id="eventTime" name="time" ng-model="timepicker.time" class="input-small"  data-show-meridian="false" data-show-seconds="false" bs-timepicker>
-                    <button type="button" class="btn" data-toggle="timepicker"><i class="icon-time"></i></button>
-                </div>
-            </div>
+            @*<div class="form-group input-group" ng-class="{error: formEvent.time.$invalid}">*@
+            @*<label for="eventTime">Time</label>*@
+            @*<div class="col-sm-2">*@
+            @*<input type="text" id="eventTime" name="time" ng-model="timepicker.time" class="form-control " data-show-meridian="false" data-show-seconds="false" bs-timepicker>*@
+            @*<span class="input-group-btn">*@
+            @*<button type="button" class="btn" data-toggle="timepicker"><i class="icon-time"></i></button>*@
+            @*</span>*@
+            @*</div>*@
+            @*</div>*@
 
-            <div class="control-group" ng-class="{error: formEvent.type.$invalid}">
-                <label class="control-label" for="type">Type</label>
+            <div class="form-group" ng-class="{error: formEvent.type.$invalid}">
+                <label for="type" class="col-sm-2 control-label">Type</label>
                 <div class="controls">
                     @*<select class="col-md-2" name="type" ng-model="event.event.typEventId" ng-options="value.id as value.name for (key, value) in types" data-style="btn-primary" bs-select required></select>*@
-                    <select ui-select2  class="col-md-4" name="type" ng-model="event.event.typEventId" data-placeholder="Pick a type" required>
+                    <select ui-select2 class="col-md-4" name="type" ng-model="event.event.typEventId" data-placeholder="Pick a type" required>
                         <option value=""></option>
                         <option ng-repeat="type in types" value="{{type.id}}">{{type.name}}</option>
                     </select>
                 </div>
             </div>
 
-            <div class="control-group" ng-class="{error: formEvent.duration.$invalid}">
-                <label class="control-label" for="duration">Duration</label>
-                <div class="controls">
-                    <input type="number" id="duration" name="duration" placeholder="Duration" class="input-with-feedback input-small" data-ng-model="event.event.duration" required> minutes
+            <div class="form-group" ng-class="{error: formEvent.duration.$invalid}">
+                <label for="duration" class="col-sm-2 control-label">Duration</label>
+                <div class="col-xs-2">
+                    <input type="number" id="duration" name="duration" placeholder="Duration" class="form-control input-with-feedback" data-ng-model="event.event.duration" required>
+                    <span class="help-inline">minutes</span>
                 </div>
             </div>
 
-            <div class="control-group" ng-class="{error: formEvent.place.$invalid}">
-                <label class="control-label" for="place">Place</label>
-                <div class="controls">
-                    @*<select class="col-md-4" name="place" ng-model="event.event.placeId" ng-options="value.id as value.name for (key, value) in places" data-style="btn-primary" bs-select></select>*@
-                    <select ui-select2  class="span8" name="place" ng-model="event.event.placeId" data-placeholder="Pick a place">
-                        <option value=""></option>
-                        <option ng-repeat="place in places" value="{{place.place.id}}">{{place.place.name}} - {{place.place.zipcode}} - {{place.place.city}}</option>
-                    </select>
-                </div>
+            <div class="form-group" ng-class="{error: formEvent.place.$invalid}">
+                <label for="place" class="col-sm-2 control-label">Place</label>
+                @*<select class="col-md-4" name="place" ng-model="event.event.placeId" ng-options="value.id as value.name for (key, value) in places" data-style="btn-primary" bs-select></select>*@
+                <select ui-select2 class="col-md-8" name="place" ng-model="event.event.placeId" data-placeholder="Pick a place">
+                    <option value=""></option>
+                    <option ng-repeat="place in places" value="{{place.place.id}}">
+                        {{place.place.name}} - {{place.place.zipcode}} - {{place.place.city}}</option>
+                </select>
             </div>
 
-            <div class="control-group" ng-class="{error: formEvent.status.$invalid}">
-                <label class="control-label" for="status">Status</label>
-                <div class="controls">
-                    @*<select class="col-md-2" name="status" ng-model="event.event.eventStatusId" ng-options="value.id as value.name for (key, value) in statuses" data-style="btn-primary" bs-select></select>*@
-                    <select ui-select2  class="col-md-2" name="status" ng-model="event.event.eventStatusId" data-placeholder="Pick a status" required>
-                        <option value=""></option>
-                        <option ng-repeat="status in statuses" value="{{status.id}}">{{status.name}}</option>
-                    </select>
-                </div>
+            <div class="form-group" ng-class="{error: formEvent.status.$invalid}">
+                <label for="status" class="col-sm-2 control-label">Status</label>
+                @*<select class="col-md-2" name="status" ng-model="event.event.eventStatusId" ng-options="value.id as value.name for (key, value) in statuses" data-style="btn-primary" bs-select></select>*@
+                <select ui-select2 class="col-md-2" name="status" ng-model="event.event.eventStatusId" data-placeholder="Pick a status" required>
+                    <option value=""></option>
+                    <option ng-repeat="status in statuses" value="{{status.id}}">{{status.name}}</option>
+                </select>
             </div>
 
 
-            <div class="control-group" ng-class="{error: formEvent.teams.$invalid}">
-                <label class="control-label" for="teams">Teams</label>
-                <div class="controls">
-                    <select id="teams" class="span8" name="teams" ng-model="event.teams" multiple title="Choose teams..." ng-options="value.id as value.name for (key, value) in teams" data-style="btn-primary" bs-select></select>
-                </div>
+            <div class="form-group" ng-class="{error: formEvent.teams.$invalid}">
+                <label for="teams" class="col-sm-2 control-label">Teams</label>
+                <select id="teams" class="col-md-8" name="teams" ng-model="event.teams" multiple title="Choose teams..." ng-options="value.id as value.name for (key, value) in teams" data-style="btn-primary" bs-select></select>
             </div>
 
             <div class="form-actions">

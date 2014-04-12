@@ -18,6 +18,7 @@ object Dependencies {
 
   val webjarsVersion = "2.2.1-2"
   val wjAngularVersion = "1.2.16"
+  val wjAngularMotionVersion = "0.3.2"
   val wjAngularUiVersion = "0.4.0-2"
   val wjAngularUiBootstrapVersion = "0.10.0-1"
   val wjAngularUiCalendarVersion = "0.8.0"
@@ -51,6 +52,7 @@ object Dependencies {
 
   val webjars = "org.webjars" % "webjars-play_2.10" % webjarsVersion
   val wjAngular = "org.webjars" % "angularjs" % wjAngularVersion
+  val wjAngularMotion = "org.webjars" % "angular-motion" % wjAngularMotionVersion
   val wjAngularUi = "org.webjars" % "angular-ui" % wjAngularUiVersion
   val wjAngularUiBootstrap = "org.webjars" % "angular-ui-bootstrap" % wjAngularUiBootstrapVersion
   val wjAngularUiCalendar = "org.webjars" % "angular-ui-calendar" % wjAngularUiCalendarVersion

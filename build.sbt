@@ -39,6 +39,7 @@ libraryDependencies ++= Seq(
 //  specs2,
   webjars,
   wjAngular,
+  wjAngularMotion,
   wjAngularStrap,
   wjAngularUi,
   wjAngularUiBootstrap,
