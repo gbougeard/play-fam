@@ -5,15 +5,7 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-
-import models.Matches._
-import models.Teams._
-import models.Players._
-
 import play.api.Logger
-import database.Substitutions
 
 case class Substitution(id: Option[Long],
                         matchId: Long,
@@ -56,22 +48,5 @@ object Substitutions extends DAO{
       substitutions.where(_.id === id).delete
   }
 
-  implicit val substitutionFormat = Json.format[Substitution]
-
-  implicit val subCompleteReads: Reads[(Substitution, Match, Team, Player, Player)] = (
-    (__ \ 'substitution).read[Substitution] ~
-      (__ \ 'match).read[Match] ~
-      (__ \ 'team).read[Team] ~
-        (__ \ 'playerin).read[Player] ~
-        (__ \ 'playerout).read[Player]
-    ) tupled
-
-  implicit val subCompleteWrites: Writes[(Substitution, Match, Team, Player, Player)] = (
-    (__ \ 'substitution).write[Substitution] ~
-      (__ \ 'match).write[Match] ~
-      (__ \ 'team).write[Team] ~
-      (__ \ 'playerin).write[Player] ~
-      (__ \ 'playerout).write[Player]
-    ) tupled
 
 }

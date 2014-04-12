@@ -5,15 +5,8 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-
 import play.api.Logger
 import scala.util.Try
-
-import database.PlaceClubs
-import models.Clubs._
-import models.Places._
 
 case class PlaceClub(placeId: Long,
                      clubId: Long)
@@ -113,17 +106,5 @@ object PlaceClubs extends DAO{
   //      query.list.map(row => (row._1.toString, row._2))
   //  }
 
-  implicit val pcFormat = Json.format[PlaceClub]
 
-  implicit val pcCompleteReads: Reads[(PlaceClub, Place, Club)] = (
-    (__ \ 'placeclub).read[PlaceClub] ~
-      (__ \ 'place).read[Place] ~
-      (__ \ 'club).read[Club]
-    ) tupled
-
-  implicit val mtCompleteWrites: Writes[(PlaceClub, Place, Club)] = (
-    (__ \ 'placeclub).write[PlaceClub] ~
-      (__ \ 'place).write[Place] ~
-      (__ \ 'club).write[Club]
-    ) tupled
 }

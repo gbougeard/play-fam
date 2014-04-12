@@ -4,8 +4,7 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models._
-import models.Clubs._
-import models.PlaceClubs._
+import json.ImplicitGlobals._
 import service.Coach
 import service.Administrator
 import play.api.libs.json._

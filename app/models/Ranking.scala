@@ -5,9 +5,6 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-import database.Rankings
 
 case class Ranking(competitionId: Long,
                    clubId: Long,
@@ -77,7 +74,6 @@ object Rankings extends DAO{
       } yield c).list
   }
 
-  implicit val rankingFormat = Json.format[Ranking]
 
 }
 

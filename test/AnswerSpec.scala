@@ -1,13 +1,13 @@
-import models.Team
+import models.Answer
 
 import json.ImplicitGlobals._
+import play.api.libs.json.{JsSuccess, Json}
 
 import org.scalacheck.Arbitrary._
 import org.scalacheck.{Arbitrary, Gen}
 import org.specs2.mutable._
 import org.specs2.ScalaCheck
 
-import play.api.libs.json.{JsSuccess, Json}
 import scala.Some
 
 /**
@@ -16,9 +16,9 @@ import scala.Some
  * For more information, consult the wiki.
  */
 
-class TeamSpec extends Specification with ScalaCheck with TeamGen {
+class AnswerSpec extends Specification with ScalaCheck with AnswerGen {
   "json from(to) iso" ! prop {
-    (p: Team) =>
+    (p: Answer) =>
 //          println(s"p: $p")
 //          println(s"toJson: ${Json.toJson(p)}")
 //          println(s"from(to): ${Json.fromJson(Json.toJson(p))}")
@@ -26,20 +26,21 @@ class TeamSpec extends Specification with ScalaCheck with TeamGen {
   }
 }
 
+trait AnswerGen {
 
-trait TeamGen {
-
-  lazy val genTeam: Gen[Team] = for {
+  lazy val genAnswer: Gen[Answer] = for {
     id <- arbitrary[Long]
-    code <- arbitrary[String]
-    name <- arbitrary[String]
-    clubId <- arbitrary[Long]
-  } yield Team(
+    eventId <- arbitrary[Long]
+    playerId <- arbitrary[Long]
+    typAnswerId <- arbitrary[Long]
+    comments <- arbitrary[String]
+  } yield Answer(
       Some(id),
-      code,
-      name,
-      clubId
+      eventId,
+      playerId,
+      typAnswerId,
+      Some(comments)
     )
 
-  implicit lazy val arbTeam: Arbitrary[Team] = Arbitrary(genTeam)
+  implicit lazy val arbAnswer: Arbitrary[Answer] = Arbitrary(genAnswer)
 }

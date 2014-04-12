@@ -5,14 +5,7 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-
 import play.api.Logger
-import database.Players
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Arbitrary._
-import scala.Some
 
 case class Player(id: Option[Long],
                   firstName: String,
@@ -119,23 +112,4 @@ object Players extends DAO{
       query.list.map(row => (row._1.toString, row._2))
   }
 
-  implicit val playerFormat = Json.format[Player]
-}
-
-trait PlayerGen {
-
-  lazy val genPlayer: Gen[Player] = for {
-    id <- arbitrary[Long]
-    firstname <- arbitrary[String]
-    lastname <- arbitrary[String]
-    email <- arbitrary[String]
-    userid <- arbitrary[Long]
-  } yield Player(
-      Some(id),
-      firstname,
-      lastname,
-      email,
-      Some(userid))
-
-  implicit lazy val arbPlayer: Arbitrary[Player] = Arbitrary(genPlayer)
 }

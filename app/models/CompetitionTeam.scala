@@ -5,11 +5,7 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-
 import play.api.Logger
-import database.CompetitionTeams
 
 case class CompetitionTeam(id: Option[Long],
                            competitionId: Long,
@@ -97,5 +93,4 @@ object CompetitionTeams extends DAO{
   //      query.list.map(row => (row._1.toString, row._2))
   //  }
 
-  implicit val competitionTeamFormat = Json.format[CompetitionTeam]
 }

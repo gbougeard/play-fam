@@ -3,6 +3,8 @@ package controllers
 import play.api.mvc._
 import models._
 
+import json.ImplicitGlobals._
+
 
 
 object Rankings extends Controller with securesocial.core.SecureSocial {

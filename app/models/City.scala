@@ -4,12 +4,6 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-
-import models.Provinces._
-
-import database.Cities
 
 case class City(id: Option[Long],
                 code: String,
@@ -124,20 +118,5 @@ object Cities extends DAO{
       q.list
 
   }
-
-  implicit val cityFormat = Json.format[City]
-
-  import Province._
-  implicit val cityWithProvinceReads: Reads[(City, Province)] = (
-    (__ \ 'city).read[City] ~
-      (__ \ 'province).read[Province]
-    ) tupled
-
-  // or using the operators inspired by Scala parser combinators for those who know them
-  implicit val cityWithProvinceWrites: Writes[(City, Province)] = (
-      (__ \ 'city).write[City] ~
-        (__ \ 'province).write[Province]
-    ) tupled
-  implicit val cityWithsProvinceFormat = Format(cityWithProvinceReads, cityWithProvinceWrites)
 
 }

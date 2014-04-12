@@ -4,7 +4,8 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models._
-import models.Places._
+
+import json.ImplicitGlobals._
 import play.api.libs.json._
 import service.{Coach, Administrator}
 import java.net.URLEncoder

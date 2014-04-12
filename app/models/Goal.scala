@@ -5,12 +5,6 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-
-import models.Players._
-import database.Goals
-import database.Players
 
 case class Goal(id: Option[Long],
                 matchId: Long,
@@ -21,6 +15,7 @@ case class Goal(id: Option[Long],
                 penalty: Boolean,
                 csc: Boolean) {
 }
+
 object Goals extends DAO{
   lazy val pageSize = 10
 
@@ -49,18 +44,5 @@ object Goals extends DAO{
     implicit session =>
       goals.where(_.id === goalId).delete
   }
-
-
-  implicit val goalFormat = Json.format[Goal]
-
-  implicit val goalCompleteReads: Reads[(Goal, Option[Player])] = (
-    (__ \ 'goal).read[Goal] ~
-      (__ \ 'striker).readNullable[Player]
-    ) tupled
-
-  implicit val goalCompleteWrites: Writes[(Goal, Option[Player])] = (
-    (__ \ 'goal).write[Goal] ~
-      (__ \ 'striker).write[Option[Player]]
-    ) tupled
 
 }

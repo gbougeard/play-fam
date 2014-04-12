@@ -7,15 +7,9 @@ import play.Logger
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-
 import org.joda.time.DateTime
 import com.github.tototoshi.slick.MySQLJodaSupport._
 
-import models.TypEvents._
-import models.EventStatuses._
-import database.Events
 
 case class Event(id: Option[Long],
                  dtEvent: DateTime,
@@ -108,49 +102,6 @@ object Events extends DAO{
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))
   }
-
-
-  //JSON
-
-  val pattern = "yyyy-MM-dd'T'HH:mm:ss.sssZ"
-  implicit val dateFormat = Format[DateTime](Reads.jodaDateReads(pattern), Writes.jodaDateWrites(pattern))
-
-  implicit val eventReads: Reads[Event] = (
-    (__ \ "id").readNullable[Long] ~
-      (__ \ "dtEvent").read[DateTime] ~
-      (__ \ "duration").read[Int] ~
-      (__ \ "name").read[String] ~
-      (__ \ "typEventId").read[Long] ~
-      (__ \ "placeId").read[Option[Long]] ~
-      (__ \ "eventStatusId").read[Long] ~
-      (__ \ "comments").read[Option[String]]
-    )(Event.apply _)
-
-  // or using the operators inspired by Scala parser combinators for those who know them
-  implicit val eventWrites: Writes[Event] = (
-    (__ \ "id").write[Option[Long]] ~
-      (__ \ "dtEvent").write[DateTime] ~
-      (__ \ "duration").write[Int] ~
-      (__ \ "name").write[String] ~
-      (__ \ "typEventId").write[Long] ~
-      (__ \ "placeId").write[Option[Long]] ~
-      (__ \ "eventStatusId").write[Long] ~
-      (__ \ "comments").write[Option[String]]
-    )(unlift(Event.unapply))
-
-  implicit val eventFormat = Format(eventReads, eventWrites)
-
-  implicit val eventCompleteReads: Reads[(Event, TypEvent, EventStatus)] = (
-    (__ \ 'event).read[Event] ~
-      (__ \ 'typevent).read[TypEvent] ~
-      (__ \ 'eventstatus).read[EventStatus]
-    ) tupled
-
-  implicit val eventCompleteWrites: Writes[(Event, TypEvent, EventStatus)] = (
-    (__ \ 'event).write[Event] ~
-      (__ \ 'typevent).write[TypEvent] ~
-      (__ \ 'eventstatus).write[EventStatus]
-    ) tupled
 
 }
 

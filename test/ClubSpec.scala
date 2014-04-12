@@ -1,10 +1,14 @@
-import models.{ClubGen, Club}
-import models.Club._
-import org.specs2.mutable._
+import models.Club
+import json.ImplicitGlobals._
 
+import play.api.libs.json._
+
+import org.scalacheck.Arbitrary._
+import org.scalacheck.{Arbitrary, Gen}
+import org.specs2.mutable._
 import org.specs2.ScalaCheck
 
-import play.api.libs.json.{JsSuccess, Json}
+
 
 /**
  * Add your spec here.
@@ -13,6 +17,7 @@ import play.api.libs.json.{JsSuccess, Json}
  */
 
 class ClubSpec extends Specification with ScalaCheck with ClubGen {
+
   "json from(to) iso" ! prop {
     (p: Club) =>
 //          println(s"p: $p")
@@ -20,4 +25,36 @@ class ClubSpec extends Specification with ScalaCheck with ClubGen {
 //          println(s"from(to): ${Json.fromJson(Json.toJson(p))}")
       Json.fromJson(Json.toJson(p)) == JsSuccess(p)
   }
+}
+
+
+trait ClubGen {
+
+  lazy val genClub: Gen[Club] = for {
+    id <- arbitrary[Long]
+    code <- arbitrary[Int]
+    name <- arbitrary[String]
+    countryId <- arbitrary[Long]
+    cityId <- arbitrary[Long]
+    colours <- arbitrary[String]
+    address <- arbitrary[String]
+    zipcode <- arbitrary[String]
+    city <- arbitrary[String]
+    orgaId <- arbitrary[Long]
+    comments <- arbitrary[String]
+  } yield Club(
+      Some(id),
+      code,
+      name,
+      Some(countryId),
+      Some(cityId),
+      Some(colours),
+      Some(address),
+      Some(zipcode),
+      Some(city),
+      Some(orgaId),
+      Some(comments)
+    )
+
+  implicit lazy val arbClub: Arbitrary[Club] = Arbitrary(genClub)
 }

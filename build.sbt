@@ -36,6 +36,7 @@ libraryDependencies ++= Seq(
   playMetrics,
   secureSocial,
   scalaCheck,
+//  specs2,
   webjars,
   wjAngular,
   wjAngularStrap,

@@ -5,11 +5,8 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
 
 import play.api.Logger
-import database.Matches
 
 case class Match(id: Option[Long],
                  fixtureId: Option[Long],
@@ -81,6 +78,5 @@ object Matches extends DAO{
       matches.where(_.id === matchId).delete
   }
 
-  implicit val matchFormat = Json.format[Match]
 
 }

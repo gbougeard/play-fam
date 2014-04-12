@@ -5,15 +5,7 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-
-import models.Matches._
-import models.Players._
-import models.Teams._
-
 import play.api.Logger
-import models.database.MatchPlayers
 
 case class MatchPlayer(matchId: Option[Long],
                        playerId: Option[Long],
@@ -58,21 +50,5 @@ object MatchPlayers extends DAO{
     implicit session =>
 //      matchPlayers.where(_.id === matchPlayerId).delete
   }
-
-  implicit val mpFormat = Json.format[MatchPlayer]
-
-  implicit val mpCompleteReads: Reads[(MatchPlayer, Match, Player, Team)] = (
-    (__ \ 'matchplayer).read[MatchPlayer] ~
-      (__ \ 'match).read[Match] ~
-      (__ \ 'player).read[Player] ~
-      (__ \ 'team).read[Team]
-    ) tupled
-
-  implicit val mpCompleteWrites: Writes[(MatchPlayer, Match, Player, Team)] = (
-    (__ \ 'matchplayer).write[MatchPlayer] ~
-      (__ \ 'match).write[Match] ~
-      (__ \ 'player).write[Player] ~
-      (__ \ 'team).write[Team]
-    ) tupled
 
 }

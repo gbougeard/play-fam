@@ -6,11 +6,6 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
-import play.api.libs.json._
-import database.Clubs
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Arbitrary._
-import scala.Some
 
 case class Club(id: Option[Long] = None,
                 code: Int,
@@ -125,38 +120,5 @@ object Clubs extends DAO {
       query.list.map(row => (row._1.toString, row._2))
   }
 
-  implicit val clubFormat = Json.format[Club]
-
-}
-
-trait ClubGen {
-
-  lazy val genClub: Gen[Club] = for {
-    id <- arbitrary[Long]
-    code <- arbitrary[Int]
-    name <- arbitrary[String]
-    countryId <- arbitrary[Long]
-    cityId <- arbitrary[Long]
-    colours <- arbitrary[String]
-    address <- arbitrary[String]
-    zipcode <- arbitrary[String]
-    city <- arbitrary[String]
-    orgaId <- arbitrary[Long]
-    comments <- arbitrary[String]
-  } yield Club(
-      Some(id),
-      code,
-      name,
-      Some(countryId),
-      Some(cityId),
-      Some(colours),
-      Some(address),
-      Some(zipcode),
-      Some(city),
-      Some(orgaId),
-      Some(comments)
-    )
-
-  implicit lazy val arbClub: Arbitrary[Club] = Arbitrary(genClub)
 }
 

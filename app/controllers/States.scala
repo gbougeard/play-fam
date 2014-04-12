@@ -1,6 +1,8 @@
 package controllers
 
 import models._
+
+import json.ImplicitGlobals._
 import service.Administrator
 
 import play.api.mvc._

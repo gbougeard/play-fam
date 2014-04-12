@@ -5,11 +5,7 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-
 import play.api.Logger
-import database.PlayerPositions
 
 case class PlayerPosition(playerId: Long,
                         positionId: Long,
@@ -101,5 +97,4 @@ object PlayerPositions extends DAO{
   //      query.list.map(row => (row._1.toString, row._2))
   //  }
 
-//  implicit val playerPositionFormat = Json.format[PlayerPosition]
 }

@@ -5,16 +5,13 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-import database.Countries
-
 
 case class Country(id: Option[Long],
                    code: String,
                    name: String,
                    upper: String,
                    lower: String)
+
 object Countries extends DAO{
   lazy val pageSize = 10
 
@@ -105,8 +102,5 @@ object Countries extends DAO{
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))
   }
-
-  //JSON
-  implicit val countryFormat = Json.format[Country]
 
 }

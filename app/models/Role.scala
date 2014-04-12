@@ -9,9 +9,8 @@ import scala.util.Try
 import play.api.cache.Cache
 
 import service.{Administrator, Permission}
+import play.api.libs.json.Json
 
-import play.api.libs.json._
-import database.Roles
 
 case class Role(userId: Long,
                 groupId: Long)
@@ -112,5 +111,4 @@ object Roles extends DAO{
   //      query.list.map(row => (row._1.toString, row._2))
   //  }
 
-  //  implicit val playerSeasonFormat = Json.format[PlayerSeason]
 }

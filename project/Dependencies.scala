@@ -12,7 +12,8 @@ object Dependencies {
   val secureSocialVersion = "2.1.2"
   val playMetricsVersion = "0.1.3"
 
-  val scalaCheckVersion = "1.11.0"
+  val scalaCheckVersion = "1.10.1"
+  val specs2Version = "2.3.11"
   val scalazVersion = "7.0.4"
 
   val webjarsVersion = "2.2.1-2"
@@ -46,6 +47,7 @@ object Dependencies {
   val playMetrics = "com.kenshoo" %% "metrics-play" % playMetricsVersion
   val secureSocial = "securesocial" %% "securesocial" % secureSocialVersion
   val scalaCheck = "org.scalacheck" %% "scalacheck" % scalaCheckVersion
+  val specs2 = "org.specs2" %% "specs2" % specs2Version % "test"
 
   val webjars = "org.webjars" % "webjars-play_2.10" % webjarsVersion
   val wjAngular = "org.webjars" % "angularjs" % wjAngularVersion

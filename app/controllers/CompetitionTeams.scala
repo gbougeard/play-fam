@@ -6,6 +6,8 @@ import play.api.data.Forms._
 
 import models._
 
+import json.ImplicitGlobals._
+
 
 
 object CompetitionTeams extends Controller with securesocial.core.SecureSocial {

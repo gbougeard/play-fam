@@ -1,10 +1,14 @@
-import models.{PlayerGen, Player}
-import models.Player._
-import org.specs2.mutable._
+import models.Player
 
+import json.ImplicitGlobals._
+
+import org.scalacheck.Arbitrary._
+import org.scalacheck.{Arbitrary, Gen}
+import org.specs2.mutable._
 import org.specs2.ScalaCheck
 
 import play.api.libs.json.{JsSuccess, Json}
+import scala.Some
 
 /**
  * Add your spec here.
@@ -22,4 +26,23 @@ class PlayerSpec extends Specification with ScalaCheck with PlayerGen {
 
       Json.fromJson(Json.toJson(p)) == JsSuccess(p)
   }
+}
+
+
+trait PlayerGen {
+
+  lazy val genPlayer: Gen[Player] = for {
+    id <- arbitrary[Long]
+    firstname <- arbitrary[String]
+    lastname <- arbitrary[String]
+    email <- arbitrary[String]
+    userid <- arbitrary[Long]
+  } yield Player(
+      Some(id),
+      firstname,
+      lastname,
+      email,
+      Some(userid))
+
+  implicit lazy val arbPlayer: Arbitrary[Player] = Arbitrary(genPlayer)
 }

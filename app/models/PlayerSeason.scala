@@ -5,11 +5,7 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-
 import play.api.Logger
-import database.PlayerSeasons
 
 case class PlayerSeason(playerId: Long,
                         seasonId: Long,
@@ -175,5 +171,4 @@ object PlayerSeasons extends DAO{
   //      query.list.map(row => (row._1.toString, row._2))
   //  }
 
-//  implicit val playerSeasonFormat = Json.format[PlayerSeason]
 }

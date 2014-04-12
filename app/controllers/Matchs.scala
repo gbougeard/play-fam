@@ -1,13 +1,14 @@
 package controllers
 
-import _root_.securesocial.core.Authorization
-import _root_.securesocial.core.Identity
+import securesocial.core.Authorization
+import securesocial.core.Identity
 
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models._
-import models.Matches._
+
+import json.ImplicitGlobals._
 import play.api.libs.json._
 
 import play.api.Logger

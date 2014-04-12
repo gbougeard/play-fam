@@ -12,6 +12,8 @@ import play.api.cache.Cache
 
 import views._
 import models._
+
+import json.ImplicitGlobals._
 import service.{Administrator, Permission, RequestUtil}
 import play.api.libs.json.Json
 import java.util.concurrent.Future

@@ -5,8 +5,8 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models._
-import models.Formations._
-import models.FormationItems._
+
+import json.ImplicitGlobals._
 import play.api.libs.json.{JsError, Json}
 import service.{Administrator, Coach}
 

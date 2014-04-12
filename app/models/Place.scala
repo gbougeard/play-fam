@@ -5,12 +5,6 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-import database.Places
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Arbitrary._
-import scala.Some
 
 case class Place(id: Option[Long] = None,
                  name: String,
@@ -157,34 +151,4 @@ object Places extends DAO{
       query.list.map(row => (row._1.toString, row._2))
   }
 
-  implicit val placeFormat = Json.format[Place]
-
-
 }
-
-trait PlaceGen {
-
-  lazy val genPlace: Gen[Place] = for {
-    id <- arbitrary[Long]
-    name <- arbitrary[String]
-    address <- arbitrary[String]
-    city <- arbitrary[String]
-    zipcode <- arbitrary[String]
-    latitude <- arbitrary[Float]
-    longitude <- arbitrary[Float]
-    comments <- arbitrary[String]
-    typFff <- arbitrary[String]
-  } yield Place(
-      Some(id),
-      name,
-      address,
-      city,
-      zipcode,
-      Some(latitude),
-      Some(longitude),
-      Some(comments),
-      Some(typFff))
-
-  implicit lazy val arbPlace: Arbitrary[Place] = Arbitrary(genPlace)
-}
-

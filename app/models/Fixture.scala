@@ -5,11 +5,6 @@ import play.api.Play.current
 import play.api.db.slick.DB
 import play.api.db.slick.Config.driver.simple._
 
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-
-import java.util.Date
-import database.Fixtures
 import org.joda.time.DateTime
 import com.github.tototoshi.slick.MySQLJodaSupport._
 
@@ -95,7 +90,5 @@ object Fixtures extends DAO{
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))
   }
-
-  implicit val fixtureFormat = Json.format[Fixture]
 
 }

@@ -5,11 +5,6 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-
-import models.States._
-import database.Provinces
 
 case class Province(id: Option[Long],
                     code: String,
@@ -98,20 +93,5 @@ object Provinces extends DAO{
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))
   }
-
-  //JSON
-  implicit val provinceFormat = Json.format[Province]
-
-  implicit val provinceWithStateReads: Reads[(Province, State)] = (
-    (__ \ 'province).read[Province] ~
-      (__ \ 'state).read[State]
-    ) tupled
-
-  // or using the operators inspired by Scala parser combinators for those who know them
-  implicit val provinceWithStateWrites: Writes[(Province, State)] = (
-    (__ \ 'province).write[Province] ~
-      (__ \ 'state).write[State]
-    ) tupled
-  implicit val provinceWithStateFormat = Format(provinceWithStateReads, provinceWithStateWrites)
 
 }

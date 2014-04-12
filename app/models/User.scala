@@ -8,7 +8,6 @@ import play.api.db.slick.DB
 import securesocial.core._
 
 import play.Logger
-import database.Users
 
 case class User(pid: Option[Long],
                 userId: String,

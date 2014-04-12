@@ -4,6 +4,7 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models._
+import json.ImplicitGlobals._
 import service.{Administrator, Coach}
 
 object Users extends Controller with securesocial.core.SecureSocial {

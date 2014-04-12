@@ -5,9 +5,6 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-import database.Seasons
 
 case class Season(id: Option[Long],
                   currentSeason: Boolean,
@@ -79,8 +76,6 @@ object Seasons extends DAO{
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))
   }
-
-  implicit val seasonFormat = Json.format[Season]
 
 }
 

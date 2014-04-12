@@ -6,12 +6,11 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models._
-import models.Events._
-import models.Teams._
-import models.EventTeams._
-import service.{Administrator, Coach}
 
 import play.api.libs.json._
+import json.ImplicitGlobals._
+import service.{Administrator, Coach}
+
 import scala.util.{Failure, Success}
 
 
@@ -80,7 +79,12 @@ object Events extends Controller with securesocial.core.SecureSocial {
               }
               models.Events.findById(id).map {
                 case (event, typEvent, eventStatus) =>
-                  Ok(views.html.events.edit("Edit Event", idClub, Json.toJson(EventWithTeams(event, teams)).toString(), Json.toJson(models.Teams.findByClub(1)).toString()))
+                  play.Logger.debug(s"event $event")
+                  play.Logger.debug(s"teams $teams")
+                  val e = Json.toJson(EventWithTeams(event, teams))
+                  val t = Json.toJson(models.Teams.findByClub(1))
+                  play.Logger.debug(s"eventWithteam $e teams $e")
+                  Ok(views.html.events.edit("Edit Event", idClub, e.toString(), t.toString()))
                 case _ =>
                   NotFound
 

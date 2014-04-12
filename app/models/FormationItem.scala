@@ -5,8 +5,6 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 import play.api.Logger
-import play.api.libs.json._
-import database.FormationItems
 
 case class FormationItem(id: Option[Long],
                          coord: Int,
@@ -62,8 +60,6 @@ object FormationItems extends DAO{
         item => insert(new FormationItem(None, item.coord, item.numItem, formationId))
     }
   }
-
-  implicit val formationItemFormat = Json.format[FormationItem]
 
 }
 

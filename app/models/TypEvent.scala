@@ -5,9 +5,6 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
-import play.api.libs.json._
-
-import database.TypEvents
 
 case class TypEvent(id: Option[Long],
                           code: String,
@@ -91,8 +88,6 @@ object TypEvents extends DAO{
         ).sortBy(_._2)
       query.list.map(row => (row._1.toString, row._2))
   }
-
-  implicit val typEventFormat = Json.format[TypEvent]
 
 }
 

@@ -1,10 +1,13 @@
-import models.{PlaceGen, Place}
-import models.Place._
-import org.specs2.mutable._
+import models.Place
+import json.ImplicitGlobals._
 
+import org.scalacheck.Arbitrary._
+import org.scalacheck.{Arbitrary, Gen}
+import org.specs2.mutable._
 import org.specs2.ScalaCheck
 
 import play.api.libs.json.{JsSuccess, Json}
+import scala.Some
 
 /**
  * Add your spec here.
@@ -22,3 +25,31 @@ class PlaceSpec extends Specification with ScalaCheck with PlaceGen {
       Json.fromJson(Json.toJson(p)) == JsSuccess(p)
   }
 }
+
+
+trait PlaceGen {
+
+  lazy val genPlace: Gen[Place] = for {
+    id <- arbitrary[Long]
+    name <- arbitrary[String]
+    address <- arbitrary[String]
+    city <- arbitrary[String]
+    zipcode <- arbitrary[String]
+    latitude <- arbitrary[Float]
+    longitude <- arbitrary[Float]
+    comments <- arbitrary[String]
+    typFff <- arbitrary[String]
+  } yield Place(
+      Some(id),
+      name,
+      address,
+      city,
+      zipcode,
+      Some(latitude),
+      Some(longitude),
+      Some(comments),
+      Some(typFff))
+
+  implicit lazy val arbPlace: Arbitrary[Place] = Arbitrary(genPlace)
+}
+
