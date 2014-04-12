@@ -3,3 +3,5 @@ menu.countries=Countries
 menu.states=States
 menu.provinces=Provinces
 menu.cities=Cities
+menu.places=Places
+menu.map=Map

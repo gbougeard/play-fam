@@ -3,3 +3,5 @@ menu.countries=Pays
 menu.states=Département
 menu.provinces=Régions
 menu.cities=Villes
+menu.places=Lieux
+menu.map=Carte
