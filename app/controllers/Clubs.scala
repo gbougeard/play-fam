@@ -3,13 +3,15 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models._
-import json.ImplicitGlobals._
-import service.Coach
-import service.Administrator
 import play.api.libs.json._
 
+import models._
+import models.PageJson._
+import models.ClubJson._
+import models.PlaceClubJson._
 
+import service.Coach
+import service.Administrator
 
 object Clubs extends Controller with securesocial.core.SecureSocial {
 

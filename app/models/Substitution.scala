@@ -14,6 +14,35 @@ case class Substitution(id: Option[Long],
                         playerOutId: Long,
                         time: Option[Long])
 
+object SubstitutionJson {
+
+  import play.api.libs.json._
+  import play.api.libs.functional.syntax._
+
+  implicit val subJsonFormat = Json.format[Substitution]
+
+  import models.PlayerJson._
+  import models.TeamJson._
+  import json.ImplicitGlobals._
+
+  implicit val subCompleteReads: Reads[(Substitution, Match, Team, Player, Player)] = (
+    (__ \ 'substitution).read[Substitution] ~
+      (__ \ 'match).read[Match] ~
+      (__ \ 'team).read[Team] ~
+      (__ \ 'playerin).read[Player] ~
+      (__ \ 'playerout).read[Player]
+    ) tupled
+
+  implicit val subCompleteWrites: Writes[(Substitution, Match, Team, Player, Player)] = (
+    (__ \ 'substitution).write[Substitution] ~
+      (__ \ 'match).write[Match] ~
+      (__ \ 'team).write[Team] ~
+      (__ \ 'playerin).write[Player] ~
+      (__ \ 'playerout).write[Player]
+    ) tupled
+
+}
+
 object Substitutions extends DAO{
   lazy val pageSize = 10
 

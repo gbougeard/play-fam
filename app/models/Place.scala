@@ -17,6 +17,10 @@ case class Place(id: Option[Long] = None,
                  typFff: Option[String] = None
                   )
 
+object PlaceJson {
+  import play.api.libs.json.Json
+  implicit val placeJsonFormat = Json.format[Place]
+}
 
 object Places extends DAO{
 

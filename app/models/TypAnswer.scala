@@ -10,6 +10,10 @@ case class TypAnswer(id: Option[Long],
                      name: String,
                      group: String)
 
+object TypAnswerJson {
+  import play.api.libs.json.Json
+  implicit val taJsonFormat = Json.format[TypAnswer]
+}
 
 object TypAnswers extends DAO{
   lazy val pageSize = 10

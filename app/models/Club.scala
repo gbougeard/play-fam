@@ -20,6 +20,11 @@ case class Club(id: Option[Long] = None,
                 comments: Option[String] = None
                  )
 
+object ClubJson {
+  import play.api.libs.json.Json
+  implicit val clubJsonFormat = Json.format[Club]
+}
+
 object Clubs extends DAO {
 
   lazy val pageSize = 10

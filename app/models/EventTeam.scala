@@ -11,6 +11,29 @@ import scala.util.Try
 case class EventTeam(eventId: Long,
                      teamId: Long)
 
+object EventTeamJson {
+
+  import play.api.libs.json._
+  import play.api.libs.functional.syntax._
+
+  implicit val etJsonFormat = Json.format[EventTeam]
+
+  import models.EventJson._
+  import models.TeamJson._
+
+  implicit val eventTeamCompleteReads: Reads[(EventTeam, Event, Team)] = (
+    (__ \ 'eventteam).read[EventTeam] ~
+      (__ \ 'event).read[Event] ~
+      (__ \ 'team).read[Team]
+    ) tupled
+
+  implicit val eventTeamCompleteWrites: Writes[(EventTeam, Event, Team)] = (
+    (__ \ 'eventteam).write[EventTeam] ~
+      (__ \ 'event).write[Event] ~
+      (__ \ 'team).write[Team]
+    ) tupled
+}
+
 object EventTeams extends DAO{
   def findByEvent(id: Long): Seq[(EventTeam, Event, Team)] =  DB.withSession {
     implicit session =>

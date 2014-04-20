@@ -10,6 +10,12 @@ case class EventStatus(id: Option[Long],
                           code: String,
                           name: String)
 
+
+object EventStatusJson {
+  import play.api.libs.json._
+  implicit val esJsonFormat = Json.format[EventStatus]
+}
+
 object EventStatuses extends DAO{
   lazy val pageSize = 10
 

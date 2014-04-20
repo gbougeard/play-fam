@@ -1,5 +1,5 @@
 import models.Place
-import json.ImplicitGlobals._
+import models.PlaceJson._
 
 import org.scalacheck.Arbitrary._
 import org.scalacheck.{Arbitrary, Gen}

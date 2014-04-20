@@ -11,6 +11,41 @@ case class Answer(id: Option[Long],
                   typAnswerId: Long,
                   comments: Option[String])
 
+object AnswerJson {
+
+  import play.api.libs.json._
+
+  implicit val answerJsonFormat = Json.format[Answer]
+
+
+}
+
+object AnswerExtJson {
+
+  import play.api.libs.json._
+  import play.api.libs.functional.syntax._
+  import models.EventJson._
+  import models.PlayerJson._
+  import models.TypAnswerJson._
+
+  implicit val answerJsonFormat = Json.format[Answer]
+
+  implicit val answerCompleteReads: Reads[(Answer, Event, Player, TypAnswer)] = (
+    (__ \ 'answer).read[Answer] ~
+      (__ \ 'event).read[Event] ~
+      (__ \ 'player).read[Player] ~
+      (__ \ 'typAnswer).read[TypAnswer]
+    ) tupled
+
+  implicit val answerCompleteWrites: Writes[(Answer, Event, Player, TypAnswer)] = (
+    (__ \ 'answer).write[Answer] ~
+      (__ \ 'event).write[Event] ~
+      (__ \ 'player).write[Player] ~
+      (__ \ 'typAnswer).write[TypAnswer]
+    ) tupled
+
+}
+
 object Answers extends DAO{
   lazy val pageSize = 10
 

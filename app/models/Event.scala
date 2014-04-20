@@ -20,6 +20,29 @@ case class Event(id: Option[Long],
                  eventStatusId: Long,
                  comments: Option[String])
 
+object EventJson {
+  import play.api.libs.json._
+  import play.api.libs.functional.syntax._
+  implicit val eventJsonFormat = Json.format[Event]
+
+  import models.EventStatusJson._
+  import models.TypEventJson._
+
+  implicit val eventCompleteReads: Reads[(Event, TypEvent, EventStatus)] = (
+    (__ \ 'event).read[Event] ~
+      (__ \ 'typevent).read[TypEvent] ~
+      (__ \ 'eventstatus).read[EventStatus]
+    ) tupled
+
+  implicit val eventCompleteWrites: Writes[(Event, TypEvent, EventStatus)] = (
+    (__ \ 'event).write[Event] ~
+      (__ \ 'typevent).write[TypEvent] ~
+      (__ \ 'eventstatus).write[EventStatus]
+    ) tupled
+
+
+}
+
 object Events extends DAO{
   lazy val pageSize = 10
 

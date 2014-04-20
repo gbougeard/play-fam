@@ -15,6 +15,32 @@ case class Card(id: Option[Long],
                         typCardId: Long,
                         time: Option[Long])
 
+object CardJson {
+  import play.api.libs.json._
+  import play.api.libs.functional.syntax._
+  implicit val cardJsonFormat = Json.format[Card]
+
+  import models.TeamJson._
+  import models.PlayerJson._
+  import json.ImplicitGlobals._
+
+  implicit val cardCompleteReads: Reads[(Card, Match, Team, Player, TypCard)] = (
+    (__ \ 'card).read[Card] ~
+      (__ \ 'match).read[Match] ~
+      (__ \ 'team).read[Team] ~
+      (__ \ 'player).read[Player] ~
+      (__ \ 'typcard).read[TypCard]
+    ) tupled
+
+  implicit val cardCompleteWrites: Writes[(Card, Match, Team, Player, TypCard)] = (
+    (__ \ 'card).write[Card] ~
+      (__ \ 'match).write[Match] ~
+      (__ \ 'team).write[Team] ~
+      (__ \ 'player).write[Player] ~
+      (__ \ 'typcard).write[TypCard]
+    ) tupled
+}
+
 object Cards extends DAO{
 
   lazy val pageSize = 10

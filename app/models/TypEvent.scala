@@ -11,6 +11,12 @@ case class TypEvent(id: Option[Long],
                           name: String)
 
 
+object TypEventJson {
+  import play.api.libs.json._
+  implicit val teJsonFormat = Json.format[TypEvent]
+}
+
+
 object TypEvents extends DAO{
   lazy val pageSize = 10
 

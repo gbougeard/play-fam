@@ -11,6 +11,29 @@ import scala.util.Try
 case class PlaceClub(placeId: Long,
                      clubId: Long)
 
+object PlaceClubJson {
+
+  import play.api.libs.json._
+  import play.api.libs.functional.syntax._
+
+  implicit val pcJsonFormat = Json.format[PlaceClub]
+
+  import models.PlaceJson._
+  import models.ClubJson._
+
+  implicit val pcCompleteReads: Reads[(PlaceClub, Place, Club)] = (
+    (__ \ 'placeclub).read[PlaceClub] ~
+      (__ \ 'place).read[Place] ~
+      (__ \ 'club).read[Club]
+    ) tupled
+
+  implicit val pcCompleteWrites: Writes[(PlaceClub, Place, Club)] = (
+    (__ \ 'placeclub).write[PlaceClub] ~
+      (__ \ 'place).write[Place] ~
+      (__ \ 'club).write[Club]
+    ) tupled
+}
+
 object PlaceClubs extends DAO{
 
   lazy val pageSize = 10

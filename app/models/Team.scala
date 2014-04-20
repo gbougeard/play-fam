@@ -12,6 +12,11 @@ case class Team(id: Option[Long],
                 clubId: Long) {
 }
 
+object TeamJson {
+  import play.api.libs.json.Json
+  implicit val teamJsonFormat = Json.format[Team]
+}
+
 object Teams extends DAO{
   lazy val pageSize = 10
 

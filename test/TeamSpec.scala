@@ -1,6 +1,6 @@
 import models.Team
+import models.TeamJson._
 
-import json.ImplicitGlobals._
 
 import org.scalacheck.Arbitrary._
 import org.scalacheck.{Arbitrary, Gen}

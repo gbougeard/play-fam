@@ -17,6 +17,11 @@ case class Player(id: Option[Long],
   }
 }
 
+object PlayerJson {
+  import play.api.libs.json.Json
+  implicit val playerJsonFormat = Json.format[Player]
+}
+
 object Players extends DAO{
   lazy val pageSize = 10
 

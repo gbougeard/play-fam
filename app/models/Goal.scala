@@ -13,7 +13,26 @@ case class Goal(id: Option[Long],
                 assistId: Option[Long],
                 goalTime: Option[Long],
                 penalty: Boolean,
-                csc: Boolean) {
+                csc: Boolean)
+
+object GoalJson {
+
+  import play.api.libs.json._
+  import play.api.libs.functional.syntax._
+
+  implicit val goalJsonFormat = Json.format[Goal]
+
+  import models.PlayerJson._
+
+  implicit val goalCompleteReads: Reads[(Goal, Option[Player])] = (
+    (__ \ 'goal).read[Goal] ~
+      (__ \ 'striker).readNullable[Player]
+    ) tupled
+
+  implicit val goalCompleteWrites: Writes[(Goal, Option[Player])] = (
+    (__ \ 'goal).write[Goal] ~
+      (__ \ 'striker).write[Option[Player]]
+    ) tupled
 }
 
 object Goals extends DAO{

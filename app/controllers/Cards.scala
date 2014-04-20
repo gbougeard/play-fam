@@ -2,8 +2,7 @@ package controllers
 
 import play.api.mvc._
 import models._
-
-import json.ImplicitGlobals._
+import models.CardJson._
 
 import play.api.libs.json._
 

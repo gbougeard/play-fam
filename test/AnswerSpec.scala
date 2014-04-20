@@ -1,14 +1,12 @@
 import models.Answer
 
-import json.ImplicitGlobals._
-import play.api.libs.json.{JsSuccess, Json}
+import play.api.libs.json._
+import models.AnswerJson._
 
-import org.scalacheck.Arbitrary._
-import org.scalacheck.{Arbitrary, Gen}
 import org.specs2.mutable._
 import org.specs2.ScalaCheck
-
-import scala.Some
+import org.scalacheck.Arbitrary._
+import org.scalacheck.{Arbitrary, Gen}
 
 /**
  * Add your spec here.
@@ -17,11 +15,13 @@ import scala.Some
  */
 
 class AnswerSpec extends Specification with ScalaCheck with AnswerGen {
+
   "json from(to) iso" ! prop {
     (p: Answer) =>
 //          println(s"p: $p")
+//    val js = Json.toJson(p)
 //          println(s"toJson: ${Json.toJson(p)}")
-//          println(s"from(to): ${Json.fromJson(Json.toJson(p))}")
+//          println(s"from(to): ${Json.fromJson(js)}")
       Json.fromJson(Json.toJson(p)) == JsSuccess(p)
   }
 }
@@ -43,4 +43,5 @@ trait AnswerGen {
     )
 
   implicit lazy val arbAnswer: Arbitrary[Answer] = Arbitrary(genAnswer)
+
 }

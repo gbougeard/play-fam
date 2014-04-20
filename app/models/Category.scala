@@ -10,6 +10,16 @@ case class Category(id: Option[Long],
                           name: String)
 
 
+object CategoryJson {
+
+  import play.api.libs.json._
+  import play.api.libs.functional.syntax._
+
+  implicit val categoryJsonFormat = Json.format[Category]
+
+}
+
+
 object Categories extends DAO{
   
   lazy val pageSize = 10

@@ -1,5 +1,5 @@
 import models.Club
-import json.ImplicitGlobals._
+import models.ClubJson._
 
 import play.api.libs.json._
 

@@ -4,6 +4,8 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models._
+import models.PageJson._
+import models.PlaceJson._
 
 import json.ImplicitGlobals._
 import play.api.libs.json._

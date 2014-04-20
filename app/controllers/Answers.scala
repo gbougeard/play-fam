@@ -6,7 +6,8 @@ import play.api.data._
 import play.api.data.Forms._
 import models._
 
-import json.ImplicitGlobals._
+import models.AnswerJson._
+import models.AnswerExtJson._
 
 import play.api.libs.json._
 import play.api.Logger

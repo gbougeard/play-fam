@@ -1,6 +1,6 @@
 import models.Player
+import models.PlayerJson._
 
-import json.ImplicitGlobals._
 
 import org.scalacheck.Arbitrary._
 import org.scalacheck.{Arbitrary, Gen}
@@ -17,7 +17,6 @@ import scala.Some
  */
 
 class PlayerSpec extends Specification with ScalaCheck with PlayerGen {
-
   "json from(to) iso" ! prop {
     (p: Player) =>
 //      println(s"p: $p")
