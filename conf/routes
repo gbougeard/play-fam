@@ -215,7 +215,6 @@ POST        /formations/items                                                   
 #POST    /answers/new                         controllers.Answers.save
 #GET     /answers/$id<[0-9]+>                 controllers.Answers.view(id : Long)
 GET         /events/$id<[0-9]+>/answers                                                            controllers.Answers.byEvent(id : Long)
-GET         /events/$id<[0-9]+>/answers.json                                                       controllers.Answers.jsonByEvent(id : Long)
 # Rankings
 GET         /rankings                                                                              controllers.Rankings.index
 GET         /rankings/$id<[0-9]+>                                                                  controllers.Rankings.list(id:Long, s:Int ?= 1)
@@ -231,7 +230,7 @@ GET         /goals/match/$idmatch<[0-9]+>/team/$idteam<[0-9]+>.json             
 # Substitutions
 GET         /substitutions/match/$idmatch<[0-9]+>/team/$idteam<[0-9]+>.json                        controllers.Substitutions.jsonByMatchAndTeam(idmatch:Long, idteam:Long)
 # Cards
-GET         /cards/match/$idmatch<[0-9]+>/team/$idteam<[0-9]+>.json                                controllers.Cards.jsonByMatchAndTeam(idmatch:Long, idteam:Long)
+GET         /cards/match/$idmatch<[0-9]+>/team/$idteam<[0-9]+>.json                                controllers.Cards.byMatchAndTeam(idmatch:Long, idteam:Long)
 # MatchPlayers
 GET         /players/match/$idmatch<[0-9]+>/team/$idteam<[0-9]+>.json                              controllers.MatchPlayers.jsonByMatchAndTeam(idmatch:Long, idteam:Long)
 # MatchTeam

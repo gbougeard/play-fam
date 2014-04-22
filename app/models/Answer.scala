@@ -5,11 +5,11 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
-case class Answer(id: Option[Long],
+case class Answer(id: Option[Long] = None,
                   eventId: Long,
                   playerId: Long,
                   typAnswerId: Long,
-                  comments: Option[String])
+                  comments: Option[String] = None)
 
 object AnswerJson {
 

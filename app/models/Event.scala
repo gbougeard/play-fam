@@ -6,9 +6,10 @@ import play.Logger
 
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
+import play.api.db.slick.joda.PlayJodaSupport
+import play.api.db.slick.joda.PlayJodaSupport._
 
 import org.joda.time.DateTime
-import com.github.tototoshi.slick.MySQLJodaSupport._
 
 
 case class Event(id: Option[Long],

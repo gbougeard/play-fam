@@ -97,7 +97,7 @@ services.factory('answerService', function ($http) {
     };
 
     var getAnswers = function (id) {
-        return $http.get(jsRoutes.controllers.Answers.jsonByEvent(idEvent).url, ajax);
+        return $http.get(jsRoutes.controllers.Answers.byEvent(idEvent).url, ajax);
     };
 
     return {
@@ -107,28 +107,34 @@ services.factory('answerService', function ($http) {
 
 services.factory('matchService', function ($http) {
 
+    var ajax = {
+        "headers": [
+            {'Content-Type': 'application/json'}
+        ]
+    };
+
     var getMatch = function (id) {
-        return $http.get(jsRoutes.controllers.Matchs.jsonById(id).url);
+        return $http.get(jsRoutes.controllers.Matchs.jsonById(id).url, ajax);
     };
 
     var getMatchTeams = function (idMatch, idTeam) {
-        return $http.get(jsRoutes.controllers.MatchTeams.jsonByMatchAndTeam(idMatch, idTeam).url);
+        return $http.get(jsRoutes.controllers.MatchTeams.jsonByMatchAndTeam(idMatch, idTeam).url, ajax);
     };
 
     var getMatchPlayers = function (idMatch, idTeam) {
-        return $http.get(jsRoutes.controllers.MatchPlayers.jsonByMatchAndTeam(idMatch, idTeam).url);
+        return $http.get(jsRoutes.controllers.MatchPlayers.jsonByMatchAndTeam(idMatch, idTeam).url, ajax);
     };
 
     var getGoals = function (idMatch, idTeam) {
-        return $http.get(jsRoutes.controllers.Goals.jsonByMatchAndTeam(idMatch, idTeam).url);
+        return $http.get(jsRoutes.controllers.Goals.jsonByMatchAndTeam(idMatch, idTeam).url, ajax);
     };
 
     var getCards = function (idMatch, idTeam) {
-        return $http.get(jsRoutes.controllers.Cards.jsonByMatchAndTeam(idMatch, idTeam).url);
+        return $http.get(jsRoutes.controllers.Cards.byMatchAndTeam(idMatch, idTeam).url, ajax);
     };
 
     var getSubs = function (idMatch, idTeam) {
-        return $http.get(jsRoutes.controllers.Substitutions.jsonByMatchAndTeam(idMatch, idTeam).url);
+        return $http.get(jsRoutes.controllers.Substitutions.jsonByMatchAndTeam(idMatch, idTeam).url, ajax);
     };
 
     return {

@@ -28,8 +28,6 @@ object Cities extends Controller  with securesocial.core.SecureSocial {
       "upper" -> nonEmptyText,
       "lower" -> nonEmptyText,
       "provinceId" -> longNumber
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
     )
       (City.apply)(City.unapply)
   )

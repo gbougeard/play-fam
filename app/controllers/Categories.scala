@@ -3,9 +3,12 @@ package controllers
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models._
+import play.api.libs.json.Json
 
-import json.ImplicitGlobals._
+import models._
+import models.PageJson._
+import models.CategoryJson._
+
 import service.{Administrator, Coach}
 
 
@@ -24,8 +27,6 @@ object Categories extends Controller with securesocial.core.SecureSocial {
       "id" -> optional(longNumber),
       "code" -> nonEmptyText,
       "name" -> nonEmptyText
-      //      "discontinued" -> optional(date("yyyy-MM-dd")),
-      //      "company" -> optional(longNumber)
     )
       (Category.apply)(Category.unapply)
   )
@@ -38,23 +39,32 @@ object Categories extends Controller with securesocial.core.SecureSocial {
     Home
   }
 
-  //  def list = Action {
-  //    val categories = Category.findAll
-  //    val html = views.html.categories("Liste des categories", categories)
-  //    Ok(html)
-  //  }
+  def listAll = Action {
+    implicit request =>
+      render {
+        case Accepts.Json() =>
+          val categories = models.Categories.findAll
+          Ok(Json.toJson(categories))
+      }
+  }
 
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
       val categories = models.Categories.findPage(page, orderBy)
-      val html = views.html.categories.list("List categories", categories, orderBy)
-      Ok(html)
+      render {
+        case Accepts.Html() => Ok(views.html.categories.list("List categories", categories, orderBy))
+        case Accepts.Json() => Ok(Json.toJson(categories))
+      }
   }
 
   def view(id: Long) = Action {
     implicit request =>
       models.Categories.findById(id).map {
-        category => Ok(views.html.categories.view("View Category", category))
+        category =>
+          render {
+            case Accepts.Html() => Ok(views.html.categories.view("View Category", category))
+            case Accepts.Json() => Ok(Json.toJson(category))
+          }
       } getOrElse NotFound
   }
 
@@ -70,7 +80,7 @@ object Categories extends Controller with securesocial.core.SecureSocial {
    *
    * @param id Id of the computer to edit
    */
-  def update(id: Long) = SecuredAction(WithRoles(Set(Coach))){
+  def update(id: Long) = SecuredAction(WithRoles(Set(Coach))) {
     implicit request =>
       categoryForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.categories.edit("Edit Category - errors", id, formWithErrors)),

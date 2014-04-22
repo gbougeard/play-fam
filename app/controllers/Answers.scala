@@ -66,22 +66,19 @@ object Answers extends Controller with securesocial.core.SecureSocial {
         event =>
           val answers = models.Answers.findByEvent(id)
           play.Logger.debug(s"User ${request.user}")
-          val player = session.get("userId").map {
-            uid =>
-              models.Players.findByUserId(uid.toLong)
-          } getOrElse None
-          Ok(views.html.answers.view("View Answers", event, answers, request.user, player))
-      } getOrElse NotFound
-  }
 
-  def jsonByEvent(id: Long) = Action {
-    implicit request =>
-      models.Events.findById(id).map {
-        event =>
-          val answers = models.Answers.findByEvent(id)
-          Ok(Json.toJson(answers))
-      } getOrElse NotFound
+          render {
+            case Accepts.Html() => {
+              val player = session.get("userId").map {
+                uid =>
+                  models.Players.findByUserId(uid.toLong)
+              } getOrElse None
+              Ok(views.html.answers.view("View Answers", event, answers, request.user, player))
+            }
+            case Accepts.Json() => Ok(Json.toJson(answers))
+          }
 
+      } getOrElse NotFound
   }
 
   //  def view(id: Long) = Action {

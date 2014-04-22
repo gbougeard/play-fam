@@ -4,7 +4,8 @@ import play.api.db.slick.Config.driver.simple._
 import securesocial.core.providers.Token
 import org.joda.time.DateTime
 import scala.slick.lifted.Tag
-import com.github.tototoshi.slick.MySQLJodaSupport._
+import play.api.db.slick.joda.PlayJodaSupport
+import play.api.db.slick.joda.PlayJodaSupport._
 /**
  * Created with IntelliJ IDEA.
  * User: gbougeard

@@ -6,7 +6,7 @@ object Dependencies {
   val akkaVersion = "2.2.2"
   val logbackVersion = "1.1.1"
   val slf4jVersion = "1.7.6"
-  val mysqlVersion = "5.1.29"
+  val mysqlVersion = "5.1.30"
   val jodaMapperVersion = "1.0.1"
   val playSlickVersion = "0.6.0.1"
   val secureSocialVersion = "2.1.2"

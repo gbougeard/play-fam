@@ -4,7 +4,8 @@ import play.api.db.slick.Config.driver.simple._
 import scala.slick.lifted.Tag
 import models.Fixture
 import org.joda.time.DateTime
-import com.github.tototoshi.slick.MySQLJodaSupport._
+import play.api.db.slick.joda.PlayJodaSupport
+import play.api.db.slick.joda.PlayJodaSupport._
 /**
  * Created with IntelliJ IDEA.
  * User: gbougeard

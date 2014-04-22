@@ -5,7 +5,8 @@ import play.api.db.slick.Config.driver.simple._
 
 import securesocial.core._
 import securesocial.core.providers.Token
-import com.github.tototoshi.slick.MySQLJodaSupport._
+import play.api.db.slick.joda.PlayJodaSupport
+import play.api.db.slick.joda.PlayJodaSupport._
 import org.joda.time.DateTime
 
 import play.api.Play.current
@@ -14,7 +15,6 @@ import play.api.libs.json.Json
 
 import play.Logger
 
-import models.database.{Users, Tokens}
 /*
   Slick Table for securesocial.core.providers.Token
   case class Token(
