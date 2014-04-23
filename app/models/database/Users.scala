@@ -45,11 +45,11 @@ import scala.slick.lifted.Tag
 
   def providerId = column[String]("providerId")
 
-  def email = column[String]("email")
+  def email = column[Option[String]]("email")
 
-  def firstName = column[String]("first_name")
+  def firstName = column[Option[String]]("first_name")
 
-  def lastName = column[String]("last_name")
+  def lastName = column[Option[String]]("last_name")
 
   def authMethod = column[AuthenticationMethod]("authMethod")
 
@@ -68,22 +68,22 @@ import scala.slick.lifted.Tag
   //  }
 
   //    def passwordInfo = {
-  def hasher = column[String]("hasher")
+  def hasher = column[Option[String]]("hasher")
 
-  def password = column[String]("password")
+  def password = column[Option[String]]("password")
 
-  def salt = column[String]("salt")
+  def salt = column[Option[String]]("salt")
 
-  def currentClubId = column[Long]("id_current_club")
+  def currentClubId = column[Option[Long]]("id_current_club")
 
-  def avatarUrl = column[String]("avatarUrl")
+  def avatarUrl = column[Option[String]]("avatarUrl")
 
   //      def apply = hasher , password , salt.? <> (PasswordInfo.apply _, PasswordInfo.unapply _)
   //    }
 
   // Projections
   //  def * =  pid.? , userId , providerId , email.? , firstName , lastName ,  authMethod , passwordInfo.? <>(User.apply _, User.unapply _)
-  def * = (pid.? , userId , providerId , email.? , firstName.? , lastName.? , authMethod , hasher.? , password.? , salt.? , currentClubId.? , avatarUrl.? )<>(User.tupled, User.unapply _)
+  def * = (pid.? , userId , providerId , email , firstName , lastName , authMethod , hasher , password , salt , currentClubId , avatarUrl )<>(User.tupled, User.unapply _)
 
 
 

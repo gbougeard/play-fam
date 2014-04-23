@@ -12,75 +12,75 @@ import play.Logger
 case class User(pid: Option[Long],
                 userId: String,
                 providerId: String,
-                email: Option[String],
-                firstName: Option[String],
-                lastName: Option[String],
+                email: Option[String] = None,
+                firstName: Option[String] = None,
+                lastName: Option[String] = None,
                 authMethod: AuthenticationMethod,
-                hasher: Option[String],
-                password: Option[String],
-                salt: Option[String],
-                currentClubId: Option[Long],
-                avatarUrl: Option[String]
+                hasher: Option[String] = None,
+                password: Option[String] = None,
+                salt: Option[String] = None,
+                currentClubId: Option[Long] = None,
+                avatarUrl: Option[String] = None
                  ) {
   def id: IdentityId = IdentityId(userId, providerId)
 
   def fullName: String = s"${firstName.getOrElse("")} ${lastName.getOrElse("")}"
 
-//  def avatarUrl: Option[String] = email.map {
-//    e => s"http://www.gravatar.com/avatar/${Codecs.md5(e.getBytes)}.png"
-//  }
+  //  def avatarUrl: Option[String] = email.map {
+  //    e => s"http://www.gravatar.com/avatar/${Codecs.md5(e.getBytes)}.png"
+  //  }
 }
 
 
-object Users extends DAO{
+object Users extends DAO {
   // Operations
-  def save(user: User): User =  DB.withSession {
+  def save(user: User): User = DB.withSession {
     implicit session =>
       Logger.info("save %s".format(user))
-//      val u = findByUserId(user.id).match{
-//         x => Query(users).where(_.pid is user.pid).update(user)
-//          user
-//      } getOrElse(
-//
-//        )
-//      u
+      //      val u = findByUserId(user.id).match{
+      //         x => Query(users).where(_.pid is user.pid).update(user)
+      //          user
+      //      } getOrElse(
+      //
+      //        )
+      //      u
 
-//      Logger.info("found user %s".format(u))
+      //      Logger.info("found user %s".format(u))
       val x = findByUserId(user.id)
       Logger.info("found %s".format(x))
       findByUserId(user.id) match {
-        case None  => {
+        case None => {
           Logger.info("create user")
           val pid = users.insert(user)
           user.copy(pid = Some(pid))
         }
         case Some(u) => {
           Logger.info("update user %s".format(user.email))
-          users.where(_.email is u.email).update(user.copy(pid=u.pid, currentClubId=u.currentClubId))
+          users.where(_.email is u.email).update(user.copy(pid = u.pid, currentClubId = u.currentClubId))
           u
         }
       }
   }
 
-  def delete(pid: Long) =  DB.withSession {
+  def delete(pid: Long) = DB.withSession {
     implicit session =>
-   
+
       Logger.info("delete %s".format(pid))
       users.where(_.pid is pid).mutate(_.delete)
   }
 
   // Queries
-  def all: List[User] =  DB.withSession {
+  def all: List[User] = DB.withSession {
     implicit session =>
-   
+
       Logger.info("all")
       val q = for (user <- users) yield user
       q.list
   }
 
-  def findById(pid: Long): Option[User] =  DB.withSession {
+  def findById(pid: Long): Option[User] = DB.withSession {
     implicit session =>
-   
+
       Logger.info("findById %s".format(pid))
       users.where(_.pid === pid).firstOption
   }
@@ -91,9 +91,9 @@ object Users extends DAO{
   //      byEmail(email).firstOption
   //  }
 
-  def findByUserId(u: IdentityId): Option[User] =  DB.withSession {
+  def findByUserId(u: IdentityId): Option[User] = DB.withSession {
     implicit session =>
-   
+
       Logger.info("findByUserId %s".format(u))
       val q = for {
         user <- users
@@ -103,31 +103,30 @@ object Users extends DAO{
       q.firstOption
   }
 
-  def findByEmailAndProvider(e: String, p: String): Option[User] =  DB.withSession {
+  def findByEmailAndProvider(e: String, p: String): Option[User] = DB.withSession {
     implicit session =>
-   
+
       Logger.info("findByEmailAndProvider %s %s".format(e, p))
       val q = for {
         user <- users
-        if (user.email is e)  && (user.providerId is p)
+        if (user.email is e) && (user.providerId is p)
       } yield user
 
       q.firstOption
   }
 
-  def count: Int =  DB.withSession {
-    implicit session =>
-    {
+  def count: Int = DB.withSession {
+    implicit session => {
       (users.length).run
     }
   }
 
   def findPage(page: Int = 0, orderField: Int): Page[User] = DB.withSession {
     implicit session =>
-    val pageSize = 10
-    val offset = pageSize * page
+      val pageSize = 10
+      val offset = pageSize * page
 
-     {
+    {
       {
 
         val q = (
