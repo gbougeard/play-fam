@@ -1,25 +1,20 @@
-import models.Club
-import models.database.{Users, Teams}
+import models.database.Users
 import play.api.db.slick.DB
 import play.api.db.slick.Config.driver.simple._
 import play.api.test._
 import org.specs2.matcher.ShouldMatchers
 import scala.Some
-import play.api.test.FakeApplication
 import securesocial.core.AuthenticationMethod
 
 
 /**
  * test the kitty cat database
  */
-class PlayerDBSpec extends PlaySpecification with ShouldMatchers with PlayerGen {
+class PlayerDBSpec extends FamSpecification with ShouldMatchers with PlayerGen {
 
-  def app = FakeApplication(additionalConfiguration = inMemoryDatabase())
-
-  def minimalApp = FakeApplication(additionalConfiguration = inMemoryDatabase("default"), withoutPlugins = Seq("service.SlickUserService"))
 
   "PlayerDB" should {
-    "insert data without User associated and retrieve them" in new WithApplication(app) {
+    "insert data without User associated and retrieve them" in new WithApplication(fakeAppMemDBMinimal) {
 
       DB.withSession {
         implicit s: Session =>
@@ -30,7 +25,7 @@ class PlayerDBSpec extends PlaySpecification with ShouldMatchers with PlayerGen 
       }
     }
 
-    "insert data with User associated and retrieve them" in new WithApplication(app) {
+    "insert data with User associated and retrieve them" in new WithApplication(fakeAppMemDBMinimal) {
 
       DB.withSession {
         implicit s: Session =>

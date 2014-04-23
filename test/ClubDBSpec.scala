@@ -11,14 +11,11 @@ import play.api.test.FakeApplication
 /**
  * test the kitty cat database
  */
-class ClubDBSpec extends PlaySpecification with ShouldMatchers {
+class ClubDBSpec extends FamSpecification with ShouldMatchers {
 
-  def app = FakeApplication(additionalConfiguration = inMemoryDatabase())
-
-  def minimalApp = FakeApplication(additionalConfiguration = inMemoryDatabase("default"), withoutPlugins = Seq("service.SlickUserService"))
 
   "ClubDB" should {
-    "insert data and retrieve them" in new WithApplication(app) {
+    "insert data and retrieve them" in new WithApplication(fakeAppMemDBMinimal) {
 
       //create an instance of the table
       val clubs = TableQuery[Clubs]

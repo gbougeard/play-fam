@@ -5,9 +5,8 @@ import play.api.libs.json._
 
 import org.scalacheck.Arbitrary._
 import org.scalacheck.{Arbitrary, Gen}
-import org.specs2.mutable._
 import org.specs2.ScalaCheck
-
+import play.api.test.PlaySpecification
 
 
 /**
@@ -16,7 +15,7 @@ import org.specs2.ScalaCheck
  * For more information, consult the wiki.
  */
 
-class ClubSpec extends Specification with ScalaCheck with ClubGen {
+class ClubSpec extends PlaySpecification with ScalaCheck with ClubGen {
 
   "json from(to) iso" ! prop {
     (p: Club) =>

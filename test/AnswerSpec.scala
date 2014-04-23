@@ -3,10 +3,10 @@ import models.Answer
 import play.api.libs.json._
 import models.AnswerJson._
 
-import org.specs2.mutable._
 import org.specs2.ScalaCheck
 import org.scalacheck.Arbitrary._
 import org.scalacheck.{Arbitrary, Gen}
+import play.api.test.PlaySpecification
 
 /**
  * Add your spec here.
@@ -14,7 +14,7 @@ import org.scalacheck.{Arbitrary, Gen}
  * For more information, consult the wiki.
  */
 
-class AnswerSpec extends Specification with ScalaCheck with AnswerGen {
+class AnswerSpec extends PlaySpecification with ScalaCheck with AnswerGen {
 
   "json from(to) iso" ! prop {
     (p: Answer) =>

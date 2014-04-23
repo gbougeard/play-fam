@@ -5,19 +5,15 @@ import models._
 import models.database._
 import org.specs2.matcher.ShouldMatchers
 import scala.Some
-import play.api.test.FakeApplication
 
 /**
  * test the kitty cat database
  */
-class TeamDBSpec extends PlaySpecification with ShouldMatchers {
+class TeamDBSpec extends FamSpecification with ShouldMatchers {
 
-  def app = FakeApplication(additionalConfiguration = inMemoryDatabase())
-
-  def minimalApp = FakeApplication(additionalConfiguration = inMemoryDatabase("default"), withoutPlugins = Seq("service.SlickUserService"))
 
   "TeamDB" should {
-    "insert data and retrieve them" in new WithApplication(app) {
+    "insert data and retrieve them" in new WithApplication(fakeAppMemDBMinimal) {
 
       //create an instance of the table
       val clubs = TableQuery[Clubs]

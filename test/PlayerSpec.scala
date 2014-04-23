@@ -4,10 +4,10 @@ import models.PlayerJson._
 
 import org.scalacheck.Arbitrary._
 import org.scalacheck.{Arbitrary, Gen}
-import org.specs2.mutable._
 import org.specs2.ScalaCheck
 
 import play.api.libs.json.{JsSuccess, Json}
+import play.api.test.PlaySpecification
 import scala.Some
 
 /**
@@ -16,7 +16,7 @@ import scala.Some
  * For more information, consult the wiki.
  */
 
-class PlayerSpec extends Specification with ScalaCheck with PlayerGen {
+class PlayerSpec extends PlaySpecification with ScalaCheck with PlayerGen {
   "json from(to) iso" ! prop {
     (p: Player) =>
 //      println(s"p: $p")

@@ -1,8 +1,5 @@
-package test
 
-import org.specs2.mutable._
 
-import play.api.test.PlaySpecification
 import play.api.db.slick.DB
 import play.api.db.slick.Config.driver.simple._
 import play.api.test._
@@ -20,19 +17,15 @@ import models.database.TypAnswers
 import models.database.Answers
 import models.Event
 import models.database.Events
-import play.api.test.FakeApplication
 
 /**
  * test the kitty cat database
  */
-class AnswerDBSpec extends PlaySpecification with ShouldMatchers {
+class AnswerDBSpec extends FamSpecification with ShouldMatchers {
 
-  def app = FakeApplication(additionalConfiguration = inMemoryDatabase())
-
-  def minimalApp = FakeApplication(additionalConfiguration = inMemoryDatabase("default"), withoutPlugins = Seq("service.SlickUserService"))
 
   "AnswerDB" should {
-    "insert data and retrieve them" in new WithApplication(app) {
+    "insert data and retrieve them" in new WithApplication(fakeAppMemDBMinimal) {
 
       //create an instance of the table
       val answers = TableQuery[Answers]
