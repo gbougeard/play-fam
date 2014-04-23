@@ -9,7 +9,7 @@ object Dependencies {
   val mysqlVersion = "5.1.30"
   val jodaMapperVersion = "1.0.1"
   val playSlickVersion = "0.6.0.1"
-  val secureSocialVersion = "2.1.2"
+  val secureSocialVersion = "2.1.3"
   val playMetricsVersion = "0.1.3"
 
   val scalaCheckVersion = "1.10.1"
@@ -46,7 +46,7 @@ object Dependencies {
   val jodaMapper = "com.github.tototoshi" %% "slick-joda-mapper" % jodaMapperVersion
   val playSlick = "com.typesafe.play" %% "play-slick" % playSlickVersion
   val playMetrics = "com.kenshoo" %% "metrics-play" % playMetricsVersion
-  val secureSocial = "securesocial" %% "securesocial" % secureSocialVersion
+  val secureSocial = "ws.securesocial" % "securesocial_2.10" % secureSocialVersion
   val scalaCheck = "org.scalacheck" %% "scalacheck" % scalaCheckVersion
   val specs2 = "org.specs2" %% "specs2" % specs2Version % "test"
 

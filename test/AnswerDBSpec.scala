@@ -2,6 +2,8 @@ package test
 
 import org.specs2.mutable._
 
+import play.api.test.{FakeRequest, WithApplication, FakeApplication, PlaySpecification}
+
 import play.api.db.slick.DB
 import play.api.db.slick.Config.driver.simple._
 import play.api.test._
@@ -12,10 +14,15 @@ import models.database.Answers
 /**
  * test the kitty cat database
  */
-class AnswerDBSpec extends Specification {
+class AnswerDBSpec extends PlaySpecification {
+
+//  def app = FakeApplication(additionalPlugins = Seq("securesocial.testkit.AlwaysValidIdentityProvider"),
+//    additionalConfiguration = inMemoryDatabase())
+  def app = FakeApplication(//additionalPlugins = Seq("securesocial.testkit.AlwaysValidIdentityProvider"),
+    additionalConfiguration = inMemoryDatabase())
 
   "AnswerDB" should {
-    "work as expected" in new WithApplication(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+    "work as expected" in new WithApplication(app) {
 
       //create an instance of the table
       val answers = TableQuery[Answers]
@@ -31,7 +38,7 @@ class AnswerDBSpec extends Specification {
       }
     }
 
-    "select the correct testing db settings by default" in new WithApplication(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+    "select the correct testing db settings by default" in new WithApplication(app) {
       DB.withSession {
         implicit s: Session =>
           s.conn.getMetaData.getURL must startWith("jdbc:h2:mem:play-test")
