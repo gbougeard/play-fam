@@ -21,6 +21,7 @@ scalaVersion := "2.10.2"
 
 resolvers += Resolver.url("sbt-plugin-releases", new URL("http://repo.scala-sbt.org/scalasbt/sbt-plugin-releases/"))(Resolver.ivyStylePatterns)
 
+resolvers += "bintray" at "http://dl.bintray.com/jeantil/maven"
 
 libraryDependencies ++= Seq(
   play.Project.jdbc,

@@ -29,13 +29,13 @@ import scala.slick.lifted.Tag
 
   def typEventId = column[Long]("id_typ_event")
 
-  def placeId = column[Long]("id_place")
+  def placeId = column[Option[Long]]("id_place")
 
   def eventStatusId = column[Long]("id_eventStatus")
 
-  def comments = column[String]("comments")
+  def comments = column[Option[String]]("comments")
 
-  def * = (id.? , dtEvent , duration , name , typEventId , placeId.? , eventStatusId , comments.? )<>(Event.tupled, Event.unapply _)
+  def * = (id.? , dtEvent , duration , name , typEventId , placeId , eventStatusId , comments )<>(Event.tupled, Event.unapply _)
 
 
   // A reified foreign key relation that can be navigated to create a join

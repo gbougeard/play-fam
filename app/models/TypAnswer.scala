@@ -5,7 +5,7 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
-case class TypAnswer(id: Option[Long],
+case class TypAnswer(id: Option[Long] = None,
                      code: String,
                      name: String,
                      group: String)

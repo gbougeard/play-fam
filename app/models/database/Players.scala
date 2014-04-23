@@ -22,9 +22,9 @@ import scala.slick.lifted.Tag
 
   def email = column[String]("email")
 
-  def userId = column[Long]("id_user")
+  def userId = column[Option[Long]]("id_user")
 
-  def * = (id.? , firstName , lastName , email , userId.? )<>(Player.tupled, Player.unapply _)
+  def * = (id.? , firstName , lastName , email , userId )<>(Player.tupled, Player.unapply _)
 
   // A reified foreign key relation that can be navigated to create a join
   def user = foreignKey("USER_FK", userId, TableQuery[Users])(_.pid)

@@ -12,14 +12,14 @@ import play.api.db.slick.joda.PlayJodaSupport._
 import org.joda.time.DateTime
 
 
-case class Event(id: Option[Long],
+case class Event(id: Option[Long] = None,
                  dtEvent: DateTime,
                  duration: Int,
                  name: String,
                  typEventId: Long,
-                 placeId: Option[Long],
+                 placeId: Option[Long] = None,
                  eventStatusId: Long,
-                 comments: Option[String])
+                 comments: Option[String] = None)
 
 object EventJson {
   import play.api.libs.json._

@@ -6,7 +6,7 @@ import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
 
-case class TypEvent(id: Option[Long],
+case class TypEvent(id: Option[Long] = None,
                           code: String,
                           name: String)
 

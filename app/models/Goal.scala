@@ -38,12 +38,12 @@ object GoalJson {
 object Goals extends DAO{
   lazy val pageSize = 10
 
-  def findByMatchAndTeam(idMatch: Long, idTeam: Long): Seq[(Goal, Option[Player])] =  DB.withSession {
+  def findByMatchAndTeam(idMatch: Long, idTeam: Long): Seq[(Goal, Option[Player])] = DB.withSession {
     implicit session =>
       val query = for {(g, s) <- goals leftJoin players on (_.strikerId === _.id)
                        if g.matchId === idMatch
                        if g.teamId === idTeam
-      } yield (g, s.id.?, s.firstName.?, s.lastName.?, s.email.?, s.userId.?)
+      } yield (g, s.id.?, s.firstName.?, s.lastName.?, s.email.?, s.userId)
 
       query.list.map(row => (row._1, row._2.map(value => Player(Option(value), row._3.get, row._4.get, row._5.get, row._6)))).sortBy(_._1.goalTime)
   }

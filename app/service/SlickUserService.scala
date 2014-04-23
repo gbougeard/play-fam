@@ -67,4 +67,21 @@ class SlickUserService(application: Application) extends UserServicePlugin(appli
     models.Tokens.deleteExpiredTokens()
   }
 
+  def link(current: Identity, to: Identity) {
+    val currentId = current.identityId.userId + "-" + current.identityId.providerId
+    val toId = to.identityId.userId + "-" + to.identityId.providerId
+    Logger.info(s"linking $currentId to $toId")
+
+//    val maybeUser = models.Users.find {
+//      case (key, value) if value.identities.exists(_.identityId == current.identityId ) => true
+//    }
+//
+//    maybeUser.foreach { u =>
+//      if ( !u._2.identities.exists(_.identityId == to.identityId)) {
+//        // do the link only if it's not linked already
+//        users = users + (u._1 -> User(u._1, to :: u._2.identities  ))
+//      }
+//    }
+  }
+
 }

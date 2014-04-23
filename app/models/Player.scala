@@ -7,11 +7,11 @@ import play.api.db.slick.DB
 
 import play.api.Logger
 
-case class Player(id: Option[Long],
+case class Player(id: Option[Long] = None,
                   firstName: String,
                   lastName: String,
                   email: String,
-                  userId:Option[Long]){
+                  userId:Option[Long] = None){
   def displayName : String = {
     firstName + " " + lastName
   }
