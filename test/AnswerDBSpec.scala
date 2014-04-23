@@ -22,13 +22,10 @@ import models.Event
 import models.database.Events
 import play.api.test.FakeApplication
 
-//import securesocial.testkit.WithLoggedUser
-
 /**
  * test the kitty cat database
  */
 class AnswerDBSpec extends PlaySpecification with ShouldMatchers {
-  //  import WithLoggedUser._
 
   def app = FakeApplication(additionalConfiguration = inMemoryDatabase())
 
@@ -90,18 +87,6 @@ class AnswerDBSpec extends PlaySpecification with ShouldMatchers {
       }
     }
 
-//    "select the correct testing db settings by default" in new WithApplication(minimalApp) {
-//      DB.withSession {
-//        implicit s: Session =>
-//          s.conn.getMetaData.getURL must startWith("jdbc:h2:mem:play-test")
-//      }
-//    }
-
-    //    "use the default db settings when no other possible options are available" in new WithApplication {
-    //      DB.withSession { implicit s: Session =>
-    //        s.conn.getMetaData.getURL must equalTo("jdbc:h2:mem:play")
-    //      }
-    //    }
   }
 
 }
