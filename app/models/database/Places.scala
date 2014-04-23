@@ -24,15 +24,15 @@ import scala.slick.lifted.Tag
 
   def zipcode = column[String]("zipcode")
 
-  def latitude = column[Float]("latitude")
+  def latitude = column[Option[Float]]("latitude")
 
-  def longitude = column[Float]("longitude")
+  def longitude = column[Option[Float]]("longitude")
 
-  def comments = column[String]("comments")
+  def comments = column[Option[String]]("comments")
 
-  def typFff = column[String]("typ_fff")
+  def typFff = column[Option[String]]("typ_fff")
 
-  def * = (id.? , name , address , city , zipcode , latitude.? , longitude.? , comments.? , typFff.? )<>(Place.tupled, Place.unapply _)
+  def * = (id.? , name , address , city , zipcode , latitude , longitude , comments , typFff )<>(Place.tupled, Place.unapply _)
 
 
 

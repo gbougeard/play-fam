@@ -7,13 +7,10 @@ import org.specs2.matcher.ShouldMatchers
 import scala.Some
 import play.api.test.FakeApplication
 
-//import securesocial.testkit.WithLoggedUser
-
 /**
  * test the kitty cat database
  */
 class TeamDBSpec extends PlaySpecification with ShouldMatchers {
-  //  import WithLoggedUser._
 
   def app = FakeApplication(additionalConfiguration = inMemoryDatabase())
 
