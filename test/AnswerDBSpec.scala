@@ -2,7 +2,7 @@ package test
 
 import org.specs2.mutable._
 
-import play.api.test.{FakeRequest, WithApplication, FakeApplication, PlaySpecification}
+import play.api.test.PlaySpecification
 import play.api.db.slick.DB
 import play.api.db.slick.Config.driver.simple._
 import play.api.test._
@@ -27,19 +27,15 @@ import play.api.test.FakeApplication
 /**
  * test the kitty cat database
  */
-class AnswerDBSpec extends PlaySpecification with ShouldMatchers{
-//  import WithLoggedUser._
+class AnswerDBSpec extends PlaySpecification with ShouldMatchers {
+  //  import WithLoggedUser._
 
-//  def app = FakeApplication(additionalPlugins = Seq("securesocial.testkit.AlwaysValidIdentityProvider"),
-//    additionalConfiguration = inMemoryDatabase())
-  def app = FakeApplication(//additionalPlugins = Seq("securesocial.testkit.AlwaysValidIdentityProvider"),
-    additionalConfiguration = inMemoryDatabase())
-//  def minimalApp = FakeApplication(withoutPlugins=excludedPlugins,additionalPlugins = includedPlugins, additionalConfiguration = inMemoryDatabase())
-  def minimalApp = FakeApplication( //additionalPlugins = Seq("securesocial.testkit.AlwaysValidIdentityProvider"),
-    additionalConfiguration = inMemoryDatabase("default"), withoutPlugins = Seq("service.SlickUserService"))
+  def app = FakeApplication(additionalConfiguration = inMemoryDatabase())
+
+  def minimalApp = FakeApplication(additionalConfiguration = inMemoryDatabase("default"), withoutPlugins = Seq("service.SlickUserService"))
 
   "AnswerDB" should {
-    "work as expected" in new WithApplication(app) {
+    "insert data and retrieve them" in new WithApplication(app) {
 
       //create an instance of the table
       val answers = TableQuery[Answers]
@@ -66,22 +62,22 @@ class AnswerDBSpec extends PlaySpecification with ShouldMatchers{
 
 
           val now = new DateTime()
-        val tomorrow = now.plusDays(1)
+          val tomorrow = now.plusDays(1)
           val testEvents = Seq(
-          Event(dtEvent = now, name = "nom1", duration=60, typEventId = 1L, eventStatusId = 1L),
-          Event(dtEvent = tomorrow , name = "nom2", duration=90, typEventId = 1L, eventStatusId = 1L)
+            Event(dtEvent = now, name = "nom1", duration = 60, typEventId = 1L, eventStatusId = 1L),
+            Event(dtEvent = tomorrow, name = "nom2", duration = 90, typEventId = 1L, eventStatusId = 1L)
           )
           events.insertAll(testEvents: _*)
 
           val testTypAnswers = Seq(
-          TypAnswer(code = "code1", name = "nom1", group="Y"),
-          TypAnswer(code = "code2", name = "nom2", group="N")
+            TypAnswer(code = "code1", name = "nom1", group = "Y"),
+            TypAnswer(code = "code2", name = "nom2", group = "N")
           )
           typAnswers.insertAll(testTypAnswers: _*)
 
           val testPlayers = Seq(
-            Player(firstName = "prenom1", lastName = "nom1", email="email1"),
-            Player(firstName = "prenom2", lastName = "nom2", email="email2")
+            Player(firstName = "prenom1", lastName = "nom1", email = "email1"),
+            Player(firstName = "prenom2", lastName = "nom2", email = "email2")
           )
           players.insertAll(testPlayers: _*)
 
@@ -94,12 +90,12 @@ class AnswerDBSpec extends PlaySpecification with ShouldMatchers{
       }
     }
 
-    "select the correct testing db settings by default" in new WithApplication(minimalApp) {
-      DB.withSession {
-        implicit s: Session =>
-          s.conn.getMetaData.getURL must startWith("jdbc:h2:mem:play-test")
-      }
-    }
+//    "select the correct testing db settings by default" in new WithApplication(minimalApp) {
+//      DB.withSession {
+//        implicit s: Session =>
+//          s.conn.getMetaData.getURL must startWith("jdbc:h2:mem:play-test")
+//      }
+//    }
 
     //    "use the default db settings when no other possible options are available" in new WithApplication {
     //      DB.withSession { implicit s: Session =>

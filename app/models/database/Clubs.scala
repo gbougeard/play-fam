@@ -21,23 +21,23 @@ import scala.slick.lifted.Tag
 
   def code = column[Int]("code_fff")
 
-  def countryId = column[Long]("id_country")
+  def countryId = column[Option[Long]]("id_country")
 
-  def cityId = column[Long]("id_city")
+  def cityId = column[Option[Long]]("id_city")
 
-  def colours = column[String]("colours")
+  def colours = column[Option[String]]("colours")
 
-  def address = column[String]("address")
+  def address = column[Option[String]]("address")
 
-  def zipcode = column[String]("zipcode")
+  def zipcode = column[Option[String]]("zipcode")
 
-  def city = column[String]("city")
+  def city = column[Option[String]]("city")
 
-  def organization = column[Long]("id_organization")
+  def organization = column[Option[Long]]("id_organization")
 
-  def comments = column[String]("comments")
+  def comments = column[Option[String]]("comments")
 
-  def * = (id.? , code , name , countryId.? , cityId.? , colours.? , address.? , zipcode.? , city.? , organization.? , comments.? )<>(Club.tupled, Club.unapply _)
+  def * = (id.? , code , name , countryId , cityId , colours , address , zipcode , city , organization , comments )<>(Club.tupled, Club.unapply _)
 
 
 }
