@@ -59,13 +59,13 @@ import scala.slick.lifted.Tag
   def * = (playerId , seasonId , teamId.? , clubId , cap_att.? , cap_def.? , cap_phy.? , cap_pui.? , cap_tec.? , cap_vit.? , height.? , weight.? , statAvgAssistPerMatch.? , statAvgGoalPerMatch.? , statAvgNote.? , statNbAssist.? , statNbGoal.? , statNbMatch.? , statNbSubstitue.? , statNbWorkout.? , statTimePlayed.? )<>(PlayerSeason.tupled, PlayerSeason.unapply _)
 
   // A reified foreign key relation that can be navigated to create a join
-  def player = foreignKey("PLAYER_FK", playerId, TableQuery[Players])(_.id)
+  def player = foreignKey("PS_PLAYER_FK", playerId, TableQuery[Players])(_.id)
 
-  def season = foreignKey("SEASON_FK", seasonId, TableQuery[Seasons])(_.id)
+  def season = foreignKey("PS_SEASON_FK", seasonId, TableQuery[Seasons])(_.id)
 
-  def team = foreignKey("TEAM_FK", teamId, TableQuery[Teams])(_.id)
+  def team = foreignKey("PS_TEAM_FK", teamId, TableQuery[Teams])(_.id)
 
-  def club = foreignKey("CLUB_FK", clubId, TableQuery[Clubs])(_.id)
+  def club = foreignKey("PS_CLUB_FK", clubId, TableQuery[Clubs])(_.id)
 
 
 }

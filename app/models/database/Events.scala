@@ -41,7 +41,7 @@ import scala.slick.lifted.Tag
   // A reified foreign key relation that can be navigated to create a join
   def typEvent = foreignKey("TYP_EVENT_FK", typEventId, TableQuery[TypEvents])(_.id)
 
-  def place = foreignKey("PLACE_FK", placeId, TableQuery[Places])(_.id)
+  def place = foreignKey("EVENT_PLACE_FK", placeId, TableQuery[Places])(_.id)
 
   def eventStatus = foreignKey("EVENT_STATUS_FK", eventStatusId, TableQuery[EventStatuses])(_.id)
 

@@ -29,13 +29,13 @@ import scala.slick.lifted.Tag
   def * = (id.? , matchId , teamId , playerInId , playerOutId , time.? )<>(Substitution.tupled, Substitution.unapply _)
 
   // A reified foreign key relation that can be navigated to create a join
-  def matche = foreignKey("MATCH_FK", matchId, TableQuery[Matches])(_.id)
+  def matche = foreignKey("SUB_MATCH_FK", matchId, TableQuery[Matches])(_.id)
 
   def playerIn = foreignKey("PLAYER_IN_FK", playerInId, TableQuery[Players])(_.id)
 
   def playerOut = foreignKey("PLAYER_OUT_FK", playerOutId, TableQuery[Players])(_.id)
 
-  def team = foreignKey("TEAM_FK", teamId, TableQuery[Teams])(_.id)
+  def team = foreignKey("SUB_TEAM_FK", teamId, TableQuery[Teams])(_.id)
 
 
 }

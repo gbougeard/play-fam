@@ -21,9 +21,9 @@ import scala.slick.lifted.Tag
   def * = (eventId , categoryId )<>(EventCategory.tupled, EventCategory.unapply _)
 
   // A reified foreign key relation that can be navigated to create a join
-  def category = foreignKey("TEAM_FK", categoryId, TableQuery[Categories])(_.id)
+  def category = foreignKey("EC_TEAM_FK", categoryId, TableQuery[Categories])(_.id)
 
-  def event = foreignKey("EVENT_FK", eventId, TableQuery[Events])(_.id)
+  def event = foreignKey("EC_EVENT_FK", eventId, TableQuery[Events])(_.id)
 
 
 }

@@ -25,9 +25,9 @@ import scala.slick.lifted.Tag
 
 
   // A reified foreign key relation that can be navigated to create a join
-  def competition = foreignKey("COMPETITION_FK", competitionId, TableQuery[SeasonCompetitions])(_.id)
+  def competition = foreignKey("CT_COMPETITION_FK", competitionId, TableQuery[SeasonCompetitions])(_.id)
 
-  def team = foreignKey("TEAM_FK", teamId, TableQuery[Teams])(_.id)
+  def team = foreignKey("CT_TEAM_FK", teamId, TableQuery[Teams])(_.id)
 
 
 }

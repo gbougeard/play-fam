@@ -28,11 +28,11 @@ import scala.slick.lifted.Tag
 
 
   // A reified foreign key relation that can be navigated to create a join
-  def category = foreignKey("CATEGORY_FK", categoryId, TableQuery[Categories])(_.id)
+  def category = foreignKey("SC_CATEGORY_FK", categoryId, TableQuery[Categories])(_.id)
 
   def scale = foreignKey("SCALE_FK", scaleId, TableQuery[Scales])(_.id)
 
-  def season = foreignKey("SEASON_FK", seasonId, TableQuery[Seasons])(_.id)
+  def season = foreignKey("SC_SEASON_FK", seasonId, TableQuery[Seasons])(_.id)
 
   def typCompetition = foreignKey("TYP_COMPETITION_FK", typCompetitionId, TableQuery[TypCompetitions])(_.id)
 

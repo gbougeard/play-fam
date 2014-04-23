@@ -27,6 +27,6 @@ import scala.slick.lifted.Tag
   def * = (id.? , code , name , isChampionship , typMatchId)<>(TypCompetition.tupled, TypCompetition.unapply _)
 
   // A reified foreign key relation that can be navigated to create a join
-  def typMatch = foreignKey("TYP_MATCH_FK", typMatchId, TableQuery[TypMatches])(_.id)
+  def typMatch = foreignKey("TC_TYP_MATCH_FK", typMatchId, TableQuery[TypMatches])(_.id)
 
 }

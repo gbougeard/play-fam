@@ -28,11 +28,11 @@ import models.Answer
 
 
   // A reified foreign key relation that can be navigated to create a join
-  def event = foreignKey("EVENT_FK", eventId, TableQuery[Events])(_.id)
+  def event = foreignKey("A_EVENT_FK", eventId, TableQuery[Events])(_.id)
 
-  def player = foreignKey("PLAYER_FK", playerId, TableQuery[Players])(_.id)
+  def player = foreignKey("A_PLAYER_FK", playerId, TableQuery[Players])(_.id)
 
-  def typAnswer = foreignKey("TYP_ANSWER_FK", typAnswerId, TableQuery[TypAnswers])(_.id)
+  def typAnswer = foreignKey("A_TYP_ANSWER_FK", typAnswerId, TableQuery[TypAnswers])(_.id)
 
 
 }

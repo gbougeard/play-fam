@@ -35,9 +35,9 @@ import scala.slick.lifted.Tag
 
 
   // A reified foreign key relation that can be navigated to create a join
-  def matche = foreignKey("MATCH_FK", matchId, TableQuery[Matches])(_.id)
+  def matche = foreignKey("G_MATCH_FK", matchId, TableQuery[Matches])(_.id)
 
-  def team = foreignKey("TEAM_FK", teamId, TableQuery[Teams])(_.id)
+  def team = foreignKey("G_TEAM_FK", teamId, TableQuery[Teams])(_.id)
 
   def striker = foreignKey("STRIKER_FK", strikerId, TableQuery[Players])(_.id)
 

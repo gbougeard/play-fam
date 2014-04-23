@@ -23,9 +23,9 @@ import scala.slick.lifted.Tag
   def * = (playerId , positionId , numOrder )<>(PlayerPosition.tupled, PlayerPosition.unapply _)
 
   // A reified foreign key relation that can be navigated to create a join
-  def player = foreignKey("PLAYER_FK", playerId, TableQuery[Players])(_.id)
+  def player = foreignKey("PP_PLAYER_FK", playerId, TableQuery[Players])(_.id)
 
-  def position = foreignKey("SEASON_FK", positionId, TableQuery[Positions])(_.id)
+  def position = foreignKey("PP_SEASON_FK", positionId, TableQuery[Positions])(_.id)
 
 
 }
