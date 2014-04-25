@@ -1,3 +1,4 @@
+import generators.AnswerGen
 import models.Answer
 
 import play.api.libs.json._
@@ -26,22 +27,3 @@ class AnswerSpec extends PlaySpecification with ScalaCheck with AnswerGen {
   }
 }
 
-trait AnswerGen {
-
-  lazy val genAnswer: Gen[Answer] = for {
-    id <- arbitrary[Long]
-    eventId <- arbitrary[Long]
-    playerId <- arbitrary[Long]
-    typAnswerId <- arbitrary[Long]
-    comments <- arbitrary[String]
-  } yield Answer(
-      Some(id),
-      eventId,
-      playerId,
-      typAnswerId,
-      Some(comments)
-    )
-
-  implicit lazy val arbAnswer: Arbitrary[Answer] = Arbitrary(genAnswer)
-
-}

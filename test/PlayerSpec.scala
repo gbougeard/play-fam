@@ -1,3 +1,4 @@
+import generators.PlayerGen
 import models.Player
 import models.PlayerJson._
 
@@ -28,20 +29,3 @@ class PlayerSpec extends PlaySpecification with ScalaCheck with PlayerGen {
 }
 
 
-trait PlayerGen {
-
-  lazy val genPlayer: Gen[Player] = for {
-    id <- arbitrary[Long]
-    firstname <- arbitrary[String]
-    lastname <- arbitrary[String]
-    email <- arbitrary[String]
-    userid <- arbitrary[Long]
-  } yield Player(
-      Some(id),
-      firstname,
-      lastname,
-      email,
-      Some(userid))
-
-  implicit lazy val arbPlayer: Arbitrary[Player] = Arbitrary(genPlayer)
-}

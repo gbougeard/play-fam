@@ -1,3 +1,4 @@
+import generators.PlaceGen
 import play.api.db.slick.DB
 import play.api.db.slick.Config.driver.simple._
 import play.api.test._

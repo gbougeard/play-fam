@@ -1,3 +1,4 @@
+import generators.PlayerGen
 import models.database.Users
 import play.api.db.slick.DB
 import play.api.db.slick.Config.driver.simple._

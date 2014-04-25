@@ -1,3 +1,4 @@
+import generators.PlaceGen
 import models.Place
 import models.PlaceJson._
 
@@ -27,29 +28,5 @@ class PlaceSpec extends PlaySpecification with ScalaCheck with PlaceGen {
 }
 
 
-trait PlaceGen {
 
-  lazy val genPlace: Gen[Place] = for {
-    id <- arbitrary[Long]
-    name <- arbitrary[String]
-    address <- arbitrary[String]
-    city <- arbitrary[String]
-    zipcode <- arbitrary[String]
-    latitude <- arbitrary[Float]
-    longitude <- arbitrary[Float]
-    comments <- arbitrary[String]
-    typFff <- arbitrary[String]
-  } yield Place(
-      Some(id),
-      name,
-      address,
-      city,
-      zipcode,
-      Some(latitude),
-      Some(longitude),
-      Some(comments),
-      Some(typFff))
-
-  implicit lazy val arbPlace: Arbitrary[Place] = Arbitrary(genPlace)
-}
 

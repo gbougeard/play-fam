@@ -1,3 +1,4 @@
+import generators.TeamGen
 import models.Team
 import models.TeamJson._
 
@@ -27,19 +28,4 @@ class TeamSpec extends PlaySpecification with ScalaCheck with TeamGen {
 }
 
 
-trait TeamGen {
 
-  lazy val genTeam: Gen[Team] = for {
-    id <- arbitrary[Long]
-    code <- arbitrary[String]
-    name <- arbitrary[String]
-    clubId <- arbitrary[Long]
-  } yield Team(
-      Some(id),
-      code,
-      name,
-      clubId
-    )
-
-  implicit lazy val arbTeam: Arbitrary[Team] = Arbitrary(genTeam)
-}
