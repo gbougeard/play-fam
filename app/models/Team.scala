@@ -5,6 +5,9 @@ import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
+
 
 case class Team(id: Option[Long] = None,
                 code: String,
@@ -13,8 +16,22 @@ case class Team(id: Option[Long] = None,
 }
 
 object TeamJson {
-  import play.api.libs.json.Json
   implicit val teamJsonFormat = Json.format[Team]
+}
+object TeamJsonExt {
+
+  import models.ClubJson._
+  import models.TeamJson._
+
+  implicit val teamCompleteReads: Reads[(Team, Club)] = (
+    (__ \ 'team).read[Team] ~
+      (__ \ 'club).read[Club]
+    ) tupled
+
+  implicit val teamCompleteWrites: Writes[(Team, Club)] = (
+    (__ \ 'team).write[Team] ~
+      (__ \ 'club).write[Club]
+    ) tupled
 }
 
 object Teams extends DAO{

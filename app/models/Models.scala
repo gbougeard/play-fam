@@ -1,7 +1,5 @@
 package models
 
-import scala.slick.lifted.TableQuery
-import models.database._
 
 /**
  * Helper for pagination.
@@ -22,6 +20,10 @@ object PageJson {
       (__ \ 'total).write[Long]
     )(unlift(Page.unapply[A]))
 }
+
+
+import scala.slick.lifted.TableQuery
+import models.database._
 
 private[models] trait DAO {
   val answers = TableQuery[Answers]

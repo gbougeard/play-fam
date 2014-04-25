@@ -1,15 +1,10 @@
-import generators.TeamGen
+import generators.{ClubGen,TeamGen}
 import models.Team
 import models.TeamJson._
 
-
-import org.scalacheck.Arbitrary._
-import org.scalacheck.{Arbitrary, Gen}
-import org.specs2.ScalaCheck
-
 import play.api.libs.json.{JsSuccess, Json}
-import play.api.test.PlaySpecification
-import scala.Some
+
+import org.specs2.ScalaCheck
 
 /**
  * Add your spec here.
@@ -17,7 +12,7 @@ import scala.Some
  * For more information, consult the wiki.
  */
 
-class TeamSpec extends PlaySpecification with ScalaCheck with TeamGen {
+class TeamSpec extends FamSpecification with ScalaCheck with TeamGen with ClubGen {
   "json from(to) iso" ! prop {
     (p: Team) =>
 //          println(s"p: $p")
@@ -25,6 +20,8 @@ class TeamSpec extends PlaySpecification with ScalaCheck with TeamGen {
 //          println(s"from(to): ${Json.fromJson(Json.toJson(p))}")
       Json.fromJson(Json.toJson(p)) == JsSuccess(p)
   }
+
+
 }
 
 

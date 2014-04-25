@@ -42,9 +42,6 @@ object ImplicitGlobals {
   implicit val typCompetitionFormat = Json.format[TypCompetition]
   implicit val typMatchFormat = Json.format[TypMatch]
 
-
-
-
   implicit val cityWithProvinceReads: Reads[(City, Province)] = (
     (__ \ 'city).read[City] ~
       (__ \ 'province).read[Province]
@@ -55,10 +52,6 @@ object ImplicitGlobals {
     (__ \ 'city).write[City] ~
       (__ \ 'province).write[Province]
     ) tupled
-
-
-
-
 
   val pattern = "yyyy-MM-dd'T'HH:mm:ss.sssZ"
   implicit val dateFormat = Format[DateTime](Reads.jodaDateReads(pattern), Writes.jodaDateWrites(pattern))
@@ -85,16 +78,6 @@ object ImplicitGlobals {
 //      (__ \ "eventStatusId").write[Long] ~
 //      (__ \ "comments").write[Option[String]]
 //    )(unlift(Event.unapply))
-
-
-
-
-
-
-
-
-
-
 
 
   implicit val mtCompleteReads: Reads[(MatchTeam, Team)] = (

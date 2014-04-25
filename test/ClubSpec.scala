@@ -2,12 +2,11 @@ import generators.ClubGen
 import models.Club
 import models.ClubJson._
 
+import play.api.http.MimeTypes
 import play.api.libs.json._
 
-import org.scalacheck.Arbitrary._
-import org.scalacheck.{Arbitrary, Gen}
 import org.specs2.ScalaCheck
-import play.api.libs.json.JsSuccess
+
 import play.api.test.WithApplication
 import scala.Some
 
@@ -49,7 +48,7 @@ class ClubSpec extends FamSpecification with ScalaCheck with ClubGen {
     val clubs = route(getRequest).get
 
     status(clubs) must equalTo(OK)
-    contentType(clubs) must beSome.which(_ == "application/json")
+    contentType(clubs) must beSome.which(_ == MimeTypes.JSON)
     contentAsString(clubs) must beEqualTo(clubJson.toString())
   }
 }

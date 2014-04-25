@@ -4,10 +4,12 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models._
+import models.PageJson._
+import models.TeamJson._
+import models.TeamJsonExt._
 
-import json.ImplicitGlobals._
 import service.{Administrator, Coach}
-
+import play.api.libs.json.Json
 
 
 object Teams extends Controller with securesocial.core.SecureSocial{
@@ -35,14 +37,20 @@ object Teams extends Controller with securesocial.core.SecureSocial{
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
       val teams = models.Teams.findPage(page, orderBy)
-      val html = views.html.teams.list("Liste des teams", teams, orderBy)
-      Ok(html)
+      render {
+        case Accepts.Html() => Ok(views.html.teams.list("Liste des teams", teams, orderBy))
+        case Accepts.Json() => Ok(Json.toJson(teams))
+      }
   }
 
   def view(id: Long) = Action {
     implicit request =>
       models.Teams.findById(id).map {
-        team => Ok(views.html.teams.view("View Team", team))
+        team =>
+          render {
+            case Accepts.Html() => Ok(views.html.teams.view("View Team", team))
+            case Accepts.Json() => Ok(Json.toJson(team))
+          }
       } getOrElse NotFound
   }
 
