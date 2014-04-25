@@ -6,8 +6,9 @@ import play.api.libs.json._
 import org.scalacheck.Arbitrary._
 import org.scalacheck.{Arbitrary, Gen}
 import org.specs2.ScalaCheck
-import play.api.mvc.AnyContentAsEmpty
-import play.api.test.{FakeHeaders, FakeRequest, WithApplication}
+import play.api.libs.json.JsSuccess
+import play.api.test.WithApplication
+import scala.Some
 
 
 /**
@@ -42,10 +43,8 @@ class ClubSpec extends FamSpecification with ScalaCheck with ClubGen {
 //    val Some(result) = route(postRequest)
 //    status(result) must equalTo(OK)
     models.Clubs.insert(club)
-    
-    val jsonHeaders = FakeHeaders(Seq("Accept" -> Seq("application/json")))
-    val getRequest = FakeRequest(method = "GET", uri = "/clubs/1", headers = jsonHeaders, body = AnyContentAsEmpty)
 
+    val getRequest = fakeGETasJson("/clubs/1")
     val clubs = route(getRequest).get
 
     status(clubs) must equalTo(OK)
