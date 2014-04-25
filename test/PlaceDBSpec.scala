@@ -1,6 +1,9 @@
 import generators.PlaceGen
+import models.PlaceJson._
 import play.api.db.slick.DB
 import play.api.db.slick.Config.driver.simple._
+import play.api.http.MimeTypes
+import play.api.libs.json.Json
 import play.api.test._
 import org.specs2.matcher.ShouldMatchers
 import scala.Some
@@ -10,7 +13,6 @@ import scala.Some
  * test the kitty cat database
  */
 class PlaceDBSpec extends FamSpecification with ShouldMatchers with PlaceGen {
-
 
   "PlaceDB" should {
     "insert data and retrieve them" in new WithApplication(fakeAppMemDBMinimal) {
@@ -23,6 +25,8 @@ class PlaceDBSpec extends FamSpecification with ShouldMatchers with PlaceGen {
           models.Places.findAll must equalTo(Seq(testPlace))
       }
     }
+
+
 
   }
 
