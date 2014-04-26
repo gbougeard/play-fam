@@ -17,11 +17,8 @@ case class Team(id: Option[Long] = None,
 
 object TeamJson {
   implicit val teamJsonFormat = Json.format[Team]
-}
-object TeamJsonExt {
 
   import models.ClubJson._
-  import models.TeamJson._
 
   implicit val teamCompleteReads: Reads[(Team, Club)] = (
     (__ \ 'team).read[Team] ~
@@ -33,6 +30,21 @@ object TeamJsonExt {
       (__ \ 'club).write[Club]
     ) tupled
 }
+//object TeamJsonExt {
+//
+//  import models.ClubJson._
+//  import models.TeamJson._
+//
+//  implicit val teamCompleteReads: Reads[(Team, Club)] = (
+//    (__ \ 'team).read[Team] ~
+//      (__ \ 'club).read[Club]
+//    ) tupled
+//
+//  implicit val teamCompleteWrites: Writes[(Team, Club)] = (
+//    (__ \ 'team).write[Team] ~
+//      (__ \ 'club).write[Club]
+//    ) tupled
+//}
 
 object Teams extends DAO{
   lazy val pageSize = 10

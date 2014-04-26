@@ -6,7 +6,6 @@ import play.api.data.Forms._
 import models._
 import models.PageJson._
 import models.TeamJson._
-import models.TeamJsonExt._
 
 import service.{Administrator, Coach}
 import play.api.libs.json.Json
