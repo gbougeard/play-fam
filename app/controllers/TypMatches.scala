@@ -4,10 +4,11 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models._
+import models.PageJson._
+import models.TypMatchJson._
 
-import json.ImplicitGlobals._
 import service.Administrator
-
+import play.api.libs.json.Json
 
 
 object TypMatches extends Controller with securesocial.core.SecureSocial {
@@ -44,14 +45,20 @@ object TypMatches extends Controller with securesocial.core.SecureSocial {
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
       val typMatches = models.TypMatches.findPage(page, orderBy)
-      val html = views.html.typMatches.list("Liste des typMatches", typMatches, orderBy)
-      Ok(html)
+      render {
+        case Accepts.Html() => Ok(views.html.typMatches.list("Liste des typMatches", typMatches, orderBy))
+        case Accepts.Json() => Ok(Json.toJson(typMatches))
+      }
   }
 
   def view(id: Long) = Action {
     implicit request =>
       models.TypMatches.findById(id).map {
-        typMatch => Ok(views.html.typMatches.view("View TypMatch", typMatch))
+        typMatch =>
+          render {
+            case Accepts.Html() => Ok(views.html.typMatches.view("View TypMatch", typMatch))
+            case Accepts.Json() => Ok(Json.toJson(typMatch))
+          }
       } getOrElse NotFound
   }
 

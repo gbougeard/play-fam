@@ -6,18 +6,23 @@ import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 
 
-case class TypMatch(id: Option[Long],
+case class TypMatch(id: Option[Long] = None,
                     code: String,
                     name: String,
                     nbSubstitute: Int,
                     nbPlayer: Int,
                     periodDuration: Int,
                     hasExtraTime: Boolean,
-                    extraTimeDuration: Option[Int],
+                    extraTimeDuration: Option[Int] = None,
                     hasInfiniteSubs: Boolean,
-                    nbSubstitution: Option[Int],
+                    nbSubstitution: Option[Int] = None,
                     hasPenalties: Boolean,
-                    nbPenalties: Option[Int])
+                    nbPenalties: Option[Int] = None)
+
+object TypMatchJson {
+  import play.api.libs.json.Json
+  implicit val typMatchJsonFormat = Json.format[TypMatch]
+}
 
 
 object TypMatches extends DAO{
@@ -38,17 +43,16 @@ object TypMatches extends DAO{
 
     val offset = pageSize * page
 
-        val q = (
-          for {c <- typMatches
-            .sortBy(typMatch => orderField match {
-            case 1 => typMatch.code.asc
-            case -1 => typMatch.code.desc
-            case 2 => typMatch.name.asc
-            case -2 => typMatch.name.desc
-          })
-            .drop(offset)
-            .take(pageSize)
-          } yield c)
+        val q = for {c <- typMatches
+          .sortBy(typMatch => orderField match {
+          case 1 => typMatch.code.asc
+          case -1 => typMatch.code.desc
+          case 2 => typMatch.name.asc
+          case -2 => typMatch.name.desc
+        })
+          .drop(offset)
+          .take(pageSize)
+        } yield c
 
         Page(q.list, page, offset, count)
   }
