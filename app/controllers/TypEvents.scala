@@ -4,6 +4,7 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models._
+import models.PageJson._
 import models.TypEventJson._
 
 import play.api.libs.json._
@@ -35,14 +36,19 @@ object TypEvents extends Controller with securesocial.core.SecureSocial {
   def list(page: Int, orderBy: Int) = Action {
     implicit request =>
       val typEvents = models.TypEvents.findPage(page, orderBy)
-      val html = views.html.typEvents.list("Liste des typEvents", typEvents, orderBy)
-      Ok(html)
+      render {
+        case Accepts.Html() => Ok(views.html.typEvents.list("Liste des typEvents", typEvents, orderBy))
+        case Accepts.Json() => Ok(Json.toJson(typEvents))
+      }
   }
 
   def view(id: Long) = Action {
     implicit request =>
       models.TypEvents.findById(id).map {
-        typEvent => Ok(views.html.typEvents.view("View TypEvent", typEvent))
+        typEvent =>  render {
+          case Accepts.Html() => Ok(views.html.typEvents.view("View TypEvent", typEvent))
+          case Accepts.Json() => Ok(Json.toJson(typEvent))
+        }
       } getOrElse NotFound
   }
 
